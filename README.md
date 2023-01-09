@@ -1,6 +1,6 @@
 <img align="right" width="50" height="50" src=".github/assets/area-logo.png">
 
-# :iphone: Reaccoon
+# Reaccoon
 
 ## About the project
 
