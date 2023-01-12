@@ -1,0 +1,19 @@
+.css-p3ggqe-MuiButtonBase-root-MuiButton-root {
+    border-radius: 100px !important;
+    padding: 14px 27px !important
+}
+
+.big-rounded-button {
+    border-radius: 100px !important;
+    padding: 14px 27px !important;
+    margin: 0.5vw !important;
+    font-family: 'Titan One', cursive !important;
+}
+
+.big-rounded-button-outlined {
+    border-radius: 100px !important;
+    padding: 12px 23px !important;
+    margin: 0.5vw !important;
+    border: 3px solid !important;
+    font-family: 'Titan One', cursive !important;
+}

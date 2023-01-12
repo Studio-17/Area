@@ -1,0 +1,34 @@
+.header-main-container {
+    display: flex;
+    align-items: center;
+    height: 23vh;
+    justify-content: space-between;
+}
+
+.logo-title {
+    font-family: 'Titan One', cursive !important;
+    font-size: 70px;
+    margin: 0px 0px 0px 5vw;
+    cursor: pointer;
+
+}
+
+.buttons-container {
+    display: flex;
+    align-items: center;
+    margin: 0px 4vw 0px 0px;
+}
+
+.avatar-container {
+    display: flex;
+    align-items: center;
+    margin: 0px 4vw 0px 0px;
+
+}
+
+
+img {
+    object-fit: scale-down;
+    width: 100%;
+    height: 100%;
+}

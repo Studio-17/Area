@@ -1,0 +1,31 @@
+.landing-page-main-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 77vh;
+    font-family: 'Titan One', cursive !important;
+    padding: 0px 9vw
+}
+
+.logo-container {
+    width: 35%;
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 0px 2vw 0px 0px;
+}
+
+.main-text-container {
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.welcome-text {
+    margin: 0px 0px 1vw 0px;
+    text-align: center;
+}

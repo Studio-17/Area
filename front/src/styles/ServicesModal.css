@@ -1,0 +1,11 @@
+.list-of-services {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 3vw;
+    padding: 3vh 0px
+}
+
+.main-title {
+    font-family: 'Titan One', cursive !important;
+    font-size: 30px
+}
