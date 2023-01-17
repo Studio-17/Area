@@ -15,9 +15,9 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Welcome on AuthenticaThor Service"', () => {
+    it('should return "Welcome on Reaccoon Service"', () => {
       expect(appController.healthCheck()).toBe(
-        'Welcome on AuthenticaThor Service !</br>' + new Date().toISOString(),
+        'Welcome on Reaccoon Service !</br>' + new Date().toISOString(),
       );
     });
   });
