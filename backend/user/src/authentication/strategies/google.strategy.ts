@@ -9,18 +9,17 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     super({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: `http://${process.env.APP_HOST}:${process.env.APP_PORT}/api/authenticathor/google/redirect`,
+      callbackURL: `http://${process.env.APP_HOST}:${process.env.APP_PORT}/api/authentication/google/redirect`,
       scope: ['email', 'profile'],
     });
   }
-  async validate(_accessToken: string, _refreshToken: string, profile: Profile) {
-    console.log('access_token:', _accessToken);
+  async validate(accessToken: string, refreshToken: string, profile: Profile) {
     const user = await this.authenticationService.validateUserByEmail(profile.emails[0].value);
 
     if (!user) {
       throw new UnauthorizedException();
     }
 
-    return user;
+    return { user, tokens: { accessToken, refreshToken } };
   }
 }

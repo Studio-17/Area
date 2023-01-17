@@ -6,8 +6,8 @@ import { UserRegisterDto } from './dto/user-register.dto';
 import { GoogleAuthenticationGuard } from './guards/google-authentification.guard';
 import { GithubAuthenticationGuard } from './guards/github-authentication.guard';
 
-@ApiTags('authenticathor')
-@Controller('authenticathor')
+@ApiTags('authentication')
+@Controller('authentication')
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
@@ -41,6 +41,8 @@ export class AuthenticationController {
   @Get('/google/redirect')
   @UseGuards(GoogleAuthenticationGuard)
   public async redirectGoogle(@Req() request) {
+    console.log('oauth2 tokens:', request.user.tokens);
+
     return await this.authenticationService.oauth(request.user.email);
   }
 

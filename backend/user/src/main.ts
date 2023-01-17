@@ -29,4 +29,4 @@ async function bootstrap() {
   });
 }
 
-bootstrap().then(() => console.log('AuthenticaThor App started !'));
+bootstrap().then(() => console.log('Reaccoon API started !'));
