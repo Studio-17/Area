@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty } from 'class-validator';
 
-export class UpdateCooniesDto {
+export class CreateAreaDto {
   @IsString()
   @IsNotEmpty()
   name!: string;

@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CooniesModule } from './coonies/coonies.module';
+import { AreaModule } from './area/area.module';
 
 @Module({
   imports: [
@@ -24,7 +24,7 @@ import { CooniesModule } from './coonies/coonies.module';
       }),
       inject: [ConfigService],
     }),
-    CooniesModule,
+    AreaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
