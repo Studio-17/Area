@@ -1,6 +1,5 @@
 import { theme } from '../constants/theme';
 import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
 import { Fab } from '@mui/material';
 import { useEffect, useState } from 'react';
 import ServicesModal from '../components/Modals/ServicesModal';

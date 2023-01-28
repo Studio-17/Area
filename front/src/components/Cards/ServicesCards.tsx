@@ -1,5 +1,4 @@
 import { Card, CardActionArea, CardContent } from '@mui/material';
-import { theme } from '../../constants/theme';
 import '../../styles/ServicesCards.css';
 
 interface Props {

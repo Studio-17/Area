@@ -13,11 +13,11 @@ const Header = () => {
       </div>
       <div className="buttons-container">
         <BigRoundedButtonOutlined
-          label='Sing up'
+          label='Sign up'
           color='primary'
-          onClick={() => navigate('/home')}
+          onClick={() => navigate('/authentification')}
         />
-        <BigRoundedButton label={'Sign in'} color={'primary'} onClick={() => navigate('/')} />
+        <BigRoundedButton label={'Sign in'} color={'primary'} onClick={() => navigate('/authentification')} />
       </div>
     </div>
   );

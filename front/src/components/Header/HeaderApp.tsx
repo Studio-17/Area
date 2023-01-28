@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { theme } from '../../constants/theme';
 import { Avatar } from '@mui/material';
 import '../../styles/Header.css';
-import { NavigateBefore } from '@mui/icons-material';
 
 const HeaderApp = () => {
   const navigate = useNavigate();
