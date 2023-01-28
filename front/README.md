@@ -15,4 +15,8 @@ then :
 npm start
 ```
 
+You can also use docker to run in dev mode : 
 
+```
+sudo docker-compose -f docker-compose.dev.yml up
+```
