@@ -29,10 +29,10 @@ services:
       - '19002:19002'
       - '19006:19006'
     volumes:
-      - ./mobile/area-mobile-app:/opt/area-mobile-app/app:delegated
-      - ./mobile/area-mobile-app/package.json:/opt/area-mobile-app/package.json
-      - ./mobile/area-mobile-app/package-lock.json:/opt/area-mobile-app/package-lock.json
-      - notused:/opt/area-mobile-app/app/node_modules
+      - ./mobile/app:/opt/app/app:delegated
+      - ./mobile/app/package.json:/opt/app/package.json
+      - ./mobile/app/package-lock.json:/opt/app/package-lock.json
+      - notused:/opt/app/app/node_modules
     healthcheck:
       disable: true
 

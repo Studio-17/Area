@@ -18,18 +18,18 @@ RUN npm i --unsafe-perm -g npm@latest expo-cli@latest
 
 # install dependencies first, in a different location for easier app bind mounting for local development
 # due to default /opt permissions we have to create the dir with root and change perms
-RUN mkdir /opt/area-mobile-app && chown node:node /opt/area-mobile-app
-WORKDIR /opt/area-mobile-app
-ENV PATH /opt/area-mobile-app/.bin:$PATH
+RUN mkdir /opt/app && chown node:node /opt/app
+WORKDIR /opt/app
+ENV PATH /opt/app/.bin:$PATH
 USER node
-COPY --chown=node:node ./area-mobile-app/package.json ./
-COPY --chown=node:node ./area-mobile-app/package-lock.json ./
+COPY --chown=node:node ./app/package.json ./
+COPY --chown=node:node ./app/package-lock.json ./
 RUN npm install
 
 # copy in our source code last, as it changes the most
-WORKDIR /opt/area-mobile-app/app
+WORKDIR /opt/app/app
 # for development, we bind mount volumes; comment out for production
-COPY ./area-mobile-app .
+COPY ./app .
 
 ENTRYPOINT ["npm"]
 CMD ["run", "web"]
