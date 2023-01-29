@@ -6,11 +6,23 @@ version: '2.4'
 #  REACT_NATIVE_PACKAGER_HOSTNAME: ${REACT_NATIVE_PACKAGER_HOSTNAME}
 
 services:
+  web:
+    build:
+      context: ./front
+      dockerfile: ./Dockerfile
+    image: "area-web"
+    ports:
+      - "3000:3000"
   mobile:
     build:
       context: ./mobile
       dockerfile: ./Dockerfile
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=${EXPO_DEVTOOLS_LISTEN_ADDRESS}
+      - REACT_NATIVE_PACKAGER_HOSTNAME=${REACT_NATIVE_PACKAGER_HOSTNAME}
     tty: true
+    image: "area-mobile"
     ports:
       - '19000:19000'
       - '19001:19001'

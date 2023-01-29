@@ -1,0 +1,7 @@
+.authentification-main-container {
+    display: flex;
+    height: 77vh;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
