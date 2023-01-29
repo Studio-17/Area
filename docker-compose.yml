@@ -1,0 +1,40 @@
+version: '2.4'
+
+#x-typeorm: &typeorm-env
+#  NODE_ENV: ${NODE_ENV}
+#  EXPO_DEVTOOLS_LISTEN_ADDRESS: ${EXPO_DEVTOOLS_LISTEN_ADDRESS}
+#  REACT_NATIVE_PACKAGER_HOSTNAME: ${REACT_NATIVE_PACKAGER_HOSTNAME}
+
+services:
+  web:
+    build:
+      context: ./front
+      dockerfile: ./Dockerfile
+    image: "area-web"
+    ports:
+      - "3000:3000"
+  mobile:
+    build:
+      context: ./mobile
+      dockerfile: ./Dockerfile
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=${EXPO_DEVTOOLS_LISTEN_ADDRESS}
+      - REACT_NATIVE_PACKAGER_HOSTNAME=${REACT_NATIVE_PACKAGER_HOSTNAME}
+    tty: true
+    image: "area-mobile"
+    ports:
+      - '19000:19000'
+      - '19001:19001'
+      - '19002:19002'
+      - '19006:19006'
+    volumes:
+      - ./mobile/area-mobile-app:/opt/area-mobile-app/app:delegated
+      - ./mobile/area-mobile-app/package.json:/opt/area-mobile-app/package.json
+      - ./mobile/area-mobile-app/package-lock.json:/opt/area-mobile-app/package-lock.json
+      - notused:/opt/area-mobile-app/app/node_modules
+    healthcheck:
+      disable: true
+
+volumes:
+  notused:
