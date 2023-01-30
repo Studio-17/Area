@@ -13,7 +13,7 @@ interface AppletItem {
 
 export default function Applet({ navigation, item }: AppletProps) {
   const onPressFunction = () => {
-    alert("You pressed the applet!");
+    navigation.navigate('AppletContentScreen');
   };
 
   var divStyle2 = { backgroundColor: item.color};
