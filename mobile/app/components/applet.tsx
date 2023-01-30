@@ -1,21 +1,47 @@
-import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import * as React from "react";
+import { Text, StyleSheet, Pressable } from "react-native";
 
-export default function Applet() {
-    return (
-        // Create a card that displays the applet's name, description, and icon
-        <View style={styles.cardProperties}>
-            <Text
-                onPress={() => alert('This is the "Applet" screen.')}
-                style={{ fontSize: 26, fontWeight: 'bold' }}>Applet Screen</Text>
-        </View>
-    );
+interface AppletProps {
+    navigation: any;
+    item: AppletItem;
+}
+
+interface AppletItem {
+    title: string;
+    color: string;
+}
+
+export default function Applet({ navigation, item }: AppletProps) {
+  const onPressFunction = () => {
+    alert("You pressed the applet!");
+  };
+
+  var divStyle2 = { backgroundColor: item.color};
+
+  return (
+    <Pressable style={[styles.cardProperties, divStyle2 ]} onPress={onPressFunction}>
+      <Text style={styles.cardContainer}>
+        <Text style={styles.textProperties}>{item.title}</Text>
+      </Text>
+    </Pressable>
+  );
 }
 
 const styles = StyleSheet.create({
-    cardProperties: {
-        backgroundColor: '#F5F5F5',
-        height: 200,
-        width: '100%',
-    },
+  cardProperties: {
+    backgroundColor: '#f9c2ff',
+    padding: 20,
+    height: 250,
+    marginVertical: 10,
+    marginHorizontal: 20,
+    borderRadius: 20,
+  },
+  cardContainer: {
+    margin: 20,
+    fontSize: 23,
+    fontWeight: "bold",
+  },
+  textProperties: {
+    color: "#000002",
+  },
 });
