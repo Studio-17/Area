@@ -1,8 +1,8 @@
-import { IsString, IsNotEmpty, IsArray } from 'class-validator';
+import { IsString, IsNotEmpty, IsArray, IsOptional } from 'class-validator';
 
 export class CreateAreaDto {
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   name!: string;
 
   @IsString()
