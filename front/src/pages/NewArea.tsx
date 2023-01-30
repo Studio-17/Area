@@ -1,13 +1,13 @@
 import { theme } from "../constants/theme";
 import AddIcon from "@mui/icons-material/Add";
 import { Alert, CircularProgress, Fab, Snackbar } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ServicesModal from "../components/Modals/ServicesModal";
 import ServicesInfos from "../components/ServicesInfos";
 import BigRoundedButtonOutlined from "../components/Buttons/BigRoundedButtonOutlined";
 import "../styles/NewArea.css";
 import BigRoundedButton from "../components/Buttons/BigRoundedButton";
-import { useServicesQuery } from "../services/servicesApi";
+import { useAddAreaMutation, useServicesQuery } from "../services/servicesApi";
 import { Service } from "../models/serviceModels";
 
 const NewArea = () => {
@@ -21,6 +21,7 @@ const NewArea = () => {
   );
 
   const { data: services, isError, isLoading } = useServicesQuery();
+  const [addArea] = useAddAreaMutation();
 
   const onClickOpenModal = (
     index: number,
@@ -33,17 +34,26 @@ const NewArea = () => {
 
   const onClickOnAreasCards: any = (
     actionContent?: string,
-    reactionContent?: string
+    reactionContent?: string,
+    uuidOfAction?: string
   ) => {
     actionContent &&
       setBlockState((state: any) => [
         ...state,
-        { name: actionContent, service: serviceSelected?.name },
+        {
+          name: actionContent,
+          service: serviceSelected?.name,
+          uuid: uuidOfAction,
+        },
       ]);
     reactionContent &&
       setBlockState((state: any) => [
         ...state,
-        { name: reactionContent, service: serviceSelected?.name },
+        {
+          name: reactionContent,
+          service: serviceSelected?.name,
+          uuid: uuidOfAction,
+        },
       ]);
     setServiceSelected(null);
   };
@@ -53,7 +63,16 @@ const NewArea = () => {
   };
 
   const onClickOnSaveButton = () => {
-    console.log(blocksState);
+    const reactions: any = [];
+    blocksState
+      .filter((value: any, index: number) => index !== 0)
+      .map((block: any) => reactions.push(block.uuid));
+    const areaToSend = {
+      action: blocksState[0].uuid,
+      reactions: reactions,
+    };
+    addArea(areaToSend);
+    console.log(areaToSend);
   };
 
   if (isLoading) return <CircularProgress />;

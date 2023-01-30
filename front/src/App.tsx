@@ -8,10 +8,12 @@ import ListOfAreas from "./pages/ListOfAreas";
 import NewArea from "./pages/NewArea";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
-import "./App.css";
 import Authentification from "./pages/Authentification";
+import { theme } from "./constants/theme";
+import "./App.css";
+import Area from "./pages/Area";
 
-const theme = createTheme({
+const themeMUI = createTheme({
   palette: {
     primary: {
       main: "#0165F5",
@@ -57,17 +59,29 @@ const router = createBrowserRouter([
     path: "/authentification",
     element: (
       <>
-      <HeaderApp />
-      <Authentification />
+        <HeaderApp />
+        <Authentification />
       </>
-    )
-  }
+    ),
+  },
+  {
+    path: `/area/:areaId`,
+    element: (
+      <>
+        <HeaderApp />
+        <Area />
+      </>
+    ),
+  },
 ]);
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <div className="App">
+    <ThemeProvider theme={themeMUI}>
+      <div
+        className="App"
+        style={{ backgroundColor: theme.palette.background }}
+      >
         <Provider store={store}>
           <RouterProvider router={router} />
         </Provider>
