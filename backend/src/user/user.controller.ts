@@ -17,7 +17,7 @@ import { UserInterface } from './interfaces/user.interface';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authentication.guard';
 
-@ApiTags('user')
+@ApiTags('User')
 @UseGuards(JwtAuthenticationGuard)
 @Controller('user')
 export class UserController {
