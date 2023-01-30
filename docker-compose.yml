@@ -1,19 +1,41 @@
-version: '2.4'
+version: '3.9'
 
-#x-typeorm: &typeorm-env
-#  NODE_ENV: ${NODE_ENV}
-#  EXPO_DEVTOOLS_LISTEN_ADDRESS: ${EXPO_DEVTOOLS_LISTEN_ADDRESS}
-#  REACT_NATIVE_PACKAGER_HOSTNAME: ${REACT_NATIVE_PACKAGER_HOSTNAME}
+x-typeorm: &typeorm-env
+  POSTGRES_HOST: ${POSTGRES_HOST}
+  POSTGRES_PORT: ${POSTGRES_PORT}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_DB: ${POSTGRES_DB}
+  JWT_SECRET: ${JWT_SECRET}
 
+volumes:
+  postgres_data: {}
+
+networks:
+  authentication-network:
+    external: false
+
+#---------- SERVICES ----------#
 services:
+
   web:
+    profiles:
+      - web
+      - all
+    container_name: web
     build:
-      context: ./front
+      context: ./web
       dockerfile: ./Dockerfile
-    image: "area-web"
     ports:
       - "3000:3000"
+    volumes:
+      - ./web:/app/web
+
   mobile:
+    profiles:
+      - mobile
+      - all
+    container_name: mobile
     build:
       context: ./mobile
       dockerfile: ./Dockerfile
@@ -22,19 +44,58 @@ services:
       - EXPO_DEVTOOLS_LISTEN_ADDRESS=${EXPO_DEVTOOLS_LISTEN_ADDRESS}
       - REACT_NATIVE_PACKAGER_HOSTNAME=${REACT_NATIVE_PACKAGER_HOSTNAME}
     tty: true
-    image: "area-mobile"
     ports:
       - '19000:19000'
       - '19001:19001'
       - '19002:19002'
       - '19006:19006'
     volumes:
-      - ./mobile/app:/opt/app/app:delegated
-      - ./mobile/app/package.json:/opt/app/package.json
-      - ./mobile/app/package-lock.json:/opt/app/package-lock.json
-      - notused:/opt/app/app/node_modules
+      - ./mobile/app:/app/mobile:delegated
+      - ./mobile/app/package.json:/app/mobile/package.json
     healthcheck:
       disable: true
 
-volumes:
-  notused:
+  backend:
+    profiles:
+      - backend
+      - mobile
+      - web
+      - all
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    networks:
+      - authentication-network
+    volumes:
+      - ./backend:/app/backend
+    depends_on:
+      - postgres-db
+    env_file:
+      - .env
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    environment:
+      <<: *typeorm-env
+    entrypoint: [ "npm", "run", "start:dev", "--tsc" ]
+
+  postgres-db:
+    profiles:
+      - backend
+      - mobile
+      - web
+      - db
+      - all
+    image: postgres:14
+    container_name: ${POSTGRES_HOST}
+    environment:
+      <<: *typeorm-env
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    restart: on-failure
+    stdin_open: true
+    tty: true
+    networks:
+      - authentication-network
+    volumes:
+      - postgres_data:/var/lib/postgresql@14/data
