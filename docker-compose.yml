@@ -27,17 +27,17 @@ services:
     build:
       context: ./web
       dockerfile: ./Dockerfile
-#    image: "area-web"
     ports:
       - "3000:3000"
     volumes:
-      - ./web/src:/app/src
+      - ./web:/app/web
 
   mobile:
     profiles:
       - mobile
       - frontend
       - all
+    container_name: mobile
     build:
       context: ./mobile
       dockerfile: ./Dockerfile
@@ -46,23 +46,47 @@ services:
       - EXPO_DEVTOOLS_LISTEN_ADDRESS=${EXPO_DEVTOOLS_LISTEN_ADDRESS}
       - REACT_NATIVE_PACKAGER_HOSTNAME=${REACT_NATIVE_PACKAGER_HOSTNAME}
     tty: true
-#    image: "area-mobile"
     ports:
       - '19000:19000'
       - '19001:19001'
       - '19002:19002'
       - '19006:19006'
     volumes:
-      - ./mobile/app:/opt/app/app:delegated
-      - ./mobile/app/package.json:/opt/app/package.json
-      - ./mobile/app/package-lock.json:/opt/app/package-lock.json
+      - ./mobile/app:/app/mobile:delegated
+      - ./mobile/app/package.json:/app/mobile/package.json
+#      - ./mobile/app/package-lock.json:/app/mobile/package-lock.json
 #      - notused:/opt/app/app/node_modules
     healthcheck:
       disable: true
 
+  backend:
+    profiles:
+      - backend
+      - api
+      - all
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    networks:
+      - authentication-network
+    volumes:
+      - ./backend:/app/backend
+#      - ./backend/package.json:/app/backend/package.json
+    depends_on:
+      - postgres-db
+    env_file:
+      - .env
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    environment:
+      <<: *typeorm-env
+    entrypoint: [ "npm", "run", "start:dev", "--tsc" ]
+
   postgres-db:
     profiles:
       - backend
+      - db
       - all
     image: postgres:14
     container_name: ${POSTGRES_HOST}
@@ -74,28 +98,6 @@ services:
     stdin_open: true
     tty: true
     networks:
-      - authenticathor-network
-    volumes:
-      - postgres_data:/var/lib/postgresql@14/data
-
-  backend:
-    profiles:
-      - backend
-      - all
-    container_name: app
-    build:
-      dockerfile: development/Dockerfile
-      context: ../
-    networks:
       - authentication-network
     volumes:
-      - ../src:/home/node/app/src
-    depends_on:
-      - postgres-db
-    env_file:
-      - .env
-    ports:
-      - ${APP_PORT}:${APP_PORT}
-    environment:
-      <<: *typeorm-env
-    entrypoint: [ "npm", "run", "start:dev", "--tsc" ]
+      - postgres_data:/var/lib/postgresql@14/data

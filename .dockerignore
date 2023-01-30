@@ -4,10 +4,10 @@
 .dockerignore
 
 # Build dependencies
-dist
-node_modules
-coverage
-**/node_modules
+dist/
+node_modules/
+coverage/
+**/node_modules/
 
 # Environment (contains sensitive data)
 .env
