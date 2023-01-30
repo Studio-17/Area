@@ -21,7 +21,6 @@ services:
   web:
     profiles:
       - web
-      - frontend
       - all
     container_name: web
     build:
@@ -35,7 +34,6 @@ services:
   mobile:
     profiles:
       - mobile
-      - frontend
       - all
     container_name: mobile
     build:
@@ -54,15 +52,14 @@ services:
     volumes:
       - ./mobile/app:/app/mobile:delegated
       - ./mobile/app/package.json:/app/mobile/package.json
-#      - ./mobile/app/package-lock.json:/app/mobile/package-lock.json
-#      - notused:/opt/app/app/node_modules
     healthcheck:
       disable: true
 
   backend:
     profiles:
       - backend
-      - api
+      - mobile
+      - web
       - all
     container_name: backend
     build:
@@ -72,7 +69,6 @@ services:
       - authentication-network
     volumes:
       - ./backend:/app/backend
-#      - ./backend/package.json:/app/backend/package.json
     depends_on:
       - postgres-db
     env_file:
@@ -86,6 +82,8 @@ services:
   postgres-db:
     profiles:
       - backend
+      - mobile
+      - web
       - db
       - all
     image: postgres:14

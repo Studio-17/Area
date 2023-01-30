@@ -98,24 +98,19 @@ The application is composed of three [Docker profiles](https://docs.docker.com/c
 
 For that, you can run one of the following command depending on which profile you need :
 ```bash
-# To run the backend profile
+# To run only the backend profile
 docker-compose --profile backend up
 
-# To run the mobile profile
+# To run the mobile profile with the backend
 docker-compose --profile mobile up
 
-# To run the web profile
+# To run the web profile with the backend
 docker-compose --profile web up
 ```
 
 You can also run all the profiles with only one command.
 ```bash
 docker-compose --profile all up
-```
-
-Or only the frontend apps.
-```bash
-docker-compose --profile frontend up
 ```
 
 And Voilà ! **Your app is running !** :tada:
