@@ -3,7 +3,9 @@ import { IsUuidParam } from '../utils/decorators/Is-uuid-param.decorator';
 import { ActionService } from './action.service';
 import { CreateActionDto } from './dto/create-action-dto';
 import { UpdateActionDto } from './dto/update-action-dto';
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags('Action')
 @Controller('action')
 export class ActionController {
   constructor(private readonly actionService: ActionService) {}

@@ -3,7 +3,9 @@ import { IsUuidParam } from '../utils/decorators/Is-uuid-param.decorator';
 import { AreaService } from './area.service';
 import { CreateAreaDto } from './dto/create-area-dto';
 import { UpdateAreaDto } from './dto/update-area-dto';
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags('Area')
 @Controller('area')
 export class AreaController {
   constructor(private readonly areaService: AreaService) {}

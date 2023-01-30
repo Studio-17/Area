@@ -6,7 +6,7 @@ import { UserRegisterDto } from './dto/user-register.dto';
 import { GoogleAuthenticationGuard } from './guards/google-authentification.guard';
 import { GithubAuthenticationGuard } from './guards/github-authentication.guard';
 
-@ApiTags('authentication')
+@ApiTags('Authentication')
 @Controller('authentication')
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}

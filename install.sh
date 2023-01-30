@@ -20,7 +20,7 @@ then
   cd ..
 else
   # shellcheck disable=SC2059
-  echo -e $(printf "${RED}Failed to install backend dependencies...${WHITE}\n")
+  echo -e $(printf "${RED}Failed to install backend dependencies.${WHITE}\n")
   exit
 fi
 
@@ -36,7 +36,7 @@ then
   cd ..
 else
   # shellcheck disable=SC2059
-  echo -e $(printf "${RED}Failed to install mobile dependencies...${WHITE}\n")
+  echo -e $(printf "${RED}Failed to install mobile dependencies.${WHITE}\n")
   exit
 fi
 
@@ -52,7 +52,7 @@ then
   cd ..
 else
   # shellcheck disable=SC2059
-  echo -e $(printf "${RED}Failed to install web dependencies...${WHITE}\n")
+  echo -e $(printf "${RED}Failed to install web dependencies.${WHITE}\n")
   exit
 fi
 
