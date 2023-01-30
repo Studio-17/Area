@@ -65,4 +65,8 @@ export class ActionService {
     });
     return result.affected + ' action has been successfully deleted';
   }
+
+  async exist(actionId: string): Promise<boolean> {
+    return this.actionRepository.exist({ where: { uuid: actionId } });
+  }
 }

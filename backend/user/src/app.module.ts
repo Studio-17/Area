@@ -8,6 +8,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { AreaModule } from './area/area.module';
 import { ServiceModule } from './service/service.module';
 import { ActionModule } from './action/action.module';
+import { MyActionModule } from './myAction/myAction.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ActionModule } from './action/action.module';
     AreaModule,
     ServiceModule,
     ActionModule,
+    MyActionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
