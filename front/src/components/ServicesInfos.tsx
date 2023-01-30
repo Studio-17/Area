@@ -1,10 +1,9 @@
 import { Alert, CircularProgress, Snackbar } from "@mui/material";
-import { useEffect } from "react";
 import { theme } from "../constants/theme";
 import { Service } from "../models/serviceModels";
 import { useActionsQuery } from "../services/servicesApi";
 import "../styles/ServicesInfos.css";
-import AreasCards from "./Cards/AreasCards";
+import ActionsCards from "./Cards/ActionsCards";
 
 interface Props {
   service: Service;
@@ -24,11 +23,6 @@ const ServicesInfos = ({
     isFetching,
   } = useActionsQuery(service.uuid);
 
-  useEffect(() => {
-    console.log(actions);
-    console.log(typeSelected);
-  }, [actions]);
-
   if (isLoading || isFetching) return <CircularProgress />;
 
   return (
@@ -42,10 +36,12 @@ const ServicesInfos = ({
       <div className="subtext">Choose one ...</div>
       <div className="list-of-cards-container">
         {actions?.map((element, index) => (
-          <AreasCards
+          <ActionsCards
             key={index}
-            actionContent={element.description}
+            actionContent={typeSelected === "action" ? element.description : undefined}
+            reactionContent={typeSelected === "reaction" ? element.description : undefined}
             onClick={onClickOnAreasCards}
+            uuidOfAction={element.uuid}
           />
         ))}
       </div>
