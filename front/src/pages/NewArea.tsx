@@ -9,6 +9,7 @@ import "../styles/NewArea.css";
 import BigRoundedButton from "../components/Buttons/BigRoundedButton";
 import { useAddAreaMutation, useServicesQuery } from "../services/servicesApi";
 import { Service } from "../models/serviceModels";
+import { useNavigate } from "react-router-dom";
 
 const NewArea = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -19,6 +20,7 @@ const NewArea = () => {
   const [typeSelected, setTypeSelected] = useState<"action" | "reaction">(
     "action"
   );
+  const navigate = useNavigate();
 
   const { data: services, isError, isLoading } = useServicesQuery();
   const [addArea] = useAddAreaMutation();
@@ -72,7 +74,7 @@ const NewArea = () => {
       reactions: reactions,
     };
     addArea(areaToSend);
-    console.log(areaToSend);
+    navigate("/home");
   };
 
   if (isLoading) return <CircularProgress />;

@@ -1,9 +1,11 @@
 import { Action } from "./actionModels";
 
 export type Area = {
-  uuid: string;
   action: Action;
   reactions: [Action];
+  area: {
+    uuid: string;
+  };
 };
 
 export type createAreaDto = {
