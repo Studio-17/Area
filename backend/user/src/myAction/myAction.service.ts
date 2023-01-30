@@ -17,6 +17,39 @@ export class MyActionService {
     private readonly areaService: AreaService,
   ) {}
 
+  async findAction(areaId: string) {
+    const myActions = await this.myActionRepository.findBy({ areaId: areaId, linkedFromId: null });
+    let resultAction = null;
+    if (myActions.length) {
+      const action = await this.actionService.findOne(myActions[0].actionId);
+      resultAction = {
+        actionId: action.uuid,
+        name: action.name,
+        serviceId: action.serviceId,
+        myActionId: myActions[0].uuid,
+      };
+    }
+    return resultAction;
+  }
+
+  async findReaction(areaId: string, actionId: string) {
+    const myActions = await this.myActionRepository.findBy({
+      areaId: areaId,
+      linkedFromId: actionId,
+    });
+    const reactions = [];
+    for (let i = 0; i < myActions.length; i++) {
+      const action = await this.actionService.findOne(myActions[i].actionId);
+      reactions.push({
+        actionId: action.uuid,
+        name: action.name,
+        serviceId: action.serviceId,
+        myActionId: myActions[i].uuid,
+      });
+    }
+    return reactions;
+  }
+
   async findAll(areaId: string) {
     const myActions = await this.myActionRepository.findBy({ areaId: areaId });
     const actions = [];
@@ -40,68 +73,14 @@ export class MyActionService {
       throw NotFoundException('area');
     }
     const newAction: MyAction = this.myActionRepository.create(action);
-    const myNewAction = await this.myActionRepository.save(newAction);
-    console.log(newAction);
-    this.myActionRepository.findBy({ areaId: areaId }).then((areas) => {
-      if (areas.length) {
-        for (let i = 0; i < areas.length; i++) {
-          if (!areas[i].linkedToId) {
-            this.myActionRepository
-              .update({ uuid: areas[i].uuid }, { linkedToId: myNewAction.uuid })
-              .catch((e: any) => {
-                console.error(e);
-                throw NotFoundException('my action');
-              });
-            newAction.linkedFromId = areas[i].uuid;
-            break;
-          }
-        }
-      }
-    });
     return await this.myActionRepository.save(newAction);
   }
 
   async removeAction(actionId: string) {
-    let linkedTo = null;
-    let linkedFrom = null;
-    const action = await this.myActionRepository
-      .findOneByOrFail({ uuid: actionId })
-      .catch((e: any) => {
-        console.error(e);
-        throw NotFoundException('action');
-      });
-    if (action.linkedToId) {
-      linkedTo = await this.myActionRepository
-        .findOneByOrFail({ uuid: action.linkedToId })
-        .catch((e: any) => {
-          console.error(e);
-          throw NotFoundException('action');
-        });
-    }
-    if (action.linkedFromId) {
-      linkedFrom = await this.myActionRepository
-        .findOneByOrFail({ uuid: action.linkedFromId })
-        .catch((e: any) => {
-          console.error(e);
-          throw NotFoundException('action');
-        });
-    }
-    if (linkedFrom) {
-      if (linkedTo) {
-        linkedFrom.linkedToId = linkedTo.uuid;
-      } else {
-        linkedFrom.linkedToId = null;
-      }
-      await this.myActionRepository.save(linkedFrom);
-    }
-    if (linkedTo) {
-      if (linkedFrom) {
-        linkedTo.linkedFromId = linkedFrom.uuid;
-      } else {
-        linkedTo.linkedToId = null;
-      }
-      await this.myActionRepository.save(linkedTo);
-    }
     return await this.myActionRepository.delete({ uuid: actionId });
+  }
+
+  async removeByAreaId(areaId: string) {
+    return await this.myActionRepository.delete({ areaId: areaId });
   }
 }

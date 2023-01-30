@@ -18,24 +18,48 @@ export class AreaService {
 
   async create(createAreaDto: CreateAreaDto) {
     const area: Area = this.areaRepository.create(createAreaDto);
-    return await this.areaRepository.save(area);
+    const areaInData = await this.areaRepository.save(area);
+    const action = await this.myActionService.addAction(areaInData.uuid, {
+      areaId: areaInData.uuid,
+      actionId: createAreaDto.action,
+      linkedFromId: null,
+    });
+    for (const myAction of createAreaDto.reactions) {
+      await this.myActionService.addAction(areaInData.uuid, {
+        areaId: areaInData.uuid,
+        actionId: myAction,
+        linkedFromId: action.uuid,
+      });
+    }
+    return areaInData;
   }
 
   async findAll() {
-    return this.areaRepository.find();
+    const areas = await this.areaRepository.find();
+    const results = [];
+    for (const area of areas) {
+      const myAction = await this.myActionService.findAction(area.uuid);
+      if (!myAction) {
+        results.push({ area, action: null, reactions: null });
+        continue;
+      }
+      const myReactions = await this.myActionService.findReaction(area.uuid, myAction.myActionId);
+      results.push({ area, action: myAction, reactions: myReactions });
+    }
+    return results;
   }
 
   async findOne(areaId: string) {
-    const res = this.areaRepository.findOneByOrFail({ uuid: areaId }).catch((e) => {
+    const res = await this.areaRepository.findOneByOrFail({ uuid: areaId }).catch((e) => {
       console.error(e);
       throw NotFoundException('area');
     });
     if (!res) {
       throw NotFoundException('area');
     }
-    const myActions = await this.myActionService.findAll(areaId);
-    console.log(myActions);
-    return { area: res, myActions: myActions };
+    const myAction = await this.myActionService.findAction(areaId);
+    const myReactions = await this.myActionService.findReaction(areaId, myAction.myActionId);
+    return { res, action: myAction, reactions: myReactions };
   }
 
   async update(areaId: string, updateAreaDto: UpdateAreaDto) {
@@ -47,6 +71,7 @@ export class AreaService {
   }
 
   async remove(areaId: string) {
+    this.myActionService.removeByAreaId(areaId);
     const result = await this.areaRepository.delete({ uuid: areaId }).catch((e) => {
       console.error(e);
       throw NotFoundException('area');

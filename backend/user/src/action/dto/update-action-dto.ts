@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
-import { Action, ActionType } from '../action.entity';
+import { ActionType } from '../action.entity';
 
 export class UpdateActionDto {
   @IsString()
@@ -14,7 +14,7 @@ export class UpdateActionDto {
   @IsOptional()
   description: string;
 
-  @IsEnum({ entity: Action })
+  @IsEnum(ActionType)
   @IsOptional()
-  type!: ActionType;
+  type: ActionType;
 }

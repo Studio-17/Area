@@ -13,7 +13,4 @@ export class MyAction {
 
   @Column({ nullable: true })
   linkedFromId!: string;
-
-  @Column({ nullable: true })
-  linkedToId!: string;
 }
