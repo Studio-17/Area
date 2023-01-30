@@ -1,29 +1,53 @@
-import { theme } from '../constants/theme';
-import '../styles/ServicesInfos.css';
-import AreasCards from './Cards/AreasCards';
+import { Alert, CircularProgress, Snackbar } from "@mui/material";
+import { theme } from "../constants/theme";
+import { Service } from "../models/serviceModels";
+import { useActionsQuery } from "../services/servicesApi";
+import "../styles/ServicesInfos.css";
+import ActionsCards from "./Cards/ActionsCards";
 
 interface Props {
-  name: string;
+  service: Service;
   onClickOnAreasCards: any;
+  typeSelected: "action" | "reaction";
 }
 
-const areas = [{ action: 'Received Email' }, { action: 'New event on calendar' }];
+const ServicesInfos = ({
+  service,
+  onClickOnAreasCards,
+  typeSelected,
+}: Props) => {
+  const {
+    data: actions,
+    isError,
+    isLoading,
+    isFetching,
+  } = useActionsQuery(service.uuid);
 
-const ServicesInfos = ({ name, onClickOnAreasCards }: Props) => {
+  if (isLoading || isFetching) return <CircularProgress />;
 
   return (
     <div
       className="services-infos-main-container"
-      style={{ backgroundColor: theme.palette.background }}>
+      style={{ backgroundColor: theme.palette.background }}
+    >
       <div className="main-name" style={{ color: theme.palette.primary }}>
-        {name}
+        {service.name}
       </div>
       <div className="subtext">Choose one ...</div>
       <div className="list-of-cards-container">
-        {areas.map((element, index) => (
-          <AreasCards key={index} actionContent={element.action} onClick={onClickOnAreasCards} />
+        {actions?.map((element, index) => (
+          <ActionsCards
+            key={index}
+            actionContent={typeSelected === "action" ? element.description : undefined}
+            reactionContent={typeSelected === "reaction" ? element.description : undefined}
+            onClick={onClickOnAreasCards}
+            uuidOfAction={element.uuid}
+          />
         ))}
       </div>
+      <Snackbar open={isError}>
+        <Alert severity="error">Error while fetching services</Alert>
+      </Snackbar>
     </div>
   );
 };

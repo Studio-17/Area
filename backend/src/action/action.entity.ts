@@ -1,5 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
+export enum ActionType {
+  ACTION = 'action',
+  REACTION = 'reaction',
+}
+
 @Entity({ name: 'action' })
 export class Action {
   @PrimaryGeneratedColumn('uuid')
@@ -13,4 +18,7 @@ export class Action {
 
   @Column()
   description!: string;
+
+  @Column({ type: 'enum', enum: ActionType, default: ActionType.ACTION })
+  type!: ActionType;
 }

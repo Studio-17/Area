@@ -1,10 +1,16 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity({ name: 'area' })
-export class Area {
+@Entity({ name: 'myAction' })
+export class MyAction {
   @PrimaryGeneratedColumn('uuid')
   uuid!: string;
 
+  @Column()
+  areaId!: string;
+
+  @Column()
+  actionId!: string;
+
   @Column({ nullable: true })
-  name: string;
+  linkedFromId!: string;
 }

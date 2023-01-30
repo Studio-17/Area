@@ -1,0 +1,28 @@
+.area-main-container {
+    display: flex;
+    min-height: 77vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.area-page-if-container {
+    margin: 0px 1vw 0px 0px
+}
+
+.area-page-then-container {
+    margin: 0px 1vw 0px 0px;
+}
+
+.area-page-action-main-container {
+    font-size: 40px;
+    font-family: 'Titan One', cursive !important;
+    display: flex;
+}
+
+.area-page-reaction-main-container {
+    font-size: 40px;
+    font-family: 'Titan One', cursive !important;
+    display: flex;
+
+}

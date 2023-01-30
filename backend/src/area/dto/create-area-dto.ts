@@ -1,7 +1,15 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsArray, IsOptional } from 'class-validator';
 
 export class CreateAreaDto {
   @IsString()
+  @IsOptional()
+  name: string;
+
+  @IsString()
   @IsNotEmpty()
-  name!: string;
+  action!: string;
+
+  @IsArray()
+  @IsNotEmpty()
+  reactions!: string[];
 }

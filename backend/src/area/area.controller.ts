@@ -24,10 +24,7 @@ export class AreaController {
   }
 
   @Patch(':id')
-  async update(
-    @IsUuidParam('id') id: string,
-    @Body() updateAreaDto: UpdateAreaDto,
-  ) {
+  async update(@IsUuidParam('id') id: string, @Body() updateAreaDto: UpdateAreaDto) {
     return this.areaService.update(id, updateAreaDto);
   }
 
