@@ -8,12 +8,10 @@ import { View, StyleSheet, Text } from "react-native";
 import HomeScreen from "../screens/homeScreen";
 import ProfileScreen from "../screens/profileScreen";
 import NewAppletScreen from "../screens/newAppletScreen";
-import { useNavigation } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
 function MainContainer() {
-  const navigation = useNavigation();
 
   return (
     <Tab.Navigator
@@ -21,6 +19,9 @@ function MainContainer() {
       screenOptions={{
         tabBarActiveTintColor: "#A37C5B",
         headerTitleAlign: "left",
+        headerStyle: {
+          backgroundColor: "#FFF7FA",
+        },
         headerTitle: () => <CustomHeader />,
         headerRight: () => (
           <View
