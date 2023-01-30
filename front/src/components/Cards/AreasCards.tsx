@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardActionArea,
   CardActions,
@@ -20,10 +21,19 @@ interface Props {
 
 const AreasCards = ({ area, onClickOnCard, onClickDeleteArea }: Props) => {
   return (
-    <Card sx={{ width: 350, height: 250, borderRadius: 2 }}>
+    <Card
+      sx={{ width: 350, height: 250, borderRadius: 2, position: "relative" }}
+    >
+      <IconButton
+        style={{ position: "absolute", right: 0, bottom: 0 }}
+        onClick={() => onClickDeleteArea(area?.area.uuid)}
+        size="large"
+      >
+        <DeleteIcon fontSize="medium" />
+      </IconButton>
       <CardActionArea
-        sx={{ height: "100%" }}
-        onClick={() => onClickOnCard(area?.uuid)}
+        sx={{ height: "82%" }}
+        onClick={() => onClickOnCard(area?.area.uuid)}
       >
         <CardContent sx={{ padding: "30px" }}>
           <div className="card-text-first-bloc">
@@ -34,9 +44,7 @@ const AreasCards = ({ area, onClickOnCard, onClickDeleteArea }: Props) => {
               IF&nbsp;
             </div>
 
-            <div className="card-text-first-line">
-              {area?.action.description}
-            </div>
+            <div className="card-text-first-line">{area?.action.name}</div>
           </div>
           <div className="card-text-second-bloc">
             <div
@@ -46,15 +54,10 @@ const AreasCards = ({ area, onClickOnCard, onClickDeleteArea }: Props) => {
               THEN&nbsp;
             </div>
             <div className="card-text-second-line">
-              {area?.reactions[0].description}
+              {area?.reactions[0].name}
             </div>
           </div>
         </CardContent>
-        <CardActions>
-          <IconButton onClick={() => onClickDeleteArea(area?.uuid)}>
-            <DeleteIcon />
-          </IconButton>
-        </CardActions>
       </CardActionArea>
     </Card>
   );
