@@ -1,3 +1,7 @@
+<p align="center">
+  <a target="blank"><img src=".github/assets/area-logo.png" width=300 alt="Reaccoon Logo" /></a>
+</p>
+
 # :raccoon: Reaccoon :raccoon:
 
 Reaccoon is an [IFTTT](https://ifttt.com/)-like Epitech project.
@@ -66,7 +70,7 @@ https://github.com/EpitechPromo2025/B-DEV-500-PAR-5-2-area-martin.vanaud.git rea
 
 Go to the project directory.
 ```bash
-  cd reaccoon/
+cd reaccoon/
 ```
 
 Then, just before running the Reaccoon application, install all the necessary dependencies.
