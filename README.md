@@ -1,4 +1,4 @@
-# Reaccoon :raccoon:
+# :raccoon: Reaccoon :raccoon:
 
 Reaccoon is an [IFTTT](https://ifttt.com/)-like Epitech project.
 The goal of this project is to allow you to automatically execute some reactions according to defined actions.
@@ -9,7 +9,7 @@ For example :
 - IF I receive an email on my GMail address
 - THEN, I launch the ZeratoR stream on TwitchTV.
 
-## Environment Variables :gear:
+## :gear: Environment Variables :gear:
 
 To run this project, you firstly need to edit your configuration environment file.
 
@@ -53,7 +53,7 @@ REACT_NATIVE_PACKAGER_HOSTNAME=
 
 You just have to duplicate it as a `.env` file and to fill the empty values. **All of them are mandatory**.
 
-## Installation :hammer:
+## :hammer: Installation :hammer:
 
 To use Reaccoon, clone the repository.
 ```bash
@@ -83,7 +83,7 @@ Once this is done, execute the script with the following command.
 ./install.sh
 ```
 
-## Run Locally :whale:
+## :whale: Run Locally :whale:
 
 As the Reaccoon is using Docker, you can manage and run the containers easily.
 
@@ -116,14 +116,14 @@ docker-compose --profile frontend up
 
 And Voilà ! **Your app is running !** :tada:
 
-## Services :globe_with_meridians:
+## :globe_with_meridians: Services :globe_with_meridians:
 
 Here is the list of the services that are implemented into Reaccoon:
 
 - GMail
 - GitHub
 
-## Tech Stack :brain:
+## :brain: Tech Stack :brain:
 
 **API:** NestJS, TypeScript
 
@@ -133,11 +133,11 @@ Here is the list of the services that are implemented into Reaccoon:
 
 **Mobile Client:** ReactNative, TypeScript
 
-## Documentation :book:
+## :book: Documentation :book:
 
 Click on the following link to API endpoints documentation (the API must running) : [SwaggerUI documentation](http://localhost:8000/api/docs)
 
-## Authors :busts_in_silhouette:
+## :busts_in_silhouette: Authors :busts_in_silhouette:
 
 DevOps & Backend Team :
 - [@martinvanaud](https://www.github.com/martinvanaud)
