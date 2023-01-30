@@ -1,16 +1,17 @@
 import { Card, CardActionArea, CardContent } from '@mui/material';
+import { Service } from '../../models/serviceModels';
 import '../../styles/ServicesCards.css';
 
 interface Props {
-  name: string;
+  service: Service;
   logo: any;
-  setServiceSelected: React.Dispatch<React.SetStateAction<string>>;
+  setServiceSelected: React.Dispatch<React.SetStateAction<Service | null>>;
   onClose: () => void;
 }
 
-const ServicesCards = ({ name, logo, setServiceSelected, onClose }: Props) => {
+const ServicesCards = ({ service, logo, setServiceSelected, onClose }: Props) => {
   const onClickOnCards = () => {
-    setServiceSelected(name);
+    setServiceSelected(service);
     onClose();
   };
   return (
@@ -19,7 +20,7 @@ const ServicesCards = ({ name, logo, setServiceSelected, onClose }: Props) => {
         sx={{ height: '100%', position: 'relative' }}
         onClick={onClickOnCards}>
         <CardContent sx={{ width: '100%', height: '100%' }}>
-          <div className="card-text-name">{name}</div>
+          <div className="card-text-name">{service.name}</div>
           <div className="card-text-logo">{logo}</div>
         </CardContent>
       </CardActionArea>
