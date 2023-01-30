@@ -1,4 +1,5 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum } from 'class-validator';
+import { ActionType } from '../action.entity';
 
 export class CreateActionDto {
   @IsString()
@@ -8,4 +9,8 @@ export class CreateActionDto {
   @IsString()
   @IsNotEmpty()
   description!: string;
+
+  @IsEnum(ActionType)
+  @IsNotEmpty()
+  type!: ActionType;
 }
