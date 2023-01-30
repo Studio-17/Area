@@ -6,5 +6,5 @@ export class Area {
   uuid!: string;
 
   @Column()
-  name!: string;
+  name: string;
 }
