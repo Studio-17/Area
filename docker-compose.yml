@@ -1,0 +1,103 @@
+version: '3.9'
+
+x-typeorm: &typeorm-env
+  POSTGRES_HOST: ${POSTGRES_HOST}
+  POSTGRES_PORT: ${POSTGRES_PORT}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_DB: ${POSTGRES_DB}
+  JWT_SECRET: ${JWT_SECRET}
+
+volumes:
+  postgres_data: {}
+
+networks:
+  authentication-network:
+    name: authentication-network
+    driver: bridge
+    external: false
+
+#---------- SERVICES ----------#
+services:
+
+  web:
+    profiles:
+      - web
+      - all
+    container_name: web
+    build:
+      context: ./web
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./web:/app/web
+
+  mobile:
+    profiles:
+      - mobile
+      - all
+    container_name: mobile
+    build:
+      context: ./mobile
+      dockerfile: ./Dockerfile
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=${EXPO_DEVTOOLS_LISTEN_ADDRESS}
+      - REACT_NATIVE_PACKAGER_HOSTNAME=${REACT_NATIVE_PACKAGER_HOSTNAME}
+    tty: true
+    ports:
+      - '19000:19000'
+      - '19001:19001'
+      - '19002:19002'
+      - '19006:19006'
+    volumes:
+      - ./mobile/app:/app/mobile:delegated
+      - ./mobile/app/package.json:/app/mobile/package.json
+    healthcheck:
+      disable: true
+
+  backend:
+    profiles:
+      - backend
+      - mobile
+      - web
+      - all
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    networks:
+      - authentication-network
+    volumes:
+      - ./backend:/app/backend
+    depends_on:
+      - postgres-db
+    env_file:
+      - .env
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    environment:
+      <<: *typeorm-env
+    entrypoint: [ "npm", "run", "dev:watch", "start:dev", "--tsc" ]
+
+  postgres-db:
+    profiles:
+      - backend
+      - mobile
+      - web
+      - db
+      - all
+    image: postgres:14
+    container_name: ${POSTGRES_HOST}
+    environment:
+      <<: *typeorm-env
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    restart: on-failure
+    stdin_open: true
+    tty: true
+    networks:
+      - authentication-network
+    volumes:
+      - postgres_data:/var/lib/postgresql@14/data

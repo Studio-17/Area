@@ -1,7 +1,7 @@
 version: '3.9'
 
 networks:
-  reaccoon-network:
+  authentication-network:
     external: true
 
 services:

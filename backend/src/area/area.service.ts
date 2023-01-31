@@ -1,0 +1,85 @@
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Area } from './area.entity';
+import { CreateAreaDto } from './dto/create-area-dto';
+import { UpdateAreaDto } from './dto/update-area-dto';
+import { NotFoundException } from '../utils/exceptions/not-found.exception';
+import { MyActionService } from 'src/myAction/myAction.service';
+
+@Injectable()
+export class AreaService {
+  constructor(
+    @InjectRepository(Area)
+    private areaRepository: Repository<Area>,
+    @Inject(forwardRef(() => MyActionService))
+    private readonly myActionService: MyActionService,
+  ) {}
+
+  async create(createAreaDto: CreateAreaDto) {
+    const area: Area = this.areaRepository.create(createAreaDto);
+    const areaInData = await this.areaRepository.save(area);
+    const action = await this.myActionService.addAction(areaInData.uuid, {
+      areaId: areaInData.uuid,
+      actionId: createAreaDto.action,
+      linkedFromId: null,
+    });
+    for (const myAction of createAreaDto.reactions) {
+      await this.myActionService.addAction(areaInData.uuid, {
+        areaId: areaInData.uuid,
+        actionId: myAction,
+        linkedFromId: action.uuid,
+      });
+    }
+    return areaInData;
+  }
+
+  async findAll() {
+    const areas = await this.areaRepository.find();
+    const results = [];
+    for (const area of areas) {
+      const myAction = await this.myActionService.findAction(area.uuid);
+      if (!myAction) {
+        results.push({ area, action: null, reactions: null });
+        continue;
+      }
+      const myReactions = await this.myActionService.findReaction(area.uuid, myAction.myActionId);
+      results.push({ area, action: myAction, reactions: myReactions });
+    }
+    return results;
+  }
+
+  async findOne(areaId: string) {
+    const res = await this.areaRepository.findOneByOrFail({ uuid: areaId }).catch((e) => {
+      console.error(e);
+      throw NotFoundException('area');
+    });
+    if (!res) {
+      throw NotFoundException('area');
+    }
+    const myAction = await this.myActionService.findAction(areaId);
+    const myReactions = await this.myActionService.findReaction(areaId, myAction.myActionId);
+    return { res, action: myAction, reactions: myReactions };
+  }
+
+  async update(areaId: string, updateAreaDto: UpdateAreaDto) {
+    await this.areaRepository.update({ uuid: areaId }, updateAreaDto).catch((e) => {
+      console.error(e);
+      throw NotFoundException('area');
+    });
+    return this.findOne(areaId);
+  }
+
+  async remove(areaId: string) {
+    this.myActionService.removeByAreaId(areaId);
+    const result = await this.areaRepository.delete({ uuid: areaId }).catch((e) => {
+      console.error(e);
+      throw NotFoundException('area');
+    });
+    return result.affected + ' area has been successfully deleted';
+  }
+
+  async exist(areaId: string): Promise<boolean> {
+    return this.areaRepository.exist({ where: { uuid: areaId } });
+  }
+}

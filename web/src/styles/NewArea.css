@@ -1,0 +1,75 @@
+.new-area-main-container {
+    display: flex;
+    min-height: 77vh;
+    flex-direction: column;
+    font-family: 'Titan One', cursive !important;
+    padding: 0px 9vw;
+    position: relative;
+}
+
+.if-then-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6vh 0px 8vh
+}
+
+.if-text {
+    width: 34%;
+}
+
+.if-container {
+    border-radius: 5px;
+    width: 50%;
+    display: flex;
+    position: relative;
+    align-items: center;
+    height: 15vh;
+    font-size: 60px;
+}
+
+.then-container {
+    border-radius: 5px;
+    width: 50%;
+    display: flex;
+    position: relative;
+    align-items: center;
+    height: 15vh;
+    font-size: 60px;
+}
+
+.main-text {
+    padding: 3vh 0px;
+    font-size: 40px;
+    text-align: start;
+}
+
+.link {
+    width: 2%;
+    height: 6vh;
+}
+
+.add-icon {
+    position: absolute !important;
+    right: 20px;
+}
+
+.infos-container {
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    font-size: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.more-thens-button {
+    margin: 1.5vw;
+}
+
+.save-button-container {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+}

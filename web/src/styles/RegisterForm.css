@@ -1,0 +1,33 @@
+.form-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    background-color: white;
+    width: auto;
+    height: auto;
+    padding: 2vw;
+    flex-direction: column;
+}
+
+.form-buttons-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.main-title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Titan One', cursive !important;
+    font-size: 30px;
+    margin: 0px 0px 2vw 0px;
+}
+
+.submit-button {
+    border-radius: 100px !important;
+    padding: 14px 27px !important;
+    font-family: 'Titan One', cursive !important;
+    margin: 0px 0px 0px 1vw !important;
+}
