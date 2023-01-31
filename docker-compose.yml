@@ -31,7 +31,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./web:/app/web
+      - ./web:/home/node/app/web
 
   mobile:
     profiles:
@@ -52,8 +52,8 @@ services:
       - '19002:19002'
       - '19006:19006'
     volumes:
-      - ./mobile/app:/app/mobile:delegated
-      - ./mobile/app/package.json:/app/mobile/package.json
+      - ./mobile/app:/home/node/app/mobile:delegated
+      - ./mobile/app/package.json:/home/node/app/mobile/package.json
     healthcheck:
       disable: true
 
@@ -70,7 +70,7 @@ services:
     networks:
       - authentication-network
     volumes:
-      - ./backend:/app/backend
+      - ./backend/src:/home/node/app/backend/src
     depends_on:
       - postgres-db
     env_file:
@@ -79,7 +79,7 @@ services:
       - ${APP_PORT}:${APP_PORT}
     environment:
       <<: *typeorm-env
-    entrypoint: [ "npm", "run", "dev:watch", "start:dev", "--tsc" ]
+    entrypoint: [ "npm", "run", "start:dev", "--tsc" ]
 
   postgres-db:
     profiles:
