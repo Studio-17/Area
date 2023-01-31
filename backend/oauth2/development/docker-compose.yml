@@ -15,7 +15,7 @@ services:
       dockerfile: development/Dockerfile
       context: ../
     networks:
-      - reaccoon-network
+      - authentication-network
     volumes:
       - ../src:/home/node/reaccoon-oauth2/src
     env_file:

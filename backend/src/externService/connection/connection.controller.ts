@@ -30,7 +30,7 @@ export class ConnectionController {
 
   @Get('/google')
   public async redirectGoogle(@Res() response) {
-    console.log('redirectGoogle')
+    console.log("this is a redirectgoogle");
     return response.redirect('http://localhost:4000/api/reaccoon/oauth2/google');
   }
 
