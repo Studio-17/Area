@@ -8,10 +8,11 @@ import ListOfAreas from "./pages/ListOfAreas";
 import NewArea from "./pages/NewArea";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
-import Authentification from "./pages/Authentification";
 import { theme } from "./constants/theme";
 import "./App.css";
 import Area from "./pages/Area";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 
 const themeMUI = createTheme({
   palette: {
@@ -56,11 +57,18 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/authentification",
+    path: "/register",
     element: (
       <>
-        <HeaderApp />
-        <Authentification />
+        <Register />
+      </>
+    ),
+  },
+  {
+    path: "/login",
+    element: (
+      <>
+        <Login />
       </>
     ),
   },

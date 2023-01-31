@@ -1,24 +1,66 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Alert, Box, Button, Snackbar, TextField } from "@mui/material";
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import { theme } from "../../constants/theme";
+import { RegisterRequest } from "../../models/authModel";
+import { useRegisterMutation } from "../../services/servicesApi";
 import "../../styles/RegisterForm.css";
 
-interface Props {
-  setIsRegisterForm: any;
-}
+const RegisterForm = () => {
+  const navigate = useNavigate();
+  const [isSuccessfullRegister, setIsSuccessfullRegister] =
+    useState<boolean>(false);
+  const [isErrorRegister, setIsErrorRegister] = useState<boolean>(false);
+  const [register] = useRegisterMutation();
 
-const RegisterForm = ({ setIsRegisterForm }: Props) => {
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log(data.get("password"));
+  const registerNewUser = async (data: RegisterRequest) => {
+    try {
+      const result = await register(data).unwrap();
+      if (result.status === 200) {
+        setIsSuccessfullRegister(true);
+        alert("Votre compte a été créé avec succès !");
+        navigate("/login");
+      }
+    } catch (e) {
+      setIsErrorRegister(true);
+    }
+  };
+
+  const onSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const target = e.target as typeof e.target & {
+      firstname: { value: string };
+      lastname: { value: string };
+      email: { value: string };
+      password: { value: string };
+    };
+    const dataToSend: RegisterRequest = {
+      firstName: target.firstname.value,
+      lastName: target.lastname.value,
+      email: target.email.value,
+      password: target.password.value,
+    };
+    registerNewUser(dataToSend);
   };
   return (
     <div className="form-container">
+      <Snackbar
+        open={isSuccessfullRegister}
+        onClose={() => setIsSuccessfullRegister(false)}
+      >
+        <Alert severity="success">Votre compte a bien été crée !</Alert>
+      </Snackbar>
+      <Snackbar
+        open={isErrorRegister}
+        onClose={() => setIsErrorRegister(false)}
+      >
+        <Alert severity="error">Erreur lors de la création du compte ...</Alert>
+      </Snackbar>
       <div
         className="main-title-container"
         style={{ color: theme.palette.secondary }}
       >
-        Connect to your account
+        Create an account
       </div>
       <Box component="form" onSubmit={onSubmit}>
         <TextField
@@ -29,7 +71,6 @@ const RegisterForm = ({ setIsRegisterForm }: Props) => {
           label="Email Address"
           name="email"
           autoComplete="email"
-          autoFocus
         />
         <TextField
           margin="normal"
@@ -39,17 +80,32 @@ const RegisterForm = ({ setIsRegisterForm }: Props) => {
           label="Password"
           name="password"
           autoComplete="password"
-          autoFocus
+          type="password"
+        />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          id="firstname"
+          label="FirstName"
+          name="firstname"
+          autoComplete="firstname"
+        />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          id="lastname"
+          label="Lastname"
+          name="lastname"
+          autoComplete="lastname"
         />
         <div className="form-buttons-container">
-          <Button
-            className="underlined"
-            onClick={() => setIsRegisterForm(false)}
-          >
-            Don't have an account ?
+          <Button className="underlined" onClick={() => navigate("/login")}>
+            Already have an account ?
           </Button>
           <Button variant="contained" className="submit-button" type="submit">
-            Log In
+            Create account
           </Button>
         </div>
       </Box>

@@ -15,9 +15,9 @@ const Header = () => {
         <BigRoundedButtonOutlined
           label='Sign up'
           color='primary'
-          onClick={() => navigate('/authentification')}
+          onClick={() => navigate('/register')}
         />
-        <BigRoundedButton label={'Sign in'} color={'primary'} onClick={() => navigate('/authentification')} />
+        <BigRoundedButton label={'Sign in'} color={'primary'} onClick={() => navigate('/login')} />
       </div>
     </div>
   );
