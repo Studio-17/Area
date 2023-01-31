@@ -1,47 +1,63 @@
 import * as React from "react";
-import { SafeAreaView, StyleSheet, FlatList, StatusBar } from "react-native";
-import Applet from "../components/Applet";
+import { SafeAreaView, StyleSheet, FlatList, StatusBar, Text, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import AppletContentScreen from "../screens/AppletContentScreen";
+import AppletDetailsScreen from "./AppletDetailsScreen";
 import CustomHeader from "../navigation/CustomHeader";
 
 const DATA = [
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
     title: "First Item",
-    color: "red",
+    color: "grey",
   },
   {
     id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
     title: "Second Item",
-    color: "blue",
+    color: "grey",
   },
   {
     id: "58694a0f-3da1-471f-bd96-145571e29d72",
     title: "Third Item",
-    color: "green",
+    color: "grey",
   },
   {
     id: "58694a0f-3dze-471f-bd96-145571e29d72",
     title: "Fourth Item",
-    color: "yellow",
+    color: "grey",
+  },
+  {
+    id: "58434a0f-3dze-471f-bd96-145571e29d72",
+    title: "Fifth Item",
+    color: "grey",
   },
 ];
 
-interface HomeScreenProps {
-  navigation: any;
-  data: any;
-}
+function HomeScreen({ navigation } : { navigation: any }) {
 
-function HomeScreen({ navigation, data }: { navigation: any; data: any }) {
+  const data = DATA;
+
+  const Applet = ({ item } : { item: any }) => {
+    const onPressFunction = () => {
+      navigation.navigate("AppletDetailsScreen", { item: item });
+    };
+
+    var divStyle2 = { backgroundColor: item.color};
+
+    return (
+      <TouchableOpacity style={[styles.cardProperties, divStyle2 ]} onPress={onPressFunction}>
+        <Text style={styles.appletContainer}>
+          <Text style={styles.textProperties}>{item.title}</Text>
+        </Text>
+      </TouchableOpacity>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.cardContainer}>
       <CustomHeader />
       <FlatList
         data={data}
-        renderItem={({ item }) => (
-          <Applet navigation={navigation} item={item} />
-        )}
+        renderItem={Applet}
         keyExtractor={(item) => item.id}
       />
     </SafeAreaView>
@@ -51,22 +67,16 @@ function HomeScreen({ navigation, data }: { navigation: any; data: any }) {
 const Stack = createStackNavigator();
 
 export default function HomeStack() {
-  const data = DATA;
-
-  function NavigateToHomeScreen({ navigation }: any) {
-    return <HomeScreen navigation={navigation} data={data} />;
-  }
-
   return (
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen
         name="Home"
-        component={NavigateToHomeScreen}
+        component={HomeScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="AppletContentScreen"
-        component={AppletContentScreen}
+        name="AppletDetailsScreen"
+        component={AppletDetailsScreen}
         options={{
           headerShown: false,
         }}
@@ -80,5 +90,21 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
     backgroundColor: "#FFF7FA",
+  },
+  cardProperties: {
+    backgroundColor: '#f9c2ff',
+    padding: 20,
+    height: 200,
+    marginVertical: 10,
+    marginHorizontal: 20,
+    borderRadius: 15,
+  },
+  appletContainer: {
+    margin: 20,
+    fontSize: 23,
+    fontWeight: "bold",
+  },
+  textProperties: {
+    color: "#000002",
   },
 });
