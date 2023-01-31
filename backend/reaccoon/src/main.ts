@@ -11,7 +11,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix(configService.get('APP_ENDPOINT'));
 
   app.use(helmet());
 

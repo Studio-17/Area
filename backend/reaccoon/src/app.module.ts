@@ -5,6 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { CredentialsModule } from './credentials/credentials.module';
+import { ConnectionModule } from './service/connection/connection.module';
+import { GoogleModule } from './service/google/google.module';
 
 @Module({
   imports: [
@@ -27,6 +30,9 @@ import { AuthenticationModule } from './authentication/authentication.module';
     }),
     AuthenticationModule,
     UserModule,
+    CredentialsModule,
+    ConnectionModule,
+    GoogleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
