@@ -52,8 +52,7 @@ services:
       - '19002:19002'
       - '19006:19006'
     volumes:
-      - ./mobile/app:/home/node/app/mobile:delegated
-      - ./mobile/app/package.json:/home/node/app/mobile/package.json
+      - ./mobile:/home/node/app
     healthcheck:
       disable: true
 
@@ -70,7 +69,8 @@ services:
     networks:
       - authentication-network
     volumes:
-      - ./backend/src:/home/node/app/backend/src
+      - ./backend/src:/home/node/app/src
+      - /home/node/app/node_modules
     depends_on:
       - postgres-db
     env_file:

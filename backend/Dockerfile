@@ -1,11 +1,15 @@
-FROM node:16.10-alpine
+FROM node:19-alpine
 
 USER node
 RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 
 WORKDIR /home/node/app
+
+COPY --chown=node:node package*.json /home/node/app
+
+RUN npm ci
+
 COPY --chown=node:node . /home/node/app
-RUN npm install
 
 EXPOSE 3000
 
