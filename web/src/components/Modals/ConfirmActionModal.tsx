@@ -5,10 +5,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Fade,
-  Modal,
 } from "@mui/material";
-import { Box } from "@mui/system";
 
 interface Props {
   open: boolean;

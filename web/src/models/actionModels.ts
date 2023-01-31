@@ -1,5 +1,6 @@
 export type Action = {
     uuid: string;
     name: string;
-    description: string
+    description: string;
+    type: "action" | "reaction"
 }
