@@ -5,18 +5,20 @@ import {
   LoginRequest,
   RegisterRequest,
   RegisterResponse,
-  LoginResponse
+  LoginResponse,
 } from "../models/authModel";
 import { Service } from "../models/serviceModels";
 import { RootState } from "../store/store";
 
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPONT;
 
+console.log(API_ENDPOINT);
+
 export const servicesApi = createApi({
   reducerPath: "servicesApi",
   tagTypes: ["Service", "Action", "Area"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `${API_ENDPOINT}`,
+    baseUrl: 'http://localhost:8000',
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
       if (token) {
@@ -63,14 +65,14 @@ export const servicesApi = createApi({
     }),
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
-        url: "api/authentification/login",
+        url: "api/authentication/login",
         method: "POST",
         body: credentials,
       }),
     }),
     register: builder.mutation<RegisterResponse, RegisterRequest>({
       query: (credentials) => ({
-        url: "api/authentification/register",
+        url: "api/authentication/register",
         method: "POST",
         body: credentials,
       }),

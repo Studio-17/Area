@@ -1,5 +1,6 @@
 import { Alert, CircularProgress, Snackbar } from "@mui/material";
 import { theme } from "../constants/theme";
+import { Action } from "../models/actionModels";
 import { Service } from "../models/serviceModels";
 import { useActionsQuery } from "../services/servicesApi";
 import "../styles/ServicesInfos.css";
@@ -35,7 +36,7 @@ const ServicesInfos = ({
       </div>
       <div className="subtext">Choose one ...</div>
       <div className="list-of-cards-container">
-        {actions?.map((element, index) => (
+        {actions?.filter((action: Action) => action.type === typeSelected).map((element: Action, index: number) => (
           <ActionsCards
             key={index}
             actionContent={typeSelected === "action" ? element.description : undefined}
