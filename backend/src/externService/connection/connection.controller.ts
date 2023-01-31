@@ -40,9 +40,11 @@ export class ConnectionController {
     @Res() response,
     @Query() query: { accessToken: string; refreshToken: string; email: string; userId: string },
   ) {
+    console.log('query');
+    console.log(query);
     const data = await firstValueFrom(
       this.httpService
-        .post<any>(`http://localhost:3000/api/reaccoon/credentials`, {
+        .post<any>(`http://localhost:3000/api/reaccoon/credentials/`, {
           email: query.email,
           service: 'google',
           accessToken: query.accessToken,

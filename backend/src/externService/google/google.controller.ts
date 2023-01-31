@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Query, Req, Res, Body } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Query, Req, Res, Body, Post } from '@nestjs/common';
 import { GoogleService } from './google.service';
 
 @Controller('actions/google')
@@ -33,12 +33,13 @@ export class GoogleController {
     }
   }
 
-  @Get('/publish-doc')
+  @Post('/publish-doc')
   public async createGoogleDoc(
     @Req() request,
     @Res() response,
     @Body() body: { accessToken: string; filename: string },
   ) {
+    console.log('create a doc');
     try {
       const fileId = await this.googleService.createGoogleDocOnDrive(
         body.accessToken,

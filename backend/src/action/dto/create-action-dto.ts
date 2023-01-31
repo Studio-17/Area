@@ -10,6 +10,10 @@ export class CreateActionDto {
   @IsNotEmpty()
   description!: string;
 
+  @IsString()
+  @IsNotEmpty()
+  link!: string;
+
   @IsEnum(ActionType)
   @IsNotEmpty()
   type!: ActionType;

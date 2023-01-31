@@ -43,6 +43,8 @@ export class CredentialsController {
     @Body() credentialsDto: CreateCredentialsDto,
   ): Promise<any> {
     try {
+      console.log('credentialsDto');
+      console.log(credentialsDto);
       const credentials = await this.credentialsService.createCredentialsUser(credentialsDto);
 
       return res.status(HttpStatus.OK).json({

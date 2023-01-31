@@ -19,6 +19,9 @@ export class Action {
   @Column()
   description!: string;
 
+  @Column()
+  link!: string;
+
   @Column({ type: 'enum', enum: ActionType, default: ActionType.ACTION })
   type!: ActionType;
 }

@@ -2,15 +2,58 @@ import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestj
 import { GmailRecord } from './entity/gmail/gmail.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { GmailRecordDto } from './dto/gmail/gmail.dto';
+import { Cron } from '@nestjs/schedule';
+import { CredentialsService } from 'src/credentials/credentials.service';
+import { ActionService } from 'src/action/action.service';
+import { MyActionService } from 'src/myAction/myAction.service';
+import { HttpService } from '@nestjs/axios';
+import { catchError, firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class GoogleService {
   constructor(
     @InjectRepository(GmailRecord)
     private readonly gmailRecordRepository: Repository<GmailRecord>,
+    private readonly credentialsService: CredentialsService,
+    private readonly actionService: ActionService,
+    private readonly myActionService: MyActionService,
+    private readonly httpService: HttpService,
   ) {}
+
+  @Cron('10 * * * * *')
+  async handleCron() {
+    const credentials = await this.credentialsService.findByService('google');
+
+    for (const credential of credentials) {
+      const mail = await this.updateLastEmailReceived(credential.accessToken, credential.email);
+      if (mail.new) {
+        const action = await this.actionService.findByLink('google/check-mail/');
+        const relatedActions = await this.myActionService.findByActionId(action.uuid);
+
+        for (const relatedAction of relatedActions) {
+          const linkedReaction = await this.myActionService.findByLinkedFromId(relatedAction.uuid);
+
+          for (const linked of linkedReaction) {
+            const reaction = await this.actionService.findOne(linked.actionId);
+            await firstValueFrom(
+              this.httpService
+                .post<any>('http://localhost:3000/api/reaccoon/actions/' + reaction.link, {
+                  accessToken: credential.accessToken,
+                  filename: mail.mail.lastEmailId,
+                })
+                .pipe(
+                  catchError((error: AxiosError) => {
+                    throw new HttpException(error, HttpStatus.BAD_REQUEST);
+                  }),
+                ),
+            );
+          }
+        }
+      }
+    }
+  }
 
   public async findByEmail(email: string): Promise<GmailRecord> {
     try {
@@ -28,42 +71,40 @@ export class GoogleService {
     }
   }
 
-  public async findOrUpdateLastEmailReceived(gmailRecord: GmailRecordDto): Promise<GmailRecordDto> {
+  public async findOrUpdateLastEmailReceived(gmailRecord: GmailRecordDto) {
     const record = await this.findByEmail(gmailRecord.email);
 
     if (!record) {
       try {
-        return await this.gmailRecordRepository.save(gmailRecord);
+        return { new: true, mail: await this.gmailRecordRepository.save(gmailRecord) };
       } catch (err) {
         throw new HttpException(err, HttpStatus.BAD_REQUEST);
       }
     } else {
-      try {
-        console.log('preparing to update database with new record');
-        const record = await this.gmailRecordRepository.update(
-          {
-            lastEmailId: gmailRecord.lastEmailId,
-          },
-          { ...gmailRecord },
-        );
+      if (record.lastEmailId !== gmailRecord.lastEmailId) {
+        try {
+          const newrecord = await this.gmailRecordRepository.update(
+            {
+              lastEmailId: record.lastEmailId,
+            },
+            { ...gmailRecord },
+          );
 
-        console.log('record updated:', record);
+          if (!newrecord) {
+            throw new NotFoundException(`Record does not exist`);
+          }
 
-        if (!record) {
-          throw new NotFoundException(`Record does not exist`);
+          return { new: true, mail: await this.findByEmail(gmailRecord.email) };
+        } catch (err) {
+          throw new HttpException(err, HttpStatus.BAD_REQUEST);
         }
-
-        return this.findByEmail(gmailRecord.email);
-      } catch (err) {
-        throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      } else {
+        return { new: false, mail: record };
       }
     }
   }
 
-  public async updateLastEmailReceived(
-    accessToken: string,
-    email: string,
-  ): Promise<GmailRecordDto> {
+  public async updateLastEmailReceived(accessToken: string, email: string) {
     const config = {
       method: 'get',
       url: `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=1`,
