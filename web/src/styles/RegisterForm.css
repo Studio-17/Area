@@ -14,6 +14,7 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    margin: 1vw 0px 0px 0px;
 }
 
 .main-title-container {
@@ -30,4 +31,27 @@
     padding: 14px 27px !important;
     font-family: 'Titan One', cursive !important;
     margin: 0px 0px 0px 1vw !important;
+}
+
+.google-main-container {
+    width: 440px;
+    margin: 2vw;
+    background-color: white;
+    padding: 1.5vw;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.css-abwora-MuiButtonBase-root-MuiButton-root {
+    font-family: 'Titan One', cursive !important;
+    padding: 8px 15px !important;
+    margin: 0.5vw 0px 0px 0px !important;
+}
+
+.or-text-container {
+    font-family: 'Titan One', cursive !important;
+    font-size: 30px;
+
 }

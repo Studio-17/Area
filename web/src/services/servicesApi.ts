@@ -10,15 +10,13 @@ import {
 import { Service } from "../models/serviceModels";
 import { RootState } from "../store/store";
 
-const API_ENDPOINT = process.env.REACT_APP_API_ENDPONT;
-
-console.log(API_ENDPOINT);
+const API_ENDPOINT = process.env.REACT_APP_API_URL;
 
 export const servicesApi = createApi({
   reducerPath: "servicesApi",
   tagTypes: ["Service", "Action", "Area"],
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8000',
+    baseUrl: `${API_ENDPOINT}`,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
       if (token) {

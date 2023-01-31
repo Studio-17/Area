@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Text, StyleSheet, View } from "react-native";
 
-function CustomHeader() {
+function MainHeader() {
   return (
     <View style={styles.headerContainer}>
       <Text style={styles.title}>
@@ -41,4 +41,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomHeader;
+export default MainHeader;

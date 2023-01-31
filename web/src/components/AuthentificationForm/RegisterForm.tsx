@@ -1,6 +1,7 @@
 import { Alert, Box, Button, Snackbar, TextField } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 import { theme } from "../../constants/theme";
 import { RegisterRequest } from "../../models/authModel";
 import { useRegisterMutation } from "../../services/servicesApi";
@@ -18,11 +19,12 @@ const RegisterForm = () => {
       const result = await register(data).unwrap();
       if (result.status === 200) {
         setIsSuccessfullRegister(true);
-        alert("Votre compte a été créé avec succès !");
+        toast.success("Votre compte a bien été crée !");
         navigate("/login");
       }
     } catch (e) {
       setIsErrorRegister(true);
+      toast.error("Erreur lors la création de votre compte ...")
     }
   };
 
