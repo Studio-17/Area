@@ -29,7 +29,7 @@ export default function AppletDetailsScreen({
             size={50}
           />
         </TouchableOpacity>
-        <Text style={styles.textStyle}>{item.title}</Text>
+        <Text style={styles.textStyle}>{item.name}</Text>
       </View>
     </SafeAreaView>
   );

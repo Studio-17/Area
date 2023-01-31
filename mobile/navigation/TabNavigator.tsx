@@ -1,19 +1,27 @@
 import * as React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { View } from "react-native";
 
 // Screens
 import HomeStack from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
-import NewAppletScreen from "../screens/NewAppletScreen";
 
 const Tab = createBottomTabNavigator();
 
-export default function MainContainer() {
+export default function TabNavigator() {
+
+  function BlankNewPlaceholder() {
+    return (
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}></View>
+    );
+  };
+
   return (
     <Tab.Navigator
       initialRouteName="HomeScreen"
       screenOptions={{
+        headerShown: false,
         tabBarActiveTintColor: "#A37C5B",
         tabBarLabelStyle: {
           fontSize: 13,
@@ -32,7 +40,6 @@ export default function MainContainer() {
         name="HomeScreen"
         component={HomeStack}
         options={{
-          headerShown: false,
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
@@ -40,10 +47,9 @@ export default function MainContainer() {
         }}
       />
       <Tab.Screen
-        name="NewAppletScreen"
-        component={NewAppletScreen}
+        name="New"
+        component={BlankNewPlaceholder}
         options={{
-          headerShown: false,
           tabBarLabel: "New",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
@@ -53,12 +59,17 @@ export default function MainContainer() {
             />
           ),
         }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            navigation.navigate("newapplet");
+          },
+        })}
       />
       <Tab.Screen
         name="ProfileScreen"
         component={ProfileScreen}
         options={{
-          headerShown: false,
           tabBarLabel: "Profile",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={size} />
