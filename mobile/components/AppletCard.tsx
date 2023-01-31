@@ -6,17 +6,15 @@ interface AppletProps {
     item: any;
 }
 
-export default function Applet ({ navigation, item }: AppletProps) {
+export default function AppletCard ({ navigation, item }: AppletProps) {
     const onPressFunction = () => {
       navigation.navigate("AppletDetailsScreen", { item: item });
     };
 
-    var divStyle2 = { backgroundColor: item.color};
-
     return (
-      <Pressable style={[styles.cardProperties, divStyle2 ]} onPress={onPressFunction}>
+      <Pressable style={styles.cardProperties} onPress={onPressFunction}>
         <Text style={styles.appletContainer}>
-          <Text style={styles.textProperties}>{item.title}</Text>
+          <Text style={styles.textProperties}>{item.name}</Text>
         </Text>
       </Pressable>
     );
