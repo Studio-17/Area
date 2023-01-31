@@ -63,6 +63,14 @@ export class MyActionService {
     return actions;
   }
 
+  async findByActionId(actionId: string) {
+    return await this.myActionRepository.findBy({ actionId: actionId });
+  }
+
+  async findByLinkedFromId(actionId: string) {
+    return await this.myActionRepository.findBy({ linkedFromId: actionId });
+  }
+
   async addAction(areaId: string, action: CreateMyActionDto) {
     const actionIsPresent: boolean = await this.actionService.exist(action.actionId);
     if (!actionIsPresent) {

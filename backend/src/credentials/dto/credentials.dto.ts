@@ -1,5 +1,4 @@
-import { IsEmail, isNotEmpty, IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
-import { PrimaryGeneratedColumn } from 'typeorm';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class CredentialsDto {
   @IsEmail()
