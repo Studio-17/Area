@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AppletDetailsScreen from "./AppletDetailsScreen";
-import CustomHeader from "../components/CustomHeader";
+import MainHeader from "../components/MainHeader";
 import Applet from "../components/AppletCard";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -27,7 +27,7 @@ function HomeScreen({ navigation }: { navigation: any }) {
 
   return (
     <SafeAreaView style={styles.cardContainer}>
-      <CustomHeader />
+      <MainHeader />
       <FlatList
         data={data}
         renderItem={({ item }) => (
