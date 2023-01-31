@@ -27,7 +27,7 @@ export class GoogleController {
     console.log(request.user);
 
     return response.redirect(
-      `http://localhost:3000/api/reaccoon/service/connect/google/success?accessToken=${request.user.accessToken}&refreshToken=${request.user.refreshToken}`,
+      `http://localhost:3000/api/reaccoon/service/connect/google/success?accessToken=${request.user.accessToken}&refreshToken=${request.user.refreshToken}&email=${request.user.email}&userId=${request.user.userId}`,
     );
   }
 }
