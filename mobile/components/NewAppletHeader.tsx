@@ -8,19 +8,11 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-export default function AppletDetailsScreen({
-  route,
-  navigation,
-}: {
-  route: any;
-  navigation: any;
-}) {
-  const { item } = route.params;
+export default function NewAppletHeader({navigation,}: { navigation: any }) {
   return (
     <SafeAreaView style={styles.cardContainer}>
       <View style={styles.headerContainer}>
         <TouchableOpacity
-          style={styles.backIcon}
           onPress={() => navigation.goBack()}
         >
           <MaterialCommunityIcons
@@ -29,7 +21,7 @@ export default function AppletDetailsScreen({
             size={50}
           />
         </TouchableOpacity>
-        <Text style={styles.textStyle}>NewAppletHeader{item.name}</Text>
+        <Text style={styles.textStyle}>New Applet</Text>
       </View>
     </SafeAreaView>
   );
@@ -37,25 +29,16 @@ export default function AppletDetailsScreen({
 
 const styles = StyleSheet.create({
   cardContainer: {
-    display: "flex",
-    flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
-    backgroundColor: "#FFF7FA",
+    // marginTop: StatusBar.currentHeight || 0,
   },
   headerContainer: {
     display: "flex",
     alignItems: "center",
     flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  backIcon: {
-    marginLeft: 20,
-    marginTop: 10,
   },
   textStyle: {
-    fontSize: 35,
+    fontSize: 25,
     fontWeight: "bold",
     color: "#A37C5B",
-    margin: 10,
   },
 });
