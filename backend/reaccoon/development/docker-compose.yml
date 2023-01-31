@@ -9,15 +9,15 @@ x-typeorm: &typeorm-env
   JWT_SECRET: ${JWT_SECRET}
 
 volumes:
-  postgres_data: {}
+  reaccoon_postgres_data: {}
 
 networks:
-  authenticathor-network:
+  reaccoon-network:
     external: false
 
 services:
 
-  postgres-db:
+  reaccoon-postgres-db:
     image: postgres:14
     container_name: ${POSTGRES_HOST}
     environment:
@@ -28,24 +28,24 @@ services:
     stdin_open: true
     tty: true
     networks:
-      - authenticathor-network
+      - reaccoon-network
     volumes:
-      - postgres_data:/var/lib/postgresql@14/data
+      - reaccoon_postgres_data:/var/lib/postgresql@14/data
 
-  app:
+  reaccoon:
     profiles:
-      - app
+      - reaccoon
       - all
-    container_name: app
+    container_name: reaccoon
     build:
       dockerfile: development/Dockerfile
       context: ../
     networks:
-      - authenticathor-network
+      - reaccoon-network
     volumes:
-      - ../src:/home/node/app/src
+      - ../src:/home/node/reaccoon/src
     depends_on:
-      - postgres-db
+      - reaccoon-postgres-db
     env_file:
       - .env
     ports:
