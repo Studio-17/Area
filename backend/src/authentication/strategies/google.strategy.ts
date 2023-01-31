@@ -9,7 +9,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     super({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: `http://${process.env.APP_HOST}:${process.env.APP_PORT}/api/authentication/google/redirect`,
+      callbackURL: `http://${process.env.APP_HOST}:${process.env.APP_PORT}/api/reaccoon/authentication/google/redirect`,
       scope: ['email', 'profile'],
     });
   }
@@ -20,6 +20,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       throw new UnauthorizedException();
     }
 
-    return { user, tokens: { accessToken, refreshToken } };
+    return user;
   }
 }

@@ -41,8 +41,6 @@ export class AuthenticationController {
   @Get('/google/redirect')
   @UseGuards(GoogleAuthenticationGuard)
   public async redirectGoogle(@Req() request) {
-    console.log('oauth2 tokens:', request.user.tokens);
-
     return await this.authenticationService.oauth(request.user.email);
   }
 

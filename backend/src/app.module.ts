@@ -5,6 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { CredentialsModule } from './credentials/credentials.module';
+import { ConnectionModule } from './externService/connection/connection.module';
+import { GoogleModule } from './externService/google/google.module';
 import { AreaModule } from './area/area.module';
 import { ServiceModule } from './service/service.module';
 import { ActionModule } from './action/action.module';
@@ -31,6 +34,9 @@ import { MyActionModule } from './myAction/myAction.module';
     }),
     AuthenticationModule,
     UserModule,
+    CredentialsModule,
+    ConnectionModule,
+    GoogleModule,
     AreaModule,
     ServiceModule,
     ActionModule,

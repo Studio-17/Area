@@ -1,0 +1,25 @@
+version: '3.9'
+
+networks:
+  authentication-network:
+    external: true
+
+services:
+
+  reaccoon-oauth2:
+    profiles:
+      - reaccoon-oauth2
+      - all
+    container_name: reaccoon-oauth2
+    build:
+      dockerfile: development/Dockerfile
+      context: ../
+    networks:
+      - reaccoon-network
+    volumes:
+      - ../src:/home/node/reaccoon-oauth2/src
+    env_file:
+      - .env
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    entrypoint: [ "npm", "run", "start:dev", "--tsc" ]

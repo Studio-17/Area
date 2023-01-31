@@ -15,10 +15,8 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Welcome on Reaccoon Service !"', () => {
-      expect(appController.healthCheck()).toBe(
-        'Welcome on Reaccoon Service !</br>' + new Date().toISOString(),
-      );
+    it('should return "Hello World!"', () => {
+      expect(appController.getHello()).toBe('Hello World!');
     });
   });
 });

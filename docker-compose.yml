@@ -13,6 +13,8 @@ volumes:
 
 networks:
   authentication-network:
+    name: authentication-network
+    driver: bridge
     external: false
 
 #---------- SERVICES ----------#
@@ -77,7 +79,7 @@ services:
       - ${APP_PORT}:${APP_PORT}
     environment:
       <<: *typeorm-env
-    entrypoint: [ "npm", "run", "start:dev", "--tsc" ]
+    entrypoint: [ "npm", "run", "dev:watch", "start:dev", "--tsc" ]
 
   postgres-db:
     profiles:
