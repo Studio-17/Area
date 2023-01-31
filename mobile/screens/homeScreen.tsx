@@ -1,8 +1,9 @@
 import * as React from "react";
-import { SafeAreaView, StyleSheet, FlatList, StatusBar, Text, TouchableOpacity } from "react-native";
+import { SafeAreaView, StyleSheet, FlatList, StatusBar, Text, Pressable } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AppletDetailsScreen from "./AppletDetailsScreen";
 import CustomHeader from "../navigation/CustomHeader";
+import Applet from "../components/Applet";
 
 const DATA = [
   {
@@ -36,28 +37,12 @@ function HomeScreen({ navigation } : { navigation: any }) {
 
   const data = DATA;
 
-  const Applet = ({ item } : { item: any }) => {
-    const onPressFunction = () => {
-      navigation.navigate("AppletDetailsScreen", { item: item });
-    };
-
-    var divStyle2 = { backgroundColor: item.color};
-
-    return (
-      <TouchableOpacity style={[styles.cardProperties, divStyle2 ]} onPress={onPressFunction}>
-        <Text style={styles.appletContainer}>
-          <Text style={styles.textProperties}>{item.title}</Text>
-        </Text>
-      </TouchableOpacity>
-    );
-  }
-
   return (
     <SafeAreaView style={styles.cardContainer}>
       <CustomHeader />
       <FlatList
         data={data}
-        renderItem={Applet}
+        renderItem={({ item }) => <Applet navigation={navigation} item={item} />}
         keyExtractor={(item) => item.id}
       />
     </SafeAreaView>
@@ -90,21 +75,5 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
     backgroundColor: "#FFF7FA",
-  },
-  cardProperties: {
-    backgroundColor: '#f9c2ff',
-    padding: 20,
-    height: 200,
-    marginVertical: 10,
-    marginHorizontal: 20,
-    borderRadius: 15,
-  },
-  appletContainer: {
-    margin: 20,
-    fontSize: 23,
-    fontWeight: "bold",
-  },
-  textProperties: {
-    color: "#000002",
   },
 });
