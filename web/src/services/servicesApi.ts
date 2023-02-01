@@ -75,6 +75,10 @@ export const servicesApi = createApi({
         body: credentials,
       }),
     }),
+    logGoogle: builder.query<any, void>({
+      query: () => "/service/connect/google",
+      providesTags: ["Area"],
+    }),
   }),
 });
 
@@ -87,4 +91,5 @@ export const {
   useAreaQuery,
   useLoginMutation,
   useRegisterMutation,
+  useLogGoogleQuery,
 } = servicesApi;
