@@ -7,8 +7,7 @@ import {
 } from "react-native"
 
 import NewAppletHeader from "../components/Header/NewAppletHeader";
-import ActionCard from "../components/Card/ActionCard";
-import AllServicesModal from "../components/Modal/AllServicesModal";
+import AddAreaCard from "../components/Card/AddAreaCard";
 
 const DataServices = [
   {
@@ -33,21 +32,25 @@ export default function NewAppletScreen({ navigation }: { navigation: any }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <SafeAreaView style={styles.applet}>
+    <SafeAreaView style={styles.screenContainer}>
       <NewAppletHeader navigation={navigation} />
-      <View style={{ marginTop: 20 }}>
-        <ActionCard textValue="IF" color="#A37C5B" handleFunction={() => setModalVisible(true)} />
-        <ActionCard textValue="Then" color="#0165F5" handleFunction={() => alert('this is a reaction!')} />
-        <AllServicesModal name="service" modalVisible={modalVisible} setModalVisible={setModalVisible} data={DataServices} />
+      <View style={styles.contentContainer}>
+        <AddAreaCard textValue="If" color="#A37C5B" navigation={navigation} modalVisible={modalVisible} setModalVisible={setModalVisible} />
+        <AddAreaCard textValue="Then" color="#0165F5" navigation={navigation} modalVisible={modalVisible} setModalVisible={setModalVisible} />
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  applet: {
+  screenContainer: {
     marginTop: StatusBar.currentHeight || 0,
     backgroundColor: "#FFF7FA",
+  },
+  contentContainer: {
+    marginTop: 20,
+    paddingVertical: 13,
+    paddingHorizontal: 40
   },
   textStyle: {
     color: "black",

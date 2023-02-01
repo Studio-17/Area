@@ -5,17 +5,24 @@ import {
   Pressable,
   View,
 } from "react-native";
-
+import AppletServicesScreen from "../../screens/AppletServicesScreen";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+interface Props {
+  textValue: string;
+  color: string;
+  navigation: any;
+  modalVisible: boolean;
+  setModalVisible: any;
+}
 
-export default function ActionCard({ textValue, color, handleFunction }: any) {
+export default function AddAreaCard({ textValue, color, navigation, modalVisible, setModalVisible }: Props) {
   return (
-    <View style={{ paddingVertical: 13, paddingHorizontal: 40 }}>
       <View style={[styles.cardProperties, {backgroundColor: color}]}>
         <Text style={styles.cardTitle}>{textValue}</Text>
+        <AppletServicesScreen navigation={navigation} modalVisible={modalVisible} setModalVisible={setModalVisible} />
         <Pressable
-          onPress={handleFunction}
+          onPress={() => setModalVisible(true)}
           style={styles.cardButton}
         >
           <MaterialCommunityIcons
@@ -25,7 +32,6 @@ export default function ActionCard({ textValue, color, handleFunction }: any) {
           />
         </Pressable>
       </View>
-    </View>
   );
 }
 
@@ -37,6 +43,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginBottom: 30,
   },
   cardTitle: {
     margin: "auto",
