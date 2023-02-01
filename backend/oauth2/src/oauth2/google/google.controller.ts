@@ -24,10 +24,8 @@ export class GoogleController {
   public async redirectGoogle(@Res() response, @Req() request) {
     console.log('controller - /oauth2/google/redirect');
 
-    console.log(request.user);
-
     return response.redirect(
-      `http://localhost:3000/api/reaccoon/service/connect/google/success?accessToken=${request.user.accessToken}&refreshToken=${request.user.refreshToken}&email=${request.user.email}&userId=${request.user.userId}`,
+      `http://localhost:3000/api/reaccoon/service/connect/google/success?accessToken=${request.user.accessToken}&refreshToken=${request.user.refreshToken}&email=${request.user.profile._json.email}&userId=${request.user.profile.userId}`,
     );
   }
 }

@@ -35,9 +35,7 @@ export class ConnectionController {
     @Res() response,
     @Query() query: { accessToken: string; refreshToken: string; email: string; userId: string },
   ) {
-    console.log('query');
-    console.log(query);
-    const data = await firstValueFrom(
+    await firstValueFrom(
       this.httpService
         .post<any>(`http://localhost:3000/api/reaccoon/credentials/`, {
           email: query.email,
@@ -47,8 +45,8 @@ export class ConnectionController {
         })
         .pipe(
           catchError((error: AxiosError) => {
-            return response.status(HttpStatus.OK).json({
-              message: 'Invalid user id credentials queried',
+            return response.status(HttpStatus.BAD_REQUEST).json({
+              message: 'invalid argument',
               status: 400,
             });
           }),
