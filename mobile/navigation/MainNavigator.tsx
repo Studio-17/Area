@@ -10,7 +10,7 @@ export default function MainNavigator() {
     <Stack.Navigator
       screenOptions={{
           headerShown: false,
-        }}
+      }}
     >
       <Stack.Group>
       <Stack.Screen name="main" component={TabNavigator} />
