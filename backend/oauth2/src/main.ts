@@ -15,6 +15,12 @@ async function bootstrap() {
 
   app.use(helmet());
 
+  app.enableCors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type, Accept',
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
