@@ -1,6 +1,8 @@
-import { Controller, Get, HttpStatus, Query, Req, Res, Body, Post } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Query, Req, Res, Body, Post, UseGuards } from "@nestjs/common";
 import { GoogleService } from './google.service';
+import { JwtAuthenticationGuard } from "../../authentication/guards/jwt-authentication.guard";
 
+@UseGuards(JwtAuthenticationGuard)
 @Controller('actions/google')
 export class GoogleController {
   constructor(private readonly googleService: GoogleService) {}

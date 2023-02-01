@@ -16,11 +16,11 @@ export const servicesApi = createApi({
   reducerPath: "servicesApi",
   tagTypes: ["Service", "Action", "Area"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `${API_ENDPOINT}/api/reaccoon`,
+    baseUrl: `${API_ENDPOINT}`,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
       if (token) {
-        headers.set("authentification", `Bearer ${token}`);
+        headers.set("Authorization", `Bearer ${token}`);
       }
       return headers;
     },
