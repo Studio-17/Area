@@ -7,8 +7,8 @@ import {
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AppletDetailsScreen from "./AppletDetailsScreen";
-import MainHeader from "../components/MainHeader";
-import Applet from "../components/AppletCard";
+import MainHeader from "../components/Header/MainHeader";
+import Applet from "../components/Card/AppletCard";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
