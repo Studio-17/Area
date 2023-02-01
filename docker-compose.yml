@@ -29,9 +29,12 @@ services:
       context: ./web
       dockerfile: ./Dockerfile
     ports:
-      - "3000:3000"
+      - ${WEB_PORT}:${WEB_PORT}
     volumes:
-      - ./web:/home/node/app/web
+      - ./web:/home/node/app
+    depends_on:
+      - backend
+    entrypoint: [ "npm", "start" ]
 
   mobile:
     profiles:
@@ -52,10 +55,12 @@ services:
       - '19002:19002'
       - '19006:19006'
     volumes:
-      - ./mobile/app:/home/node/app/mobile:delegated
-      - ./mobile/app/package.json:/home/node/app/mobile/package.json
+      - ./mobile:/home/node/app
+    depends_on:
+      - backend
     healthcheck:
       disable: true
+    entrypoint: [ "npm", "run", "web" ]
 
   backend:
     profiles:
@@ -70,24 +75,18 @@ services:
     networks:
       - authentication-network
     volumes:
-      - ./backend/src:/home/node/app/backend/src
+      - ./backend:/home/node/app
     depends_on:
       - postgres-db
     env_file:
       - .env
     ports:
-      - ${APP_PORT}:${APP_PORT}
+      - ${API_PORT}:${API_PORT}
     environment:
       <<: *typeorm-env
     entrypoint: [ "npm", "run", "start:dev", "--tsc" ]
 
   postgres-db:
-    profiles:
-      - backend
-      - mobile
-      - web
-      - db
-      - all
     image: postgres:14
     container_name: ${POSTGRES_HOST}
     environment:

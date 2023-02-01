@@ -12,7 +12,11 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  app.setGlobalPrefix(configService.get('APP_ENDPOINT'));
+  const port = +configService.get<number>('API_PORT');
+  const host = configService.get('APP_HOST');
+  const suffix = configService.get('APP_ENDPOINT');
+
+  app.setGlobalPrefix(suffix);
 
   app.use(helmet());
 
@@ -24,7 +28,7 @@ async function bootstrap() {
     .setVersion('0.1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('/api/docs', app, document);
+  SwaggerModule.setup(`${suffix}/docs`, app, document);
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -33,12 +37,10 @@ async function bootstrap() {
     }),
   );
 
-  const port = +configService.get<number>('APP_PORT');
-  const host = configService.get('APP_HOST');
-  console.log(`Reaccoon API documentation available at http://${host}:${port}/api/docs/`)
   await app.listen(port, () => {
-    console.log(`Listening at http://${host}:${port}`);
+    console.log(`Listening at http://${host}:${port}${suffix}`);
   });
+  await console.log(`Reaccoon API documentation available at http://${host}:${port}${suffix}/docs`);
 }
 
 bootstrap().then(() => console.log('Reaccoon API started !'));
