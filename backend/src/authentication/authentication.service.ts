@@ -6,6 +6,9 @@ import * as bcrypt from 'bcryptjs';
 import { JwtInterface } from './interfaces/jwt.interfaces';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserRegisterDto } from './dto/user-register.dto';
+import { OAuth2Client } from 'google-auth-library';
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET);
 
 @Injectable()
 export class AuthenticationService {
@@ -90,6 +93,50 @@ export class AuthenticationService {
 
   public async oauth(email: string): Promise<any | { status: number; message: string }> {
     return this.validate(email)
+      .then((userData) => {
+        if (!userData) {
+          throw new UnauthorizedException();
+        }
+
+        const payload = {
+          id: userData.uuid,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          email: userData.email,
+        };
+
+        const accessToken = this.jwtService.sign(payload);
+
+        return {
+          expiresIn: 3600,
+          accessToken: accessToken,
+          user: payload,
+          status: 200,
+        };
+      })
+      .catch((err) => {
+        throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      });
+  }
+
+  public async googleConnect(token: string) {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const isExistingUser = await this.usersService.exist(payload.email);
+    if (!isExistingUser) {
+      await this.usersService.create({
+        email: payload.email,
+        firstName: payload.given_name,
+        lastName: payload.family_name,
+        password: '',
+      });
+      console.log('user created');
+    }
+    console.log('going to login');
+    return this.validate(payload.email)
       .then((userData) => {
         if (!userData) {
           throw new UnauthorizedException();
