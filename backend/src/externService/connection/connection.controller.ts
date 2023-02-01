@@ -18,6 +18,7 @@ import { ConnectionService } from './connection.service';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
+import { gamesConfiguration_v1configuration, google } from 'googleapis';
 
 @ApiTags('/service/connect')
 // @UseGuards(JwtAuthenticationGuard)
@@ -30,7 +31,6 @@ export class ConnectionController {
 
   @Get('/google')
   public async redirectGoogle(@Res() response) {
-    console.log('redirectGoogle')
     return response.redirect('http://localhost:4000/api/reaccoon/oauth2/google');
   }
 
@@ -38,13 +38,15 @@ export class ConnectionController {
   public async redirectGoogleSuccess(
     @Req() request,
     @Res() response,
-    @Query() query: { accessToken: string; refreshToken: string },
+    @Query() query: { accessToken: string; refreshToken: string; email: string; userId: string },
   ) {
-    const userId = 1;
+    console.log('query');
+    console.log(query);
     const data = await firstValueFrom(
       this.httpService
-        .post<any>(`http://localhost:8000/credentials/${userId}`, {
-          user: userId,
+        .post<any>(`http://localhost:3000/api/reaccoon/credentials/`, {
+          email: query.email,
+          service: 'google',
           accessToken: query.accessToken,
           refreshToken: query.refreshToken,
         })

@@ -1,6 +1,7 @@
 import Header from "./components/Header/Header";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import HeaderApp from "./components/Header/HeaderApp";
 import LandingPage from "./pages/LandingPage";
@@ -91,7 +92,9 @@ function App() {
         style={{ backgroundColor: theme.palette.background }}
       >
         <Provider store={store}>
-          <RouterProvider router={router} />
+          <GoogleOAuthProvider clientId="760928825534-9f7c3d69o48jl3nrj4mnlnar1qbe91d3.apps.googleusercontent.com">
+            <RouterProvider router={router} />
+          </GoogleOAuthProvider>
         </Provider>
       </div>
     </ThemeProvider>

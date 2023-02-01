@@ -16,6 +16,13 @@ export class CredentialsService {
     return await this.credentialRepository.find();
   }
 
+  public async findByService(service: string): Promise<Credentials[]> {
+    const credentials = await this.credentialRepository.findBy({
+      service: service,
+    });
+    return credentials;
+  }
+
   public async findById(email: string, service: string): Promise<Credentials> {
     const credentials = await this.credentialRepository.findOneBy({
       email: email,
@@ -31,6 +38,15 @@ export class CredentialsService {
 
   public async createCredentialsUser(credentialsDto: CredentialsDto): Promise<any> {
     try {
+      const isExisting = await this.credentialRepository.exist({
+        where: { service: credentialsDto.service, email: credentialsDto.email },
+      });
+      if (isExisting) {
+        return await this.updateCredentialsUser(credentialsDto.email, credentialsDto.service, {
+          accessToken: credentialsDto.accessToken,
+          refreshToken: credentialsDto.refreshToken,
+        });
+      }
       return await this.credentialRepository.save(credentialsDto);
     } catch (err) {
       throw new HttpException(err, HttpStatus.BAD_REQUEST);

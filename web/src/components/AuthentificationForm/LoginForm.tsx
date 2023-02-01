@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
+import { GoogleLogin } from "@react-oauth/google";
 import { Box, Button, TextField } from "@mui/material";
 import { theme } from "../../constants/theme";
 import { LoginRequest } from "../../models/authModel";
@@ -86,7 +87,7 @@ const LoginForm = () => {
         </Box>
       </div>
       <div className="google-main-container">
-        <Button
+        {/* <Button
           color="primary"
           startIcon={<GoogleIcon />}
           fullWidth
@@ -101,7 +102,13 @@ const LoginForm = () => {
           variant="outlined"
         >
           Login with Github
-        </Button>
+  </Button> */}
+        <GoogleLogin
+          onSuccess={(credentialResponse) => {
+            console.log(credentialResponse);
+          }}
+          onError={() => console.log("login failed")}
+        />
       </div>
     </>
   );
