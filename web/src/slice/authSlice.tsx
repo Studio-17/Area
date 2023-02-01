@@ -167,15 +167,24 @@ const slice = createSlice({
       })
       .addCase(loginUserGoogle.pending, (state: AuthState) => {
         state.loading = true;
+        state.error = null;
       })
-      .addCase(loginUserGoogle.fulfilled, (state: AuthState, { payload }: any) => {
-        state.loading = false;
-        state.success = true;
-      })
-      .addCase(loginUserGoogle.rejected, (state: AuthState, { payload }: any) => {
-        state.loading = false;
-        state.error = payload;
-      })
+      .addCase(
+        loginUserGoogle.fulfilled,
+        (state: AuthState, { payload }: any) => {
+          state.loading = false;
+          state.success = true;
+          state.user = payload.user;
+          state.token = payload.accessToken
+        }
+      )
+      .addCase(
+        loginUserGoogle.rejected,
+        (state: AuthState, { payload }: any) => {
+          state.loading = false;
+          state.error = payload;
+        }
+      );
   },
 });
 
