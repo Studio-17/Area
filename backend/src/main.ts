@@ -35,10 +35,10 @@ async function bootstrap() {
 
   const port = +configService.get<number>('APP_PORT');
   const host = configService.get('APP_HOST');
-  console.log(`Reaccoon API documentation available at http://${host}:${port}/api/docs/`)
   await app.listen(port, () => {
-    console.log(`Listening at http://${host}:${port}`);
+    console.log(`Listening at http://${host}:${port}/api`);
   });
+  await console.log(`Reaccoon API documentation available at http://${host}:${port}/api/docs/`)
 }
 
 bootstrap().then(() => console.log('Reaccoon API started !'));
