@@ -23,7 +23,9 @@ At the root of the repository, you can find a `.env.example` file containing tho
 NODE_ENV=development
 
 APP_HOST=localhost
-APP_PORT=8000
+APP_ENDPOINT=/api/reaccoon
+API_PORT=3000
+WEB_PORT=3001
 
 #---------- BACKEND ----------#
 # Database connection
