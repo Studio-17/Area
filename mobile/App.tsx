@@ -5,7 +5,7 @@ import MainContainer from './navigation/MainContainer';
 export default function App() {
   return (
     <NavigationContainer>
-      <MainContainer />
+      <MainNavigator />
     </NavigationContainer>
   );
 }

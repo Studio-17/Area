@@ -50,6 +50,13 @@ export class ActionService {
     });
   }
 
+  async findByLink(link: string) {
+    return this.actionRepository.findOneBy({ link: link }).catch((e) => {
+      console.error(e);
+      throw NotFoundException('action');
+    });
+  }
+
   async update(actionId: string, updateActionDto: UpdateActionDto) {
     await this.actionRepository.update({ uuid: actionId }, updateActionDto).catch((e) => {
       console.error(e);
