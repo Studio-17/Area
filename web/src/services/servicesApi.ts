@@ -16,7 +16,7 @@ export const servicesApi = createApi({
   reducerPath: "servicesApi",
   tagTypes: ["Service", "Action", "Area"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `${API_ENDPOINT}`,
+    baseUrl: `${API_ENDPOINT}/api/reaccoon`,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
       if (token) {
@@ -27,7 +27,7 @@ export const servicesApi = createApi({
   }),
   endpoints: (builder) => ({
     services: builder.query<Service[], void>({
-      query: () => "/api/service",
+      query: () => "/service",
       providesTags: ["Service"],
     }),
     service: builder.query<Service, string>({
@@ -35,16 +35,16 @@ export const servicesApi = createApi({
       providesTags: ["Service"],
     }),
     actions: builder.query<Action[], string>({
-      query: (id) => `api/action/service/${id}`,
+      query: (id) => `action/service/${id}`,
       providesTags: ["Action"],
     }),
     areas: builder.query<Area[], void>({
-      query: () => "api/area",
+      query: () => "area",
       providesTags: ["Area"],
     }),
     addArea: builder.mutation<void, createAreaDto>({
       query: (area) => ({
-        url: `api/area`,
+        url: `area`,
         method: "POST",
         body: area,
       }),
@@ -52,25 +52,25 @@ export const servicesApi = createApi({
     }),
     deleteArea: builder.mutation<void, string>({
       query: (id) => ({
-        url: `api/area/${id}`,
+        url: `area/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Area"],
     }),
     area: builder.query<Area, string>({
-      query: (id) => `api/area/${id}`,
+      query: (id) => `area/${id}`,
       providesTags: ["Area"],
     }),
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
-        url: "api/authentication/login",
+        url: "authentication/login",
         method: "POST",
         body: credentials,
       }),
     }),
     register: builder.mutation<RegisterResponse, RegisterRequest>({
       query: (credentials) => ({
-        url: "api/authentication/register",
+        url: "authentication/register",
         method: "POST",
         body: credentials,
       }),
