@@ -1,5 +1,4 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { GoogleLogin } from "@react-oauth/google";
@@ -7,31 +6,28 @@ import { Box, Button, TextField } from "@mui/material";
 import { theme } from "../../constants/theme";
 import { LoginRequest } from "../../models/authModel";
 import { useLoginMutation } from "../../services/servicesApi";
-import { setCredentials } from "../../slice/authSlice";
-import GoogleIcon from "@mui/icons-material/Google";
-import GitHubIcon from "@mui/icons-material/GitHub";
+import { setCredentials, loginUser } from "../../slice/authSlice";
 import "../../styles/RegisterForm.css";
+import { RootState, useAppDispatch, useAppSelector } from "../../store/store";
 
 const LoginForm = () => {
   const navigate = useNavigate();
-  const [login] = useLoginMutation();
-  const dispatch = useDispatch();
-  const loginUser = async (dataToSend: LoginRequest) => {
-    try {
-      const result = await login(dataToSend).unwrap();
-      if (result.status === 200) {
-        dispatch(
-          setCredentials({ token: result.accessToken, user: result.user })
-        );
-        toast.success("Connexion réussie !");
-        navigate("/home");
-      } else {
-        toast.error("Email ou mot de passe invalide ...");
-      }
-    } catch (e) {
-      toast.error("Erreur lors de la connexion ...");
-    }
+  const { loading, error, user } = useAppSelector(
+    (state: RootState) => state.auth
+  );
+  const dispatch = useAppDispatch();
+  const dispatchLoginUser = async (dataToSend: LoginRequest) => {
+    dispatch(loginUser(dataToSend));
   };
+
+  useEffect(() => {
+    if (user) {
+      toast.success("Connexion réussie !")
+      navigate("/home");
+      console.log(user);
+    }
+  }, [navigate, user]);
+
   const onSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     const target = e.target as typeof e.target & {
@@ -42,7 +38,7 @@ const LoginForm = () => {
       email: target.email.value,
       password: target.password.value,
     };
-    loginUser(dataToSend);
+    dispatchLoginUser(dataToSend);
   };
   return (
     <>

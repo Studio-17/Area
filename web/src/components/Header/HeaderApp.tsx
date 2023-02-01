@@ -14,7 +14,7 @@ const HeaderApp = () => {
         R<span style={{ color: theme.palette.primary }}>e</span>accoon
       </div>
       <div className="avatar-container">
-        <Avatar sx={{ bgcolor: theme.palette.primary, width: '3vw', height: '3vw' }}>VP</Avatar>
+        <Avatar onClick={() => navigate("/user-profile")} sx={{ bgcolor: theme.palette.primary, width: '3vw', height: '3vw', cursor: 'pointer' }}>VP</Avatar>
       </div>
     </div>
   );

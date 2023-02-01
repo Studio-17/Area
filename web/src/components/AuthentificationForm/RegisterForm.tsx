@@ -1,31 +1,34 @@
 import { Alert, Box, Button, Snackbar, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { theme } from "../../constants/theme";
 import { RegisterRequest } from "../../models/authModel";
 import { useRegisterMutation } from "../../services/servicesApi";
+
+import { useAppDispatch, useAppSelector } from "../../store/store";
 import "../../styles/RegisterForm.css";
+import { registerUser } from "../../slice/authSlice";
+import { RootState } from "../../store/store";
 
 const RegisterForm = () => {
+  const { loading, user, error, success } = useAppSelector(
+    (state: RootState) => state.auth
+  );
+
+  const dispatch = useAppDispatch();
+
   const navigate = useNavigate();
   const [isSuccessfullRegister, setIsSuccessfullRegister] =
     useState<boolean>(false);
   const [isErrorRegister, setIsErrorRegister] = useState<boolean>(false);
-  const [register] = useRegisterMutation();
+
+  useEffect(() => {
+    if (success) navigate("/login");
+  }, [navigate, user, success]);
 
   const registerNewUser = async (data: RegisterRequest) => {
-    try {
-      const result = await register(data).unwrap();
-      if (result.status === 200) {
-        setIsSuccessfullRegister(true);
-        toast.success("Votre compte a bien été crée !");
-        navigate("/login");
-      }
-    } catch (e) {
-      setIsErrorRegister(true);
-      toast.error("Erreur lors la création de votre compte ...")
-    }
+    dispatch(registerUser(data));
   };
 
   const onSubmit = (e: React.SyntheticEvent) => {
