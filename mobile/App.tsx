@@ -1,6 +1,6 @@
 import * as React from "react";
 import { NavigationContainer } from '@react-navigation/native';
-import MainContainer from './navigation/MainContainer';
+import MainNavigator from './navigation/MainNavigator';
 
 export default function App() {
   return (

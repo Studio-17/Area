@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-export default function NewAppletHeader({navigation,}: { navigation: any }) {
+export default function NewAppletHeader({ navigation }: { navigation: any }) {
   return (
     <SafeAreaView style={styles.cardContainer}>
       <View style={styles.headerContainer}>
