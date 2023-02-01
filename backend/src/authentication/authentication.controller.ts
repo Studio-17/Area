@@ -34,6 +34,11 @@ export class AuthenticationController {
     }
   }
 
+  @Get('login/google')
+  public async loginWithGoogle(@Body('token') token) {
+    return await this.authenticationService.googleConnect(token);
+  }
+
   @Get('/google')
   @UseGuards(GoogleAuthenticationGuard)
   // eslint-disable-next-line @typescript-eslint/no-empty-function,@typescript-eslint/no-unused-vars

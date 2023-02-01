@@ -8,7 +8,7 @@ import {
 
 @Entity({ name: 'user' })
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   uuid: number;
 
   @Column()
@@ -22,7 +22,7 @@ export class User {
   })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @CreateDateColumn({

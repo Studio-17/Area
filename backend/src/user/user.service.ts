@@ -111,4 +111,8 @@ export class UserService {
     const user = await this.findById(uuid);
     await this.userRepository.remove(user);
   }
+
+  async exist(email: string): Promise<boolean> {
+    return this.userRepository.exist({ where: { email: email } });
+  }
 }
