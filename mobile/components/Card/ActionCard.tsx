@@ -1,21 +1,21 @@
-import * as React from "react";
+import React from "react";
 import {
   Text,
   StyleSheet,
   Pressable,
-  View
+  View,
 } from "react-native";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 
-export default function ActionCard({ textValue, color }: any) {
+export default function ActionCard({ textValue, color, handleFunction }: any) {
   return (
     <View style={{ paddingVertical: 13, paddingHorizontal: 40 }}>
       <View style={[styles.cardProperties, {backgroundColor: color}]}>
         <Text style={styles.cardTitle}>{textValue}</Text>
         <Pressable
-          onPress={() => alert("You pressed a add button!")}
+          onPress={handleFunction}
           style={styles.cardButton}
         >
           <MaterialCommunityIcons
