@@ -16,6 +16,8 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import UserProfile from "./pages/UserProfile";
 
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
 const themeMUI = createTheme({
   palette: {
     primary: {
@@ -102,7 +104,7 @@ function App() {
         style={{ backgroundColor: theme.palette.background }}
       >
         <Provider store={store}>
-          <GoogleOAuthProvider clientId="760928825534-9f7c3d69o48jl3nrj4mnlnar1qbe91d3.apps.googleusercontent.com">
+          <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID ? GOOGLE_CLIENT_ID : ""}>
             <RouterProvider router={router} />
           </GoogleOAuthProvider>
         </Provider>
