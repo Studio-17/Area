@@ -19,7 +19,7 @@ import { UpdateCredentialsDto } from './dto/update-credentials.dto';
 import { CreateCredentialsDto } from './dto/create-credentials.dto';
 
 @ApiTags('credentials')
-//@UseGuards(JwtAuthenticationGuard)
+@UseGuards(JwtAuthenticationGuard)
 @Controller('credentials')
 export class CredentialsController {
   constructor(private readonly credentialsService: CredentialsService) {}

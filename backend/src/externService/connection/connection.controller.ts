@@ -1,14 +1,9 @@
 import {
   Controller,
-  Put,
   Get,
-  Body,
   Res,
-  Param,
   UseGuards,
   HttpStatus,
-  NotFoundException,
-  Delete,
   Req,
   Query,
 } from '@nestjs/common';
@@ -21,7 +16,7 @@ import { AxiosError } from 'axios';
 import { gamesConfiguration_v1configuration, google } from 'googleapis';
 
 @ApiTags('/service/connect')
-// @UseGuards(JwtAuthenticationGuard)
+@UseGuards(JwtAuthenticationGuard)
 @Controller('/service/connect')
 export class ConnectionController {
   constructor(

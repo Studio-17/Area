@@ -1,11 +1,13 @@
-import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, UseGuards } from "@nestjs/common";
 import { IsUuidParam } from '../utils/decorators/Is-uuid-param.decorator';
 import { ServiceService } from './service.service';
 import { CreateServiceDto } from './dto/create-service-dto';
 import { UpdateServiceDto } from './dto/update-service-dto';
 import { ApiTags } from "@nestjs/swagger";
+import { JwtAuthenticationGuard } from "../authentication/guards/jwt-authentication.guard";
 
 @ApiTags('Service')
+@UseGuards(JwtAuthenticationGuard)
 @Controller('service')
 export class ServiceController {
   constructor(private readonly serviceService: ServiceService) {}
