@@ -6,6 +6,7 @@ import { View } from "react-native";
 // Screens
 import HomeStack from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import MainHeader from "../components/MainHeader";
 
 const Tab = createBottomTabNavigator();
 
@@ -21,8 +22,8 @@ export default function TabNavigator() {
     <Tab.Navigator
       initialRouteName="HomeScreen"
       screenOptions={{
-        headerShown: false,
         tabBarActiveTintColor: "#A37C5B",
+        headerShown: false,
         tabBarLabelStyle: {
           fontSize: 13,
           fontWeight: "bold",

@@ -40,6 +40,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   textProperties: {
-    color: "#000002",
+    color: "#FFFFFF",
   },
 });

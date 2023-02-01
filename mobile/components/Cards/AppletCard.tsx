@@ -27,12 +27,20 @@ const styles = StyleSheet.create({
       backgroundColor: "#FFF7FA",
     },
     cardProperties: {
-      backgroundColor: '#f9c2ff',
+      backgroundColor: 'grey',
       padding: 20,
       height: 200,
       marginVertical: 10,
       marginHorizontal: 20,
       borderRadius: 15,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
     },
     appletContainer: {
       margin: 20,
