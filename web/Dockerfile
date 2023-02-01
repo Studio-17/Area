@@ -1,14 +1,15 @@
-FROM node:14-alpine AS development
-ENV NODE_ENV development
+FROM node:19-alpine
 
-WORKDIR /app
+USER node
+RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 
-COPY package*.json .
+WORKDIR /home/node/app
+
+COPY --chown=node:node . /home/node/app
 
 RUN npm install
 
-COPY . .
-
 EXPOSE 3000
 
-CMD [ "npm", "start" ]
+ENTRYPOINT [ "npm" ]
+CMD [ "start" ]
