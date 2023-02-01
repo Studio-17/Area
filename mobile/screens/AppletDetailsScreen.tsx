@@ -29,7 +29,8 @@ export default function AppletDetailsScreen({
             size={50}
           />
         </TouchableOpacity>
-        <Text style={styles.textStyle}>NewAppletHeader{item.name}</Text>
+        <Text style={styles.textStyle}>{item.name}</Text>
+        <View style={{ flex: 1 }} />
       </View>
     </SafeAreaView>
   );
@@ -49,13 +50,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   backIcon: {
-    marginLeft: 20,
-    marginTop: 10,
+    flex: 1,
   },
   textStyle: {
     fontSize: 35,
     fontWeight: "bold",
-    color: "#A37C5B",
+    color: "black",
     margin: 10,
   },
 });

@@ -1,15 +1,20 @@
 import * as React from "react";
-import { View, Text } from "react-native";
+import { SafeAreaView, Text, StyleSheet, StatusBar } from "react-native";
+import MainHeader from "../components/MainHeader";
 
 export default function ProfileScreen({ navigation }: { navigation: any }) {
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text
-        onPress={() => navigation.navigate("Home")}
-        style={{ fontSize: 26, fontWeight: "bold" }}
-      >
-        Profile Screen
-      </Text>
-    </View>
+    <SafeAreaView style={styles.screenContainer}>
+      <MainHeader />
+      <Text>Profile Screen...</Text>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  screenContainer: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight || 0,
+    backgroundColor: "#FFF7FA",
+  },
+});
