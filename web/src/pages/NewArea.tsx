@@ -7,11 +7,7 @@ import ServicesInfos from "../components/ServicesInfos";
 import BigRoundedButtonOutlined from "../components/Buttons/BigRoundedButtonOutlined";
 import "../styles/NewArea.css";
 import BigRoundedButton from "../components/Buttons/BigRoundedButton";
-import {
-  useAddAreaMutation,
-  useLogGoogleQuery,
-  useServicesQuery,
-} from "../services/servicesApi";
+import { useAddAreaMutation, useServicesQuery } from "../services/servicesApi";
 import { Service } from "../models/serviceModels";
 import { useNavigate } from "react-router-dom";
 
@@ -28,7 +24,6 @@ const NewArea = () => {
 
   const { data: services, isError, isLoading } = useServicesQuery();
   const [addArea] = useAddAreaMutation();
-  const { data: googleData } = useLogGoogleQuery();
 
   const onClickOpenModal = (
     index: number,

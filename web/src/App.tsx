@@ -14,6 +14,7 @@ import "./App.css";
 import Area from "./pages/Area";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import UserProfile from "./pages/UserProfile";
 
 const themeMUI = createTheme({
   palette: {
@@ -79,6 +80,15 @@ const router = createBrowserRouter([
       <>
         <HeaderApp />
         <Area />
+      </>
+    ),
+  },
+  {
+    path: "/user-profile",
+    element: (
+      <>
+        <HeaderApp />
+        <UserProfile />
       </>
     ),
   },
