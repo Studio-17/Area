@@ -13,6 +13,10 @@ export type LoginRequest = {
   password: string;
 };
 
+export type LogInGoogleRequest = {
+  credentials: string | undefined
+}
+
 export type RegisterRequest = {
   email: string;
   lastName: string;

@@ -5,8 +5,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { Box, Button, TextField } from "@mui/material";
 import { theme } from "../../constants/theme";
 import { LoginRequest } from "../../models/authModel";
-import { useLoginMutation } from "../../services/servicesApi";
-import { setCredentials, loginUser } from "../../slice/authSlice";
+import { loginUser, loginUserGoogle } from "../../slice/authSlice";
 import "../../styles/RegisterForm.css";
 import { RootState, useAppDispatch, useAppSelector } from "../../store/store";
 
@@ -22,7 +21,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (user) {
-      toast.success("Connexion réussie !")
+      toast.success("Connexion réussie !");
       navigate("/home");
       console.log(user);
     }
@@ -83,25 +82,9 @@ const LoginForm = () => {
         </Box>
       </div>
       <div className="google-main-container">
-        {/* <Button
-          color="primary"
-          startIcon={<GoogleIcon />}
-          fullWidth
-          variant="outlined"
-        >
-          Login in with Google
-        </Button>
-        <Button
-          color="primary"
-          startIcon={<GitHubIcon />}
-          fullWidth
-          variant="outlined"
-        >
-          Login with Github
-  </Button> */}
         <GoogleLogin
           onSuccess={(credentialResponse) => {
-            console.log(credentialResponse);
+            dispatch(loginUserGoogle({credentials: credentialResponse.credential}));
           }}
           onError={() => console.log("login failed")}
         />

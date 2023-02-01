@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store/store";
 import {
+  LogInGoogleRequest,
   LoginRequest,
   LoginResponse,
   RegisterRequest,
@@ -36,7 +37,6 @@ const initialState = {
   success: null | any;
 };
 
-
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (
@@ -59,6 +59,31 @@ export const registerUser = createAsyncThunk(
         },
         config
       );
+    } catch (error: any) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
+export const loginUserGoogle = createAsyncThunk(
+  "auth/loginGoogle",
+  async ({ credentials }: LogInGoogleRequest, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const { data } = await axios.post(
+        `${API_ENDPOINT}/authentication/login/google`,
+        { credentials: credentials },
+        config
+      );
+      localStorage.setItem("userToken", data.accessToken);
     } catch (error: any) {
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
@@ -107,12 +132,12 @@ const slice = createSlice({
       state.token = token;
     },
     logoutUser: (state: AuthState) => {
-      localStorage.removeItem('userToken')
-      state.loading = false
-      state.user = null
-      state.token = null
-      state.error = null
-    }
+      localStorage.removeItem("userToken");
+      state.loading = false;
+      state.user = null;
+      state.token = null;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -128,17 +153,28 @@ const slice = createSlice({
         state.error = payload;
       })
       .addCase(loginUser.pending, (state: AuthState) => {
-        state.loading = true
-        state.error = null
+        state.loading = true;
+        state.error = null;
       })
-      .addCase(loginUser.fulfilled, (state: AuthState, {payload}) => {
-        state.loading = false
-        state.user = payload.user
-        state.token = payload.accessToken
+      .addCase(loginUser.fulfilled, (state: AuthState, { payload }) => {
+        state.loading = false;
+        state.user = payload.user;
+        state.token = payload.accessToken;
       })
-      .addCase(loginUser.rejected, (state: AuthState, {payload}) => {
-        state.loading = false
-        state.error = payload
+      .addCase(loginUser.rejected, (state: AuthState, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+      })
+      .addCase(loginUserGoogle.pending, (state: AuthState) => {
+        state.loading = true;
+      })
+      .addCase(loginUserGoogle.fulfilled, (state: AuthState, { payload }: any) => {
+        state.loading = false;
+        state.success = true;
+      })
+      .addCase(loginUserGoogle.rejected, (state: AuthState, { payload }: any) => {
+        state.loading = false;
+        state.error = payload;
       })
   },
 });
