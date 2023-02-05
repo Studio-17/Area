@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -10,11 +10,59 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+// import { useAppDispatch, useAppSelector } from '../store/store';
+// import { RootState } from '../store/store';
+// import { registerUser } from '../slice/authSlice';
+// import { RegisterRequest } from '../models/authModel';
 
 import InputField from "../components/InputField";
 import CustomButton from "../components/CustomButton";
 
 export default function RegisterScreen({ navigation }: any) {
+  // const { loading, user, error, success } = useAppSelector(
+  //   (state: RootState) => state.auth
+  // );
+
+  // const dispatch = useAppDispatch();
+  // const [isSuccessfullRegister, setIsSuccessfullRegister] =
+  //   useState<boolean>(false);
+  // const [isErrorRegister, setIsErrorRegister] = useState<boolean>(false);
+  //
+  // useEffect(() => {
+  //   if (success) navigation("Login");
+  // }, [navigation, user, success]);
+  //
+  // const registerNewUser = async (data: RegisterRequest) => {
+  //   dispatch(registerUser(data));
+  //   console.log("data:", data);
+  // };
+
+  const [ email, setEmail ] = useState<string>("");
+  const [ password, setPassword ] = useState<string>("");
+  const [ firstName, setFirstName ] = useState<string>("");
+  const [ lastName, setLastName ] = useState<string>("");
+
+  const onSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+
+    // const target = e.target as typeof e.target & {
+    //   firstname: { value: string };
+    //   lastname: { value: string };
+    //   email: { value: string };
+    //   password: { value: string };
+    // };
+
+    // console.log("target", target);
+
+    // const dataToSend: RegisterRequest = {
+    //   firstName: firstName,
+    //   lastName: lastName,
+    //   email: email,
+    //   password: password,
+    // };
+    // registerNewUser(dataToSend);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -70,6 +118,7 @@ export default function RegisterScreen({ navigation }: any) {
 
         <InputField
           label={'First Name'}
+          id="firstname"
           icon={
             <MaterialCommunityIcons
               name="account-outline"
@@ -78,10 +127,12 @@ export default function RegisterScreen({ navigation }: any) {
               style={{marginRight: 5}}
             />
           }
+          handleChange={(e: any) => {setFirstName(e.target.value)}}
         />
 
         <InputField
           label={'Last Name'}
+          id="lastname"
           icon={
             <MaterialCommunityIcons
               name="account-outline"
@@ -90,10 +141,12 @@ export default function RegisterScreen({ navigation }: any) {
               style={{marginRight: 5}}
             />
           }
+          handleChange={(e: any) => {setLastName(e.target.value)}}
         />
 
         <InputField
           label={'Email Address'}
+          id="email"
           icon={
             <MaterialCommunityIcons
               name="at"
@@ -103,10 +156,12 @@ export default function RegisterScreen({ navigation }: any) {
             />
           }
           keyboardType="email-address"
+          handleChange={(e: any) => {setEmail(e.target.value)}}
         />
 
         <InputField
           label={'Password'}
+          id="password"
           icon={
             <MaterialCommunityIcons
               name="lock-outline"
@@ -116,9 +171,10 @@ export default function RegisterScreen({ navigation }: any) {
             />
           }
           inputType="password"
+          handleChange={(e: any) => {setPassword(e.target.value)}}
         />
 
-        <CustomButton label={'Register'} onPress={() => {}} />
+        <CustomButton label={'Register'} onPress={onSubmit} />
 
         <View
           style={{
