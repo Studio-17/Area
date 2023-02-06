@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,7 +12,8 @@ import { AreaModule } from './area/area.module';
 import { ServiceModule } from './service/service.module';
 import { ActionModule } from './action/action.module';
 import { MyActionModule } from './myAction/myAction.module';
-import { ServiceSeederService } from '../config/seeders/service.seeder.spec';
+import { ServiceSeederService } from '../config/seeders/service.seeder';
+import { LoggerMiddleware } from '../config/middlewares/logger.middleware';
 
 @Module({
   imports: [
@@ -46,10 +47,16 @@ import { ServiceSeederService } from '../config/seeders/service.seeder.spec';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
+export class AppModule implements NestModule {
   constructor(private readonly serviceSeederService: ServiceSeederService) {}
 
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+
   async onModuleInit() {
+    console.log('Initializing request Logger...');
     await this.serviceSeederService.seed();
+    console.log('Request Logger initialized.');
   }
 }
