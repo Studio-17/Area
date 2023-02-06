@@ -2,7 +2,7 @@ import { Alert, CircularProgress, Snackbar } from "@mui/material";
 import { theme } from "../constants/theme";
 import { Action } from "../models/actionModels";
 import { Service } from "../models/serviceModels";
-import { useActionsQuery } from "../services/servicesApi";
+import {useActionsQuery, useLoginGoogleServiceQuery} from "../services/servicesApi";
 import "../styles/ServicesInfos.css";
 import ActionsCards from "./Cards/ActionsCards";
 
@@ -23,6 +23,9 @@ const ServicesInfos = ({
     isLoading,
     isFetching,
   } = useActionsQuery(service.uuid);
+  const {
+    data: result,
+  } = useLoginGoogleServiceQuery();
 
   if (isLoading || isFetching) return <CircularProgress />;
 

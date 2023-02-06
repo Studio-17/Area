@@ -1,22 +1,14 @@
-import {
-  Controller,
-  Get,
-  Res,
-  UseGuards,
-  HttpStatus,
-  Req,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Res, UseGuards, HttpStatus, Req, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthenticationGuard } from '../../authentication/guards/jwt-authentication.guard';
 import { ConnectionService } from './connection.service';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
-import { gamesConfiguration_v1configuration, google } from 'googleapis';
+import { GoogleOAuth2Guard } from './guards/google-authentication.guard';
 
 @ApiTags('/service/connect')
-@UseGuards(JwtAuthenticationGuard)
+// @UseGuards(JwtAuthenticationGuard)
 @Controller('/service/connect')
 export class ConnectionController {
   constructor(
@@ -25,33 +17,19 @@ export class ConnectionController {
   ) {}
 
   @Get('/google')
+  @UseGuards(GoogleOAuth2Guard)
   public async redirectGoogle(@Res() response) {
-    return response.redirect('http://localhost:4000/api/reaccoon/oauth2/google');
+    // return response.redirect('http://localhost:4000/api/reaccoon/oauth2/google');
   }
 
   @Get('/google/success')
+  @UseGuards(GoogleOAuth2Guard)
   public async redirectGoogleSuccess(
     @Req() request,
     @Res() response,
     @Query() query: { accessToken: string; refreshToken: string; email: string; userId: string },
   ) {
-    await firstValueFrom(
-      this.httpService
-        .post<any>(`http://localhost:3000/api/reaccoon/credentials/`, {
-          email: query.email,
-          service: 'google',
-          accessToken: query.accessToken,
-          refreshToken: query.refreshToken,
-        })
-        .pipe(
-          catchError((error: AxiosError) => {
-            return response.status(HttpStatus.BAD_REQUEST).json({
-              message: 'invalid argument',
-              status: 400,
-            });
-          }),
-        ),
-    );
+    console.log(response);
 
     return response.status(HttpStatus.OK).json({
       message: 'Got Google credentials successfully',
