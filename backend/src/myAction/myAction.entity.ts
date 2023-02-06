@@ -6,6 +6,9 @@ export class MyAction {
   uuid!: string;
 
   @Column()
+  userId!: string;
+
+  @Column()
   areaId!: string;
 
   @Column()

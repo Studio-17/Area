@@ -5,6 +5,9 @@ export class Area {
   @PrimaryGeneratedColumn('uuid')
   uuid!: string;
 
+  @Column()
+  userId!: string;
+
   @Column({ nullable: true })
   name: string;
 }
