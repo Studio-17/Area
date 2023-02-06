@@ -84,7 +84,7 @@ const LoginForm = () => {
       <div className="google-main-container">
         <GoogleLogin
           onSuccess={(credentialResponse) => {
-            dispatch(loginUserGoogle({credentials: credentialResponse.credential}));
+            dispatch(loginUserGoogle({token: credentialResponse.credential}));
           }}
           onError={() => console.log("login failed")}
         />
