@@ -71,7 +71,7 @@ export const registerUser = createAsyncThunk(
 
 export const loginUserGoogle = createAsyncThunk(
   "auth/loginGoogle",
-  async ({ credentials }: LogInGoogleRequest, { rejectWithValue }) => {
+  async ({ token }: LogInGoogleRequest, { rejectWithValue }) => {
     try {
       const config = {
         headers: {
@@ -80,10 +80,12 @@ export const loginUserGoogle = createAsyncThunk(
       };
       const { data } = await axios.post(
         `${API_ENDPOINT}/authentication/login/google`,
-        { credentials: credentials },
+        { token: token },
         config
       );
+      console.log(data);
       localStorage.setItem("userToken", data.accessToken);
+      return data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
@@ -169,15 +171,11 @@ const slice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(
-        loginUserGoogle.fulfilled,
-        (state: AuthState, { payload }: any) => {
-          state.loading = false;
-          state.success = true;
-          state.user = payload.user;
-          state.token = payload.accessToken
-        }
-      )
+      .addCase(loginUserGoogle.fulfilled, (state: AuthState, { payload }) => {
+        state.loading = false;
+        state.user = payload.user;
+        state.token = payload.accessToken;
+      })
       .addCase(
         loginUserGoogle.rejected,
         (state: AuthState, { payload }: any) => {

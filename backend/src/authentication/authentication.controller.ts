@@ -34,7 +34,7 @@ export class AuthenticationController {
     }
   }
 
-  @Get('login/google')
+  @Post('login/google')
   public async loginWithGoogle(@Body('token') token) {
     return await this.authenticationService.googleConnect(token);
   }
