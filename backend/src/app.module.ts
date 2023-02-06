@@ -12,6 +12,7 @@ import { AreaModule } from './area/area.module';
 import { ServiceModule } from './service/service.module';
 import { ActionModule } from './action/action.module';
 import { MyActionModule } from './myAction/myAction.module';
+import { ServiceSeederService } from '../config/seeders/service.seeder.spec';
 
 @Module({
   imports: [
@@ -45,4 +46,10 @@ import { MyActionModule } from './myAction/myAction.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private readonly serviceSeederService: ServiceSeederService) {}
+
+  async onModuleInit() {
+    await this.serviceSeederService.seed();
+  }
+}
