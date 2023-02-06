@@ -71,7 +71,7 @@ export class MyActionService {
     return await this.myActionRepository.findBy({ linkedFromId: actionId });
   }
 
-  async addAction(areaId: string, action: CreateMyActionDto) {
+  async addAction(areaId: string, action: CreateMyActionDto, userId: string) {
     const actionIsPresent: boolean = await this.actionService.exist(action.actionId);
     if (!actionIsPresent) {
       throw NotFoundException('action');
@@ -80,15 +80,15 @@ export class MyActionService {
     if (!areaIsPresent) {
       throw NotFoundException('area');
     }
-    const newAction: MyAction = this.myActionRepository.create(action);
+    const newAction: MyAction = this.myActionRepository.create({ userId: userId, ...action });
     return await this.myActionRepository.save(newAction);
   }
 
-  async removeAction(actionId: string) {
-    return await this.myActionRepository.delete({ uuid: actionId });
+  async removeAction(actionId: string, userId: string) {
+    return await this.myActionRepository.delete({ uuid: actionId, userId: userId });
   }
 
-  async removeByAreaId(areaId: string) {
-    return await this.myActionRepository.delete({ areaId: areaId });
+  async removeByAreaId(areaId: string, userId: string) {
+    return await this.myActionRepository.delete({ areaId: areaId, userId: userId });
   }
 }
