@@ -1,4 +1,13 @@
-import { Controller, Get, Res, UseGuards, HttpStatus, Req, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Res,
+  UseGuards,
+  HttpStatus,
+  Req,
+  Query,
+  HttpException,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthenticationGuard } from '../../authentication/guards/jwt-authentication.guard';
 import { ConnectionService } from './connection.service';
@@ -17,7 +26,7 @@ export class ConnectionController {
   ) {}
 
   @Get('/google')
-  public async redirectGoogle(@Res() response) {
+  public async google(@Res() response) {
     const clientID = process.env.GOOGLE_CLIENT_ID;
     const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/google/redirect`;
     const scope =
@@ -29,43 +38,49 @@ export class ConnectionController {
     });
   }
 
-  @Get('/google/redirect')
-  public async redirectGoogleSuccess(
-    @Req() request,
-    @Res() response,
-    @Query() query: { code: string },
-  ) {
-    console.log('query parameters:', query);
-
+  @Get('/google/oauth2')
+  public async googleOAuth2(@Req() request, @Res() response, @Query() query: { code: string }) {
     const clientID = process.env.GOOGLE_CLIENT_ID;
     const clientSECRET = process.env.GOOGLE_CLIENT_SECRET;
     const code = query.code;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/google/oauth2`;
+    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/google/redirect`;
 
-    this.httpService.post(`https://oauth2.googleapis.com/token`, {
-      client_id: clientID,
-      client_secret: clientSECRET,
-      code: code,
-      grant_type: 'authorization_code',
-      redirect_uri: callbackURL,
-    });
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post(
+          `https://oauth2.googleapis.com/token`,
+          {
+            client_id: clientID,
+            client_secret: clientSECRET,
+            code: code,
+            grant_type: 'authorization_code',
+            redirect_uri: callbackURL,
+          },
+          {
+            headers: {
+              'content-type': 'application/x-www-form-urlencoded',
+            },
+          },
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
 
     return response.status(HttpStatus.OK).json({
-      message: 'Got Google code successfully',
+      message: 'Everything went fine',
+      data: data,
       status: 200,
     });
   }
 
-  @Get('/google/oauth2')
-  public async oauth2Google(
-    @Req() request,
-    @Res() response,
-    @Query() query: { accessToken: string; refreshToken: string },
-  ) {
-    console.log('query parameters:', query);
-
+  @Get('/google/redirect')
+  public async googleRedirect(@Req() request, @Res() response, @Query() query) {
     return response.status(HttpStatus.OK).json({
-      message: 'Got Google accessToken successfully',
+      message: 'Got Google credentials successfully',
+      credentials: query,
       status: 200,
     });
   }
