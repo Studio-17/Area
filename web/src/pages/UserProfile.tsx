@@ -11,7 +11,7 @@ const UserProfile = () => {
   const navigate = useNavigate();
   const { user } = useAppSelector((state: RootState) => state.auth);
   useEffect(() => {
-    console.log(user);
+    console.log("User profile: user: ", user);
   }, [user]);
 
   const dispatchDeconnection = () => {
