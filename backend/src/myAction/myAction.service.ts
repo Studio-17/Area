@@ -79,7 +79,6 @@ export class MyActionService {
     const action = await this.actionService.findOne(actionId);
 
     if (action.type === 'action') {
-      console.log('token', token);
       await firstValueFrom(
         this.httpService
           .post<any>(
@@ -109,11 +108,15 @@ export class MyActionService {
     if (!actionIsPresent) {
       throw NotFoundException('action');
     }
-    const areaIsPresent: boolean = await this.areaService.exist(action.areaId);
+    const areaIsPresent: boolean = await this.areaService.exist(areaId);
     if (!areaIsPresent) {
       throw NotFoundException('area');
     }
-    const newAction: MyAction = this.myActionRepository.create({ userId: userId, ...action });
+    const newAction: MyAction = this.myActionRepository.create({
+      userId: userId,
+      areaId: areaId,
+      ...action,
+    });
     const myNewAction: MyAction = await this.myActionRepository.save(newAction);
     this.addCron(action.actionId, {}, token, myNewAction.uuid);
     return myNewAction;

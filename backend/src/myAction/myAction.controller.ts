@@ -13,11 +13,11 @@ export class MyActionController {
 
   @Post('action/')
   async addAction(
-    @IsUuidParam('id') id: string,
+    @IsUuidParam('id') areaId: string,
     @Body() action: CreateMyActionDto,
     @Req() request: any,
   ) {
-    return this.myActionService.addAction(id, action, request.user.userId, request.user);
+    return this.myActionService.addAction(areaId, action, request.user.userId, request.user);
   }
 
   @Delete('action/:actionId')

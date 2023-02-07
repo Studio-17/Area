@@ -22,7 +22,6 @@ export class AreaService {
     const action = await this.myActionService.addAction(
       areaInData.uuid,
       {
-        areaId: areaInData.uuid,
         actionId: createAreaDto.action,
         linkedFromId: null,
       },
@@ -33,7 +32,6 @@ export class AreaService {
       await this.myActionService.addAction(
         areaInData.uuid,
         {
-          areaId: areaInData.uuid,
           actionId: myAction,
           linkedFromId: action.uuid,
         },

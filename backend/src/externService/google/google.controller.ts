@@ -37,9 +37,8 @@ export class GoogleController {
   }
 
   @Post('/check-mail/cron')
-  public async addCheckMailCron(@Req() request, @Body() body: CreateCronDto) {
-    console.log('request', request.user);
-    this.googleService.addCron(body.name + request.uuid, body);
+  public async addCheckMailCron(@Body() body: CreateCronDto) {
+    this.googleService.addCron(body.name, body);
   }
 
   @Post('/publish-doc')
