@@ -31,7 +31,7 @@ const ServicesInfos = ({
 
   useEffect(() => {
     // result && console.log(result.url);
-    if (result) window.open(result.url, "popup=true");
+    if (result) window.open(result.url, "", "popup,width=1020,height=1020");
   }, [result]);
 
   if (isLoading || isFetching) return <CircularProgress />;
