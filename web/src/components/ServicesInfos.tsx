@@ -30,6 +30,7 @@ const ServicesInfos = ({
   const { data: result } = useLoginGoogleServiceQuery();
 
   useEffect(() => {
+    console.log(result);
     // result && console.log(result.url);
     if (result) window.open(result.url, "", "popup,width=1020,height=1020");
   }, [result]);
