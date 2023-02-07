@@ -17,22 +17,55 @@ export class ConnectionController {
   ) {}
 
   @Get('/google')
-  @UseGuards(GoogleOAuth2Guard)
   public async redirectGoogle(@Res() response) {
-    // return response.redirect('http://localhost:4000/api/reaccoon/oauth2/google');
+    const clientID = process.env.GOOGLE_CLIENT_ID;
+    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/google/redirect`;
+    const scope =
+      'email profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/drive';
+
+    return response.status(HttpStatus.OK).json({
+      url: `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=state_parameter_passthrough_value&redirect_uri=${callbackURL}&client_id=${clientID}`,
+      status: 200,
+    });
   }
 
-  @Get('/google/success')
-  @UseGuards(GoogleOAuth2Guard)
+  @Get('/google/redirect')
   public async redirectGoogleSuccess(
     @Req() request,
     @Res() response,
-    @Query() query: { accessToken: string; refreshToken: string; email: string; userId: string },
+    @Query() query: { code: string },
   ) {
-    console.log(response);
+    console.log('query parameters:', query);
+
+    const clientID = process.env.GOOGLE_CLIENT_ID;
+    const clientSECRET = process.env.GOOGLE_CLIENT_SECRET;
+    const code = query.code;
+    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/google/oauth2`;
+
+    this.httpService.post(`https://oauth2.googleapis.com/token`, {
+      client_id: clientID,
+      client_secret: clientSECRET,
+      code: code,
+      grant_type: 'authorization_code',
+      redirect_uri: callbackURL,
+    });
 
     return response.status(HttpStatus.OK).json({
-      message: 'Got Google credentials successfully',
+      message: 'Got Google code successfully',
+      status: 200,
+    });
+  }
+
+  @Get('/google/oauth2')
+  public async oauth2Google(
+    @Req() request,
+    @Res() response,
+    @Query() query: { accessToken: string; refreshToken: string },
+  ) {
+    console.log('query parameters:', query);
+
+    return response.status(HttpStatus.OK).json({
+      message: 'Got Google accessToken successfully',
       status: 200,
     });
   }

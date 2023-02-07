@@ -18,8 +18,7 @@ export class ServiceController {
   }
 
   @Get()
-  async getAll(@Req() request: any) {
-    console.log('userid', request.user.userId);
+  async getAll() {
     return this.serviceService.findAll();
   }
 
