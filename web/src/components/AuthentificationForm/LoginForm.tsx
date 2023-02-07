@@ -23,7 +23,7 @@ const LoginForm = () => {
     if (user) {
       toast.success("Connexion réussie !");
       navigate("/home");
-      console.log(user);
+      console.log("Login form: user: ", user);
     }
   }, [navigate, user]);
 
