@@ -78,9 +78,38 @@ export class ConnectionController {
 
   @Get('/google/redirect')
   public async googleRedirect(@Req() request, @Res() response, @Query() query) {
+    const clientID = process.env.GOOGLE_CLIENT_ID;
+    const clientSECRET = process.env.GOOGLE_CLIENT_SECRET;
+    const code = query.code;
+    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/google/redirect`;
+
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post(
+          `https://oauth2.googleapis.com/token`,
+          {
+            client_id: clientID,
+            client_secret: clientSECRET,
+            code: code,
+            grant_type: 'authorization_code',
+            redirect_uri: callbackURL,
+          },
+          {
+            headers: {
+              'content-type': 'application/x-www-form-urlencoded',
+            },
+          },
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+
     return response.status(HttpStatus.OK).json({
-      message: 'Got Google credentials successfully',
-      credentials: query,
+      message: 'Everything went fine',
+      credentials: data,
       status: 200,
     });
   }
