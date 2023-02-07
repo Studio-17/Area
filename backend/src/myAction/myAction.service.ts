@@ -9,6 +9,7 @@ import { AreaService } from '../area/area.service';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
+import { SchedulerRegistry } from '@nestjs/schedule';
 
 @Injectable()
 export class MyActionService {
@@ -19,6 +20,7 @@ export class MyActionService {
     @Inject(forwardRef(() => AreaService))
     private readonly areaService: AreaService,
     private readonly httpService: HttpService,
+    private schedulerRegistry: SchedulerRegistry,
   ) {}
 
   async findAction(areaId: string) {
@@ -71,6 +73,10 @@ export class MyActionService {
     return await this.myActionRepository.findBy({ actionId: actionId });
   }
 
+  async findOne(myActionId: string, userId: string) {
+    return await this.myActionRepository.findOneBy({ uuid: myActionId, userId: userId });
+  }
+
   async findByLinkedFromId(actionId: string) {
     return await this.myActionRepository.findBy({ linkedFromId: actionId });
   }
@@ -118,11 +124,27 @@ export class MyActionService {
       ...action,
     });
     const myNewAction: MyAction = await this.myActionRepository.save(newAction);
-    this.addCron(action.actionId, {}, token, myNewAction.uuid);
+    this.addCron(
+      action.actionId,
+      { hour: action.hour, minute: action.minute, second: action.second },
+      token,
+      myNewAction.uuid,
+    );
     return myNewAction;
   }
 
   async removeAction(actionId: string, userId: string) {
+    const myAction = await this.findOne(actionId, userId);
+    if (!myAction) {
+      return;
+    }
+    const action = await this.actionService.findOne(myAction.actionId);
+    if (action.type === 'action') {
+      try {
+        const cronJob = await this.schedulerRegistry.getCronJob(action.name + '-' + actionId);
+        cronJob.stop();
+      } catch (error) {}
+    }
     return await this.myActionRepository.delete({ uuid: actionId, userId: userId });
   }
 

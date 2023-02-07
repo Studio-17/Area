@@ -24,6 +24,9 @@ export class AreaService {
       {
         actionId: createAreaDto.action,
         linkedFromId: null,
+        hour: createAreaDto.hour,
+        minute: createAreaDto.minute,
+        second: createAreaDto.second,
       },
       userId,
       token,
@@ -34,6 +37,9 @@ export class AreaService {
         {
           actionId: myAction,
           linkedFromId: action.uuid,
+          hour: createAreaDto.hour,
+          minute: createAreaDto.minute,
+          second: createAreaDto.second,
         },
         userId,
         token,
