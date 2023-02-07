@@ -14,22 +14,22 @@ export class ServiceSeederService {
   async seed() {
     const services = [
       {
-        uuid: '00000000-0000-0000-0000-000000000000',
+        // uuid: '00000000-0000-0000-0000-000000000000',
         name: 'Google',
         description: 'Google Service description',
       },
       {
-        uuid: '11111111-1111-1111-1111-111111111111',
+        // uuid: '11111111-1111-1111-1111-111111111111',
         name: 'GitHub',
         description: 'GitHub Service description',
       },
       {
-        uuid: '22222222-2222-2222-2222-222222222222',
+        // uuid: '22222222-2222-2222-2222-222222222222',
         name: 'Notion',
         description: 'Notion Service description',
       },
       {
-        uuid: '33333333-3333-3333-3333-333333333333',
+        // uuid: '33333333-3333-3333-3333-333333333333',
         name: 'Spotify',
         description: 'Spotify Service description',
       },
@@ -38,7 +38,7 @@ export class ServiceSeederService {
     for (const service of services) {
       console.log(`Seeding ${service.name} Service`);
       const exists = await this.serviceRepository.findOneBy({
-        uuid: service.uuid,
+        uuid: service.name,
       });
 
       if (!exists) {
