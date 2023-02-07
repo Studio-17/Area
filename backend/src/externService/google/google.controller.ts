@@ -1,8 +1,9 @@
-import { Controller, Get, HttpStatus, Query, Req, Res, Body, Post, UseGuards } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Req, Res, Body, Post, UseGuards } from '@nestjs/common';
 import { GoogleService } from './google.service';
-import { JwtAuthenticationGuard } from "../../authentication/guards/jwt-authentication.guard";
+import { JwtAuthenticationGuard } from '../../authentication/guards/jwt-authentication.guard';
+import { CreateCronDto } from './dto/gmail/add-cron.dto';
 
-@UseGuards(JwtAuthenticationGuard)
+// @UseGuards(JwtAuthenticationGuard)
 @Controller('actions/google')
 export class GoogleController {
   constructor(private readonly googleService: GoogleService) {}
@@ -33,6 +34,12 @@ export class GoogleController {
         status: 400,
       });
     }
+  }
+
+  @Post('/check-mail/cron')
+  public async addCheckMailCron(@Req() request, @Body() body: CreateCronDto) {
+    console.log('request', request.user);
+    this.googleService.addCron(body.name + request.uuid, body);
   }
 
   @Post('/publish-doc')

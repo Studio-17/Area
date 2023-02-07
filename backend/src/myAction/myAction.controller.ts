@@ -17,7 +17,7 @@ export class MyActionController {
     @Body() action: CreateMyActionDto,
     @Req() request: any,
   ) {
-    return this.myActionService.addAction(id, action, request.user.userId);
+    return this.myActionService.addAction(id, action, request.user.userId, request.user);
   }
 
   @Delete('action/:actionId')

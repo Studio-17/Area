@@ -16,7 +16,7 @@ export class AreaService {
     private readonly myActionService: MyActionService,
   ) {}
 
-  async create(createAreaDto: CreateAreaDto, userId: string) {
+  async create(createAreaDto: CreateAreaDto, userId: string, token: any) {
     const area: Area = this.areaRepository.create({ ...createAreaDto, userId: userId });
     const areaInData = await this.areaRepository.save(area);
     const action = await this.myActionService.addAction(
@@ -27,6 +27,7 @@ export class AreaService {
         linkedFromId: null,
       },
       userId,
+      token,
     );
     for (const myAction of createAreaDto.reactions) {
       await this.myActionService.addAction(
@@ -37,6 +38,7 @@ export class AreaService {
           linkedFromId: action.uuid,
         },
         userId,
+        token,
       );
     }
     return areaInData;

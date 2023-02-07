@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotFoundException } from '../utils/exceptions/not-found.exception';
@@ -6,6 +6,9 @@ import { MyAction } from './myAction.entity';
 import { CreateMyActionDto } from './dto/create-myaction-dto';
 import { ActionService } from 'src/action/action.service';
 import { AreaService } from '../area/area.service';
+import { HttpService } from '@nestjs/axios';
+import { catchError, firstValueFrom } from 'rxjs';
+import { AxiosError } from 'axios';
 
 @Injectable()
 export class MyActionService {
@@ -15,6 +18,7 @@ export class MyActionService {
     private readonly actionService: ActionService,
     @Inject(forwardRef(() => AreaService))
     private readonly areaService: AreaService,
+    private readonly httpService: HttpService,
   ) {}
 
   async findAction(areaId: string) {
@@ -71,7 +75,36 @@ export class MyActionService {
     return await this.myActionRepository.findBy({ linkedFromId: actionId });
   }
 
-  async addAction(areaId: string, action: CreateMyActionDto, userId: string) {
+  async addCron(actionId: string, timer: any, token, myActionId) {
+    const action = await this.actionService.findOne(actionId);
+
+    if (action.type === 'action') {
+      console.log('token', token);
+      await firstValueFrom(
+        this.httpService
+          .post<any>(
+            `http://localhost:3000/api/reaccoon/actions/` + action.link + `cron`,
+            {
+              name: action.name + '-' + myActionId,
+              ...timer,
+            },
+            {
+              headers: {
+                'content-type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          )
+          .pipe(
+            catchError((error: AxiosError) => {
+              throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            }),
+          ),
+      );
+    }
+  }
+
+  async addAction(areaId: string, action: CreateMyActionDto, userId: string, token) {
     const actionIsPresent: boolean = await this.actionService.exist(action.actionId);
     if (!actionIsPresent) {
       throw NotFoundException('action');
@@ -81,7 +114,9 @@ export class MyActionService {
       throw NotFoundException('area');
     }
     const newAction: MyAction = this.myActionRepository.create({ userId: userId, ...action });
-    return await this.myActionRepository.save(newAction);
+    const myNewAction: MyAction = await this.myActionRepository.save(newAction);
+    this.addCron(action.actionId, {}, token, myNewAction.uuid);
+    return myNewAction;
   }
 
   async removeAction(actionId: string, userId: string) {
