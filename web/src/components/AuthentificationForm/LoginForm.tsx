@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { GoogleLogin } from "@react-oauth/google";
-import { Box, Button, TextField } from "@mui/material";
+import { Alert, Box, Button, Snackbar, TextField } from "@mui/material";
 import { theme } from "../../constants/theme";
 import { LoginRequest } from "../../models/authModel";
 import { loginUser, loginUserGoogle } from "../../slice/authSlice";
@@ -11,7 +11,7 @@ import { RootState, useAppDispatch, useAppSelector } from "../../store/store";
 
 const LoginForm = () => {
   const navigate = useNavigate();
-  const { loading, error, user } = useAppSelector(
+  const { error, user, isError } = useAppSelector(
     (state: RootState) => state.auth
   );
   const dispatch = useAppDispatch();
@@ -42,6 +42,9 @@ const LoginForm = () => {
   return (
     <>
       <div className="form-container">
+        <Snackbar open={isError}>
+          <Alert severity="error">{error}</Alert>
+        </Snackbar>
         <div
           className="main-title-container"
           style={{ color: theme.palette.secondary }}
@@ -84,7 +87,7 @@ const LoginForm = () => {
       <div className="google-main-container">
         <GoogleLogin
           onSuccess={(credentialResponse) => {
-            dispatch(loginUserGoogle({token: credentialResponse.credential}));
+            dispatch(loginUserGoogle({ token: credentialResponse.credential }));
           }}
           onError={() => console.log("login failed")}
         />
