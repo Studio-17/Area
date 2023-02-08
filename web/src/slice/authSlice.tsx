@@ -83,7 +83,7 @@ export const loginUserGoogle = createAsyncThunk(
         { token: token },
         config
       );
-      console.log(data);
+      console.log("loginUserGoogle: thunk: ", data);
       localStorage.setItem("userToken", data.accessToken);
       return data;
     } catch (error: any) {
