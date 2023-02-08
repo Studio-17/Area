@@ -12,4 +12,16 @@ export class CreateAreaDto {
   @IsArray()
   @IsNotEmpty()
   reactions!: string[];
+
+  @IsString()
+  @IsOptional()
+  hour: string;
+
+  @IsString()
+  @IsOptional()
+  minute: string;
+
+  @IsString()
+  @IsOptional()
+  second: string;
 }

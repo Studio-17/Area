@@ -16,27 +16,33 @@ export class AreaService {
     private readonly myActionService: MyActionService,
   ) {}
 
-  async create(createAreaDto: CreateAreaDto, userId: string) {
+  async create(createAreaDto: CreateAreaDto, userId: string, token: any) {
     const area: Area = this.areaRepository.create({ ...createAreaDto, userId: userId });
     const areaInData = await this.areaRepository.save(area);
     const action = await this.myActionService.addAction(
       areaInData.uuid,
       {
-        areaId: areaInData.uuid,
         actionId: createAreaDto.action,
         linkedFromId: null,
+        hour: createAreaDto.hour,
+        minute: createAreaDto.minute,
+        second: createAreaDto.second,
       },
       userId,
+      token,
     );
     for (const myAction of createAreaDto.reactions) {
       await this.myActionService.addAction(
         areaInData.uuid,
         {
-          areaId: areaInData.uuid,
           actionId: myAction,
           linkedFromId: action.uuid,
+          hour: createAreaDto.hour,
+          minute: createAreaDto.minute,
+          second: createAreaDto.second,
         },
         userId,
+        token,
       );
     }
     return areaInData;

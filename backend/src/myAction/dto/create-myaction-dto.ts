@@ -1,10 +1,6 @@
-import { IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateMyActionDto {
-  @IsUUID()
-  @IsNotEmpty()
-  areaId!: string;
-
   @IsUUID()
   @IsNotEmpty()
   actionId!: string;
@@ -12,4 +8,16 @@ export class CreateMyActionDto {
   @IsUUID()
   @IsOptional()
   linkedFromId: string;
+
+  @IsString()
+  @IsOptional()
+  hour: string;
+
+  @IsString()
+  @IsOptional()
+  minute: string;
+
+  @IsString()
+  @IsOptional()
+  second: string;
 }
