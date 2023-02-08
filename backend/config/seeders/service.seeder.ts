@@ -38,7 +38,7 @@ export class ServiceSeederService {
     for (const service of services) {
       console.log(`Seeding ${service.name} Service`);
       const exists = await this.serviceRepository.findOneBy({
-        uuid: service.name,
+        name: service.name,
       });
 
       if (!exists) {
