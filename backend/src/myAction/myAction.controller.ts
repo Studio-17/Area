@@ -11,6 +11,10 @@ import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authenticat
 export class MyActionController {
   constructor(private readonly myActionService: MyActionService) {}
 
+  async onModuleInit(): Promise<void> {
+    this.myActionService.generateAllCrons();
+  }
+
   @Post('action/')
   async addAction(
     @IsUuidParam('id') areaId: string,

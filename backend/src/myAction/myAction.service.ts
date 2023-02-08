@@ -10,6 +10,7 @@ import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
 import { SchedulerRegistry } from '@nestjs/schedule';
+import { ActionType } from 'src/action/action.entity';
 
 @Injectable()
 export class MyActionService {
@@ -81,7 +82,7 @@ export class MyActionService {
     return await this.myActionRepository.findBy({ linkedFromId: actionId });
   }
 
-  async addCron(actionId: string, timer: any, token, myActionId) {
+  async addCron(actionId: string, timer: any, myActionId) { // token
     const action = await this.actionService.findOne(actionId);
 
     if (action.type === 'action') {
@@ -96,7 +97,7 @@ export class MyActionService {
             {
               headers: {
                 'content-type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${token}`,
+                // Authorization: `Bearer ${token}`,
               },
             },
           )
@@ -127,7 +128,7 @@ export class MyActionService {
     this.addCron(
       action.actionId,
       { hour: action.hour, minute: action.minute, second: action.second },
-      token,
+      // token,
       myNewAction.uuid,
     );
     return myNewAction;
@@ -150,5 +151,20 @@ export class MyActionService {
 
   async removeByAreaId(areaId: string, userId: string) {
     return await this.myActionRepository.delete({ areaId: areaId, userId: userId });
+  }
+
+  async generateAllCrons() {
+    const allActions = await this.actionService.findByType(ActionType.ACTION);
+    for (const action of allActions) {
+      const myActions = await this.findByActionId(action.uuid);
+      for (const myAction of myActions) {
+        this.addCron(
+          action.uuid,
+          { hour: myAction.hour, minute: myAction.minute, second: myAction.second },
+          // myAction.token,
+          myAction.uuid,
+        );
+      }
+    }
   }
 }
