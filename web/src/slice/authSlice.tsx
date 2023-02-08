@@ -21,6 +21,7 @@ export interface AuthState {
   loading: null | boolean;
   error: null | any;
   success: null | any;
+  isError: boolean;
 }
 
 const initialState = {
@@ -29,12 +30,14 @@ const initialState = {
   loading: false,
   error: null,
   success: null,
+  isError: false,
 } as {
   user: null | any;
   token: null | string;
   loading: null | boolean;
   error: null | any;
   success: null | any;
+  isError: boolean;
 };
 
 export const registerUser = createAsyncThunk(
@@ -149,14 +152,17 @@ const slice = createSlice({
       .addCase(registerUser.fulfilled, (state: AuthState, { payload }: any) => {
         state.loading = false;
         state.success = true;
+        state.isError = false;
       })
       .addCase(registerUser.rejected, (state: AuthState, { payload }: any) => {
         state.loading = false;
         state.error = payload;
+        state.isError = true;
       })
       .addCase(loginUser.pending, (state: AuthState) => {
         state.loading = true;
         state.error = null;
+        state.isError = false;
       })
       .addCase(loginUser.fulfilled, (state: AuthState, { payload }) => {
         state.loading = false;
@@ -166,6 +172,7 @@ const slice = createSlice({
       .addCase(loginUser.rejected, (state: AuthState, { payload }) => {
         state.loading = false;
         state.error = payload;
+        state.isError = true;
       })
       .addCase(loginUserGoogle.pending, (state: AuthState) => {
         state.loading = true;
@@ -175,12 +182,14 @@ const slice = createSlice({
         state.loading = false;
         state.user = payload.user;
         state.token = payload.accessToken;
+        state.isError = false;
       })
       .addCase(
         loginUserGoogle.rejected,
         (state: AuthState, { payload }: any) => {
           state.loading = false;
           state.error = payload;
+          state.isError = true;
         }
       );
   },
