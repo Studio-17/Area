@@ -15,6 +15,8 @@ import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom, map } from 'rxjs';
 import { AxiosError, AxiosResponse } from 'axios';
 import { GoogleOAuth2Guard } from './guards/google-authentication.guard';
+import { CredentialsService } from '../../credentials/credentials.service';
+import {CredentialsDto} from "../../credentials/dto/credentials.dto";
 
 @ApiTags('/service/connect')
 // @UseGuards(JwtAuthenticationGuard)
@@ -22,6 +24,7 @@ import { GoogleOAuth2Guard } from './guards/google-authentication.guard';
 export class ConnectionController {
   constructor(
     private readonly connectionService: ConnectionService,
+    private readonly credentialsService: CredentialsService,
     private readonly httpService: HttpService,
   ) {}
 
@@ -118,31 +121,22 @@ export class ConnectionController {
         url: `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`,
       };
 
-      const user_email = axios(config)
+      const userEmail = await axios(config)
         .then(function (response) {
-          return JSON.stringify(response.data.email);
+          return response.data.email;
         })
         .catch(function (error) {
           throw new HttpException(error, HttpStatus.BAD_REQUEST);
         });
 
-      // const apiData = await firstValueFrom(
-      //   this.httpService
-      //     .post<any>(`http://localhost:3000/api/reaccoon/credentials/`, {
-      //       email: user_email,
-      //       service: 'google',
-      //       accessToken: googleData.data.access_token,
-      //       refreshToken: googleData.data.refresh_token,
-      //     })
-      //     .pipe(
-      //       catchError((error: AxiosError) => {
-      //         return response.status(HttpStatus.OK).json({
-      //           message: 'Invalid user credentials queried',
-      //           status: 400,
-      //         });
-      //       }),
-      //     ),
-      // );
+      const userCredentials = {
+        email: userEmail,
+        service: 'google',
+        accessToken: googleData.data.access_token,
+        refreshToken: googleData.data.refresh_token,
+      };
+
+      await this.credentialsService.createCredentialsUser(userCredentials);
     }
 
     return response.status(HttpStatus.OK).json({

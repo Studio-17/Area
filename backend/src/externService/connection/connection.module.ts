@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConnectionService } from './connection.service';
 import { ConnectionController } from './connection.controller';
 import { HttpModule } from '@nestjs/axios';
-import { CredentialsModule } from '../../credentials/credentials.module'
+import { CredentialsModule } from '../../credentials/credentials.module';
 
 @Module({
   imports: [
