@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { theme } from "../constants/theme";
 import AreasCards from "../components/Cards/AreasCards";
 import { useNavigate } from "react-router-dom";
@@ -15,8 +15,12 @@ const ListOfAreas = () => {
     useState<boolean>(false);
   const [currentAreaIdToDelete, setCurrentAreaIdToDelete] =
     useState<string>("");
-  const { data: areas, isLoading, isFetching } = useAreasQuery();
+  const { data: areas, isLoading, isFetching, refetch } = useAreasQuery();
   const [deleteArea] = useDeleteAreaMutation();
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const onClickOnAreaCards: any = (areaUuid: string | undefined) => {
     navigate(`/area/${areaUuid}`);

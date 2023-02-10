@@ -6,6 +6,9 @@ export class MyAction {
   uuid!: string;
 
   @Column()
+  userId!: string;
+
+  @Column()
   areaId!: string;
 
   @Column()
@@ -13,4 +16,13 @@ export class MyAction {
 
   @Column({ nullable: true })
   linkedFromId!: string;
+
+  @Column({ nullable: true })
+  second: string;
+
+  @Column({ nullable: true })
+  minute: string;
+
+  @Column({ nullable: true })
+  hour: string;
 }

@@ -16,26 +16,40 @@ export class AreaService {
     private readonly myActionService: MyActionService,
   ) {}
 
-  async create(createAreaDto: CreateAreaDto) {
-    const area: Area = this.areaRepository.create(createAreaDto);
+  async create(createAreaDto: CreateAreaDto, userId: string, token: any) {
+    const area: Area = this.areaRepository.create({ ...createAreaDto, userId: userId });
     const areaInData = await this.areaRepository.save(area);
-    const action = await this.myActionService.addAction(areaInData.uuid, {
-      areaId: areaInData.uuid,
-      actionId: createAreaDto.action,
-      linkedFromId: null,
-    });
+    const action = await this.myActionService.addAction(
+      areaInData.uuid,
+      {
+        actionId: createAreaDto.action,
+        linkedFromId: null,
+        hour: createAreaDto.hour,
+        minute: createAreaDto.minute,
+        second: createAreaDto.second,
+      },
+      userId,
+      token,
+    );
     for (const myAction of createAreaDto.reactions) {
-      await this.myActionService.addAction(areaInData.uuid, {
-        areaId: areaInData.uuid,
-        actionId: myAction,
-        linkedFromId: action.uuid,
-      });
+      await this.myActionService.addAction(
+        areaInData.uuid,
+        {
+          actionId: myAction,
+          linkedFromId: action.uuid,
+          hour: createAreaDto.hour,
+          minute: createAreaDto.minute,
+          second: createAreaDto.second,
+        },
+        userId,
+        token,
+      );
     }
     return areaInData;
   }
 
-  async findAll() {
-    const areas = await this.areaRepository.find();
+  async findAll(userId: string) {
+    const areas = await this.areaRepository.findBy({ userId: userId });
     const results = [];
     for (const area of areas) {
       const myAction = await this.myActionService.findAction(area.uuid);
@@ -49,11 +63,13 @@ export class AreaService {
     return results;
   }
 
-  async findOne(areaId: string) {
-    const res = await this.areaRepository.findOneByOrFail({ uuid: areaId }).catch((e) => {
-      console.error(e);
-      throw NotFoundException('area');
-    });
+  async findOne(areaId: string, userId: string) {
+    const res = await this.areaRepository
+      .findOneByOrFail({ uuid: areaId, userId: userId })
+      .catch((e) => {
+        console.error(e);
+        throw NotFoundException('area');
+      });
     if (!res) {
       throw NotFoundException('area');
     }
@@ -62,17 +78,17 @@ export class AreaService {
     return { res, action: myAction, reactions: myReactions };
   }
 
-  async update(areaId: string, updateAreaDto: UpdateAreaDto) {
-    await this.areaRepository.update({ uuid: areaId }, updateAreaDto).catch((e) => {
+  async update(areaId: string, updateAreaDto: UpdateAreaDto, userId: string) {
+    await this.areaRepository.update({ uuid: areaId, userId: userId }, updateAreaDto).catch((e) => {
       console.error(e);
       throw NotFoundException('area');
     });
-    return this.findOne(areaId);
+    return this.findOne(areaId, userId);
   }
 
-  async remove(areaId: string) {
-    this.myActionService.removeByAreaId(areaId);
-    const result = await this.areaRepository.delete({ uuid: areaId }).catch((e) => {
+  async remove(areaId: string, userId: string) {
+    this.myActionService.removeByAreaId(areaId, userId);
+    const result = await this.areaRepository.delete({ uuid: areaId, userId: userId }).catch((e) => {
       console.error(e);
       throw NotFoundException('area');
     });

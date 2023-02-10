@@ -4,12 +4,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import axios, { AxiosError } from 'axios';
 import { GmailRecordDto } from './dto/gmail/gmail.dto';
-import { Cron } from '@nestjs/schedule';
+import { Cron, SchedulerRegistry } from '@nestjs/schedule';
 import { CredentialsService } from 'src/credentials/credentials.service';
 import { ActionService } from 'src/action/action.service';
 import { MyActionService } from 'src/myAction/myAction.service';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
+import { CronJob } from 'cron';
+import { CreateCronDto } from './dto/gmail/add-cron.dto';
 
 @Injectable()
 export class GoogleService {
@@ -20,9 +22,10 @@ export class GoogleService {
     private readonly actionService: ActionService,
     private readonly myActionService: MyActionService,
     private readonly httpService: HttpService,
+    private schedulerRegistry: SchedulerRegistry,
   ) {}
 
-  @Cron('10 * * * * *')
+  @Cron('10 * * * * *', { name: 'checkMail' })
   async handleCron() {
     const credentials = await this.credentialsService.findByService('google');
 
@@ -53,6 +56,21 @@ export class GoogleService {
         }
       }
     }
+  }
+
+  async cronJob(str: string) {
+    console.log('running the cronjob ' + str);
+  }
+
+  // TODO ajouter la vérification de si il existe déjà / revoir si on le fait pas à partir de l'uuid du myaction
+  public async addCron(name: string, body: CreateCronDto) {
+    const job = new CronJob(
+      body.second + ` ` + body.minute + ` ` + body.hour + ` * * *`,
+      // this.handleCron,
+      this.cronJob.bind(this, 'test'),
+    );
+    this.schedulerRegistry.addCronJob(name, job);
+    job.start();
   }
 
   public async findByEmail(email: string): Promise<GmailRecord> {

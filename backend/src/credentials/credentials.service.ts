@@ -37,6 +37,7 @@ export class CredentialsService {
   }
 
   public async createCredentialsUser(credentialsDto: CredentialsDto): Promise<any> {
+    console.log(credentialsDto);
     try {
       const isExisting = await this.credentialRepository.exist({
         where: { service: credentialsDto.service, email: credentialsDto.email },

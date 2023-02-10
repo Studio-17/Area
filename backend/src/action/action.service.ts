@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Action } from './action.entity';
+import { Action, ActionType } from './action.entity';
 import { CreateActionDto } from './dto/create-action-dto';
 import { UpdateActionDto } from './dto/update-action-dto';
 import { NotFoundException } from '../utils/exceptions/not-found.exception';
@@ -30,6 +30,10 @@ export class ActionService {
 
   async findAll() {
     return this.actionRepository.find();
+  }
+
+  async findByType(type: ActionType) {
+    return this.actionRepository.findBy({ type: type });
   }
 
   async findOne(actionId: string) {

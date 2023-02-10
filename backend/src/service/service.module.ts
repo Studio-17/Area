@@ -3,11 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServiceService } from './service.service';
 import { ServiceController } from './service.controller';
 import { Service } from './service.entity';
+import { ServiceSeederService } from '../../config/seeders/service.seeder';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Service])],
-  providers: [ServiceService],
+  providers: [ServiceService, ServiceSeederService],
   controllers: [ServiceController],
-  exports: [ServiceService],
+  exports: [ServiceService, ServiceSeederService],
 })
 export class ServiceModule {}
