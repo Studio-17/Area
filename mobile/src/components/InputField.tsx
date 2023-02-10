@@ -6,7 +6,18 @@ import {
   TextInput
 } from 'react-native';
 
-export default function InputField({ label, icon, inputType, keyboardType, fieldButtonLabel, fieldButtonFunction, handleChange }: any) {
+interface Props {
+  label?: string;
+  icon?: any;
+  inputType?: string;
+  keyboardType?: any;
+  fieldButtonLabel?: string;
+  fieldButtonFunction?: any;
+  inputTextValue?: any;
+}
+
+
+export default function InputField({ label, icon, inputType, keyboardType, fieldButtonLabel, fieldButtonFunction, inputTextValue }: Props) {
   return (
     <View
       style={{
@@ -23,14 +34,14 @@ export default function InputField({ label, icon, inputType, keyboardType, field
           keyboardType={keyboardType}
           style={{flex: 1, paddingVertical: 0}}
           secureTextEntry={true}
-          onChange={handleChange}
+          onChangeText={inputTextValue}
         />
       ) : (
         <TextInput
           placeholder={label}
           keyboardType={keyboardType}
           style={{flex: 1, paddingVertical: 0}}
-          onChange={handleChange}
+          onChangeText={inputTextValue}
         />
       )}
       <TouchableOpacity onPress={fieldButtonFunction}>

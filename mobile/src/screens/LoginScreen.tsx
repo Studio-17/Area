@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -9,18 +9,39 @@ import {
   Image,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
+import { RootState, useAppDispatch, useAppSelector } from "../redux/store/store";
+import { loginUser } from "../redux/slices/authSlice";
+import { LoginRequest } from "../redux/models/authModel";
 
 import InputField from "../components/InputField";
 import CustomButton from "../components/CustomButton";
 
 
 export default function LoginScreen({ navigation }: any) {
+  const { loading, error, user } = useAppSelector(
+    (state: RootState) => state.auth
+  );
+  const dispatch = useAppDispatch();
+  const dispatchLoginUser = async (dataToSend: LoginRequest) => {
+    dispatch(loginUser(dataToSend));
+  };
+
+  const [ email, setEmail ] = useState<string>("");
+  const [ password, setPassword ] = useState<string>("");
+
+  const onSubmit = () => {
+    const dataToSend: LoginRequest = {
+      email: email,
+      password: password,
+    };
+    dispatchLoginUser(dataToSend);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ paddingHorizontal: 25 }}>
         <View style={{ alignItems: 'center' }}>
-          <Image source={require('../assets/images/reaccoon.png')} style={{ width: 300, height: 300 }} />
+          <Image source={require('../assets/images/reaccoon.png')} style={styles.reaccoonPNG} />
         </View>
 
         <Text
@@ -34,7 +55,7 @@ export default function LoginScreen({ navigation }: any) {
         </Text>
 
         <InputField
-          label={'Email Address'}
+          label="Email Address"
           icon={
             <MaterialCommunityIcons
               name="at"
@@ -44,6 +65,7 @@ export default function LoginScreen({ navigation }: any) {
             />
           }
           keyboardType="email-address"
+          inputTextValue={(value: string) => setEmail(value)}
         />
 
         <InputField
@@ -58,12 +80,12 @@ export default function LoginScreen({ navigation }: any) {
           }
           inputType="password"
           fieldButtonLabel={"Forgot?"}
-          fieldButtonFunction={() => {}}
+          inputTextValue={(value: string) => setPassword(value)}
         />
 
-        <CustomButton label={"Login"} onPress={() => {}} />
+        <CustomButton label="Login" onPress={onSubmit} />
 
-        <Text style={{textAlign: 'center', color: '#666', marginBottom: 30}}>
+        <Text style={styles.otherLoginMethod}>
           Or, login with ...
         </Text>
 
@@ -73,39 +95,20 @@ export default function LoginScreen({ navigation }: any) {
             justifyContent: 'space-around',
             marginBottom: 30,
           }}>
-          <TouchableOpacity
-            onPress={() => {}}
-            style={{
-              borderColor: '#ddd',
-              borderWidth: 2,
-              borderRadius: 10,
-              paddingHorizontal: 30,
-              paddingVertical: 10,
-            }}>
+          <TouchableOpacity style={styles.socialmediaBtn}>
             <Image source={require('../assets/images/social/google.png')} style={{ width: 30, height: 30 }} />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {}}
-            style={{
-              borderColor: '#ddd',
-              borderWidth: 2,
-              borderRadius: 10,
-              paddingHorizontal: 30,
-              paddingVertical: 10,
-            }}>
+          <TouchableOpacity style={styles.socialmediaBtn}>
             <Image source={require('../assets/images/social/twitter.png')} style={{ width: 30, height: 30 }} />
           </TouchableOpacity>
         </View>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginBottom: 30,
-          }}>
-          <Text>Don't have an account ?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-            <Text style={{color: '#0165F5', fontWeight: '700'}}> Register</Text>
+        <View style={styles.dontHaveAccount}>
+          <Text>Don't have an account ? </Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Register')}
+          >
+            <Text style={styles.registerTextBtn}>Register</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -117,5 +120,30 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: StatusBar.currentHeight || 0,
     backgroundColor: "#FFF7FA",
+  },
+  reaccoonPNG: {
+    width: 300,
+    height: 300
+  },
+  socialmediaBtn: {
+    borderColor: '#ddd',
+    borderWidth: 2,
+    borderRadius: 10,
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+  },
+  dontHaveAccount: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 30
+  },
+  registerTextBtn: {
+    color: '#0165F5',
+    fontWeight: '700'
+  },
+  otherLoginMethod: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 30
   }
 });

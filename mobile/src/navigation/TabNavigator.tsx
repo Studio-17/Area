@@ -6,7 +6,6 @@ import { View } from "react-native";
 // Screens
 import HomeStack from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
-import MainHeader from "../components/MainHeader";
 
 const Tab = createBottomTabNavigator();
 
