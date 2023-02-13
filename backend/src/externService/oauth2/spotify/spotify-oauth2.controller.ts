@@ -33,7 +33,9 @@ export class SpotifyOAuth2Controller {
     const scope = 'playlist-read-private user-read-email';
 
     return response.status(HttpStatus.OK).json({
-      url: `https://accounts.spotify.com/authorize?scope=${scope}&response_type=code&redirect_uri=${callbackURL}&client_id=${clientID}&state=${query.id}`,
+      url: encodeURIComponent(
+        `https://accounts.spotify.com/authorize?scope=${scope}&response_type=code&redirect_uri=${callbackURL}&client_id=${clientID}&state=${query.id}`,
+      ),
       status: 200,
     });
   }

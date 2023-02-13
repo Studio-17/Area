@@ -22,7 +22,9 @@ export class GithubOAuth2Controller {
     const scope = 'repo user user:email';
 
     return response.status(HttpStatus.OK).json({
-      url: `https://github.com/login/oauth/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&allow_signup=false&state=${query.id}`,
+      url: encodeURIComponent(
+        `https://github.com/login/oauth/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&allow_signup=false&state=${query.id}`,
+      ),
       status: 200,
     });
   }

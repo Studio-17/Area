@@ -32,7 +32,9 @@ export class MiroOAuth2Controller {
     const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/miro/redirect`;
 
     return response.status(HttpStatus.OK).json({
-      url: `https://miro.com/oauth/authorize?response_type=code&client_id=${clientID}&redirect_uri=${callbackURL}&state=${query.id}`,
+      url: encodeURIComponent(
+        `https://miro.com/oauth/authorize?response_type=code&client_id=${clientID}&redirect_uri=${callbackURL}&state=${query.id}`,
+      ),
       status: 200,
     });
   }

@@ -34,7 +34,9 @@ export class GoogleOAuth2Controller {
       'email profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/drive';
 
     return response.status(HttpStatus.OK).json({
-      url: `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${query.id}&redirect_uri=${callbackURL}&client_id=${clientID}`,
+      url: encodeURIComponent(
+        `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${query.id}&redirect_uri=${callbackURL}&client_id=${clientID}`,
+      ),
       status: 200,
     });
   }

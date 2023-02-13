@@ -32,7 +32,9 @@ export class NotionOAuth2Controller {
     const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/notion/redirect`;
 
     return response.status(HttpStatus.OK).json({
-      url: `https://api.notion.com/v1/oauth/authorize?client_id=${clientID}&response_type=code&owner=user&redirect_uri=${callbackURL}&state=${query.id}`,
+      url: encodeURIComponent(
+        `https://api.notion.com/v1/oauth/authorize?client_id=${clientID}&response_type=code&owner=user&redirect_uri=${callbackURL}&state=${query.id}`,
+      ),
       status: 200,
     });
   }

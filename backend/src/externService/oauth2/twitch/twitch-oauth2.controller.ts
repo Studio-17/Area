@@ -24,7 +24,9 @@ export class TwitchOAuth2Controller {
     );
 
     return response.status(HttpStatus.OK).json({
-      url: `https://id.twitch.tv/oauth2/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&response_type=code&state=${query.id}`,
+      url: encodeURIComponent(
+        `https://id.twitch.tv/oauth2/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&response_type=code&state=${query.id}`,
+      ),
       status: 200,
     });
   }
