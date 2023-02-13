@@ -9,10 +9,10 @@ import {
 @Entity({ name: 'credential' })
 export class Credentials {
   @PrimaryGeneratedColumn('uuid')
-  uuid: number;
+  uuid: string;
 
   @Column()
-  id: string;
+  userId: string;
 
   @Column()
   service: string;

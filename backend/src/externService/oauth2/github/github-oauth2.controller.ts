@@ -18,11 +18,13 @@ export class GithubOAuth2Controller {
   @Get('/github')
   public async github(@Res() response, @Query() query: { id: string }) {
     const clientID = process.env.GITHUB_CLIENT_ID;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/github/redirect`;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/github/redirect`;
     const scope = 'repo user user:email';
 
     return response.status(HttpStatus.OK).json({
-      url: `https://github.com/login/oauth/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&allow_signup=false&state=${query.id}`,
+      url: encodeURIComponent(
+        `https://github.com/login/oauth/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&allow_signup=false&state=${query.id}`,
+      ),
       status: 200,
     });
   }
@@ -31,8 +33,8 @@ export class GithubOAuth2Controller {
     const clientID = process.env.GITHUB_CLIENT_ID;
     const clientSECRET = process.env.GITHUB_CLIENT_SECRET;
     const code = query.code;
-    const id = query.id;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/github/redirect`;
+    const id = query.state;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/github/redirect`;
 
     const githubData = await firstValueFrom(
       this.httpService
@@ -76,7 +78,7 @@ export class GithubOAuth2Controller {
         });
 
       const userCredentials = {
-        id: id,
+        userId: id,
         service: 'github',
         accessToken: accessToken,
         refreshToken: 'null',

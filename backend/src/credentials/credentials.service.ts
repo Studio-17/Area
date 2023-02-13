@@ -23,14 +23,14 @@ export class CredentialsService {
     return credentials;
   }
 
-  public async findById(id: string, service: string): Promise<Credentials> {
+  public async findById(userId: string, service: string): Promise<Credentials> {
     const credentials = await this.credentialRepository.findOneBy({
-      id: id,
+      userId: userId,
       service: service,
     });
 
     if (!credentials) {
-      throw new NotFoundException(`Credentials for #${id} not found`);
+      throw new NotFoundException(`Credentials for #${userId} not found`);
     }
 
     return credentials;
@@ -39,10 +39,10 @@ export class CredentialsService {
   public async createCredentialsUser(credentialsDto: CredentialsDto): Promise<any> {
     try {
       const isExisting = await this.credentialRepository.exist({
-        where: { service: credentialsDto.service, id: credentialsDto.id },
+        where: { service: credentialsDto.service, userId: credentialsDto.userId },
       });
       if (isExisting) {
-        return await this.updateCredentialsUser(credentialsDto.id, credentialsDto.service, {
+        return await this.updateCredentialsUser(credentialsDto.userId, credentialsDto.service, {
           accessToken: credentialsDto.accessToken,
           refreshToken: credentialsDto.refreshToken,
         });
@@ -54,21 +54,21 @@ export class CredentialsService {
   }
 
   public async updateCredentialsUser(
-    id: string,
+    userId: string,
     service: string,
     updateCredentialsDto: UpdateCredentialsDto,
   ): Promise<UpdateResult> {
     try {
       const credentials = await this.credentialRepository.update(
         {
-          id: id,
+          userId: userId,
           service: service,
         },
         { ...updateCredentialsDto },
       );
 
       if (!credentials) {
-        throw new NotFoundException(`User #${id} does not exist`);
+        throw new NotFoundException(`User #${userId} does not exist`);
       }
 
       return credentials;
@@ -77,8 +77,8 @@ export class CredentialsService {
     }
   }
 
-  public async deleteCredentialsUser(id: string, service: string): Promise<void> {
-    const credentials = await this.findById(id, service);
+  public async deleteCredentialsUser(userId: string, service: string): Promise<void> {
+    const credentials = await this.findById(userId, service);
     await this.credentialRepository.remove(credentials);
   }
 }

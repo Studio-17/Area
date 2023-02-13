@@ -18,13 +18,15 @@ export class TwitchOAuth2Controller {
   @Get('/twitch')
   public async twitch(@Res() response, @Query() query: { id: string }) {
     const clientID = process.env.TWITCH_CLIENT_ID;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/twitch/redirect`;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/twitch/redirect`;
     const scope = encodeURIComponent(
       'user:read:email user:read:follows user:read:subscriptions chat:read',
     );
 
     return response.status(HttpStatus.OK).json({
-      url: `https://id.twitch.tv/oauth2/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&response_type=code&state=${query.id}`,
+      url: encodeURIComponent(
+        `https://id.twitch.tv/oauth2/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&response_type=code&state=${query.id}`,
+      ),
       status: 200,
     });
   }
@@ -33,8 +35,8 @@ export class TwitchOAuth2Controller {
     const clientID = process.env.TWITCH_CLIENT_ID;
     const clientSECRET = process.env.TWITCH_CLIENT_SECRET;
     const code = query.code;
-    const id = query.id;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/twitch/redirect`;
+    const id = query.state;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/twitch/redirect`;
 
     const twitchData = await firstValueFrom(
       this.httpService
@@ -86,7 +88,7 @@ export class TwitchOAuth2Controller {
         });
 
       const userCredentials = {
-        id: id,
+        userId: id,
         service: 'twitch',
         accessToken: accessToken,
         refreshToken: twitchData.data.refresh_token,
