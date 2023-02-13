@@ -78,7 +78,7 @@ export class GithubOAuth2Controller {
         });
 
       const userCredentials = {
-        id: id,
+        userId: id,
         service: 'github',
         accessToken: accessToken,
         refreshToken: 'null',

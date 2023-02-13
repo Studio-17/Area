@@ -63,7 +63,7 @@ export class MiroOAuth2Controller {
 
     if (accessToken) {
       const userCredentials = {
-        id: id,
+        userId: id,
         service: 'miro',
         accessToken: miroData.data.access_token,
         refreshToken: miroData.data.refresh_token,

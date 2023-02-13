@@ -88,7 +88,7 @@ export class TwitchOAuth2Controller {
         });
 
       const userCredentials = {
-        id: id,
+        userId: id,
         service: 'twitch',
         accessToken: accessToken,
         refreshToken: twitchData.data.refresh_token,

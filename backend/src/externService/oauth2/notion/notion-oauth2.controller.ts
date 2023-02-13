@@ -74,7 +74,7 @@ export class NotionOAuth2Controller {
 
     if (accessToken) {
       const userCredentials = {
-        id: id,
+        userId: id,
         service: 'notion',
         accessToken: notionData.data.access_token,
         refreshToken: 'null',

@@ -77,7 +77,7 @@ export class GoogleOAuth2Controller {
 
     if (accessToken) {
       const userCredentials = {
-        id: id,
+        userId: id,
         service: 'google',
         accessToken: googleData.data.access_token,
         refreshToken: googleData.data.refresh_token,

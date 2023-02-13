@@ -84,7 +84,7 @@ export class DiscordOAuth2Controller {
         });
 
       const userCredentials = {
-        id: id,
+        userId: id,
         service: 'discord',
         accessToken: accessToken,
         refreshToken: discordData.refresh_token,

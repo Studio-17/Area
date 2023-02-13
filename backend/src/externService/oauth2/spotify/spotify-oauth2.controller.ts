@@ -96,7 +96,7 @@ export class SpotifyOAuth2Controller {
         });
 
       const userCredentials = {
-        id: id,
+        userId: id,
         service: 'spotify',
         accessToken: spotifyData.data.access_token,
         refreshToken: 'null',
