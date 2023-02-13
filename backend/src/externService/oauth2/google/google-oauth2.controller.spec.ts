@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConnectionController } from './connection.controller';
+import { GoogleOAuth2Controller } from './google-oauth2.controller';
 
 describe('ConnectController', () => {
-  let controller: ConnectionController;
+  let controller: GoogleOAuth2Controller;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [ConnectionController],
+      controllers: [GoogleOAuth2Controller],
     }).compile();
 
-    controller = module.get<ConnectionController>(ConnectionController);
+    controller = module.get<GoogleOAuth2Controller>(GoogleOAuth2Controller);
   });
 
   it('should be defined', () => {
