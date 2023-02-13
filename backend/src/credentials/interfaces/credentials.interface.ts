@@ -1,5 +1,5 @@
 export interface CredentialsInterface {
-  readonly id: string;
+  readonly userId: string;
   readonly service: string;
   readonly accessToken: string;
   readonly refreshToken: string;
