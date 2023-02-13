@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { HttpService } from '@nestjs/axios';
 
 @Injectable()
-export class ConnectionService {
+export class GoogleOAuth2Service {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   constructor(private readonly httpService: HttpService) {}
 

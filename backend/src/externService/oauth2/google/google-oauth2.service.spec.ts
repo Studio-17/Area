@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConnectionService } from './connection.service';
+import { GoogleOAuth2Service } from './google-oauth2.service';
 
-describe('ConnectionService', () => {
-  let service: ConnectionService;
+describe('GoogleOAuth2Service', () => {
+  let service: GoogleOAuth2Service;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ConnectionService],
+      providers: [GoogleOAuth2Service],
     }).compile();
 
-    service = module.get<ConnectionService>(ConnectionService);
+    service = module.get<GoogleOAuth2Service>(GoogleOAuth2Service);
   });
 
   it('should be defined', () => {
