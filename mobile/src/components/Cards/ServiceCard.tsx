@@ -1,24 +1,25 @@
-import * as React from "react";
+import React from "react";
 import {
   Text,
   StyleSheet,
-  Pressable
+  Pressable,
 } from "react-native";
-import { Service } from '../../models/serviceModels';
+import { Service } from '../../redux/models/serviceModels';
 
 interface Props {
   service: Service;
   logo: any;
-  setServiceSelected: React.Dispatch<React.SetStateAction<Service | null>>;
+  setServiceSelected: any;
   onClose: () => void;
+  setOpenModal: any;
 }
 
-export default function ServiceCard({ service, logo, setServiceSelected, onClose }: Props) {
+export default function ServiceCard({ service, logo, setServiceSelected, onClose, setOpenModal }: Props) {
   const onClickOnCards = () => {
     setServiceSelected(service);
-    onClose();
+    // onClose();
+    setOpenModal(true);
   };
-  console.log(service)
 
   return (
     <Pressable style={ styles.cardProperties} onPress={onClickOnCards}>
@@ -34,6 +35,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 20,
     marginVertical: 5,
+    backgroundColor: "gray",
   },
   cardContainer: {
     margin: "auto",

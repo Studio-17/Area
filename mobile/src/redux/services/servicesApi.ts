@@ -10,7 +10,7 @@ import {
 import { Service } from "../models/serviceModels";
 import { RootState } from "../store/store";
 
-const API_ENDPOINT = process.env.REACT_APP_API_URL;
+const API_ENDPOINT = "http://10.0.2.2:3000/api/reaccoon";
 
 export const servicesApi = createApi({
   reducerPath: "servicesApi",

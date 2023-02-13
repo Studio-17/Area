@@ -1,10 +1,7 @@
-import * as React from "react";
+import React from "react";
 import {
-  FlatList,
   Modal,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   SafeAreaView,
   View,
   Pressable,
@@ -13,14 +10,14 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Service } from "../../redux/models/serviceModels";
 import ServiceCard from "../Cards/ServiceCard";
 import { useState } from "react";
-import ActionCard from "../Cards/ActionCard";
+import ActionsModal from "./ActionsModal";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  setServiceSelected: React.Dispatch<React.SetStateAction<Service | null>>;
-  services: Service[] | undefined;
-  setActionSelected: React.Dispatch<React.SetStateAction<Service | null>>;
+  setServiceSelected?: any;
+  services?: Service[] | undefined;
+  setActionSelected?: any;
 }
 
 export default function ServicesModal({
@@ -30,18 +27,38 @@ export default function ServicesModal({
   setActionSelected,
   services,
 }: Props) {
+
   const [openModal, setOpenModal] = useState<boolean>(false);
 
-  console.log(services)
+  const actions = [
+    {
+      name: "Action 1",
+      uuid: "uuid1",
+      description: "Description 1",
+      type: "action",
+    },
+    {
+      name: "Action 2",
+      uuid: "uuid2",
+      description: "Description 2",
+      type: "action"
+    },
+    {
+      name: "Action 3",
+      uuid: "uuid3",
+      description: "Description 3",
+      type: "action"
+    }
+  ];
+
+  const handleClose = () => {
+    onClose();
+    setOpenModal(false);
+  };
 
   return (
     <Modal animationType="slide" visible={open} onRequestClose={onClose}>
-      {/* <ActionCard
-        // setServiceSelected={setServiceSelected}
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-        services={services}
-      /> */}
+      <ActionsModal open={openModal} onClose={handleClose} actions={actions} setActionSelected={setActionSelected} />
       <SafeAreaView>
         <View style={styles.modalContainer}>
           <Pressable style={styles.button} onPress={onClose}>
@@ -55,6 +72,7 @@ export default function ServicesModal({
               setServiceSelected={setServiceSelected}
               service={service}
               logo={""}
+              setOpenModal={setOpenModal}
               key={index}
             />
           ))}

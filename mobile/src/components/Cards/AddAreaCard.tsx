@@ -20,7 +20,7 @@ export default function AddAreaCard({ textValue, color, navigation, modalVisible
   return (
       <View style={[styles.cardProperties, {backgroundColor: color}]}>
         <Text style={styles.cardTitle}>{textValue}</Text>
-        <AppletServicesScreen navigation={navigation} modalVisible={modalVisible} setModalVisible={setModalVisible} />
+        {/*<AppletServicesScreen navigation={navigation} modalVisible={modalVisible} setModalVisible={setModalVisible} />*/}
         <Pressable
           onPress={() => setModalVisible(true)}
           style={styles.cardButton}

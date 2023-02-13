@@ -1,27 +1,18 @@
 import React, { useState } from "react";
 import {
-  KeyboardAvoidingView,
   StyleSheet,
   Text,
   View,
   SafeAreaView,
-  TextInput,
   TouchableOpacity,
-  Keyboard,
-  ScrollView,
   StatusBar,
-  Modal,
-  Button,
-  Pressable,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-// import { Service } from "../models/serviceModels";
-import { Action } from "../redux/models/actionModels";
 import { createStackNavigator } from "@react-navigation/stack";
-import ServicesModal from "../components/Modals/ServicesModal";
-import ServicesInfos from "../components/ServicesInfos";
-import AddAreaCard from "../components/Cards/AddAreaCard";
+import { Action } from "../redux/models/actionModels";
 import { Service } from "../redux/models/serviceModels";
+
+import ServicesModal from "../components/Modals/ServicesModal";
 
 const Stack = createStackNavigator();
 
@@ -42,6 +33,7 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [blockNumberSelected, setBlockNumberSelected] = useState<number>(0);
   const [serviceSelected, setServiceSelected] = useState<Service | null>(null);
+  const [actionSelected, setActionSelected] = useState<Action | null>(null);
   const [blocksState, setBlockState] = useState<any>([]);
   const [thensInstance, setthensInstance] = useState<any>([]);
   const [typeSelected, setTypeSelected] = useState<"action" | "reaction">(
@@ -65,8 +57,6 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
       description: "Description 3",
     },
   ];
-
-  const data = services;
 
   const onClickOpenModal = (
     index: number,
@@ -108,10 +98,11 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
         <Text style={styles.textHeaderStyle}>New coonie u said ?</Text>
       </View>
       <View style={styles.contentContainer}>
+        <ServicesModal open={openModal} onClose={() => setOpenModal(false)} services={services} setServiceSelected={setServiceSelected} setActionSelected={setActionSelected} />
         {blocksState[0] ? (
           <View style={styles.cardProperties}>
             <Text style={styles.cardTitle}>IF</Text>
-            <Text>{blocksState[0].name}</Text>
+            <Text>{serviceSelected?.name}</Text>
             <TouchableOpacity style={styles.cardButton}>
               <MaterialCommunityIcons name="minus" color={"black"} size={35} />
             </TouchableOpacity>
@@ -119,7 +110,8 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
         ) : (
           <View style={styles.cardProperties}>
             <Text style={styles.cardTitle}>IF</Text>
-            <Text>Yo</Text>
+            {/*<Text>Yo</Text>*/}
+            <Text>{actionSelected?.name}</Text>
             <TouchableOpacity
               style={styles.cardButton}
               onPress={() => onClickOpenModal(0, "action")}
@@ -136,7 +128,7 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    paddingTop: StatusBar.currentHeight || 0,
     backgroundColor: "#FFF7FA",
   },
   contentContainer: {
