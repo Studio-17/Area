@@ -5,7 +5,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { UserRegisterDto } from './dto/user-register.dto';
 import { GoogleAuthenticationGuard } from './guards/google-authentification.guard';
 import { GithubAuthenticationGuard } from './guards/github-authentication.guard';
-import { JwtAuthenticationGuard } from "./guards/jwt-authentication.guard";
 
 @ApiTags('Authentication')
 @Controller('authentication')
@@ -34,7 +33,7 @@ export class AuthenticationController {
     }
   }
 
-  @Get('login/google')
+  @Post('login/google')
   public async loginWithGoogle(@Body('token') token) {
     return await this.authenticationService.googleConnect(token);
   }

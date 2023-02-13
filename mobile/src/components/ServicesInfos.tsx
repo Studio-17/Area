@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect } from "react";
-import { Action } from "../models/actionModels";
-import { Service } from "../models/serviceModels";
+import { Action } from "../redux/models/actionModels";
+import { Service } from "../redux/models/serviceModels";
 import ActionCard from "./Cards/ActionCard";
 import {
   SafeAreaView,

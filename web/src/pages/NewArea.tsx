@@ -1,7 +1,7 @@
 import { theme } from "../constants/theme";
 import AddIcon from "@mui/icons-material/Add";
-import { Alert, Button, CircularProgress, Fab, Snackbar } from "@mui/material";
-import { useState } from "react";
+import { Alert, CircularProgress, Fab, Snackbar } from "@mui/material";
+import { useEffect, useState } from "react";
 import ServicesModal from "../components/Modals/ServicesModal";
 import ServicesInfos from "../components/ServicesInfos";
 import BigRoundedButtonOutlined from "../components/Buttons/BigRoundedButtonOutlined";

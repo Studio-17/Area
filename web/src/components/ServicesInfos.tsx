@@ -1,8 +1,12 @@
 import { Alert, CircularProgress, Snackbar } from "@mui/material";
+import { useEffect } from "react";
 import { theme } from "../constants/theme";
 import { Action } from "../models/actionModels";
 import { Service } from "../models/serviceModels";
-import { useActionsQuery } from "../services/servicesApi";
+import {
+  useActionsQuery,
+  useLoginGoogleServiceQuery,
+} from "../services/servicesApi";
 import "../styles/ServicesInfos.css";
 import ActionsCards from "./Cards/ActionsCards";
 
@@ -23,6 +27,13 @@ const ServicesInfos = ({
     isLoading,
     isFetching,
   } = useActionsQuery(service.uuid);
+  const { data: result } = useLoginGoogleServiceQuery();
+
+  useEffect(() => {
+    console.log(result);
+    // result && console.log(result.url);
+    if (result) window.open(result.url, "", "popup,width=1020,height=1020");
+  }, [result]);
 
   if (isLoading || isFetching) return <CircularProgress />;
 
@@ -36,15 +47,21 @@ const ServicesInfos = ({
       </div>
       <div className="subtext">Choose one ...</div>
       <div className="list-of-cards-container">
-        {actions?.filter((action: Action) => action.type === typeSelected).map((element: Action, index: number) => (
-          <ActionsCards
-            key={index}
-            actionContent={typeSelected === "action" ? element.description : undefined}
-            reactionContent={typeSelected === "reaction" ? element.description : undefined}
-            onClick={onClickOnAreasCards}
-            uuidOfAction={element.uuid}
-          />
-        ))}
+        {actions
+          ?.filter((action: Action) => action.type === typeSelected)
+          .map((element: Action, index: number) => (
+            <ActionsCards
+              key={index}
+              actionContent={
+                typeSelected === "action" ? element.description : undefined
+              }
+              reactionContent={
+                typeSelected === "reaction" ? element.description : undefined
+              }
+              onClick={onClickOnAreasCards}
+              uuidOfAction={element.uuid}
+            />
+          ))}
       </div>
       <Snackbar open={isError}>
         <Alert severity="error">Error while fetching services</Alert>

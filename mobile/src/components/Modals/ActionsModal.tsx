@@ -10,7 +10,8 @@ import {
   Pressable,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Service } from "../../models/serviceModels";
+import { Service } from "../../redux/models/serviceModels";
+import { Action } from "../../redux/models/actionModels";
 import ServiceCard from "../Cards/ServiceCard";
 import { useState } from "react";
 import ActionCard from "../Cards/ActionCard";
@@ -18,29 +19,45 @@ import ActionCard from "../Cards/ActionCard";
 interface Props {
   open: boolean;
   onClose: () => void;
-  setServiceSelected: React.Dispatch<React.SetStateAction<Service | null>>;
-  services: Service[] | undefined;
+  setActionSelected: React.Dispatch<React.SetStateAction<Action | null>>;
+  service: Service | undefined;
 }
 
-export default function ServicesModal({
+const DATA = [
+    {
+        id: "1",
+        title: "First Item",
+    },
+    {
+        id: "2",
+        title: "Second Item",
+    },
+    {
+        id: "3",
+        title: "Third Item",
+    },
+    {
+        id: "4",
+        title: "Fourth Item",
+    },
+    {
+        id: "5",
+        title: "Fifth Item",
+    },
+];
+
+export default function ActionsModal({
   open,
   onClose,
-  setServiceSelected,
+  service,
   setActionSelected,
-  services,
 }: Props) {
   const [openModal, setOpenModal] = useState<boolean>(false);
 
-  console.log(services)
+  const actions = DATA;
 
   return (
     <Modal animationType="slide" visible={open} onRequestClose={onClose}>
-      <ActionsModal
-        setServiceSelected={setServiceSelected}
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-        services={services}
-      />
       <SafeAreaView>
         <View style={styles.modalContainer}>
           <Pressable style={styles.button} onPress={onClose}>
@@ -48,14 +65,14 @@ export default function ServicesModal({
           </Pressable>
         </View>
         <View style={{ padding: 10 }}>
-          {services?.map((service, index) => (
-            <ServiceCard
-              onClose={onClose}
-              setServiceSelected={setServiceSelected}
-              service={service}
-              logo={""}
-              key={index}
-            />
+          {actions?.map((service, index) => (
+            // <ActionCard
+            //   onClose={onClose}
+            //   setServiceSelected={setServiceSelected}
+            //   service={service}
+            //   logo={""}
+            //   key={index}
+            // />
           ))}
         </View>
       </SafeAreaView>

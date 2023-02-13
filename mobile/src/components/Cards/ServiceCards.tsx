@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Modal, Button } from "react-native";
-import { Service } from "../../models/serviceModels";
+import { Service } from "../../redux/models/serviceModels";
 
 interface Props {
   service: Service;

@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionModule } from 'src/action/action.module';
@@ -7,7 +8,15 @@ import { MyAction } from './myAction.entity';
 import { MyActionService } from './myAction.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MyAction]), ActionModule, forwardRef(() => AreaModule)],
+  imports: [
+    HttpModule.register({
+      timeout: 5000,
+      maxRedirects: 5,
+    }),
+    TypeOrmModule.forFeature([MyAction]),
+    ActionModule,
+    forwardRef(() => AreaModule),
+  ],
   providers: [MyActionService],
   controllers: [MyActionController],
   exports: [MyActionService],

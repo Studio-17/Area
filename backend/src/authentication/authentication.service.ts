@@ -75,6 +75,7 @@ export class AuthenticationService {
     const jwt = this.jwtService.sign(data);
 
     return {
+      userId: user.uuid,
       email: user.email,
       expiresIn: 3600,
       token: jwt,

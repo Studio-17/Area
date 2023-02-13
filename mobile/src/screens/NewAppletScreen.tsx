@@ -15,11 +15,13 @@ import {
   Pressable,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Service } from "../models/serviceModels";
-import { Action } from "../models/actionModels";
+// import { Service } from "../models/serviceModels";
+import { Action } from "../redux/models/actionModels";
 import { createStackNavigator } from "@react-navigation/stack";
 import ServicesModal from "../components/Modals/ServicesModal";
 import ServicesInfos from "../components/ServicesInfos";
+import AddAreaCard from "../components/Cards/AddAreaCard";
+import { Service } from "../redux/models/serviceModels";
 
 const Stack = createStackNavigator();
 
