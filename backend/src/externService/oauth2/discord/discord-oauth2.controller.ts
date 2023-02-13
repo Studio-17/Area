@@ -22,9 +22,7 @@ export class DiscordOAuth2Controller {
   @Get('/discord')
   public async discord(@Req() request, @Res() response, @Query() query: { id: string }) {
     const clientID = process.env.DISCORD_CLIENT_ID;
-    const callbackURL = encodeURIComponent(
-      'http://localhost:3000/api/reaccoon/service/connect/discord/redirect',
-    );
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/discord/redirect`;
     const scope = encodeURIComponent('email identify');
     const state = query.id;
 
@@ -41,7 +39,7 @@ export class DiscordOAuth2Controller {
     const clientID = process.env.DISCORD_CLIENT_ID;
     const clientSECRET = process.env.DISCORD_CLIENT_SECRET;
     const code = query.code;
-    const callbackURL = 'http://localhost:3000/api/reaccoon/service/connect/discord/redirect';
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/discord/redirect`;
     const id = query.state;
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires

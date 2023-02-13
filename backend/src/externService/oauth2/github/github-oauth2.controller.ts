@@ -18,7 +18,7 @@ export class GithubOAuth2Controller {
   @Get('/github')
   public async github(@Res() response, @Query() query: { id: string }) {
     const clientID = process.env.GITHUB_CLIENT_ID;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/github/redirect`;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/github/redirect`;
     const scope = 'repo user user:email';
 
     return response.status(HttpStatus.OK).json({
@@ -34,7 +34,7 @@ export class GithubOAuth2Controller {
     const clientSECRET = process.env.GITHUB_CLIENT_SECRET;
     const code = query.code;
     const id = query.state;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/github/redirect`;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/github/redirect`;
 
     const githubData = await firstValueFrom(
       this.httpService

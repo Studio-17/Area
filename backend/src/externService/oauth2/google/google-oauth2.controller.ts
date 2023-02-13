@@ -29,7 +29,7 @@ export class GoogleOAuth2Controller {
   @Get('/google')
   public async google(@Res() response, @Query() query: { id: string }) {
     const clientID = process.env.GOOGLE_CLIENT_ID;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/google/redirect`;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
     const scope =
       'email profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/drive';
 
@@ -47,7 +47,7 @@ export class GoogleOAuth2Controller {
     const clientSECRET = process.env.GOOGLE_CLIENT_SECRET;
     const code = query.code;
     const id = query.state;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/google/redirect`;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
 
     const googleData = await firstValueFrom(
       this.httpService

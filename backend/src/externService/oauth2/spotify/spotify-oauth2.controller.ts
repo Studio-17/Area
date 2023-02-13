@@ -29,7 +29,7 @@ export class SpotifyOAuth2Controller {
   @Get('/spotify')
   public async spotify(@Res() response, @Query() query: { id: string }) {
     const clientID = process.env.SPOTIFY_CLIENT_ID;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/spotify/redirect`;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/spotify/redirect`;
     const scope = 'playlist-read-private user-read-email';
 
     return response.status(HttpStatus.OK).json({
@@ -46,7 +46,7 @@ export class SpotifyOAuth2Controller {
     const clientSECRET = process.env.SPOTIFY_CLIENT_SECRET;
     const code = query.code;
     const id = query.state;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/spotify/redirect`;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/spotify/redirect`;
 
     const spotifyData = await firstValueFrom(
       this.httpService

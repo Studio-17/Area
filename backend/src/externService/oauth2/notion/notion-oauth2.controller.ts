@@ -29,7 +29,7 @@ export class NotionOAuth2Controller {
   @Get('/notion')
   public async notion(@Res() response, @Query() query: { id: string }) {
     const clientID = process.env.NOTION_CLIENT_ID;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/notion/redirect`;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/notion/redirect`;
 
     return response.status(HttpStatus.OK).json({
       url: encodeURIComponent(
@@ -45,7 +45,7 @@ export class NotionOAuth2Controller {
     const clientSECRET = process.env.NOTION_CLIENT_SECRET;
     const code = query.code;
     const id = query.state;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/notion/redirect`;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/notion/redirect`;
 
     const notionData = await firstValueFrom(
       this.httpService

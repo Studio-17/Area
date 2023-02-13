@@ -29,7 +29,7 @@ export class MiroOAuth2Controller {
   @Get('/miro')
   public async miro(@Res() response, @Query() query: { id: string }) {
     const clientID = process.env.MIRO_CLIENT_ID;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/miro/redirect`;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/miro/redirect`;
 
     return response.status(HttpStatus.OK).json({
       url: encodeURIComponent(
@@ -45,7 +45,7 @@ export class MiroOAuth2Controller {
     const clientSECRET = process.env.MIRO_CLIENT_SECRET;
     const code = query.code;
     const id = query.state;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/miro/redirect`;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/miro/redirect`;
 
     const miroData = await firstValueFrom(
       this.httpService
