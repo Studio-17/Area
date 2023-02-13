@@ -62,7 +62,7 @@ export class AuthenticationService {
         };
       })
       .catch((err) => {
-        throw new HttpException(err, HttpStatus.BAD_REQUEST);
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       });
   }
 
@@ -116,7 +116,7 @@ export class AuthenticationService {
         };
       })
       .catch((err) => {
-        throw new HttpException(err, HttpStatus.BAD_REQUEST);
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       });
   }
 
@@ -160,7 +160,7 @@ export class AuthenticationService {
         };
       })
       .catch((err) => {
-        throw new HttpException(err, HttpStatus.BAD_REQUEST);
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       });
   }
 }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { GoogleService } from './google.service';
 import { GoogleController } from './google.controller';
 import { GmailRecord } from './entity/gmail/gmail.entity';
@@ -8,6 +8,7 @@ import { CredentialsModule } from 'src/credentials/credentials.module';
 import { ActionModule } from 'src/action/action.module';
 import { MyActionModule } from 'src/myAction/myAction.module';
 import { HttpModule } from '@nestjs/axios';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -19,9 +20,11 @@ import { HttpModule } from '@nestjs/axios';
     ScheduleModule.forRoot(),
     CredentialsModule,
     ActionModule,
-    MyActionModule,
+    forwardRef(() => MyActionModule),
+    UserModule,
   ],
   providers: [GoogleService],
   controllers: [GoogleController],
+  exports: [GoogleService],
 })
 export class GoogleModule {}

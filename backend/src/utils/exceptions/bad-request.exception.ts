@@ -1,9 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-export function BadRequestException(
-  idName: string,
-  format: string,
-): HttpException {
+export function BadRequestException(idName: string, format: string): HttpException {
   return new HttpException(
     {
       status: HttpStatus.BAD_REQUEST,

@@ -67,7 +67,7 @@ export class ConnectionController {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
           }),
         ),
     );
@@ -105,7 +105,7 @@ export class ConnectionController {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
           }),
         ),
     );
@@ -126,7 +126,7 @@ export class ConnectionController {
           return response.data.email;
         })
         .catch(function (error) {
-          throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
         });
 
       const userCredentials = {
