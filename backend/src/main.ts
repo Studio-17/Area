@@ -25,7 +25,7 @@ async function bootstrap() {
     next();
   });
 
-  app.enableCors();
+  app.enableCors({ methods: 'GET,HEAD,PUT,PATCH,POST,DELETE' });
 
   const config = new DocumentBuilder()
     .setTitle('Reaccoon API')

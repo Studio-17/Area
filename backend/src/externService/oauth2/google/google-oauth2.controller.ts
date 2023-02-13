@@ -66,7 +66,7 @@ export class GoogleOAuth2Controller {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
           }),
         ),
     );

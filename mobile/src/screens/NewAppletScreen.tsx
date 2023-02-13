@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AddAreaCard from "../components/Cards/AddAreaCard";
-import { Service } from "../models/serviceModels";
+import { Service } from "../redux/models/serviceModels";
 
 export default function NewAppletScreen({ navigation }: { navigation: any }) {
   const [modalVisible, setModalVisible] = useState(false);

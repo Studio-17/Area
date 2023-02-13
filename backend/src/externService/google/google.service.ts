@@ -1,10 +1,17 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { GmailRecord } from './entity/gmail/gmail.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import axios, { AxiosError } from 'axios';
 import { GmailRecordDto } from './dto/gmail/gmail.dto';
-import { Cron, SchedulerRegistry } from '@nestjs/schedule';
+import { SchedulerRegistry } from '@nestjs/schedule';
 import { CredentialsService } from 'src/credentials/credentials.service';
 import { ActionService } from 'src/action/action.service';
 import { MyActionService } from 'src/myAction/myAction.service';
@@ -12,6 +19,7 @@ import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { CronJob } from 'cron';
 import { CreateCronDto } from './dto/gmail/add-cron.dto';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class GoogleService {
@@ -20,56 +28,70 @@ export class GoogleService {
     private readonly gmailRecordRepository: Repository<GmailRecord>,
     private readonly credentialsService: CredentialsService,
     private readonly actionService: ActionService,
+    @Inject(forwardRef(() => MyActionService))
     private readonly myActionService: MyActionService,
+    private readonly userService: UserService,
     private readonly httpService: HttpService,
     private schedulerRegistry: SchedulerRegistry,
   ) {}
 
-  @Cron('10 * * * * *', { name: 'checkMail' })
-  async handleCron() {
-    const credentials = await this.credentialsService.findByService('google');
+  async handleCronReaction(
+    userId: string,
+    actionLink: string,
+    accessToken: string,
+    params: [{ name: string; content: string }],
+  ) {
+    const action = await this.actionService.findByLink(actionLink);
+    const relatedActions = await this.myActionService.findByActionAndUserId(action.uuid, userId);
 
-    for (const credential of credentials) {
-      const mail = await this.updateLastEmailReceived(credential.accessToken, credential.email);
-      if (mail.new) {
-        const action = await this.actionService.findByLink('google/check-mail/');
-        const relatedActions = await this.myActionService.findByActionId(action.uuid);
+    for (const relatedAction of relatedActions) {
+      const linkedReaction = await this.myActionService.findByLinkedFromId(relatedAction.uuid);
 
-        for (const relatedAction of relatedActions) {
-          const linkedReaction = await this.myActionService.findByLinkedFromId(relatedAction.uuid);
-
-          for (const linked of linkedReaction) {
-            const reaction = await this.actionService.findOne(linked.actionId);
-            await firstValueFrom(
-              this.httpService
-                .post<any>('http://localhost:3000/api/reaccoon/actions/' + reaction.link, {
-                  accessToken: credential.accessToken,
-                  filename: mail.mail.lastEmailId,
-                })
-                .pipe(
-                  catchError((error: AxiosError) => {
-                    throw new HttpException(error, HttpStatus.BAD_REQUEST);
-                  }),
-                ),
-            );
-          }
-        }
+      for (const linked of linkedReaction) {
+        const reaction = await this.actionService.findOne(linked.actionId);
+        await firstValueFrom(
+          this.httpService
+            .post<any>('http://localhost:3000/api/reaccoon/actions/' + reaction.link, {
+              accessToken: accessToken,
+              filename: params,
+            })
+            .pipe(
+              catchError((error: AxiosError) => {
+                throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+              }),
+            ),
+        );
       }
     }
   }
 
-  async cronJob(str: string) {
-    console.log('running the cronjob ' + str);
+  async handleCron(userId: string, params?: [{ name: string; content: string }]) {
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      return;
+    }
+
+    let credential;
+    try {
+      credential = await this.credentialsService.findById(user.email, 'google');
+    } catch (error: any) {
+      return;
+    }
+
+    const mail = await this.updateLastEmailReceived(credential.accessToken, credential.email);
+    if (mail.new) {
+      params.push({ name: 'actionParam', content: mail.mail.uuid });
+      this.handleCronReaction(userId, 'google/check-mail/', credential.accessToken, params);
+    }
   }
 
   // TODO ajouter la vérification de si il existe déjà / revoir si on le fait pas à partir de l'uuid du myaction
-  public async addCron(name: string, body: CreateCronDto) {
+  public async addCron(body: CreateCronDto) {
     const job = new CronJob(
       body.second + ` ` + body.minute + ` ` + body.hour + ` * * *`,
-      // this.handleCron,
-      this.cronJob.bind(this, 'test'),
+      this.handleCron.bind(this, body.userId, body.params),
     );
-    this.schedulerRegistry.addCronJob(name, job);
+    this.schedulerRegistry.addCronJob(body.name, job);
     job.start();
   }
 
@@ -96,7 +118,7 @@ export class GoogleService {
       try {
         return { new: true, mail: await this.gmailRecordRepository.save(gmailRecord) };
       } catch (err) {
-        throw new HttpException(err, HttpStatus.BAD_REQUEST);
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       }
     } else {
       if (record.lastEmailId !== gmailRecord.lastEmailId) {
@@ -114,7 +136,7 @@ export class GoogleService {
 
           return { new: true, mail: await this.findByEmail(gmailRecord.email) };
         } catch (err) {
-          throw new HttpException(err, HttpStatus.BAD_REQUEST);
+          throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
         }
       } else {
         return { new: false, mail: record };
@@ -137,7 +159,7 @@ export class GoogleService {
           return apiResponse.data.messages[0].id;
         })
         .catch(function (error) {
-          throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
         });
 
       console.log('emailId (to be updated):', emailId);
@@ -150,7 +172,7 @@ export class GoogleService {
         return await this.findOrUpdateLastEmailReceived(record);
       }
     } catch (error) {
-      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
   }
 
@@ -173,7 +195,7 @@ export class GoogleService {
         return apiResponse.data.id;
       })
       .catch(function (error) {
-        throw new HttpException(error, HttpStatus.BAD_REQUEST);
+        throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
       });
 
     return fileId;
@@ -194,7 +216,7 @@ export class GoogleService {
         return apiResponse;
       })
       .catch(function (error) {
-        throw new HttpException(error, HttpStatus.BAD_REQUEST);
+        throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
       });
 
     return credentials;
@@ -214,7 +236,7 @@ export class GoogleService {
         return apiResponse;
       })
       .catch(function (error) {
-        return new HttpException(error, HttpStatus.BAD_REQUEST);
+        return new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
       });
   }
 }
