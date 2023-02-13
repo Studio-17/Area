@@ -3,13 +3,11 @@ import { AuthenticationService } from './authentication.service';
 import { AuthenticationController } from './authentication.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
-import { JwtModule } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { GoogleStrategy } from './strategies/google.strategy';
-import { GithubStrategy } from './strategies/github.strategy';
 
 @Module({
   imports: [
@@ -26,7 +24,7 @@ import { GithubStrategy } from './strategies/github.strategy';
       inject: [ConfigService],
     }),
   ],
-  providers: [AuthenticationService, UserService, JwtStrategy, GoogleStrategy, GithubStrategy],
+  providers: [AuthenticationService, UserService, JwtStrategy],
   controllers: [AuthenticationController],
 })
 export class AuthenticationModule {}
