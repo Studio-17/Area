@@ -33,7 +33,7 @@ export class TwitchOAuth2Controller {
     const clientID = process.env.TWITCH_CLIENT_ID;
     const clientSECRET = process.env.TWITCH_CLIENT_SECRET;
     const code = query.code;
-    const id = query.id;
+    const id = query.state;
     const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/twitch/redirect`;
 
     const twitchData = await firstValueFrom(

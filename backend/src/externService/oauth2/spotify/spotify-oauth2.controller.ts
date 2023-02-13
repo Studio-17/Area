@@ -43,7 +43,7 @@ export class SpotifyOAuth2Controller {
     const clientID = process.env.SPOTIFY_CLIENT_ID;
     const clientSECRET = process.env.SPOTIFY_CLIENT_SECRET;
     const code = query.code;
-    const id = query.id;
+    const id = query.state;
     const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/spotify/redirect`;
 
     const spotifyData = await firstValueFrom(

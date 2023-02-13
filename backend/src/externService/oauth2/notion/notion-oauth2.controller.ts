@@ -42,7 +42,7 @@ export class NotionOAuth2Controller {
     const clientID = process.env.NOTION_CLIENT_ID;
     const clientSECRET = process.env.NOTION_CLIENT_SECRET;
     const code = query.code;
-    const id = query.id;
+    const id = query.state;
     const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/notion/redirect`;
 
     const notionData = await firstValueFrom(

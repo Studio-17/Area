@@ -42,7 +42,7 @@ export class MiroOAuth2Controller {
     const clientID = process.env.MIRO_CLIENT_ID;
     const clientSECRET = process.env.MIRO_CLIENT_SECRET;
     const code = query.code;
-    const id = query.id;
+    const id = query.state;
     const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/miro/redirect`;
 
     const miroData = await firstValueFrom(
