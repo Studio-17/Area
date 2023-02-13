@@ -17,4 +17,8 @@ export class UserDto {
   @IsString()
   @IsOptional()
   password!: string;
+
+  @IsString()
+  @IsOptional()
+  jwt!: string;
 }
