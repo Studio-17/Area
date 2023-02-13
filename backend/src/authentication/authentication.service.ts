@@ -20,6 +20,10 @@ export class AuthenticationService {
   // Used in the CONTROLLER to register a user
   public async register(registerUserDto: UserRegisterDto): Promise<UserInterface> {
     registerUserDto.password = bcrypt.hashSync(registerUserDto.password, 8);
+
+    const jwtPayload = this.createJwtPayload(registerUserDto);
+    registerUserDto.jwt = jwtPayload.token;
+
     return this.usersService.create(registerUserDto);
   }
 
@@ -127,34 +131,37 @@ export class AuthenticationService {
     });
     const payload = ticket.getPayload();
     const isExistingUser = await this.usersService.exist(payload.email);
+
+    const user = this.usersService.findByEmail(payload.email);
+    const jwtPayload = this.createJwtPayload(user);
+
     if (!isExistingUser) {
       await this.usersService.create({
         email: payload.email,
         firstName: payload.given_name,
         lastName: payload.family_name,
         password: '',
+        jwt: jwtPayload.token,
       });
-      console.log('user created');
     }
-    console.log('going to login');
     return this.validate(payload.email)
       .then((userData) => {
         if (!userData) {
           throw new UnauthorizedException();
         }
 
-        const payload = {
-          id: userData.uuid,
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          email: userData.email,
-        };
-
-        const accessToken = this.jwtService.sign(payload);
+        // const payload = {
+        //   id: userData.uuid,
+        //   firstName: userData.firstName,
+        //   lastName: userData.lastName,
+        //   email: userData.email,
+        // };
+        //
+        // const accessToken = this.jwtService.sign(payload);
 
         return {
           expiresIn: 3600,
-          accessToken: accessToken,
+          // accessToken: accessToken,
           user: payload,
           status: 200,
         };

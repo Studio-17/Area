@@ -31,10 +31,10 @@ export class CredentialsController {
 
   @Get()
   public async findOneCredentials(
-    @Param('email') email: string,
+    @Param('id') id: string,
     @Param('service') service: string,
   ): Promise<CredentialsInterface> {
-    return this.credentialsService.findById(email, service);
+    return this.credentialsService.findById(id, service);
   }
 
   @Post()
@@ -62,12 +62,12 @@ export class CredentialsController {
   @Put()
   public async updateCredentials(
     @Res() res,
-    @Param('email') email: string,
+    @Param('id') id: string,
     @Param('service') service: string,
     @Body() credentialsUpdateDto: UpdateCredentialsDto,
   ): Promise<any> {
     try {
-      await this.credentialsService.updateCredentialsUser(email, service, credentialsUpdateDto);
+      await this.credentialsService.updateCredentialsUser(id, service, credentialsUpdateDto);
 
       return res.status(HttpStatus.OK).json({
         message: 'Credentials Updated successfully!',
@@ -83,12 +83,12 @@ export class CredentialsController {
 
   @Delete()
   public async deleteCredentials(
-    @Param('email') email: string,
+    @Param('id') id: string,
     @Param('service') service: string,
   ): Promise<void> {
-    const credentials = this.credentialsService.deleteCredentialsUser(email, service);
+    const credentials = this.credentialsService.deleteCredentialsUser(id, service);
     if (!credentials) {
-      throw new NotFoundException(`Credentials for user #${email} does not exist!`);
+      throw new NotFoundException(`Credentials for user #${id} does not exist!`);
     }
     return credentials;
   }

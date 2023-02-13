@@ -12,7 +12,7 @@ export class Credentials {
   uuid: number;
 
   @Column()
-  email: string;
+  id: string;
 
   @Column()
   service: string;
