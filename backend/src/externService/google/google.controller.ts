@@ -1,7 +1,6 @@
 import { Controller, Get, HttpStatus, Req, Res, Body, Post, UseGuards } from '@nestjs/common';
 import { GoogleService } from './google.service';
 import { JwtAuthenticationGuard } from '../../authentication/guards/jwt-authentication.guard';
-import { CreateCronDto } from './dto/gmail/add-cron.dto';
 
 // @UseGuards(JwtAuthenticationGuard)
 @Controller('actions/google')
@@ -34,11 +33,6 @@ export class GoogleController {
         status: 400,
       });
     }
-  }
-
-  @Post('/check-mail/cron')
-  public async addCheckMailCron(@Body() body: CreateCronDto) {
-    this.googleService.addCron(body.name, body);
   }
 
   @Post('/publish-doc')

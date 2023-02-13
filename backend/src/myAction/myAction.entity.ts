@@ -17,6 +17,9 @@ export class MyAction {
   @Column({ nullable: true })
   linkedFromId!: string;
 
+  @Column('text', { array: true, nullable: true })
+  params: [{ name: string; content: string }];
+
   @Column({ nullable: true })
   second: string;
 

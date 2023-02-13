@@ -50,7 +50,7 @@ export class CredentialsService {
       }
       return await this.credentialRepository.save(credentialsDto);
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
     }
   }
 
@@ -74,7 +74,7 @@ export class CredentialsService {
 
       return credentials;
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
     }
   }
 

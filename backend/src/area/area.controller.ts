@@ -14,7 +14,7 @@ export class AreaController {
 
   @Post()
   async create(@Body() createAreaDto: CreateAreaDto, @Req() request: any) {
-    return this.areaService.create(createAreaDto, request.user.userId, request.user);
+    return this.areaService.create(createAreaDto, request.user.userId);
   }
 
   @Get()

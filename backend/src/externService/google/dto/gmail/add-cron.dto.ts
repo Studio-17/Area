@@ -1,9 +1,13 @@
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional, IsArray, IsUUID } from 'class-validator';
 
 export class CreateCronDto {
   @IsString()
   @IsNotEmpty()
   name!: string;
+
+  @IsUUID()
+  @IsNotEmpty()
+  userId!: string;
 
   @IsString()
   @IsOptional()
@@ -16,4 +20,8 @@ export class CreateCronDto {
   @IsString()
   @IsOptional()
   hour?: string = '*';
+
+  @IsArray()
+  @IsOptional()
+  params?: [{ name: string; content: string }];
 }
