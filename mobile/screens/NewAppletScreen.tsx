@@ -1,51 +1,131 @@
 import React, { useState } from "react";
 import {
-  View,
+  KeyboardAvoidingView,
   StyleSheet,
-  SafeAreaView,
-  StatusBar,
-  TouchableOpacity,
   Text,
+  View,
+  SafeAreaView,
+  TextInput,
+  TouchableOpacity,
+  Keyboard,
+  ScrollView,
+  StatusBar,
+  Modal,
+  Button,
+  Pressable,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import AddAreaCard from "../components/Cards/AddAreaCard";
 import { Service } from "../models/serviceModels";
+import { Action } from "../models/actionModels";
+import { createStackNavigator } from "@react-navigation/stack";
+import ServicesModal from "../components/Modals/ServicesModal";
+import ServicesInfos from "../components/ServicesInfos";
 
-export default function NewAppletScreen({ navigation }: { navigation: any }) {
-  const [modalVisible, setModalVisible] = useState(false);
+const Stack = createStackNavigator();
+
+export default function NewAppletStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName="NewApplet"
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="NewApplet" component={NewAppletScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function NewAppletScreen({ navigation }: { navigation: any }) {
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [blockNumberSelected, setBlockNumberSelected] = useState<number>(0);
   const [serviceSelected, setServiceSelected] = useState<Service | null>(null);
+  const [blocksState, setBlockState] = useState<any>([]);
+  const [thensInstance, setthensInstance] = useState<any>([]);
+  const [typeSelected, setTypeSelected] = useState<"action" | "reaction">(
+    "action"
+  );
+
+  const services = [
+    {
+      name: "Service 1",
+      uuid: "uuid1",
+      description: "Description 1",
+    },
+    {
+      name: "Service 2",
+      uuid: "uuid2",
+      description: "Description 2",
+    },
+    {
+      name: "Service 3",
+      uuid: "uuid3",
+      description: "Description 3",
+    },
+  ];
+
+  const data = services;
+
+  const onClickOpenModal = (
+    index: number,
+    typeOfAction: "action" | "reaction"
+  ) => {
+    setTypeSelected(typeOfAction);
+    setOpenModal(true);
+    setBlockNumberSelected(index);
+  };
+
+  const onClickOnAreasCards: any = (
+    actionContent?: string,
+    reactionContent?: string,
+    uuidOfAction?: string
+  ) => {
+    actionContent &&
+      setBlockState((state: any) => [
+        ...state,
+        {
+          name: actionContent,
+          service: serviceSelected?.name,
+          uuid: uuidOfAction,
+        },
+      ]);
+    reactionContent &&
+      setBlockState((state: any) => [
+        ...state,
+        {
+          name: reactionContent,
+          service: serviceSelected?.name,
+          uuid: uuidOfAction,
+        },
+      ]);
+  };
 
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity
-          style={{ flex: 1 }}
-          onPress={() => navigation.goBack()}
-        >
-          <MaterialCommunityIcons
-            name="close"
-            color={"black"}
-            size={50}
-          />
-        </TouchableOpacity>
-        <Text style={styles.textHeaderStyle}>Create</Text>
-        <View style={{ flex: 1 }} />
+        <Text style={styles.textHeaderStyle}>New coonie u said ?</Text>
       </View>
       <View style={styles.contentContainer}>
-        <AddAreaCard
-          textValue="If"
-          color="#A37C5B"
-          navigation={navigation}
-          modalVisible={modalVisible}
-          setModalVisible={setModalVisible}
-        />
-        {/* <AddAreaCard
-          textValue="Then"
-          color="#0165F5"
-          navigation={navigation}
-          modalVisible={modalVisible}
-          setModalVisible={setModalVisible}
-        /> */}
+        {blocksState[0] ? (
+          <View style={styles.cardProperties}>
+            <Text style={styles.cardTitle}>IF</Text>
+            <Text>{blocksState[0].name}</Text>
+            <TouchableOpacity style={styles.cardButton}>
+              <MaterialCommunityIcons name="minus" color={"black"} size={35} />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.cardProperties}>
+            <Text style={styles.cardTitle}>IF</Text>
+            <Text>Yo</Text>
+            <TouchableOpacity
+              style={styles.cardButton}
+              onPress={() => onClickOpenModal(0, "action")}
+            >
+              <MaterialCommunityIcons name="plus" color={"black"} size={35} />
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -75,10 +155,51 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",
+    justifyContent: "center",
   },
   textHeaderStyle: {
-    fontSize: 30,
+    fontSize: 25,
     fontWeight: "bold",
     color: "black",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  cardProperties: {
+    padding: 15,
+    borderRadius: 15,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 30,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    backgroundColor: "grey",
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  cardTitle: {
+    margin: "auto",
+    padding: 10,
+    color: "black",
+    fontSize: 35,
+    fontWeight: "bold",
+  },
+  cardButton: {
+    backgroundColor: "white",
+    borderRadius: 50,
+    height: 50,
+    width: 50,
+    marginRight: 20,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

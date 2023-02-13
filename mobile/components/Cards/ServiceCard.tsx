@@ -4,25 +4,26 @@ import {
   StyleSheet,
   Pressable
 } from "react-native";
+import { Service } from '../../models/serviceModels';
 
-interface AppletProps {
-  item: AppletItem;
+interface Props {
+  service: Service;
+  logo: any;
+  setServiceSelected: React.Dispatch<React.SetStateAction<Service | null>>;
+  onClose: () => void;
 }
 
-interface AppletItem {
-  title: string;
-  color: string;
-}
-
-export default function Service({ item }: AppletProps) {
-  const onPressFunction = () => {
-    alert("You pressed service: " + item.title);
+export default function ServiceCard({ service, logo, setServiceSelected, onClose }: Props) {
+  const onClickOnCards = () => {
+    setServiceSelected(service);
+    onClose();
   };
+  console.log(service)
 
   return (
-    <Pressable style={[ styles.cardProperties, { backgroundColor: item.color } ]} onPress={onPressFunction}>
+    <Pressable style={ styles.cardProperties} onPress={onClickOnCards}>
       <Text style={styles.cardContainer}>
-        <Text style={styles.textProperties}>{item.title}</Text>
+        <Text style={styles.textProperties}>{service.name}</Text>
       </Text>
     </Pressable>
   );
@@ -40,6 +41,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   textProperties: {
-    color: "#FFFFFF",
+    color: "black",
   },
 });
