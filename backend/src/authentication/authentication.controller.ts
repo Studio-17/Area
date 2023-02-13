@@ -3,8 +3,6 @@ import { AuthenticationService } from './authentication.service';
 import { UserLoginDto } from './dto/user-login.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UserRegisterDto } from './dto/user-register.dto';
-import { GoogleAuthenticationGuard } from './guards/google-authentification.guard';
-import { GithubAuthenticationGuard } from './guards/github-authentication.guard';
 
 @ApiTags('Authentication')
 @Controller('authentication')
@@ -36,27 +34,5 @@ export class AuthenticationController {
   @Post('login/google')
   public async loginWithGoogle(@Body('token') token) {
     return await this.authenticationService.googleConnect(token);
-  }
-
-  @Get('/google')
-  @UseGuards(GoogleAuthenticationGuard)
-  // eslint-disable-next-line @typescript-eslint/no-empty-function,@typescript-eslint/no-unused-vars
-  public async loginGoogle(@Req() request) {}
-
-  @Get('/google/redirect')
-  @UseGuards(GoogleAuthenticationGuard)
-  public async redirectGoogle(@Req() request) {
-    return await this.authenticationService.oauth(request.user.email);
-  }
-
-  @Get('/github')
-  @UseGuards(GithubAuthenticationGuard)
-  // eslint-disable-next-line @typescript-eslint/no-empty-function,@typescript-eslint/no-unused-vars
-  public async loginGithub(@Req() request) {}
-
-  @Get('/github/redirect')
-  @UseGuards(GithubAuthenticationGuard)
-  public async redirectGithub(@Req() request) {
-    return await this.authenticationService.oauth(request.user.email);
   }
 }
