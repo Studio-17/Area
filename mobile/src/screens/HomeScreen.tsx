@@ -51,7 +51,7 @@ function HomeScreen({ navigation }: { navigation: any }) {
   // };
 
   return (
-    <SafeAreaView style={styles.cardContainer}>
+    <SafeAreaView style={{ backgroundColor: "#FFF7FA" }}>
       <MainHeader />
       <FlatList
         data={data}
@@ -88,7 +88,7 @@ export default function HomeStack() {
 const styles = StyleSheet.create({
   cardContainer: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    paddingTop: StatusBar.currentHeight || 0,
     backgroundColor: "#FFF7FA",
   },
 });

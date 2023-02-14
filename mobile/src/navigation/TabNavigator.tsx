@@ -6,16 +6,11 @@ import { View } from "react-native";
 // Screens
 import HomeStack from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import NewAppletStack from "../screens/NewAppletScreen";
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
-
-  function BlankNewPlaceholder() {
-    return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}></View>
-    );
-  };
 
   return (
     <Tab.Navigator
@@ -48,7 +43,7 @@ export default function TabNavigator() {
       />
       <Tab.Screen
         name="New"
-        component={BlankNewPlaceholder}
+        component={NewAppletStack}
         options={{
           tabBarLabel: "New",
           tabBarIcon: ({ color, size }) => (
@@ -59,12 +54,6 @@ export default function TabNavigator() {
             />
           ),
         }}
-        listeners={({ navigation }) => ({
-          tabPress: (e) => {
-            e.preventDefault();
-            navigation.navigate("newapplet");
-          },
-        })}
       />
       <Tab.Screen
         name="ProfileScreen"
