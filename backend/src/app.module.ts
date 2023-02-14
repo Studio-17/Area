@@ -21,7 +21,8 @@ import { MiroOAuth2Module } from './externService/oauth2/miro/miro-oauth2.module
 import { NotionOAuth2Module } from './externService/oauth2/notion/notion-oauth2.module';
 import { SpotifyOAuth2Module } from './externService/oauth2/spotify/spotify-oauth2.module';
 import { TwitchOAuth2Module } from './externService/oauth2/twitch/twitch-oauth2.module';
-import {JwtModule} from "@nestjs/jwt";
+import { JwtModule } from "@nestjs/jwt";
+import { GithubModule } from './externService/github/github.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import {JwtModule} from "@nestjs/jwt";
     UserModule,
     CredentialsModule,
     GoogleModule,
+    GithubModule,
     AreaModule,
     ServiceModule,
     ActionModule,

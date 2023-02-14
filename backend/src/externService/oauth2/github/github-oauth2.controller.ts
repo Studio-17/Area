@@ -31,7 +31,7 @@ export class GithubOAuth2Controller {
     const clientID = process.env.GITHUB_CLIENT_ID;
     const clientSECRET = process.env.GITHUB_CLIENT_SECRET;
     const code = query.code;
-    const id = query.id;
+    const id = query.id || '0000';
     const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/github/redirect`;
 
     const githubData = await firstValueFrom(

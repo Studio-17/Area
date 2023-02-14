@@ -3,8 +3,8 @@ import { IsUuidParam } from '../utils/decorators/Is-uuid-param.decorator';
 import { ActionService } from './action.service';
 import { CreateActionDto } from './dto/create-action-dto';
 import { UpdateActionDto } from './dto/update-action-dto';
-import { ApiTags } from "@nestjs/swagger";
-import { JwtAuthenticationGuard } from "../authentication/guards/jwt-authentication.guard";
+import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authentication.guard';
 
 @ApiTags('Action')
 @UseGuards(JwtAuthenticationGuard)
