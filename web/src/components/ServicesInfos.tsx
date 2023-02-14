@@ -7,6 +7,7 @@ import {
   useActionsQuery,
   useLoginGoogleServiceQuery,
 } from "../services/servicesApi";
+import { RootState, useAppSelector } from "../store/store";
 import "../styles/ServicesInfos.css";
 import ActionsCards from "./Cards/ActionsCards";
 
@@ -27,11 +28,16 @@ const ServicesInfos = ({
     isLoading,
     isFetching,
   } = useActionsQuery(service.uuid);
-  const { data: result } = useLoginGoogleServiceQuery();
+  const { user } = useAppSelector((state: RootState) => state.auth);
+
+    const { data: result } = useLoginGoogleServiceQuery(user.id);
 
   useEffect(() => {
+    console.log(user);
     console.log(result);
-    // result && console.log(result.url);
+  }, []);
+
+  useEffect(() => {
     if (result) window.open(result.url, "", "popup,width=1020,height=1020");
   }, [result]);
 
