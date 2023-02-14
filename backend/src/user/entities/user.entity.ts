@@ -9,7 +9,7 @@ import {
 @Entity({ name: 'user' })
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  uuid: number;
+  uuid: string;
 
   @Column()
   firstName: string;
@@ -24,6 +24,9 @@ export class User {
 
   @Column({ nullable: true })
   password: string;
+
+  @Column({ nullable: true })
+  jwt: string;
 
   @CreateDateColumn({
     type: 'timestamp',

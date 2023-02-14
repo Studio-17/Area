@@ -23,12 +23,10 @@ export class ServiceService {
   }
 
   async findOne(serviceId: string) {
-    const res = this.serviceRepository
-      .findOneByOrFail({ uuid: serviceId })
-      .catch((e) => {
-        console.error(e);
-        throw NotFoundException('service');
-      });
+    const res = this.serviceRepository.findOneByOrFail({ uuid: serviceId }).catch((e) => {
+      console.error(e);
+      throw NotFoundException('service');
+    });
     if (!res) {
       throw NotFoundException('service');
     }
@@ -36,22 +34,18 @@ export class ServiceService {
   }
 
   async update(serviceId: string, updateServiceDto: UpdateServiceDto) {
-    await this.serviceRepository
-      .update({ uuid: serviceId }, updateServiceDto)
-      .catch((e) => {
-        console.error(e);
-        throw NotFoundException('service');
-      });
+    await this.serviceRepository.update({ uuid: serviceId }, updateServiceDto).catch((e) => {
+      console.error(e);
+      throw NotFoundException('service');
+    });
     return this.findOne(serviceId);
   }
 
   async remove(serviceId: string) {
-    const result = await this.serviceRepository
-      .delete({ uuid: serviceId })
-      .catch((e) => {
-        console.error(e);
-        throw NotFoundException('service');
-      });
+    const result = await this.serviceRepository.delete({ uuid: serviceId }).catch((e) => {
+      console.error(e);
+      throw NotFoundException('service');
+    });
     return result.affected + ' service has been successfully deleted';
   }
 

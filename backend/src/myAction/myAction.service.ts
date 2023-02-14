@@ -1,4 +1,4 @@
-import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotFoundException } from '../utils/exceptions/not-found.exception';
@@ -6,11 +6,9 @@ import { MyAction } from './myAction.entity';
 import { CreateMyActionDto } from './dto/create-myaction-dto';
 import { ActionService } from 'src/action/action.service';
 import { AreaService } from '../area/area.service';
-import { HttpService } from '@nestjs/axios';
-import { catchError, firstValueFrom } from 'rxjs';
-import { AxiosError } from 'axios';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { ActionType } from 'src/action/action.entity';
+import { GoogleService } from 'src/externService/google/google.service';
 
 @Injectable()
 export class MyActionService {
@@ -20,7 +18,8 @@ export class MyActionService {
     private readonly actionService: ActionService,
     @Inject(forwardRef(() => AreaService))
     private readonly areaService: AreaService,
-    private readonly httpService: HttpService,
+    @Inject(forwardRef(() => GoogleService))
+    private readonly googleService: GoogleService,
     private schedulerRegistry: SchedulerRegistry,
   ) {}
 
@@ -74,6 +73,10 @@ export class MyActionService {
     return await this.myActionRepository.findBy({ actionId: actionId });
   }
 
+  async findByActionAndUserId(actionId: string, userId: string) {
+    return await this.myActionRepository.findBy({ userId: userId, actionId: actionId });
+  }
+
   async findOne(myActionId: string, userId: string) {
     return await this.myActionRepository.findOneBy({ uuid: myActionId, userId: userId });
   }
@@ -82,35 +85,31 @@ export class MyActionService {
     return await this.myActionRepository.findBy({ linkedFromId: actionId });
   }
 
-  async addCron(actionId: string, timer: any, myActionId) { // token
+  availableActions = new Map([
+    ['google/check-mail/', this.googleService.addCron.bind(this.googleService)],
+  ]);
+
+  async addCron(
+    actionId: string,
+    timer: any,
+    myActionId: string,
+    userId: string,
+    params: [{ name: string; content: string }],
+  ) {
+    // token
     const action = await this.actionService.findOne(actionId);
 
     if (action.type === 'action') {
-      await firstValueFrom(
-        this.httpService
-          .post<any>(
-            `http://localhost:3000/api/reaccoon/actions/` + action.link + `cron`,
-            {
-              name: action.name + '-' + myActionId,
-              ...timer,
-            },
-            {
-              headers: {
-                'content-type': 'application/x-www-form-urlencoded',
-                // Authorization: `Bearer ${token}`,
-              },
-            },
-          )
-          .pipe(
-            catchError((error: AxiosError) => {
-              throw new HttpException(error, HttpStatus.BAD_REQUEST);
-            }),
-          ),
-      );
+      this.availableActions.get(action.link)({
+        name: action.name + '-' + myActionId,
+        userId: userId,
+        ...timer,
+        params: params,
+      });
     }
   }
 
-  async addAction(areaId: string, action: CreateMyActionDto, userId: string, token) {
+  async addAction(areaId: string, action: CreateMyActionDto, userId: string) {
     const actionIsPresent: boolean = await this.actionService.exist(action.actionId);
     if (!actionIsPresent) {
       throw NotFoundException('action');
@@ -130,6 +129,8 @@ export class MyActionService {
       { hour: action.hour, minute: action.minute, second: action.second },
       // token,
       myNewAction.uuid,
+      userId,
+      myNewAction.params,
     );
     return myNewAction;
   }
@@ -163,6 +164,8 @@ export class MyActionService {
           { hour: myAction.hour, minute: myAction.minute, second: myAction.second },
           // myAction.token,
           myAction.uuid,
+          myAction.userId,
+          myAction.params,
         );
       }
     }

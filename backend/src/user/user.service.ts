@@ -35,13 +35,11 @@ export class UserService {
 
   public async findById(userId: string): Promise<User> {
     const user = await this.userRepository.findOneBy({
-      uuid: +userId,
+      uuid: userId,
     });
-
     if (!user) {
       throw new NotFoundException(`User #${userId} not found`);
     }
-
     return user;
   }
 
@@ -49,7 +47,7 @@ export class UserService {
     try {
       return await this.userRepository.save(userDto);
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
     }
   }
 
@@ -60,7 +58,7 @@ export class UserService {
 
       return await this.userRepository.save(user);
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
     }
   }
 
@@ -71,20 +69,20 @@ export class UserService {
 
       return await this.userRepository.save(user);
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
     }
   }
 
   public async updateProfileUser(uuid: string, userProfileDto: CreateUserDto): Promise<User> {
     try {
-      const user = await this.userRepository.findOneBy({ uuid: +uuid });
+      const user = await this.userRepository.findOneBy({ uuid: uuid });
       user.firstName = userProfileDto.firstName;
       user.lastName = userProfileDto.lastName;
       user.email = userProfileDto.email;
 
       return await this.userRepository.save(user);
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
     }
   }
 
@@ -92,7 +90,7 @@ export class UserService {
     try {
       const user = await this.userRepository.update(
         {
-          uuid: +uuid,
+          uuid: uuid,
         },
         { ...userUpdateDto },
       );
@@ -103,7 +101,7 @@ export class UserService {
 
       return user;
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
     }
   }
 

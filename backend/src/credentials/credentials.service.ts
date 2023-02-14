@@ -23,63 +23,62 @@ export class CredentialsService {
     return credentials;
   }
 
-  public async findById(email: string, service: string): Promise<Credentials> {
+  public async findById(userId: string, service: string): Promise<Credentials> {
     const credentials = await this.credentialRepository.findOneBy({
-      email: email,
+      userId: userId,
       service: service,
     });
 
     if (!credentials) {
-      throw new NotFoundException(`Credentials for #${email} not found`);
+      throw new NotFoundException(`Credentials for #${userId} not found`);
     }
 
     return credentials;
   }
 
   public async createCredentialsUser(credentialsDto: CredentialsDto): Promise<any> {
-    console.log(credentialsDto);
     try {
       const isExisting = await this.credentialRepository.exist({
-        where: { service: credentialsDto.service, email: credentialsDto.email },
+        where: { service: credentialsDto.service, userId: credentialsDto.userId },
       });
       if (isExisting) {
-        return await this.updateCredentialsUser(credentialsDto.email, credentialsDto.service, {
+        return await this.updateCredentialsUser(credentialsDto.userId, credentialsDto.service, {
           accessToken: credentialsDto.accessToken,
           refreshToken: credentialsDto.refreshToken,
         });
       }
       return await this.credentialRepository.save(credentialsDto);
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
     }
   }
 
   public async updateCredentialsUser(
-    email: string,
+    userId: string,
     service: string,
     updateCredentialsDto: UpdateCredentialsDto,
   ): Promise<UpdateResult> {
     try {
       const credentials = await this.credentialRepository.update(
         {
-          email: email,
+          userId: userId,
           service: service,
         },
         { ...updateCredentialsDto },
       );
 
       if (!credentials) {
-        throw new NotFoundException(`User #${email} does not exist`);
+        throw new NotFoundException(`User #${userId} does not exist`);
       }
 
       return credentials;
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
     }
   }
 
-  public async deleteCredentialsUser(email: string, service: string): Promise<void> {
-    const credentials = await this.findById(email, service);
+  public async deleteCredentialsUser(userId: string, service: string): Promise<void> {
+    const credentials = await this.findById(userId, service);
     await this.credentialRepository.remove(credentials);
   }
 }

@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -6,7 +6,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { CredentialsModule } from './credentials/credentials.module';
-import { ConnectionModule } from './externService/connection/connection.module';
 import { GoogleModule } from './externService/google/google.module';
 import { AreaModule } from './area/area.module';
 import { ServiceModule } from './service/service.module';
@@ -14,6 +13,15 @@ import { ActionModule } from './action/action.module';
 import { MyActionModule } from './myAction/myAction.module';
 import { ServiceSeederService } from '../config/seeders/service.seeder';
 import { LoggerMiddleware } from '../config/middlewares/logger.middleware';
+
+import { GoogleOAuth2Module } from './externService/oauth2/google/google-oauth2.module';
+import { DiscordOAuth2Module } from './externService/oauth2/discord/discord-oauth2.module';
+import { GithubOAuth2Module } from './externService/oauth2/github/github-oauth2.module';
+import { MiroOAuth2Module } from './externService/oauth2/miro/miro-oauth2.module';
+import { NotionOAuth2Module } from './externService/oauth2/notion/notion-oauth2.module';
+import { SpotifyOAuth2Module } from './externService/oauth2/spotify/spotify-oauth2.module';
+import { TwitchOAuth2Module } from './externService/oauth2/twitch/twitch-oauth2.module';
+import {JwtModule} from "@nestjs/jwt";
 
 @Module({
   imports: [
@@ -37,12 +45,19 @@ import { LoggerMiddleware } from '../config/middlewares/logger.middleware';
     AuthenticationModule,
     UserModule,
     CredentialsModule,
-    ConnectionModule,
     GoogleModule,
     AreaModule,
     ServiceModule,
     ActionModule,
     MyActionModule,
+
+    DiscordOAuth2Module,
+    GithubOAuth2Module,
+    GoogleOAuth2Module,
+    MiroOAuth2Module,
+    NotionOAuth2Module,
+    SpotifyOAuth2Module,
+    TwitchOAuth2Module,
   ],
   controllers: [AppController],
   providers: [AppService],

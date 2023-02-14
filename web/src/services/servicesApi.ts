@@ -75,8 +75,8 @@ export const servicesApi = createApi({
         body: credentials,
       }),
     }),
-    loginGoogleService: builder.query<any, void>({
-      query: () => 'service/connect/google'
+    loginGoogleService: builder.query<any, string>({
+      query: (id) => `service/connect/google?id=${id}`
     })
   }),
 });
