@@ -6,13 +6,15 @@ import {
   SafeAreaView,
   TouchableOpacity,
   StatusBar,
+  Pressable
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Action } from "../redux/models/actionModels";
 import { Service } from "../redux/models/serviceModels";
+import { useServicesQuery } from "../redux/services/servicesApi";
 
 import ServicesModal from "../components/Modals/ServicesModal";
+import ActionsModal from "../components/Modals/ActionsModal";
 
 const Stack = createStackNavigator();
 
@@ -30,41 +32,28 @@ export default function NewAppletStack() {
 }
 
 function NewAppletScreen({ navigation }: { navigation: any }) {
-  const [openModal, setOpenModal] = useState<boolean>(false);
-  const [blockNumberSelected, setBlockNumberSelected] = useState<number>(0);
+  const [openServicesModal, setOpenServicesModal] = useState<boolean>(false);
+  const [openActionsModal, setOpenActionsModal] = useState<boolean>(false);
   const [serviceSelected, setServiceSelected] = useState<Service | null>(null);
-  const [actionSelected, setActionSelected] = useState<Action | null>(null);
   const [blocksState, setBlockState] = useState<any>([]);
   const [thensInstance, setthensInstance] = useState<any>([]);
-  const [typeSelected, setTypeSelected] = useState<"action" | "reaction">(
-    "action"
-  );
+  const [typeSelected, setTypeSelected] = useState<"action" | "reaction">("action");
+  // const [blockNumberSelected, setBlockNumberSelected] = useState<number>(0);
 
-  const services = [
-    {
-      name: "Service 1",
-      uuid: "uuid1",
-      description: "Description 1",
-    },
-    {
-      name: "Service 2",
-      uuid: "uuid2",
-      description: "Description 2",
-    },
-    {
-      name: "Service 3",
-      uuid: "uuid3",
-      description: "Description 3",
-    },
-  ];
+  const { data: services, isError, isLoading } = useServicesQuery();
+
+  const onCloseServiceModal = () => {
+    setOpenServicesModal(false);
+    setServiceSelected(null);
+  }
 
   const onClickOpenModal = (
     index: number,
     typeOfAction: "action" | "reaction"
   ) => {
     setTypeSelected(typeOfAction);
-    setOpenModal(true);
-    setBlockNumberSelected(index);
+    setOpenServicesModal(true);
+    // setBlockNumberSelected(index);
   };
 
   const onClickOnAreasCards: any = (
@@ -90,37 +79,113 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
           uuid: uuidOfAction,
         },
       ]);
+    setServiceSelected(null);
+  };
+
+  const onClickAddthens = () => {
+    setthensInstance((thens: any) => [...thens, { type: "then" }]);
   };
 
   return (
     <SafeAreaView style={styles.screenContainer}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.textHeaderStyle}>New coonie u said ?</Text>
-      </View>
-      <View style={styles.contentContainer}>
-        <ServicesModal open={openModal} onClose={() => setOpenModal(false)} services={services} setServiceSelected={setServiceSelected} setActionSelected={setActionSelected} />
-        {blocksState[0] ? (
-          <View style={styles.cardProperties}>
-            <Text style={styles.cardTitle}>IF</Text>
-            <Text>{serviceSelected?.name}</Text>
-            <TouchableOpacity style={styles.cardButton}>
-              <MaterialCommunityIcons name="minus" color={"black"} size={35} />
-            </TouchableOpacity>
+      {!serviceSelected ? (
+        <>
+          <View style={styles.headerContainer}>
+            <Text style={styles.textHeaderStyle}>New coonie u said ?</Text>
           </View>
-        ) : (
-          <View style={styles.cardProperties}>
-            <Text style={styles.cardTitle}>IF</Text>
-            {/*<Text>Yo</Text>*/}
-            <Text>{actionSelected?.name}</Text>
-            <TouchableOpacity
-              style={styles.cardButton}
-              onPress={() => onClickOpenModal(0, "action")}
-            >
-              <MaterialCommunityIcons name="plus" color={"black"} size={35} />
-            </TouchableOpacity>
+          <View style={styles.contentContainer}>
+            {blocksState[0] ? (
+              <View style={styles.cardPropertiesServiceSelected}>
+                <Text style={styles.cardTitle}>IF</Text>
+                <Text>{blocksState[0].name}</Text>
+                <TouchableOpacity style={styles.cardButton}>
+                  <MaterialCommunityIcons name="minus" color={"black"} size={35} />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View style={styles.cardProperties}>
+                <Text style={styles.cardTitle}>IF</Text>
+                <TouchableOpacity
+                  style={styles.cardButton}
+                  onPress={() => onClickOpenModal(0, "action")}
+                >
+                  <MaterialCommunityIcons name="plus" color={"black"} size={35} />
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
-        )}
-      </View>
+          {thensInstance.map((block: any, index: number) => (
+            <View key={index} style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}>
+              <View style={{
+                backgroundColor: "#E2DDFF",
+                width: 10,
+                height: 30,
+              }} />
+              <View style={styles.thenContainer}>
+                {blocksState[index + 1] ? (
+                  <View style={styles.thenCardProperties}>
+                    <Text style={styles.cardTitle}>Then</Text>
+                    <Text>{blocksState[index + 1].name}</Text>
+                    <TouchableOpacity style={styles.cardButton}>
+                      <MaterialCommunityIcons name="minus" color={"black"} size={35} />
+                    </TouchableOpacity>
+                  </View>
+                ): (
+                  <View style={styles.thenCardProperties}>
+                    <Text style={styles.cardTitle}>Then</Text>
+                    <TouchableOpacity
+                      style={styles.cardButton}
+                      onPress={() => onClickOpenModal(index + 1, "reaction")}
+                    >
+                      <MaterialCommunityIcons name="plus" color={"black"} size={35} />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            </View>
+          ))}
+          <Pressable
+            style={{
+              borderRadius: 15,
+              borderColor: "#0165F5",
+              borderWidth: 3,
+              padding: 15,
+              marginVertical: 15,
+              marginHorizontal: 40,
+            }}
+            onPress={onClickAddthens}
+          >
+            <Text style={{
+              textAlign: "center",
+              color: "#0165F5",
+              fontWeight: "bold",
+              fontSize: 20,
+            }}>
+              Add thens
+            </Text>
+          </Pressable>
+        </>
+      ) : (
+        <ActionsModal
+          openActionsModal={openActionsModal}
+          onCloseActionsModal={() => setOpenActionsModal(false)}
+          onCloseServicesModal={() => setOpenServicesModal(false)}
+          onClickOnAreasCards={onClickOnAreasCards}
+          typeSelected={typeSelected}
+          service={serviceSelected}
+        />
+      )}
+      <ServicesModal
+        openServicesModal={openServicesModal}
+        onCloseServicesModal={onCloseServiceModal}
+        setOpenActionModal={setOpenActionsModal}
+        setServiceSelected={setServiceSelected}
+        services={services}
+      />
     </SafeAreaView>
   );
 }
@@ -133,7 +198,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     marginTop: 20,
-    paddingVertical: 13,
+    paddingTop: 13,
     paddingHorizontal: 40,
   },
   textStyle: {
@@ -168,7 +233,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 30,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -179,11 +243,29 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  cardPropertiesServiceSelected: {
+    padding: 10,
+    borderRadius: 15,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    // marginBottom: 30,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    backgroundColor: "#A37C5B",
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
   cardTitle: {
     margin: "auto",
     padding: 10,
     color: "black",
-    fontSize: 35,
+    fontSize: 30,
     fontWeight: "bold",
   },
   cardButton: {
@@ -196,4 +278,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  thenContainer: {
+    width: "100%",
+    paddingHorizontal: 40,
+  },
+  thenCardProperties: {
+    padding: 10,
+    borderRadius: 15,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    backgroundColor: "#0165F5",
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  }
 });

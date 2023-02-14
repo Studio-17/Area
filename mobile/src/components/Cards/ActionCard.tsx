@@ -4,36 +4,52 @@ import {
   Pressable,
   StyleSheet
 } from "react-native";
-import { Action } from '../../redux/models/actionModels';
 
 interface Props {
   actionContent?: string;
   reactionContent?: string;
   uuidOfAction?: string;
-  // onClick?: (
-  //   actionContent?: string,
-  //   reactionContent?: string,
-  //   uuidOfAction?: string
-  // ) => React.MouseEventHandler<HTMLButtonElement> | undefined;
-  action: Action;
+  onClick: (
+    actionContent?: string,
+    reactionContent?: string,
+    uuidOfAction?: string
+  ) => any | undefined;
   onClose: () => void;
-  setActionSelected?: any;
-  logo: any;
+  onCloseServicesModal: () => void;
+  logo?: any;
 }
 
-export default function ActionCard({ onClose, actionContent, reactionContent, uuidOfAction, setActionSelected, action }: Props) {
+export default function ActionCard(
+  {
+    onClose,
+    onCloseServicesModal,
+    actionContent,
+    reactionContent,
+    uuidOfAction,
+    onClick
+  }: Props) {
   const onClickOnCards = () => {
-    setActionSelected(action);
     onClose();
+    onCloseServicesModal();
+    onClick(actionContent && actionContent, reactionContent && reactionContent, uuidOfAction && uuidOfAction)
   };
 
-    return (
-      <Pressable style={ styles.cardProperties} onPress={onClickOnCards}>
-        <Text style={styles.cardContainer}>
-          <Text style={styles.textProperties}>{action.name}</Text>
-        </Text>
-      </Pressable>
-    );
+  // console.log("reactionContent", reactionContent);
+  // console.log("actionContent", actionContent);
+  // console.log("uuidOfAction", uuidOfAction);
+
+  return (
+    <Pressable style={ styles.cardProperties} onPress={onClickOnCards}>
+      <Text style={styles.cardContainer}>
+        {actionContent && (
+          <Text style={styles.textProperties}>{actionContent}</Text>
+        )}
+        {reactionContent && (
+          <Text style={styles.textProperties}>{reactionContent}</Text>
+        )}
+      </Text>
+    </Pressable>
+  );
 };
 
 const styles = StyleSheet.create({

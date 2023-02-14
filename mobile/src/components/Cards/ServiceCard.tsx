@@ -8,17 +8,21 @@ import { Service } from '../../redux/models/serviceModels';
 
 interface Props {
   service: Service;
-  logo: any;
+  logo?: any;
   setServiceSelected: any;
-  onClose: () => void;
-  setOpenModal: any;
+  setOpenActionModal: any;
 }
 
-export default function ServiceCard({ service, logo, setServiceSelected, onClose, setOpenModal }: Props) {
+export default function ServiceCard(
+  {
+    service,
+    logo,
+    setServiceSelected,
+    setOpenActionModal
+  }: Props) {
   const onClickOnCards = () => {
     setServiceSelected(service);
-    // onClose();
-    setOpenModal(true);
+    setOpenActionModal(true);
   };
 
   return (

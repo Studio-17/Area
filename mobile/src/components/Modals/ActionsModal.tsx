@@ -7,41 +7,62 @@ import {
   Pressable,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Service } from "../../redux/models/serviceModels";
 import { Action } from "../../redux/models/actionModels";
+import { useActionsQuery } from "../../redux/services/servicesApi";
 
 import ActionCard from "../Cards/ActionCard";
 
 interface Props {
-  open: boolean;
-  onClose: () => void;
-  setActionSelected?: any;
-  actions?: Action[] | undefined;
+  openActionsModal: boolean;
+  onCloseActionsModal: () => void;
+  onCloseServicesModal: () => void;
+  service: Service;
+  onClickOnAreasCards: any;
+  typeSelected: "action" | "reaction";
 }
 
-export default function ActionsModal({
-  open,
-  onClose,
-  actions,
-  setActionSelected,
-}: Props) {
+export default function ActionsModal(
+  {
+    openActionsModal,
+    onCloseActionsModal,
+    onCloseServicesModal,
+    service,
+    onClickOnAreasCards,
+    typeSelected
+  }: Props) {
+  const {
+    data: actions,
+    isError,
+    isLoading,
+    isFetching,
+  } = useActionsQuery(service.uuid);
 
   return (
-    <Modal animationType="slide" visible={open} onRequestClose={onClose}>
+    <Modal animationType="slide" visible={openActionsModal} onRequestClose={onCloseActionsModal}>
       <SafeAreaView>
         <View style={styles.modalContainer}>
-          <Pressable style={styles.button} onPress={onClose}>
+          <Pressable style={styles.button} onPress={onCloseActionsModal}>
             <MaterialCommunityIcons name="close" color={"black"} size={50} />
           </Pressable>
         </View>
         <View style={{ padding: 10 }}>
-          {actions?.map((action, index) => (
-            <ActionCard
-              onClose={onClose}
-              setActionSelected={setActionSelected}
-              logo={""}
-              action={action}
-              key={index}
-            />
+          {actions
+            ?.filter((action: Action) => action.type === typeSelected)
+            .map((action: Action, index: number) => (
+              <ActionCard
+                onClose={onCloseActionsModal}
+                onCloseServicesModal={onCloseServicesModal}
+                actionContent={
+                  typeSelected === "action" ? action.name : undefined
+                }
+                reactionContent={
+                  typeSelected === "reaction" ? action.name : undefined
+                }
+                onClick={onClickOnAreasCards}
+                uuidOfAction={action.uuid}
+                key={index}
+              />
           ))}
         </View>
       </SafeAreaView>

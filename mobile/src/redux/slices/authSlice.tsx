@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootState } from "../store/store";
 
 
-const API_ENDPOINT = "http://10.0.2.2:3000/api/reaccoon";
+const API_ENDPOINT = "http://localhost:3000/api/reaccoon";
 
 
 let userToken = null;
