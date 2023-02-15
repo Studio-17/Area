@@ -1,5 +1,8 @@
 import * as React from "react";
-import { StyleSheet, StatusBar, Text, Pressable } from "react-native";
+import { StyleSheet, StatusBar, Pressable } from "react-native";
+
+// Components
+import MyText from "../MyText";
 
 interface AppletProps {
   navigation: any;
@@ -13,9 +16,9 @@ export default function AppletCard({ navigation, item }: AppletProps) {
 
   return (
     <Pressable style={styles.cardProperties} onPress={onPressFunction}>
-      <Text style={styles.appletContainer}>
-        <Text style={styles.textProperties}>{item.name}</Text>
-      </Text>
+      <MyText style={styles.appletContainer}>
+        <MyText style={styles.textProperties}>{item.name}</MyText>
+      </MyText>
     </Pressable>
   );
 }

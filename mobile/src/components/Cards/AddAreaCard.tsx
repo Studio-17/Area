@@ -1,8 +1,11 @@
 import React from "react";
-import { Text, StyleSheet, Pressable, View } from "react-native";
+import { StyleSheet, Pressable, View } from "react-native";
 
 // Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+// Components
+import MyText from "../MyText";
 
 interface Props {
   textValue: string;
@@ -21,7 +24,7 @@ export default function AddAreaCard({
 }: Props) {
   return (
     <View style={[styles.cardProperties, { backgroundColor: color }]}>
-      <Text style={styles.cardTitle}>{textValue}</Text>
+      <MyText style={styles.cardTitle}>{textValue}</MyText>
       {/*<AppletServicesScreen navigation={navigation} modalVisible={modalVisible} setModalVisible={setModalVisible} />*/}
       <Pressable
         onPress={() => setModalVisible(true)}

@@ -1,8 +1,11 @@
 import React from "react";
-import { View, Text, Button } from "react-native";
+import { View, Button } from "react-native";
 
 // Redux
 import { Service } from "../../redux/models/serviceModels";
+
+// Components
+import MyText from "../MyText";
 
 interface Props {
   service: Service;
@@ -25,9 +28,9 @@ export default function ServicesCards({
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Button title="Close" onPress={onClose} />
-      <Text>{service.name}</Text>
-      <Text>{service.description}</Text>
-      <Text>{service.uuid}</Text>
+      <MyText>{service.name}</MyText>
+      <MyText>{service.description}</MyText>
+      <MyText>{service.uuid}</MyText>
       <Button title="Select" onPress={onClickOnCards} />
     </View>
   );

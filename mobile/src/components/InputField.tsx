@@ -1,5 +1,8 @@
 import React from "react";
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import { View, TouchableOpacity, TextInput } from "react-native";
+
+// Components
+import MyText from "../components/MyText";
 
 interface Props {
   label?: string;
@@ -48,9 +51,9 @@ export default function InputField({
         />
       )}
       <TouchableOpacity onPress={fieldButtonFunction}>
-        <Text style={{ color: "#0165F5", fontWeight: "700" }}>
+        <MyText style={{ color: "#0165F5", fontWeight: "700" }}>
           {fieldButtonLabel}
-        </Text>
+        </MyText>
       </TouchableOpacity>
     </View>
   );

@@ -2,7 +2,6 @@ import * as React from "react";
 import { useEffect } from "react";
 import {
   SafeAreaView,
-  Text,
   StyleSheet,
   StatusBar,
   TouchableOpacity,
@@ -19,6 +18,7 @@ import { logoutUser } from "../redux/slices/authSlice";
 
 // Components
 import MainHeader from "../components/MainHeader";
+import MyText from "../components/MyText";
 
 export default function ProfileScreen({ navigation }: { navigation: any }) {
   const dispatch = useAppDispatch();
@@ -40,14 +40,14 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
     <SafeAreaView style={styles.screenContainer}>
       <MainHeader />
       <View style={styles.contentContainer}>
-        <Text>Prénom : {user?.firstName}</Text>
-        <Text>Nom : {user?.lastName}</Text>
-        <Text>Email : {user?.email}</Text>
+        <MyText>Prénom : {user?.firstName}</MyText>
+        <MyText>Nom : {user?.lastName}</MyText>
+        <MyText>Email : {user?.email}</MyText>
         <TouchableOpacity
           style={styles.disconectionButton}
           onPress={() => handleDeconnection()}
         >
-          <Text>Disconnect</Text>
+          <MyText>Disconnect</MyText>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
