@@ -3,7 +3,7 @@ import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionModule } from 'src/action/action.module';
 import { AreaModule } from 'src/area/area.module';
-import { GoogleModule } from 'src/externService/google/google.module';
+import { GoogleModule } from 'src/externService/service/google/google.module';
 import { MyActionController } from './myAction.controller';
 import { MyAction } from './myAction.entity';
 import { MyActionService } from './myAction.service';
