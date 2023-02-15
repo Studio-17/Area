@@ -1,5 +1,7 @@
 import React from "react";
-import { View, Text, Modal, Button } from "react-native";
+import { View, Text, Button } from "react-native";
+
+// Redux
 import { Service } from "../../redux/models/serviceModels";
 
 interface Props {
@@ -15,7 +17,6 @@ export default function ServicesCards({
   setServiceSelected,
   onClose,
 }: Props) {
-
   const onClickOnCards = () => {
     setServiceSelected(service);
     onClose();

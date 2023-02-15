@@ -6,9 +6,15 @@ import {
   View,
   Pressable,
 } from "react-native";
+
+// Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+// Models
 import { Service } from "../../redux/models/serviceModels";
 import { Action } from "../../redux/models/actionModels";
+
+// API
 import { useActionsQuery } from "../../redux/services/servicesApi";
 
 import ActionCard from "../Cards/ActionCard";

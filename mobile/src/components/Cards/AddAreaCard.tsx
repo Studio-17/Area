@@ -1,11 +1,7 @@
 import React from "react";
-import {
-  Text,
-  StyleSheet,
-  Pressable,
-  View,
-} from "react-native";
-import AppletServicesScreen from "../../screens/AppletServicesScreen";
+import { Text, StyleSheet, Pressable, View } from "react-native";
+
+// Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface Props {
@@ -16,22 +12,24 @@ interface Props {
   setModalVisible: any;
 }
 
-export default function AddAreaCard({ textValue, color, navigation, modalVisible, setModalVisible }: Props) {
+export default function AddAreaCard({
+  textValue,
+  color,
+  navigation,
+  modalVisible,
+  setModalVisible,
+}: Props) {
   return (
-      <View style={[styles.cardProperties, {backgroundColor: color}]}>
-        <Text style={styles.cardTitle}>{textValue}</Text>
-        {/*<AppletServicesScreen navigation={navigation} modalVisible={modalVisible} setModalVisible={setModalVisible} />*/}
-        <Pressable
-          onPress={() => setModalVisible(true)}
-          style={styles.cardButton}
-        >
-          <MaterialCommunityIcons
-            name="plus"
-            color={"black"}
-            size={35}
-          />
-        </Pressable>
-      </View>
+    <View style={[styles.cardProperties, { backgroundColor: color }]}>
+      <Text style={styles.cardTitle}>{textValue}</Text>
+      {/*<AppletServicesScreen navigation={navigation} modalVisible={modalVisible} setModalVisible={setModalVisible} />*/}
+      <Pressable
+        onPress={() => setModalVisible(true)}
+        style={styles.cardButton}
+      >
+        <MaterialCommunityIcons name="plus" color={"black"} size={35} />
+      </Pressable>
+    </View>
   );
 }
 
@@ -44,7 +42,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 30,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -69,5 +67,5 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-  }
+  },
 });

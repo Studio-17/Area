@@ -6,6 +6,8 @@ import {
   StatusBar,
   View,
 } from "react-native";
+
+// Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function AppletDetailsScreen({
