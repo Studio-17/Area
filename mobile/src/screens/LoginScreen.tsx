@@ -7,6 +7,7 @@ import {
   StatusBar,
   TouchableOpacity,
   Image,
+  Keyboard,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { RootState, useAppDispatch, useAppSelector } from "../redux/store/store";
@@ -15,7 +16,6 @@ import { LoginRequest } from "../redux/models/authModel";
 
 import InputField from "../components/InputField";
 import CustomButton from "../components/CustomButton";
-import * as WebBrowser from 'expo-web-browser';
 
 
 export default function LoginScreen({ navigation }: any) {
@@ -27,6 +27,9 @@ export default function LoginScreen({ navigation }: any) {
     dispatch(loginUser(dataToSend));
   };
 
+  // console.log('error: ', error);
+  // console.log('loading: ', loading);
+
   const [ email, setEmail ] = useState<string>("");
   const [ password, setPassword ] = useState<string>("");
 
@@ -36,6 +39,22 @@ export default function LoginScreen({ navigation }: any) {
       password: password,
     };
     dispatchLoginUser(dataToSend);
+  };
+
+  const validate = async () => {
+    Keyboard.dismiss();
+    let isValid = true;
+    if (!email) {
+      // handleError('Please input email', 'email');
+      isValid = false;
+    }
+    if (!password) {
+      // handleError('Please input password', 'password');
+      isValid = false;
+    }
+    // if (isValid) {
+    //   login();
+    // }
   };
 
   return (
@@ -66,6 +85,7 @@ export default function LoginScreen({ navigation }: any) {
             />
           }
           inputTextValue={(value: string) => setEmail(value)}
+          // onFocus={() => {}}
         />
 
         <InputField
@@ -81,6 +101,7 @@ export default function LoginScreen({ navigation }: any) {
           inputType="password"
           fieldButtonLabel={"Forgot?"}
           inputTextValue={(value: string) => setPassword(value)}
+          // onFocus={() => {}}
         />
 
         <CustomButton label="Login" onPress={onSubmit} />
