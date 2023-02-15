@@ -28,6 +28,7 @@ export class GithubOAuth2Controller {
       status: 200,
     });
   }
+
   @Get('/github/redirect')
   public async githubRedirect(@Req() request, @Res() response, @Query() query) {
     const clientID = process.env.GITHUB_CLIENT_ID;
