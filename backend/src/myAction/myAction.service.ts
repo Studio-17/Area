@@ -8,7 +8,7 @@ import { ActionService } from 'src/action/action.service';
 import { AreaService } from '../area/area.service';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { ActionType } from 'src/action/action.entity';
-import { GoogleService } from 'src/externService/google/google.service';
+import { GoogleService } from 'src/externService/service/google/google.service';
 
 @Injectable()
 export class MyActionService {
