@@ -1,7 +1,10 @@
 import * as React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+// Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { View } from "react-native";
+
+// Navigation
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 // Screens
 import HomeStack from "../screens/HomeScreen";

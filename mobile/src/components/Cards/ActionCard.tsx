@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  Text,
-  Pressable,
-  StyleSheet
-} from "react-native";
+import { Text, Pressable, StyleSheet } from "react-native";
 
 interface Props {
   actionContent?: string;
@@ -19,23 +15,26 @@ interface Props {
   logo?: any;
 }
 
-export default function ActionCard(
-  {
-    onClose,
-    onCloseServicesModal,
-    actionContent,
-    reactionContent,
-    uuidOfAction,
-    onClick
-  }: Props) {
+export default function ActionCard({
+  onClose,
+  onCloseServicesModal,
+  actionContent,
+  reactionContent,
+  uuidOfAction,
+  onClick,
+}: Props) {
   const onClickOnCards = () => {
     onClose();
     onCloseServicesModal();
-    onClick(actionContent && actionContent, reactionContent && reactionContent, uuidOfAction && uuidOfAction)
+    onClick(
+      actionContent && actionContent,
+      reactionContent && reactionContent,
+      uuidOfAction && uuidOfAction
+    );
   };
 
   return (
-    <Pressable style={ styles.cardProperties} onPress={onClickOnCards}>
+    <Pressable style={styles.cardProperties} onPress={onClickOnCards}>
       <Text style={styles.cardContainer}>
         {actionContent && (
           <Text style={styles.textProperties}>{actionContent}</Text>
@@ -46,7 +45,7 @@ export default function ActionCard(
       </Text>
     </Pressable>
   );
-};
+}
 
 const styles = StyleSheet.create({
   cardProperties: {

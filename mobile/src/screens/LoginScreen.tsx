@@ -8,15 +8,18 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
+
+// Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { RootState, useAppDispatch, useAppSelector } from "../redux/store/store";
+
+// Redux
 import { loginUser } from "../redux/slices/authSlice";
 import { LoginRequest } from "../redux/models/authModel";
+import { RootState, useAppDispatch, useAppSelector } from "../redux/store/store";
 
+// Navigation
 import InputField from "../components/InputField";
 import CustomButton from "../components/CustomButton";
-import * as WebBrowser from 'expo-web-browser';
-
 
 export default function LoginScreen({ navigation }: any) {
   const { loading, error, user } = useAppSelector(
