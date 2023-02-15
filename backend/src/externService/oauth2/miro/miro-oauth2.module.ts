@@ -3,6 +3,7 @@ import { MiroOAuth2Service } from './miro-oauth2.service';
 import { MiroOAuth2Controller } from './miro-oauth2.controller';
 import { HttpModule } from '@nestjs/axios';
 import { CredentialsModule } from '../../../credentials/credentials.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { CredentialsModule } from '../../../credentials/credentials.module';
     }),
     CredentialsModule,
   ],
-  providers: [MiroOAuth2Service],
+  providers: [MiroOAuth2Service, JwtService],
   controllers: [MiroOAuth2Controller],
 })
 export class MiroOAuth2Module {}

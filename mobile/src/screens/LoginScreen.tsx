@@ -3,20 +3,25 @@ import {
   SafeAreaView,
   StyleSheet,
   View,
-  Text,
   StatusBar,
   TouchableOpacity,
   Image,
 } from "react-native";
+
+// Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { RootState, useAppDispatch, useAppSelector } from "../redux/store/store";
+
+// Redux
 import { loginUser } from "../redux/slices/authSlice";
 import { LoginRequest } from "../redux/models/authModel";
+import { RootState, useAppDispatch, useAppSelector } from "../redux/store/store";
 
+// Navigation
 import InputField from "../components/InputField";
 import CustomButton from "../components/CustomButton";
-import * as WebBrowser from 'expo-web-browser';
 
+// Components
+import MyText from "../components/MyText";
 
 export default function LoginScreen({ navigation }: any) {
   const { loading, error, user } = useAppSelector(
@@ -45,15 +50,16 @@ export default function LoginScreen({ navigation }: any) {
           <Image source={require('../assets/images/reaccoon.png')} style={styles.reaccoonPNG} />
         </View>
 
-        <Text
+        <MyText
           style={{
             fontSize: 28,
             fontWeight: 'bold',
             color: '#A37C5B',
             marginBottom: 30,
+            textAlign: 'center',
           }}>
           Connect to your account
-        </Text>
+        </MyText>
 
         <InputField
           label={'Email Address'}
@@ -85,9 +91,9 @@ export default function LoginScreen({ navigation }: any) {
 
         <CustomButton label="Login" onPress={onSubmit} />
 
-        <Text style={styles.otherLoginMethod}>
+        <MyText style={styles.otherLoginMethod}>
           Or, login with ...
-        </Text>
+        </MyText>
 
         <View
           style={{
@@ -104,11 +110,11 @@ export default function LoginScreen({ navigation }: any) {
         </View>
 
         <View style={styles.dontHaveAccount}>
-          <Text>Don't have an account ? </Text>
+          <MyText>Don't have an account ? </MyText>
           <TouchableOpacity
             onPress={() => navigation.navigate('Register')}
           >
-            <Text style={styles.registerTextBtn}>Register</Text>
+            <MyText style={styles.registerTextBtn}>Register</MyText>
           </TouchableOpacity>
         </View>
       </View>

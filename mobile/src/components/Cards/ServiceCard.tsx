@@ -1,10 +1,11 @@
 import React from "react";
-import {
-  Text,
-  StyleSheet,
-  Pressable,
-} from "react-native";
-import { Service } from '../../redux/models/serviceModels';
+import { StyleSheet, Pressable } from "react-native";
+
+// Redux
+import { Service } from "../../redux/models/serviceModels";
+
+// Components
+import MyText from "../MyText";
 
 interface Props {
   service: Service;
@@ -13,23 +14,22 @@ interface Props {
   setOpenActionModal: any;
 }
 
-export default function ServiceCard(
-  {
-    service,
-    logo,
-    setServiceSelected,
-    setOpenActionModal
-  }: Props) {
+export default function ServiceCard({
+  service,
+  logo,
+  setServiceSelected,
+  setOpenActionModal,
+}: Props) {
   const onClickOnCards = () => {
     setServiceSelected(service);
     setOpenActionModal(true);
   };
 
   return (
-    <Pressable style={ styles.cardProperties} onPress={onClickOnCards}>
-      <Text style={styles.cardContainer}>
-        <Text style={styles.textProperties}>{service.name}</Text>
-      </Text>
+    <Pressable style={styles.cardProperties} onPress={onClickOnCards}>
+      <MyText style={styles.cardContainer}>
+        <MyText style={styles.textProperties}>{service.name}</MyText>
+      </MyText>
     </Pressable>
   );
 }

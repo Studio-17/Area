@@ -23,13 +23,13 @@ export class CreateAreaDto {
 
   @IsString()
   @IsOptional()
-  hour: string;
+  hour = '*';
 
   @IsString()
   @IsOptional()
-  minute: string;
+  minute = '*';
 
   @IsString()
   @IsOptional()
-  second: string;
+  second = '*';
 }

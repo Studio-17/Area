@@ -66,6 +66,7 @@ export class GoogleService {
   }
 
   async handleCron(userId: string, params?: [{ name: string; content: string }]) {
+    // TODO: check if user exists sinon skip car on a déjà l'id
     const user = await this.userService.findById(userId);
     if (!user) {
       return;
@@ -73,15 +74,19 @@ export class GoogleService {
 
     let credential;
     try {
-      credential = await this.credentialsService.findById(user.email, 'google');
+      credential = await this.credentialsService.findById(user.uuid, 'google');
     } catch (error: any) {
       return;
     }
 
-    const mail = await this.updateLastEmailReceived(credential.accessToken, credential.email);
-    if (mail.new) {
-      params.push({ name: 'actionParam', content: mail.mail.uuid });
-      this.handleCronReaction(userId, 'google/check-mail/', credential.accessToken, params);
+    try {
+      const mail = await this.updateLastEmailReceived(credential.accessToken, user.uuid);
+      if (mail.new) {
+        // params.push({ name: 'actionParam', content: mail.mail.uuid });
+        this.handleCronReaction(userId, 'google/check-mail/', credential.accessToken, params);
+      }
+    } catch (error: any) {
+      return;
     }
   }
 
@@ -144,7 +149,7 @@ export class GoogleService {
     }
   }
 
-  public async updateLastEmailReceived(accessToken: string, email: string) {
+  public async updateLastEmailReceived(accessToken: string, userId: string) {
     const config = {
       method: 'get',
       url: `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=1`,
@@ -154,6 +159,7 @@ export class GoogleService {
     };
 
     try {
+      console.log('try to get last email');
       const emailId = await axios(config)
         .then(function (apiResponse): string {
           return apiResponse.data.messages[0].id;
@@ -166,7 +172,7 @@ export class GoogleService {
 
       if (emailId) {
         const record = new GmailRecordDto();
-        record.email = email;
+        record.email = userId;
         record.lastEmailId = emailId;
 
         return await this.findOrUpdateLastEmailReceived(record);

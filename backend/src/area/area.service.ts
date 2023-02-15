@@ -41,7 +41,7 @@ export class AreaService {
           hour: createAreaDto.hour,
           minute: createAreaDto.minute,
           second: createAreaDto.second,
-          params: createAreaDto.reactionsParams[index],
+          params: createAreaDto.reactionsParams ? createAreaDto.reactionsParams[index] : null,
         },
         userId,
       );

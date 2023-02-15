@@ -1,25 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   StyleSheet,
   ScrollView,
   View,
-  Text,
   StatusBar,
   SafeAreaView,
   Image,
   TouchableOpacity,
-} from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useAppDispatch, useAppSelector } from '../redux/store/store';
-import { RootState } from '../redux/store/store';
-import { registerUser } from '../redux/slices/authSlice';
-import { RegisterRequest } from '../redux/models/authModel';
-import axios from 'axios';
+} from "react-native";
 
+// Axios
+import axios from "axios";
+
+// Icons
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+// Redux
+import { useAppDispatch, useAppSelector } from "../redux/store/store";
+import { RootState } from "../redux/store/store";
+import { registerUser } from "../redux/slices/authSlice";
+import { RegisterRequest } from "../redux/models/authModel";
+
+// Components
 import InputField from "../components/InputField";
 import CustomButton from "../components/CustomButton";
+import MyText from "../components/MyText";
 
-import * as WebBrowser from 'expo-web-browser';
+// Navigation
+import * as WebBrowser from "expo-web-browser";
 
 export default function RegisterScreen({ navigation }: any) {
   const { loading, user, error, success } = useAppSelector(
@@ -34,28 +42,32 @@ export default function RegisterScreen({ navigation }: any) {
 
   // const [isSuccessfullRegister, setIsSuccessfullRegister] =  useState<boolean>(false);
   // const [isErrorRegister, setIsErrorRegister] = useState<boolean>(false);
-  const [ email, setEmail ] = useState<string>("");
-  const [ password, setPassword ] = useState<string>("");
-  const [ firstName, setFirstName ] = useState<string>("");
-  const [ lastName, setLastName ] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
 
   const onSubmit = () => {
     const dataToSend: RegisterRequest = {
       firstName: firstName,
       lastName: lastName,
       email: email,
-      password: password
+      password: password,
     };
     registerNewUser(dataToSend);
-    navigation.navigate('Login');
+    navigation.navigate("Login");
   };
 
   const [result, setResult] = useState<any>(null);
   const handlePressGoogleButton = async () => {
     console.log("Google button pressed");
-    let result = await axios.get("http://localhost:3000/api/reaccoon/service/connect/google?id=fdd65677-c44f-4d3d-8b39-6a498abb527b").then((res) => {
-      // WebBrowser.openBrowserAsync(encodeURI(res.data.url));
-    });
+    let result = await axios
+      .get(
+        "http://localhost:3000/api/reaccoon/service/connect/google?id=fdd65677-c44f-4d3d-8b39-6a498abb527b"
+      )
+      .then((res) => {
+        // WebBrowser.openBrowserAsync(encodeURI(res.data.url));
+      });
     // setResult(result);
     console.log(result);
     WebBrowser.openBrowserAsync(encodeURI("https://google.com"));
@@ -65,44 +77,44 @@ export default function RegisterScreen({ navigation }: any) {
     <SafeAreaView style={styles.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{ paddingHorizontal: 25 }}>
-        <View style={{ alignItems: 'center' }}>
-          <Image source={require('../assets/images/reaccoon.png')} style={styles.reaccoonPNG} />
+        style={{ paddingHorizontal: 25 }}
+      >
+        <View style={{ alignItems: "center" }}>
+          <Image
+            source={require("../assets/images/reaccoon.png")}
+            style={styles.reaccoonPNG}
+          />
         </View>
 
-        <Text style={styles.createAccountText}>
-          Create an account
-        </Text>
+        <MyText style={styles.createAccountText}>Create an account</MyText>
 
         <View
           style={{
-            flexDirection: 'row',
-            justifyContent: 'space-around',
+            flexDirection: "row",
+            justifyContent: "space-around",
             marginBottom: 30,
-          }}>
+          }}
+        >
           <TouchableOpacity
             onPress={handlePressGoogleButton}
             style={styles.socialmediaBtn}
           >
             <Image
-              source={require('../assets/images/social/google.png')}
+              source={require("../assets/images/social/google.png")}
               style={{ width: 30, height: 30 }}
             />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {}}
-            style={styles.socialmediaBtn}
-          >
+          <TouchableOpacity onPress={() => {}} style={styles.socialmediaBtn}>
             <Image
-              source={require('../assets/images/social/twitter.png')}
+              source={require("../assets/images/social/twitter.png")}
               style={{ width: 30, height: 30 }}
             />
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.otherRegisterMethod}>
+        <MyText style={styles.otherRegisterMethod}>
           Or, register with email ...
-        </Text>
+        </MyText>
 
         <InputField
           label="First Name"
@@ -124,7 +136,7 @@ export default function RegisterScreen({ navigation }: any) {
               name="account-outline"
               size={20}
               color="#666"
-              style={{marginRight: 5}}
+              style={{ marginRight: 5 }}
             />
           }
           inputTextValue={(value: string) => setLastName(value)}
@@ -137,7 +149,7 @@ export default function RegisterScreen({ navigation }: any) {
               name="at"
               size={20}
               color="#666"
-              style={{marginRight: 5}}
+              style={{ marginRight: 5 }}
             />
           }
           inputTextValue={(value: string) => setEmail(value)}
@@ -150,7 +162,7 @@ export default function RegisterScreen({ navigation }: any) {
               name="lock-outline"
               size={20}
               color="#666"
-              style={{marginRight: 5}}
+              style={{ marginRight: 5 }}
             />
           }
           inputType="password"
@@ -160,9 +172,9 @@ export default function RegisterScreen({ navigation }: any) {
         <CustomButton label="Register" onPress={onSubmit} />
 
         <View style={styles.haveAccount}>
-          <Text>Already have an account ? </Text>
+          <MyText>Already have an account ? </MyText>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.loginTextBtn}>Login</Text>
+            <MyText style={styles.loginTextBtn}>Login</MyText>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -173,14 +185,14 @@ export default function RegisterScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     paddingTop: StatusBar.currentHeight || 0,
-    backgroundColor: '#FFF7FA',
+    backgroundColor: "#FFF7FA",
   },
   reaccoonPNG: {
     width: 300,
-    height: 300
+    height: 300,
   },
   socialmediaBtn: {
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderWidth: 2,
     borderRadius: 10,
     paddingHorizontal: 30,
@@ -189,13 +201,14 @@ const styles = StyleSheet.create({
   createAccountText: {
     fontSize: 28,
     fontWeight: "bold",
-    color: '#A37C5B',
+    color: "#A37C5B",
     marginBottom: 30,
+    textAlign: 'center',
   },
   otherRegisterMethod: {
     textAlign: "center",
-    color: '#666',
-    marginBottom: 30
+    color: "#666",
+    marginBottom: 30,
   },
   haveAccount: {
     flexDirection: "row",
@@ -203,7 +216,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   loginTextBtn: {
-    color: '#0165F5',
-    fontWeight: '700'
-  }
+    color: "#0165F5",
+    fontWeight: "700",
+  },
 });
