@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   StyleSheet,
-  Text,
   View,
   SafeAreaView,
   TouchableOpacity,
@@ -23,6 +22,7 @@ import { useServicesQuery } from "../redux/services/servicesApi";
 // Components
 import ServicesModal from "../components/Modals/ServicesModal";
 import ActionsModal from "../components/Modals/ActionsModal";
+import MyText from "../components/MyText";
 
 const Stack = createStackNavigator();
 
@@ -110,14 +110,14 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
       {!serviceSelected ? (
         <>
           <View style={styles.headerContainer}>
-            <Text style={styles.textHeaderStyle}>New coonie u said ?</Text>
+            <MyText style={styles.textHeaderStyle}>New coonie u said ?</MyText>
           </View>
           <ScrollView>
             <View style={styles.contentContainer}>
               {blocksState[0] ? (
                 <View style={styles.cardPropertiesServiceSelected}>
-                  <Text style={styles.cardTitle}>IF</Text>
-                  <Text>{blocksState[0].name}</Text>
+                  <MyText style={styles.cardTitle}>IF</MyText>
+                  <MyText>{blocksState[0].name}</MyText>
                   <TouchableOpacity style={styles.cardButton}>
                     <MaterialCommunityIcons
                       name="minus"
@@ -128,7 +128,7 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
                 </View>
               ) : (
                 <View style={styles.cardPropertiesServiceSelected}>
-                  <Text style={styles.cardTitle}>IF</Text>
+                  <MyText style={styles.cardTitle}>IF</MyText>
                   <TouchableOpacity
                     style={styles.cardButton}
                     onPress={() => onClickOpenModal(0, "action")}
@@ -161,8 +161,8 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
                 <View style={styles.thenContainer}>
                   {blocksState[index + 1] ? (
                     <View style={styles.thenCardProperties}>
-                      <Text style={styles.cardTitle}>Then</Text>
-                      <Text>{blocksState[index + 1].name}</Text>
+                      <MyText style={styles.cardTitle}>Then</MyText>
+                      <MyText>{blocksState[index + 1].name}</MyText>
                       <TouchableOpacity
                         style={styles.cardButton}
                         onPress={() => onClickRemoveBlock(index)}
@@ -176,7 +176,7 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
                     </View>
                   ) : (
                     <View style={styles.thenCardProperties}>
-                      <Text style={styles.cardTitle}>Then</Text>
+                      <MyText style={styles.cardTitle}>Then</MyText>
                       <TouchableOpacity
                         style={styles.cardButton}
                         onPress={() => onClickOpenModal(index + 1, "reaction")}
@@ -203,7 +203,7 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
               }}
               onPress={onClickAddthens}
             >
-              <Text
+              <MyText
                 style={{
                   textAlign: "center",
                   color: "#0165F5",
@@ -212,7 +212,7 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
                 }}
               >
                 Add thens
-              </Text>
+              </MyText>
             </Pressable>
           </ScrollView>
         </>

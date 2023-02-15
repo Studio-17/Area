@@ -1,5 +1,8 @@
 import React from "react";
-import { Text, TouchableOpacity, StyleSheet } from "react-native";
+import { TouchableOpacity, StyleSheet } from "react-native";
+
+// Components
+import MyText from "../components/MyText";
 
 interface Props {
   label?: string;
@@ -9,7 +12,7 @@ interface Props {
 export default function CustomButton({ label, onPress }: Props) {
   return (
     <TouchableOpacity onPress={onPress} style={styles.containerBtn}>
-      <Text style={styles.textBtn}>{label}</Text>
+      <MyText style={styles.textBtn}>{label}</MyText>
     </TouchableOpacity>
   );
 }

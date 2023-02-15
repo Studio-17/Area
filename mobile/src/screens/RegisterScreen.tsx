@@ -3,7 +3,6 @@ import {
   StyleSheet,
   ScrollView,
   View,
-  Text,
   StatusBar,
   SafeAreaView,
   Image,
@@ -25,6 +24,7 @@ import { RegisterRequest } from "../redux/models/authModel";
 // Components
 import InputField from "../components/InputField";
 import CustomButton from "../components/CustomButton";
+import MyText from "../components/MyText";
 
 // Navigation
 import * as WebBrowser from "expo-web-browser";
@@ -86,7 +86,7 @@ export default function RegisterScreen({ navigation }: any) {
           />
         </View>
 
-        <Text style={styles.createAccountText}>Create an account</Text>
+        <MyText style={styles.createAccountText}>Create an account</MyText>
 
         <View
           style={{
@@ -112,9 +112,9 @@ export default function RegisterScreen({ navigation }: any) {
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.otherRegisterMethod}>
+        <MyText style={styles.otherRegisterMethod}>
           Or, register with email ...
-        </Text>
+        </MyText>
 
         <InputField
           label="First Name"
@@ -172,9 +172,9 @@ export default function RegisterScreen({ navigation }: any) {
         <CustomButton label="Register" onPress={onSubmit} />
 
         <View style={styles.haveAccount}>
-          <Text>Already have an account ? </Text>
+          <MyText>Already have an account ? </MyText>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.loginTextBtn}>Login</Text>
+            <MyText style={styles.loginTextBtn}>Login</MyText>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#A37C5B",
     marginBottom: 30,
+    textAlign: 'center',
   },
   otherRegisterMethod: {
     textAlign: "center",

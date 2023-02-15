@@ -1,5 +1,8 @@
 import React from "react";
-import { Text, Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
+
+// Components
+import MyText from "../MyText";
 
 interface Props {
   actionContent?: string;
@@ -35,14 +38,14 @@ export default function ActionCard({
 
   return (
     <Pressable style={styles.cardProperties} onPress={onClickOnCards}>
-      <Text style={styles.cardContainer}>
+      <MyText style={styles.cardContainer}>
         {actionContent && (
-          <Text style={styles.textProperties}>{actionContent}</Text>
+          <MyText style={styles.textProperties}>{actionContent}</MyText>
         )}
         {reactionContent && (
-          <Text style={styles.textProperties}>{reactionContent}</Text>
+          <MyText style={styles.textProperties}>{reactionContent}</MyText>
         )}
-      </Text>
+      </MyText>
     </Pressable>
   );
 }

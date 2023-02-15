@@ -2,7 +2,6 @@ import React from "react";
 import {
   StyleSheet,
   View,
-  Text,
   StatusBar,
   SafeAreaView,
   TouchableOpacity,
@@ -12,19 +11,22 @@ import {
 // Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+// Components
+import MyText from "../components/MyText";
+
 export default function OnboardingScreen({ navigation }: any) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ marginTop: 20 }}>
-        <Text
+        <MyText
           style={{
             fontWeight: "bold",
             fontSize: 35,
             color: "#A37C5B",
           }}
         >
-          R<Text style={{ color: "#0165F5" }}>e</Text>accoon
-        </Text>
+          R<MyText style={{ color: "#0165F5" }}>e</MyText>accoon
+        </MyText>
       </View>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Image
@@ -36,7 +38,7 @@ export default function OnboardingScreen({ navigation }: any) {
         style={styles.letsBeginBtn}
         onPress={() => navigation.navigate("Login")}
       >
-        <Text style={styles.letsBeginBtnText}>Let's Begin</Text>
+        <MyText style={styles.letsBeginBtnText}>Let's Begin</MyText>
         <MaterialCommunityIcons
           name="arrow-collapse-right"
           size={22}

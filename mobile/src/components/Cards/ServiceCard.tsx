@@ -1,8 +1,11 @@
 import React from "react";
-import { Text, StyleSheet, Pressable } from "react-native";
+import { StyleSheet, Pressable } from "react-native";
 
 // Redux
 import { Service } from "../../redux/models/serviceModels";
+
+// Components
+import MyText from "../MyText";
 
 interface Props {
   service: Service;
@@ -24,9 +27,9 @@ export default function ServiceCard({
 
   return (
     <Pressable style={styles.cardProperties} onPress={onClickOnCards}>
-      <Text style={styles.cardContainer}>
-        <Text style={styles.textProperties}>{service.name}</Text>
-      </Text>
+      <MyText style={styles.cardContainer}>
+        <MyText style={styles.textProperties}>{service.name}</MyText>
+      </MyText>
     </Pressable>
   );
 }
