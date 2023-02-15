@@ -3,6 +3,7 @@ import { NotionOAuth2Service } from './notion-oauth2.service';
 import { NotionOAuth2Controller } from './notion-oauth2.controller';
 import { HttpModule } from '@nestjs/axios';
 import { CredentialsModule } from '../../../credentials/credentials.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { CredentialsModule } from '../../../credentials/credentials.module';
     }),
     CredentialsModule,
   ],
-  providers: [NotionOAuth2Service],
+  providers: [NotionOAuth2Service, JwtService],
   controllers: [NotionOAuth2Controller],
 })
 export class NotionOAuth2Module {}
