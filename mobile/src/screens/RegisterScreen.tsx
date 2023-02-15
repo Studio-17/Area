@@ -14,9 +14,12 @@ import { useAppDispatch, useAppSelector } from '../redux/store/store';
 import { RootState } from '../redux/store/store';
 import { registerUser } from '../redux/slices/authSlice';
 import { RegisterRequest } from '../redux/models/authModel';
+import axios from 'axios';
 
 import InputField from "../components/InputField";
 import CustomButton from "../components/CustomButton";
+
+import * as WebBrowser from 'expo-web-browser';
 
 export default function RegisterScreen({ navigation }: any) {
   const { loading, user, error, success } = useAppSelector(
@@ -47,6 +50,17 @@ export default function RegisterScreen({ navigation }: any) {
     navigation.navigate('Login');
   };
 
+  const [result, setResult] = useState<any>(null);
+  const handlePressGoogleButton = async () => {
+    console.log("Google button pressed");
+    let result = await axios.get("http://localhost:3000/api/reaccoon/service/connect/google?id=fdd65677-c44f-4d3d-8b39-6a498abb527b").then((res) => {
+      // WebBrowser.openBrowserAsync(encodeURI(res.data.url));
+    });
+    // setResult(result);
+    console.log(result);
+    WebBrowser.openBrowserAsync(encodeURI("https://google.com"));
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -67,7 +81,7 @@ export default function RegisterScreen({ navigation }: any) {
             marginBottom: 30,
           }}>
           <TouchableOpacity
-            onPress={() => {}}
+            onPress={handlePressGoogleButton}
             style={styles.socialmediaBtn}
           >
             <Image
@@ -126,7 +140,6 @@ export default function RegisterScreen({ navigation }: any) {
               style={{marginRight: 5}}
             />
           }
-          keyboardType="email-address"
           inputTextValue={(value: string) => setEmail(value)}
         />
 

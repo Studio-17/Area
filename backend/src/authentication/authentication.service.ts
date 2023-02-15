@@ -8,7 +8,10 @@ import { UserLoginDto } from './dto/user-login.dto';
 import { UserRegisterDto } from './dto/user-register.dto';
 import { OAuth2Client } from 'google-auth-library';
 
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET);
+const client = new OAuth2Client(
+  process.env.GOOGLE_ACCOUNT_CLIENT_ID,
+  process.env.GOOGLE_ACCOUNT_CLIENT_SECRET,
+);
 
 @Injectable()
 export class AuthenticationService {
@@ -127,12 +130,12 @@ export class AuthenticationService {
   public async googleConnect(token: string) {
     const ticket = await client.verifyIdToken({
       idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID,
+      audience: process.env.GOOGLE_ACCOUNT_CLIENT_ID,
     });
     const payload = ticket.getPayload();
     const isExistingUser = await this.usersService.exist(payload.email);
 
-    const user = this.usersService.findByEmail(payload.email);
+    const user = await this.usersService.findByEmail(payload.email);
     const jwtPayload = this.createJwtPayload(user);
 
     if (!isExistingUser) {
@@ -143,31 +146,15 @@ export class AuthenticationService {
         password: '',
         jwt: jwtPayload.token,
       });
-    }
-    return this.validate(payload.email)
-      .then((userData) => {
-        if (!userData) {
-          throw new UnauthorizedException();
-        }
-
-        // const payload = {
-        //   id: userData.uuid,
-        //   firstName: userData.firstName,
-        //   lastName: userData.lastName,
-        //   email: userData.email,
-        // };
-        //
-        // const accessToken = this.jwtService.sign(payload);
-
-        return {
-          expiresIn: 3600,
-          // accessToken: accessToken,
-          user: payload,
-          status: 200,
-        };
-      })
-      .catch((err) => {
-        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
+    } else {
+      await this.usersService.updateUser(user.uuid, {
+        jwt: jwtPayload.token,
       });
+    }
+    return user;
+  }
+
+  public async facebookConnect() {
+    return undefined;
   }
 }
