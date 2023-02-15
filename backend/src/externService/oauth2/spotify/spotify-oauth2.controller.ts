@@ -15,26 +15,37 @@ import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
 import { CredentialsService } from '../../../credentials/credentials.service';
+import { JwtService } from '@nestjs/jwt';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('/service/connect')
-// @UseGuards(JwtAuthenticationGuard)
 @Controller('/service/connect')
 export class SpotifyOAuth2Controller {
   constructor(
     private readonly connectionService: SpotifyOAuth2Service,
     private readonly credentialsService: CredentialsService,
     private readonly httpService: HttpService,
+    private readonly jwtService: JwtService,
   ) {}
 
   @Get('/spotify')
-  public async spotify(@Res() response, @Query() query: { id: string }) {
+  @UseGuards(AuthGuard('jwt'))
+  public async spotify(@Req() request, @Res() response) {
     const clientID = process.env.SPOTIFY_CLIENT_ID;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/spotify/redirect`;
     const scope = 'playlist-read-private user-read-email';
+    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
+    if (!token['id']) {
+      return response.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'Error unauthenticated (using jwt)',
+        data: token,
+        status: 401,
+      });
+    }
     return response.status(HttpStatus.OK).json({
       url: encodeURIComponent(
-        `https://accounts.spotify.com/authorize?scope=${scope}&response_type=code&redirect_uri=${callbackURL}&client_id=${clientID}&state=${query.id}`,
+        `https://accounts.spotify.com/authorize?scope=${scope}&response_type=code&redirect_uri=${callbackURL}&client_id=${clientID}&state=${token['id']}`,
       ),
       status: 200,
     });

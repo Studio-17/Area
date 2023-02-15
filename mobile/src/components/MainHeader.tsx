@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Text, StyleSheet, SafeAreaView, StatusBar } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 function MainHeader() {
   return (

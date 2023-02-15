@@ -5,12 +5,16 @@ import {
   FlatList,
   StatusBar,
 } from "react-native";
+
+// Navigation
 import { createStackNavigator } from "@react-navigation/stack";
+
+// Screens
 import AppletDetailsScreen from "./AppletDetailsScreen";
+
+// Components
 import MainHeader from "../components/MainHeader";
 import Applet from "../components/Cards/AppletCard";
-import axios from "axios";
-import { useEffect, useState } from "react";
 
 const DATA = [
   {

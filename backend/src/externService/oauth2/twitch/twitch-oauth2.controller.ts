@@ -1,10 +1,21 @@
-import { Controller, Get, HttpException, HttpStatus, Query, Req, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { TwitchOAuth2Service } from './twitch-oauth2.service';
 import { CredentialsService } from '../../../credentials/credentials.service';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import axios, { AxiosError } from 'axios';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtService } from '@nestjs/jwt';
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -13,23 +24,34 @@ export class TwitchOAuth2Controller {
     private readonly connectionService: TwitchOAuth2Service,
     private readonly credentialsService: CredentialsService,
     private readonly httpService: HttpService,
+    private readonly jwtService: JwtService,
   ) {}
 
   @Get('/twitch')
-  public async twitch(@Res() response, @Query() query: { id: string }) {
+  @UseGuards(AuthGuard('jwt'))
+  public async twitch(@Req() request, @Res() response) {
     const clientID = process.env.TWITCH_CLIENT_ID;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/twitch/redirect`;
     const scope = encodeURIComponent(
       'user:read:email user:read:follows user:read:subscriptions chat:read',
     );
+    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
+    if (!token['id']) {
+      return response.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'Error unauthenticated (using jwt)',
+        data: token,
+        status: 401,
+      });
+    }
     return response.status(HttpStatus.OK).json({
       url: encodeURIComponent(
-        `https://id.twitch.tv/oauth2/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&response_type=code&state=${query.id}`,
+        `https://id.twitch.tv/oauth2/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&response_type=code&state=${token['id']}`,
       ),
       status: 200,
     });
   }
+
   @Get('/twitch/redirect')
   public async twitchRedirect(@Req() request, @Res() response, @Query() query) {
     const clientID = process.env.TWITCH_CLIENT_ID;
