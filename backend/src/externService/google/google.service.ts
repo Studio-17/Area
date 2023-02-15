@@ -73,14 +73,14 @@ export class GoogleService {
 
     let credential;
     try {
-      credential = await this.credentialsService.findById(user.email, 'google');
+      credential = await this.credentialsService.findById(user.uuid, 'google');
     } catch (error: any) {
       return;
     }
 
-    const mail = await this.updateLastEmailReceived(credential.accessToken, credential.email);
+    const mail = await this.updateLastEmailReceived(credential.accessToken, user.uuid);
     if (mail.new) {
-      params.push({ name: 'actionParam', content: mail.mail.uuid });
+      // params.push({ name: 'actionParam', content: mail.mail.uuid });
       this.handleCronReaction(userId, 'google/check-mail/', credential.accessToken, params);
     }
   }
@@ -144,7 +144,7 @@ export class GoogleService {
     }
   }
 
-  public async updateLastEmailReceived(accessToken: string, email: string) {
+  public async updateLastEmailReceived(accessToken: string, userId: string) {
     const config = {
       method: 'get',
       url: `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=1`,
@@ -166,7 +166,7 @@ export class GoogleService {
 
       if (emailId) {
         const record = new GmailRecordDto();
-        record.email = email;
+        record.email = userId;
         record.lastEmailId = emailId;
 
         return await this.findOrUpdateLastEmailReceived(record);
