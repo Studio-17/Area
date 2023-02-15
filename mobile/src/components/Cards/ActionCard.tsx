@@ -34,10 +34,6 @@ export default function ActionCard(
     onClick(actionContent && actionContent, reactionContent && reactionContent, uuidOfAction && uuidOfAction)
   };
 
-  // console.log("reactionContent", reactionContent);
-  // console.log("actionContent", actionContent);
-  // console.log("uuidOfAction", uuidOfAction);
-
   return (
     <Pressable style={ styles.cardProperties} onPress={onClickOnCards}>
       <Text style={styles.cardContainer}>

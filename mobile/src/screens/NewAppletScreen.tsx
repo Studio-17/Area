@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   StatusBar,
-  Pressable
+  Pressable,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -86,6 +86,11 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
     setthensInstance((thens: any) => [...thens, { type: "then" }]);
   };
 
+  const onClickRemoveBlock = (index: number) => {
+    setBlockState(blocksState.filter((block: any, i: number) => i !== (index + 1)));
+    setthensInstance(thensInstance.filter((then: any, i: number) => i !== index));
+  };
+
   return (
     <SafeAreaView style={styles.screenContainer}>
       {!serviceSelected ? (
@@ -98,7 +103,9 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
               <View style={styles.cardPropertiesServiceSelected}>
                 <Text style={styles.cardTitle}>IF</Text>
                 <Text>{blocksState[0].name}</Text>
-                <TouchableOpacity style={styles.cardButton}>
+                <TouchableOpacity
+                  style={styles.cardButton}
+                >
                   <MaterialCommunityIcons name="minus" color={"black"} size={35} />
                 </TouchableOpacity>
               </View>
@@ -130,7 +137,10 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
                   <View style={styles.thenCardProperties}>
                     <Text style={styles.cardTitle}>Then</Text>
                     <Text>{blocksState[index + 1].name}</Text>
-                    <TouchableOpacity style={styles.cardButton}>
+                    <TouchableOpacity
+                      style={styles.cardButton}
+                      onPress={() => onClickRemoveBlock(index)}
+                    >
                       <MaterialCommunityIcons name="minus" color={"black"} size={35} />
                     </TouchableOpacity>
                   </View>
