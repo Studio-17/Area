@@ -15,6 +15,7 @@ import { LoginRequest } from "../redux/models/authModel";
 
 import InputField from "../components/InputField";
 import CustomButton from "../components/CustomButton";
+import * as WebBrowser from 'expo-web-browser';
 
 
 export default function LoginScreen({ navigation }: any) {
@@ -55,7 +56,7 @@ export default function LoginScreen({ navigation }: any) {
         </Text>
 
         <InputField
-          label="Email Address"
+          label={'Email Address'}
           icon={
             <MaterialCommunityIcons
               name="at"
@@ -64,7 +65,6 @@ export default function LoginScreen({ navigation }: any) {
               style={{ marginRight: 5 }}
             />
           }
-          keyboardType="email-address"
           inputTextValue={(value: string) => setEmail(value)}
         />
 
@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: StatusBar.currentHeight || 0,
     backgroundColor: "#FFF7FA",
+    flex: 1,
   },
   reaccoonPNG: {
     width: 300,
