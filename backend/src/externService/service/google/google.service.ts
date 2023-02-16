@@ -35,12 +35,7 @@ export class GoogleService {
     private schedulerRegistry: SchedulerRegistry,
   ) {}
 
-  async handleCronReaction(
-    userId: string,
-    actionLink: string,
-    accessToken: string,
-    params: [{ name: string; content: string }],
-  ) {
+  async handleCronReaction(userId: string, actionLink: string, accessToken: string) {
     const action = await this.actionService.findByLink(actionLink);
     const relatedActions = await this.myActionService.findByActionAndUserId(action.uuid, userId);
 
@@ -53,7 +48,7 @@ export class GoogleService {
           this.httpService
             .post<any>('http://localhost:3000/api/reaccoon/actions/' + reaction.link, {
               accessToken: accessToken,
-              filename: params,
+              params: linked.params,
             })
             .pipe(
               catchError((error: AxiosError) => {
@@ -65,7 +60,7 @@ export class GoogleService {
     }
   }
 
-  async handleCron(userId: string, params?: [{ name: string; content: string }]) {
+  async handleCron(userId: string, params?: { name: string; content: string }[]) {
     // TODO: check if user exists sinon skip car on a déjà l'id
     const user = await this.userService.findById(userId);
     if (!user) {
@@ -83,7 +78,7 @@ export class GoogleService {
       const mail = await this.updateLastEmailReceived(credential.accessToken, user.uuid);
       if (mail.new) {
         // params.push({ name: 'actionParam', content: mail.mail.uuid });
-        this.handleCronReaction(userId, 'google/check-mail/', credential.accessToken, params);
+        this.handleCronReaction(userId, 'google/check-mail/', credential.accessToken);
       }
     } catch (error: any) {
       return;
