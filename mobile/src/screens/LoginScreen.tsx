@@ -6,6 +6,7 @@ import {
   StatusBar,
   TouchableOpacity,
   Image,
+  Keyboard,
 } from "react-native";
 
 // Icons
@@ -22,6 +23,7 @@ import CustomButton from "../components/CustomButton";
 
 // Components
 import MyText from "../components/MyText";
+import {color} from "react-native-elements/dist/helpers";
 
 export default function LoginScreen({ navigation }: any) {
   const { loading, error, user } = useAppSelector(
@@ -31,6 +33,9 @@ export default function LoginScreen({ navigation }: any) {
   const dispatchLoginUser = async (dataToSend: LoginRequest) => {
     dispatch(loginUser(dataToSend));
   };
+
+  // console.log('error: ', error);
+  // console.log('loading: ', loading);
 
   const [ email, setEmail ] = useState<string>("");
   const [ password, setPassword ] = useState<string>("");
@@ -43,6 +48,22 @@ export default function LoginScreen({ navigation }: any) {
     dispatchLoginUser(dataToSend);
   };
 
+  const validate = async () => {
+    Keyboard.dismiss();
+    let isValid = true;
+    if (!email) {
+      // handleError('Please input email', 'email');
+      isValid = false;
+    }
+    if (!password) {
+      // handleError('Please input password', 'password');
+      isValid = false;
+    }
+    // if (isValid) {
+    //   login();
+    // }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ paddingHorizontal: 25 }}>
@@ -53,7 +74,7 @@ export default function LoginScreen({ navigation }: any) {
         <MyText
           style={{
             fontSize: 28,
-            fontWeight: 'bold',
+            // fontWeight: 'bold',
             color: '#A37C5B',
             marginBottom: 30,
             textAlign: 'center',
@@ -72,6 +93,7 @@ export default function LoginScreen({ navigation }: any) {
             />
           }
           inputTextValue={(value: string) => setEmail(value)}
+          // onFocus={() => {}}
         />
 
         <InputField
@@ -87,6 +109,7 @@ export default function LoginScreen({ navigation }: any) {
           inputType="password"
           fieldButtonLabel={"Forgot?"}
           inputTextValue={(value: string) => setPassword(value)}
+          // onFocus={() => {}}
         />
 
         <CustomButton label="Login" onPress={onSubmit} />
@@ -110,7 +133,7 @@ export default function LoginScreen({ navigation }: any) {
         </View>
 
         <View style={styles.dontHaveAccount}>
-          <MyText>Don't have an account ? </MyText>
+          <MyText style={{ color: "#666" }}>Don't have an account ? </MyText>
           <TouchableOpacity
             onPress={() => navigation.navigate('Register')}
           >
@@ -146,11 +169,13 @@ const styles = StyleSheet.create({
   },
   registerTextBtn: {
     color: '#0165F5',
-    fontWeight: '700'
+    // fontWeight: '700'
   },
   otherLoginMethod: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 30
+    marginBottom: 30,
+    color: "#666",
+    textAlign: 'center'
   }
 });

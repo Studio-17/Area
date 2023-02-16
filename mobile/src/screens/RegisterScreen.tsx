@@ -172,7 +172,7 @@ export default function RegisterScreen({ navigation }: any) {
         <CustomButton label="Register" onPress={onSubmit} />
 
         <View style={styles.haveAccount}>
-          <MyText>Already have an account ? </MyText>
+          <MyText style={{ color: "#666" }}>Already have an account ? </MyText>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <MyText style={styles.loginTextBtn}>Login</MyText>
           </TouchableOpacity>
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   },
   createAccountText: {
     fontSize: 28,
-    fontWeight: "bold",
+    // fontWeight: "bold",
     color: "#A37C5B",
     marginBottom: 30,
     textAlign: 'center',
@@ -217,6 +217,6 @@ const styles = StyleSheet.create({
   },
   loginTextBtn: {
     color: "#0165F5",
-    fontWeight: "700",
+    // fontWeight: "700",
   },
 });

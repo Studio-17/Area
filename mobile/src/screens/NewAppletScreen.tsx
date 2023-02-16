@@ -59,8 +59,6 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
 
   const { data: services, isError, isLoading } = useServicesQuery();
 
-  console.log(openActionsModal);
-
   const onCloseServiceModal = () => {
     setOpenServicesModal(false);
     setServiceSelected(null);
@@ -114,8 +112,6 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
       thensInstance.filter((then: any, i: number) => i !== index)
     );
   };
-
-  console.log("service", serviceSelected);
 
   return (
     <SafeAreaView style={styles.screenContainer}>
@@ -219,7 +215,6 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
                 style={{
                   textAlign: "center",
                   color: "#0165F5",
-                  fontWeight: "bold",
                   fontSize: 20,
                 }}
               >
@@ -233,6 +228,7 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
           openActionsModal={openActionsModal}
           onCloseActionsModal={() => setOpenActionsModal(false)}
           onCloseServicesModal={() => setOpenServicesModal(false)}
+          setOpenServicesModal={setOpenServicesModal}
           onClickOnAreasCards={onClickOnAreasCards}
           typeSelected={typeSelected}
           service={serviceSelected}
@@ -241,6 +237,7 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
       <ServicesModal
         openServicesModal={openServicesModal}
         onCloseServicesModal={onCloseServiceModal}
+        setOpenServicesModal={setOpenServicesModal}
         setOpenActionModal={setOpenActionsModal}
         setServiceSelected={setServiceSelected}
         services={services}
@@ -278,7 +275,6 @@ const styles = StyleSheet.create({
   },
   textHeaderStyle: {
     fontSize: 25,
-    fontWeight: "bold",
     color: "black",
   },
   modalContainer: {
@@ -325,7 +321,6 @@ const styles = StyleSheet.create({
     padding: 10,
     color: "black",
     fontSize: 30,
-    fontWeight: "bold",
   },
   cardButton: {
     backgroundColor: "white",
