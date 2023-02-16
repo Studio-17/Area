@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Modal,
-  StyleSheet,
-  SafeAreaView,
-  View,
-  Pressable,
-} from "react-native";
+import { Modal, StyleSheet, SafeAreaView, View, Pressable } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Service } from "../../redux/models/serviceModels";
 
@@ -31,7 +25,11 @@ export default function ServicesModal(
   }: Props) {
 
   return (
-    <Modal animationType="slide" visible={openServicesModal} onRequestClose={onCloseServicesModal}>
+    <Modal
+      animationType="slide"
+      visible={openServicesModal}
+      onRequestClose={onCloseServicesModal}
+    >
       <SafeAreaView>
         <View style={styles.modalContainer}>
           <Pressable style={styles.button} onPress={onCloseServicesModal}>

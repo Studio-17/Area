@@ -1,10 +1,13 @@
-import React from 'react';
+import React from "react";
 import {
   View,
-  Text,
   TouchableOpacity,
-  TextInput
-} from 'react-native';
+  TextInput,
+  Text,
+} from "react-native";
+
+// Components
+import MyText from "../components/MyText";
 
 interface Props {
   label?: string;
@@ -41,14 +44,15 @@ export default function InputField(
   return (
     <View
       style={{
-        flexDirection: 'row',
-        borderBottomColor: '#ccc',
+        flexDirection: "row",
+        borderBottomColor: "#ccc",
         borderBottomWidth: 1,
         paddingBottom: 8,
         marginBottom: 25,
-      }}>
+      }}
+    >
       {icon}
-      {inputType == 'password' ? (
+      {inputType == "password" ? (
         <TextInput
           placeholder={label}
           keyboardType={keyboardType}
@@ -66,7 +70,9 @@ export default function InputField(
         />
       )}
       <TouchableOpacity onPress={fieldButtonFunction}>
-        <Text style={{color: '#0165F5', fontWeight: '700'}}>{fieldButtonLabel}</Text>
+        <MyText style={{ color: "#0165F5" }}>
+          {fieldButtonLabel}
+        </MyText>
       </TouchableOpacity>
       {error && (
         <Text style={{marginTop: 7, color: "red", fontSize: 12}}>

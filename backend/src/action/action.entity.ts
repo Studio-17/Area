@@ -25,6 +25,6 @@ export class Action {
   @Column({ type: 'enum', enum: ActionType, default: ActionType.ACTION })
   type!: ActionType;
 
-  @Column('text', { array: true, nullable: true })
-  params: [{ name: string; type: string; description: string }];
+  @Column({ type: 'json', nullable: true })
+  params: { name: string; type: string; description: string }[];
 }

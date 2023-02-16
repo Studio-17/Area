@@ -8,7 +8,7 @@ import { ActionService } from 'src/action/action.service';
 import { AreaService } from '../area/area.service';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { ActionType } from 'src/action/action.entity';
-import { GoogleService } from 'src/externService/google/google.service';
+import { GoogleService } from 'src/externService/service/google/google.service';
 
 @Injectable()
 export class MyActionService {
@@ -33,6 +33,10 @@ export class MyActionService {
         name: action.name,
         serviceId: action.serviceId,
         myActionId: myActions[0].uuid,
+        hour: myActions[0].hour,
+        minute: myActions[0].minute,
+        second: myActions[0].second,
+        params: myActions[0].params,
       };
     }
     return resultAction;
@@ -51,6 +55,7 @@ export class MyActionService {
         name: action.name,
         serviceId: action.serviceId,
         myActionId: myActions[i].uuid,
+        params: myActions[i].params,
       });
     }
     return reactions;
@@ -59,13 +64,10 @@ export class MyActionService {
   async findAll(areaId: string) {
     const myActions = await this.myActionRepository.findBy({ areaId: areaId });
     const actions = [];
-    console.log('myActions' + myActions.length);
     for (let i = 0; i < myActions.length; i++) {
       const action = await this.actionService.findOne(myActions[i].actionId);
       actions.push({ action: myActions[i], description: action });
     }
-    console.log(myActions);
-    console.log(actions);
     return actions;
   }
 
@@ -94,7 +96,7 @@ export class MyActionService {
     timer: any,
     myActionId: string,
     userId: string,
-    params: [{ name: string; content: string }],
+    params: { name: string; content: string }[],
   ) {
     // token
     const action = await this.actionService.findOne(actionId);
@@ -135,7 +137,7 @@ export class MyActionService {
     return myNewAction;
   }
 
-  async removeAction(actionId: string, userId: string) {
+  async removeCron(actionId: string, userId: string) {
     const myAction = await this.findOne(actionId, userId);
     if (!myAction) {
       return;
@@ -143,14 +145,22 @@ export class MyActionService {
     const action = await this.actionService.findOne(myAction.actionId);
     if (action.type === 'action') {
       try {
-        const cronJob = await this.schedulerRegistry.getCronJob(action.name + '-' + actionId);
+        const cronJob = await this.schedulerRegistry.getCronJob(action.name + '-' + myAction.uuid);
         cronJob.stop();
       } catch (error) {}
     }
+  }
+
+  async removeAction(actionId: string, userId: string) {
+    this.removeCron(actionId, userId);
     return await this.myActionRepository.delete({ uuid: actionId, userId: userId });
   }
 
   async removeByAreaId(areaId: string, userId: string) {
+    const myActions = await this.findAll(areaId);
+    for (const myAction of myActions) {
+      this.removeCron(myAction.uuid, userId);
+    }
     return await this.myActionRepository.delete({ areaId: areaId, userId: userId });
   }
 

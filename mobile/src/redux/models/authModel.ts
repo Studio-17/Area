@@ -28,8 +28,8 @@ export type LoginRequest = {
 };
 
 export type LogInGoogleRequest = {
-  credentials: string | undefined
-}
+  credentials: string | undefined;
+};
 
 export type RegisterRequest = {
   email: string;

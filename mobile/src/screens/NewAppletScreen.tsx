@@ -1,20 +1,28 @@
 import React, { useState } from "react";
 import {
   StyleSheet,
-  Text,
   View,
   SafeAreaView,
   TouchableOpacity,
   StatusBar,
   Pressable,
+  ScrollView,
 } from "react-native";
+
+// Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+// Navigation
 import { createStackNavigator } from "@react-navigation/stack";
+
+// Redux
 import { Service } from "../redux/models/serviceModels";
 import { useServicesQuery } from "../redux/services/servicesApi";
 
+// Components
 import ServicesModal from "../components/Modals/ServicesModal";
 import ActionsModal from "../components/Modals/ActionsModal";
+import MyText from "../components/MyText";
 
 const Stack = createStackNavigator();
 
@@ -37,15 +45,24 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
   const [serviceSelected, setServiceSelected] = useState<Service | null>(null);
   const [blocksState, setBlockState] = useState<any>([]);
   const [thensInstance, setthensInstance] = useState<any>([]);
-  const [typeSelected, setTypeSelected] = useState<"action" | "reaction">("action");
-  // const [blockNumberSelected, setBlockNumberSelected] = useState<number>(0);
+  const [typeSelected, setTypeSelected] = useState<"action" | "reaction">(
+    "action"
+  );
+
+  const canAddThen = () => {
+    if (blocksState[blocksState.length + 1] != null && thensInstance[thensInstance.length] != null) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   const { data: services, isError, isLoading } = useServicesQuery();
 
   const onCloseServiceModal = () => {
     setOpenServicesModal(false);
     setServiceSelected(null);
-  }
+  };
 
   const onClickOpenModal = (
     index: number,
@@ -84,11 +101,16 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
 
   const onClickAddthens = () => {
     setthensInstance((thens: any) => [...thens, { type: "then" }]);
+    console.log(canAddThen());
   };
 
   const onClickRemoveBlock = (index: number) => {
-    setBlockState(blocksState.filter((block: any, i: number) => i !== (index + 1)));
-    setthensInstance(thensInstance.filter((then: any, i: number) => i !== index));
+    setBlockState(
+      blocksState.filter((block: any, i: number) => i !== index + 1)
+    );
+    setthensInstance(
+      thensInstance.filter((then: any, i: number) => i !== index)
+    );
   };
 
   return (
@@ -96,88 +118,110 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
       {!serviceSelected ? (
         <>
           <View style={styles.headerContainer}>
-            <Text style={styles.textHeaderStyle}>New coonie u said ?</Text>
+            <MyText style={styles.textHeaderStyle}>New coonie u said ?</MyText>
           </View>
-          <View style={styles.contentContainer}>
-            {blocksState[0] ? (
-              <View style={styles.cardPropertiesServiceSelected}>
-                <Text style={styles.cardTitle}>IF</Text>
-                <Text>{blocksState[0].name}</Text>
-                <TouchableOpacity
-                  style={styles.cardButton}
-                >
-                  <MaterialCommunityIcons name="minus" color={"black"} size={35} />
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <View style={styles.cardProperties}>
-                <Text style={styles.cardTitle}>IF</Text>
-                <TouchableOpacity
-                  style={styles.cardButton}
-                  onPress={() => onClickOpenModal(0, "action")}
-                >
-                  <MaterialCommunityIcons name="plus" color={"black"} size={35} />
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
-          {thensInstance.map((block: any, index: number) => (
-            <View key={index} style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}>
-              <View style={{
-                backgroundColor: "#E2DDFF",
-                width: 10,
-                height: 30,
-              }} />
-              <View style={styles.thenContainer}>
-                {blocksState[index + 1] ? (
-                  <View style={styles.thenCardProperties}>
-                    <Text style={styles.cardTitle}>Then</Text>
-                    <Text>{blocksState[index + 1].name}</Text>
-                    <TouchableOpacity
-                      style={styles.cardButton}
-                      onPress={() => onClickRemoveBlock(index)}
-                    >
-                      <MaterialCommunityIcons name="minus" color={"black"} size={35} />
-                    </TouchableOpacity>
-                  </View>
-                ): (
-                  <View style={styles.thenCardProperties}>
-                    <Text style={styles.cardTitle}>Then</Text>
-                    <TouchableOpacity
-                      style={styles.cardButton}
-                      onPress={() => onClickOpenModal(index + 1, "reaction")}
-                    >
-                      <MaterialCommunityIcons name="plus" color={"black"} size={35} />
-                    </TouchableOpacity>
-                  </View>
-                )}
-              </View>
+          <ScrollView>
+            <View style={styles.contentContainer}>
+              {blocksState[0] ? (
+                <View style={styles.cardPropertiesServiceSelected}>
+                  <MyText style={styles.cardTitle}>IF</MyText>
+                  <MyText>{blocksState[0].name}</MyText>
+                  <TouchableOpacity style={styles.cardButton}>
+                    <MaterialCommunityIcons
+                      name="minus"
+                      color={"black"}
+                      size={35}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View style={styles.cardPropertiesServiceSelected}>
+                  <MyText style={styles.cardTitle}>IF</MyText>
+                  <TouchableOpacity
+                    style={styles.cardButton}
+                    onPress={() => onClickOpenModal(0, "action")}
+                  >
+                    <MaterialCommunityIcons
+                      name="plus"
+                      color={"black"}
+                      size={35}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
-          ))}
-          <Pressable
-            style={{
-              borderRadius: 15,
-              borderColor: "#0165F5",
-              borderWidth: 3,
-              padding: 15,
-              marginVertical: 15,
-              marginHorizontal: 40,
-            }}
-            onPress={onClickAddthens}
-          >
-            <Text style={{
-              textAlign: "center",
-              color: "#0165F5",
-              fontWeight: "bold",
-              fontSize: 20,
-            }}>
-              Add thens
-            </Text>
-          </Pressable>
+            {thensInstance.map((block: any, index: number) => (
+              <View
+                key={index}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: "#E2DDFF",
+                    width: 10,
+                    height: 30,
+                  }}
+                />
+                <View style={styles.thenContainer}>
+                  {blocksState[index + 1] ? (
+                    <View style={styles.thenCardProperties}>
+                      <MyText style={styles.cardTitle}>Then</MyText>
+                      <MyText>{blocksState[index + 1].name}</MyText>
+                      <TouchableOpacity
+                        style={styles.cardButton}
+                        onPress={() => onClickRemoveBlock(index)}
+                      >
+                        <MaterialCommunityIcons
+                          name="minus"
+                          color={"black"}
+                          size={35}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                    <View style={styles.thenCardProperties}>
+                      <MyText style={styles.cardTitle}>Then</MyText>
+                      <TouchableOpacity
+                        style={styles.cardButton}
+                        onPress={() => onClickOpenModal(index + 1, "reaction")}
+                      >
+                        <MaterialCommunityIcons
+                          name="plus"
+                          color={"black"}
+                          size={35}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
+              </View>
+            ))}
+            <Pressable
+              style={{
+                borderRadius: 15,
+                borderColor: "#0165F5",
+                borderWidth: 3,
+                padding: 15,
+                margin: 40,
+                marginBottom: 100,
+              }}
+              onPress={onClickAddthens}
+            >
+              <MyText
+                style={{
+                  textAlign: "center",
+                  color: "#0165F5",
+                  fontSize: 20,
+                }}
+              >
+                Add a reaction
+              </MyText>
+            </Pressable>
+          </ScrollView>
         </>
       ) : (
         <ActionsModal
@@ -227,10 +271,10 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     alignItems: "center",
     justifyContent: "center",
+    padding: 10,
   },
   textHeaderStyle: {
     fontSize: 25,
-    fontWeight: "bold",
     color: "black",
   },
   modalContainer: {
@@ -262,7 +306,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    // marginBottom: 30,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -278,7 +321,6 @@ const styles = StyleSheet.create({
     padding: 10,
     color: "black",
     fontSize: 30,
-    fontWeight: "bold",
   },
   cardButton: {
     backgroundColor: "white",
@@ -310,5 +352,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-  }
+  },
+  scrollView: {
+    backgroundColor: "pink",
+    marginHorizontal: 20,
+  },
 });

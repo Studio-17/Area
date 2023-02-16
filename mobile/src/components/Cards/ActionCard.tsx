@@ -1,9 +1,8 @@
 import React from "react";
-import {
-  Text,
-  Pressable,
-  StyleSheet
-} from "react-native";
+import { Pressable, StyleSheet } from "react-native";
+
+// Components
+import MyText from "../MyText";
 
 interface Props {
   actionContent?: string;
@@ -19,34 +18,37 @@ interface Props {
   logo?: any;
 }
 
-export default function ActionCard(
-  {
-    onClose,
-    onCloseServicesModal,
-    actionContent,
-    reactionContent,
-    uuidOfAction,
-    onClick
-  }: Props) {
+export default function ActionCard({
+  onClose,
+  onCloseServicesModal,
+  actionContent,
+  reactionContent,
+  uuidOfAction,
+  onClick,
+}: Props) {
   const onClickOnCards = () => {
     onClose();
     onCloseServicesModal();
-    onClick(actionContent && actionContent, reactionContent && reactionContent, uuidOfAction && uuidOfAction)
+    onClick(
+      actionContent && actionContent,
+      reactionContent && reactionContent,
+      uuidOfAction && uuidOfAction
+    );
   };
 
   return (
-    <Pressable style={ styles.cardProperties} onPress={onClickOnCards}>
-      <Text style={styles.cardContainer}>
+    <Pressable style={styles.cardProperties} onPress={onClickOnCards}>
+      <MyText style={styles.cardContainer}>
         {actionContent && (
-          <Text style={styles.textProperties}>{actionContent}</Text>
+          <MyText style={styles.textProperties}>{actionContent}</MyText>
         )}
         {reactionContent && (
-          <Text style={styles.textProperties}>{reactionContent}</Text>
+          <MyText style={styles.textProperties}>{reactionContent}</MyText>
         )}
-      </Text>
+      </MyText>
     </Pressable>
   );
-};
+}
 
 const styles = StyleSheet.create({
   cardProperties: {

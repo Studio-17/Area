@@ -1,13 +1,19 @@
-import * as React from "react";
-import { Text, StyleSheet, SafeAreaView, StatusBar } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React from "react";
+import {
+  StyleSheet,
+  SafeAreaView,
+  StatusBar
+} from "react-native";
+
+// Components
+import MyText from "../components/MyText";
 
 function MainHeader() {
   return (
     <SafeAreaView style={styles.headerContainer}>
-      <Text style={styles.title}>
-        R<Text style={styles.blueText}>e</Text>accoon
-      </Text>
+      <MyText style={styles.title}>
+        R<MyText style={styles.blueText}>e</MyText>accoon
+      </MyText>
     </SafeAreaView>
   );
 }
@@ -18,7 +24,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 35,
-    fontWeight: "bold",
     color: "#A37C5B",
     margin: 10,
     marginLeft: 20,

@@ -3,6 +3,7 @@ import { SpotifyOAuth2Service } from './spotify-oauth2.service';
 import { SpotifyOAuth2Controller } from './spotify-oauth2.controller';
 import { HttpModule } from '@nestjs/axios';
 import { CredentialsModule } from '../../../credentials/credentials.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { CredentialsModule } from '../../../credentials/credentials.module';
     }),
     CredentialsModule,
   ],
-  providers: [SpotifyOAuth2Service],
+  providers: [SpotifyOAuth2Service, JwtService],
   controllers: [SpotifyOAuth2Controller],
 })
 export class SpotifyOAuth2Module {}
