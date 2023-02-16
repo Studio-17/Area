@@ -1,12 +1,12 @@
-import { Body, Controller, Delete, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Post, UseGuards} from '@nestjs/common';
 import { IsUuidParam } from '../utils/decorators/Is-uuid-param.decorator';
 import { ActionService } from './action.service';
 import { CreateActionDto } from './dto/create-action-dto';
 import { UpdateActionDto } from './dto/update-action-dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authentication.guard';
-import { ServiceList } from '../service/entity/service.entity';
 import { ActionEntity } from './entity/action.entity';
+import { IsServiceDto } from '../service/dto/is-service.dto';
 
 @ApiTags('Action')
 @UseGuards(JwtAuthenticationGuard)
@@ -16,7 +16,7 @@ export class ActionController {
 
   @Post(':serviceName')
   async create(
-    @IsUuidParam('serviceName') serviceName: ServiceList,
+    @Param() { serviceName }: IsServiceDto,
     @Body() createActionDto: CreateActionDto,
   ): Promise<ActionEntity> {
     return this.actionService.create(serviceName, createActionDto);
@@ -28,9 +28,7 @@ export class ActionController {
   }
 
   @Get('/service/:serviceName')
-  async getByService(
-    @IsUuidParam('serviceName') serviceName: ServiceList,
-  ): Promise<ActionEntity[]> {
+  async getByService(@Param() { serviceName }: IsServiceDto): Promise<ActionEntity[]> {
     return this.actionService.findByService(serviceName);
   }
 

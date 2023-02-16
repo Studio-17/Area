@@ -24,10 +24,10 @@ import { CreateCredentialsDto } from './dto/create-credentials.dto';
 export class CredentialsController {
   constructor(private readonly credentialsService: CredentialsService) {}
 
-  @Get('/all')
-  public async findAllUser(): Promise<CredentialsInterface[]> {
-    return this.credentialsService.findAll();
-  }
+  // @Get('/all')
+  // public async findAllUser(): Promise<CredentialsInterface[]> {
+  //   return this.credentialsService.findAll();
+  // }
 
   @Get()
   public async findOneCredentials(

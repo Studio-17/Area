@@ -27,9 +27,7 @@ export class ServiceService {
         console.error(e);
         throw NotFoundException('service');
       });
-    if (!res) {
-      throw NotFoundException('service');
-    }
+    // const user: UserEntity
     return res;
   }
 

@@ -22,15 +22,15 @@ import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authenticat
 export class UserController {
   constructor(private readonly usersService: UserService) {}
 
-  @Get()
-  public async findAllUser(): Promise<UserEntity[]> {
-    return this.usersService.findAll();
-  }
+  // @Get()
+  // public async findAllUser(): Promise<UserEntity[]> {
+  //   return this.usersService.findAll();
+  // }
 
-  @Get('/:id')
-  public async findOneUser(@Param('id') id: string): Promise<UserEntity> {
-    return this.usersService.findById(id);
-  }
+  // @Get('/:id')
+  // public async findOneUser(@Param('id') id: string): Promise<UserEntity> {
+  //   return this.usersService.findById(id);
+  // }
 
   @Get('/:id/profile')
   public async getUser(@Res() res, @Param('id') id: string): Promise<UserEntity> {

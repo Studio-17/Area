@@ -1,17 +1,19 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
-import { IsUuidParam } from '../utils/decorators/Is-uuid-param.decorator';
 import { ServiceService } from './service.service';
-import { CreateServiceDto } from './dto/create-service-dto';
-import { UpdateServiceDto } from './dto/update-service-dto';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authentication.guard';
-import {ServiceList} from "./entity/service.entity";
+import { IsServiceDto } from './dto/is-service.dto';
+import {JwtAuthenticationGuard} from "../authentication/guards/jwt-authentication.guard";
+import { Request } from 'express';
+import { JwtService } from '@nestjs/jwt';
 
 @ApiTags('Service')
 // @UseGuards(JwtAuthenticationGuard)
 @Controller('service')
 export class ServiceController {
-  constructor(private readonly serviceService: ServiceService) {}
+  constructor(
+    private readonly serviceService: ServiceService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   // @Post()
   // async create(@Body() createServiceDto: CreateServiceDto) {
@@ -23,8 +25,14 @@ export class ServiceController {
     return this.serviceService.findAll();
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Get(':serviceName')
-  async getOne(@Param('serviceName') serviceName: ServiceList) {
+  async getOne(@Param() { serviceName }: IsServiceDto, @Req() req: Request) {
+    // ----- TO CLEAN ---
+    const jwt = req.headers.authorization.replace('Bearer ', '');
+    const json = this.jwtService.decode(jwt, { json: true }) as { uuid: string };
+    console.log('-----', json, '-----');
+    // ----- TO CLEAN ---
     return this.serviceService.findOne(serviceName);
   }
 
