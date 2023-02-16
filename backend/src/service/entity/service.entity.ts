@@ -6,7 +6,7 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 
-export enum ServiceType {
+export enum ServiceList {
   DISCORD = 'discord',
   GITHUB = 'github',
   GOOGLE = 'google',
@@ -16,13 +16,21 @@ export enum ServiceType {
   TWITCH = 'twitch',
 }
 
+export enum ServiceType {
+  INTERNAL = 'internal', // doesn't need to log in
+  EXTERNAL = 'external', // do need to log in
+}
+
 @Entity({ name: 'service' })
 export class ServiceEntity {
-  @PrimaryColumn()
-  name!: string;
+  @PrimaryColumn({ type: 'enum', enum: ServiceList })
+  name!: ServiceList;
 
   @Column()
   description!: string;
+
+  @Column({ type: 'enum', enum: ServiceType })
+  type!: ServiceType;
 
   @CreateDateColumn({
     type: 'timestamp',

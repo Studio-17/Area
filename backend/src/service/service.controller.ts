@@ -1,10 +1,11 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { IsUuidParam } from '../utils/decorators/Is-uuid-param.decorator';
 import { ServiceService } from './service.service';
 import { CreateServiceDto } from './dto/create-service-dto';
 import { UpdateServiceDto } from './dto/update-service-dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authentication.guard';
+import {ServiceList} from "./entity/service.entity";
 
 @ApiTags('Service')
 // @UseGuards(JwtAuthenticationGuard)
@@ -23,7 +24,7 @@ export class ServiceController {
   }
 
   @Get(':serviceName')
-  async getOne(@Param('serviceName') serviceName: string) {
+  async getOne(@Param('serviceName') serviceName: ServiceList) {
     return this.serviceService.findOne(serviceName);
   }
 

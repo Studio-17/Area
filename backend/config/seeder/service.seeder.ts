@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
-import { ServiceEntity, ServiceType } from '../../src/service/entity/service.entity';
+import { ServiceEntity, ServiceList, ServiceType } from '../../src/service/entity/service.entity';
 
 @Injectable()
 export class ServiceSeederService {
@@ -14,32 +13,39 @@ export class ServiceSeederService {
   async seed() {
     const services = [
       {
-        name: ServiceType.DISCORD,
+        name: ServiceList.DISCORD,
         description: 'Discord service description',
+        type: ServiceType.EXTERNAL,
       },
       {
-        name: ServiceType.GITHUB,
+        name: ServiceList.GITHUB,
         description: 'GitHub service description',
+        type: ServiceType.EXTERNAL,
       },
       {
-        name: ServiceType.GOOGLE,
+        name: ServiceList.GOOGLE,
         description: 'Google service description',
+        type: ServiceType.EXTERNAL,
       },
       {
-        name: ServiceType.MIRO,
+        name: ServiceList.MIRO,
         description: 'Miro service description',
+        type: ServiceType.EXTERNAL,
       },
       {
-        name: ServiceType.NOTION,
+        name: ServiceList.NOTION,
         description: 'Notion service description',
+        type: ServiceType.EXTERNAL,
       },
       {
-        name: ServiceType.SPOTIFY,
+        name: ServiceList.SPOTIFY,
         description: 'Spotify service description',
+        type: ServiceType.EXTERNAL,
       },
       {
-        name: ServiceType.TWITCH,
+        name: ServiceList.TWITCH,
         description: 'Twitch service description',
+        type: ServiceType.EXTERNAL,
       },
     ];
 

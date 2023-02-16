@@ -6,7 +6,7 @@ import { CreateActionDto } from './dto/create-action-dto';
 import { UpdateActionDto } from './dto/update-action-dto';
 import { NotFoundException } from '../utils/exceptions/not-found.exception';
 import { ServiceService } from 'src/service/service.service';
-import {ServiceType} from "../service/entity/service.entity";
+import {ServiceList} from "../service/entity/service.entity";
 
 @Injectable()
 export class ActionService {
@@ -16,7 +16,7 @@ export class ActionService {
     private readonly serviceService: ServiceService,
   ) {}
 
-  async create(serviceName: ServiceType, createActionDto: CreateActionDto) {
+  async create(serviceName: ServiceList, createActionDto: CreateActionDto) {
     const service: boolean = await this.serviceService.exist(serviceName);
     if (!service) {
       throw NotFoundException('service');
@@ -52,7 +52,7 @@ export class ActionService {
     return res;
   }
 
-  async findByService(serviceName: ServiceType): Promise<ActionEntity[]> {
+  async findByService(serviceName: ServiceList): Promise<ActionEntity[]> {
     return this.actionRepository.findBy({ service: serviceName }).catch((e) => {
       console.error(e);
       throw NotFoundException('service');

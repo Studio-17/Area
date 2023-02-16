@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TemplateEntity } from '../../src/action/entity/template.entity';
 import { ActionType } from '../../src/action/entity/action.entity';
-import { ServiceType } from '../../src/service/entity/service.entity';
+import { ServiceList } from '../../src/service/entity/service.entity';
 
 @Injectable()
 export class TemplateSeederService {
@@ -19,7 +19,7 @@ export class TemplateSeederService {
       {
         templateId: 'github-check-pull-request',
         type: ActionType.ACTION,
-        service: ServiceType.GITHUB,
+        service: ServiceList.GITHUB,
         name: 'Check Pull Request',
         description:
           'This action allow you to catch events when a new pull request is opened on a repository.',
@@ -27,7 +27,7 @@ export class TemplateSeederService {
       {
         templateId: 'github-check-issue',
         type: ActionType.ACTION,
-        service: ServiceType.GITHUB,
+        service: ServiceList.GITHUB,
         name: 'Check Issue',
         description:
           'This action allow you to catch events when a new issue is posted on a repository.',
@@ -36,7 +36,7 @@ export class TemplateSeederService {
       {
         templateId: 'google-check-mail',
         type: ActionType.ACTION,
-        service: ServiceType.GOOGLE,
+        service: ServiceList.GOOGLE,
         name: 'Check Mail',
         description: 'This action allow you to catch events when you receive a new mail.',
       },

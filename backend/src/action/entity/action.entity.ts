@@ -1,5 +1,5 @@
 import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn} from 'typeorm';
-import {ServiceType} from "../../service/entity/service.entity";
+import {ServiceList} from "../../service/entity/service.entity";
 
 export enum ActionType {
   ACTION = 'action',
@@ -11,8 +11,8 @@ export class ActionEntity {
   @PrimaryGeneratedColumn('uuid')
   uuid!: string;
 
-  @Column({ type: 'enum', enum: ServiceType })
-  service!: ServiceType;
+  @Column({ type: 'enum', enum: ServiceList })
+  service!: ServiceList;
 
   @Column()
   name!: string;

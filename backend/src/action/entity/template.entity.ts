@@ -1,5 +1,5 @@
 import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryColumn } from 'typeorm';
-import { ServiceType } from '../../service/entity/service.entity';
+import { ServiceList } from '../../service/entity/service.entity';
 import { ActionType } from './action.entity';
 
 @Entity({ name: 'template' })
@@ -10,8 +10,8 @@ export class TemplateEntity {
   @Column({ type: 'enum', enum: ActionType })
   type!: ActionType;
 
-  @Column({ type: 'enum', enum: ServiceType })
-  service!: ServiceType;
+  @Column({ type: 'enum', enum: ServiceList })
+  service!: ServiceList;
 
   @Column()
   name!: string;
