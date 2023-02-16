@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Req, Res, Body, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Req, Res, Body, Post, UseGuards, Param } from '@nestjs/common';
 import { GoogleService } from './google.service';
 import { JwtAuthenticationGuard } from '../../authentication/guards/jwt-authentication.guard';
 
@@ -39,13 +39,12 @@ export class GoogleController {
   public async createGoogleDoc(
     @Req() request,
     @Res() response,
-    @Body() body: { accessToken: string; filename: string },
+    @Body() body: { accessToken: string; params?: { name: string; content: string }[] },
   ) {
-    console.log('create a doc');
     try {
       const fileId = await this.googleService.createGoogleDocOnDrive(
         body.accessToken,
-        body.filename,
+        body.params[0].content,
       );
 
       return response.status(HttpStatus.OK).json({
