@@ -33,7 +33,7 @@ export class ServiceController {
     const json = this.jwtService.decode(jwt, { json: true }) as { uuid: string };
     console.log('-----', json, '-----');
     // ----- TO CLEAN ---
-    return this.serviceService.findOne(serviceName);
+    return this.serviceService.findOne(serviceName, json);
   }
 
   // @Patch(':serviceName')

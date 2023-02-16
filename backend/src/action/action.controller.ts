@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post, UseGuards} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { IsUuidParam } from '../utils/decorators/Is-uuid-param.decorator';
 import { ActionService } from './action.service';
 import { CreateActionDto } from './dto/create-action-dto';

@@ -14,7 +14,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entity/user.entity';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authentication.guard';
 
 @ApiTags('User')
 // @UseGuards(JwtAuthenticationGuard)
@@ -22,11 +21,13 @@ import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authenticat
 export class UserController {
   constructor(private readonly usersService: UserService) {}
 
+  // COMMENTED BECAUSE OF SECURITY : USER DATS ISN'T ACCESSIBLE FROM OTHER USERS
   // @Get()
   // public async findAllUser(): Promise<UserEntity[]> {
   //   return this.usersService.findAll();
   // }
 
+  // COMMENTED BECAUSE OF SECURITY : USER DATS ISN'T ACCESSIBLE FROM OTHER USERS
   // @Get('/:id')
   // public async findOneUser(@Param('id') id: string): Promise<UserEntity> {
   //   return this.usersService.findById(id);

@@ -1,6 +1,5 @@
 import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
 import { ActionType } from '../entity/action.entity';
-import {ServiceList} from "../../service/entity/service.entity";
 
 export class UpdateActionDto {
   @IsString()

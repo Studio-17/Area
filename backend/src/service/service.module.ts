@@ -5,9 +5,10 @@ import { ServiceController } from './service.controller';
 import { ServiceEntity} from './entity/service.entity';
 import { ServiceSeederService } from '../../config/seeder/service.seeder';
 import { JwtService } from '@nestjs/jwt';
+import { CredentialsEntity } from '../credentials/entity/credentials.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ServiceEntity])],
+  imports: [TypeOrmModule.forFeature([ServiceEntity, CredentialsEntity])],
   providers: [ServiceService, ServiceSeederService, JwtService],
   controllers: [ServiceController],
   exports: [ServiceService, ServiceSeederService],

@@ -5,7 +5,7 @@ import { CreateAreaDto } from './dto/create-area-dto';
 import { UpdateAreaDto } from './dto/update-area-dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authentication.guard';
-import {AreaEntity} from "./entity/area.entity";
+import { AreaEntity } from './entity/area.entity';
 
 @ApiTags('Area')
 @UseGuards(JwtAuthenticationGuard)

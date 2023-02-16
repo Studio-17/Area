@@ -6,7 +6,7 @@ import { CreateActionDto } from './dto/create-action-dto';
 import { UpdateActionDto } from './dto/update-action-dto';
 import { NotFoundException } from '../utils/exceptions/not-found.exception';
 import { ServiceService } from 'src/service/service.service';
-import {ServiceList} from "../service/entity/service.entity";
+import { ServiceList } from '../service/entity/service.entity';
 
 @Injectable()
 export class ActionService {
@@ -21,8 +21,6 @@ export class ActionService {
     if (!service) {
       throw NotFoundException('service');
     }
-
-
 
     const action = await this.actionRepository.create({
       ...createActionDto,
