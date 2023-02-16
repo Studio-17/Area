@@ -1,12 +1,16 @@
 import {
   SafeAreaView,
-  Text,
   TouchableOpacity,
   StyleSheet,
   StatusBar,
   View,
 } from "react-native";
+
+// Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+// Components
+import MyText from "../components/MyText";
 
 export default function AppletDetailsScreen({
   route,
@@ -29,7 +33,7 @@ export default function AppletDetailsScreen({
             size={50}
           />
         </TouchableOpacity>
-        <Text style={styles.textStyle}>{item.name}</Text>
+        <MyText style={styles.textStyle}>{item.name}</MyText>
         <View style={{ flex: 1 }} />
       </View>
     </SafeAreaView>

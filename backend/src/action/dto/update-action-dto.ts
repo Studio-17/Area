@@ -1,14 +1,16 @@
-import { IsArray, IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
-import { ActionType } from '../action.entity';
+import {IsArray, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID} from 'class-validator';
+import { ActionType } from '../entity/action.entity';
+import {ServiceType} from "../../service/entity/service.entity";
 
 export class UpdateActionDto {
   @IsString()
   @IsOptional()
   name: string;
 
-  @IsUUID()
-  @IsOptional()
-  serviceId: string;
+  // @IsString()
+  // @IsOptional()
+  // @IsEnum(ServiceType)
+  // serviceName: string;
 
   @IsString()
   @IsOptional()

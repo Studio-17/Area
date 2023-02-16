@@ -7,10 +7,12 @@ import auth from "../slices/authSlice";
 export const store = configureStore({
   reducer: {
     [servicesApi.reducerPath]: servicesApi.reducer,
-    auth
+    auth,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({serializableCheck: false}).concat(servicesApi.middleware),
+    getDefaultMiddleware({ serializableCheck: false }).concat(
+      servicesApi.middleware
+    ),
 });
 
 export type AppDispatch = typeof store.dispatch;

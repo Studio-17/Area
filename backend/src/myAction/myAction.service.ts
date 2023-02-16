@@ -2,19 +2,19 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotFoundException } from '../utils/exceptions/not-found.exception';
-import { MyAction } from './myAction.entity';
+import { MyActionEntity } from './entity/myAction.entity';
 import { CreateMyActionDto } from './dto/create-myaction-dto';
 import { ActionService } from 'src/action/action.service';
 import { AreaService } from '../area/area.service';
 import { SchedulerRegistry } from '@nestjs/schedule';
-import { ActionType } from 'src/action/action.entity';
-import { GoogleService } from 'src/externService/google/google.service';
+import { ActionType } from 'src/action/entity/action.entity';
+import { GoogleService } from 'src/externService/service/google/google.service';
 
 @Injectable()
 export class MyActionService {
   constructor(
-    @InjectRepository(MyAction)
-    private myActionRepository: Repository<MyAction>,
+    @InjectRepository(MyActionEntity)
+    private myActionRepository: Repository<MyActionEntity>,
     private readonly actionService: ActionService,
     @Inject(forwardRef(() => AreaService))
     private readonly areaService: AreaService,
@@ -31,7 +31,7 @@ export class MyActionService {
       resultAction = {
         actionId: action.uuid,
         name: action.name,
-        serviceId: action.serviceId,
+        service: action.service,
         myActionId: myActions[0].uuid,
       };
     }
@@ -49,7 +49,7 @@ export class MyActionService {
       reactions.push({
         actionId: action.uuid,
         name: action.name,
-        serviceId: action.serviceId,
+        serviceId: action.service,
         myActionId: myActions[i].uuid,
       });
     }
@@ -118,12 +118,12 @@ export class MyActionService {
     if (!areaIsPresent) {
       throw NotFoundException('area');
     }
-    const newAction: MyAction = this.myActionRepository.create({
+    const newAction: MyActionEntity = this.myActionRepository.create({
       userId: userId,
       areaId: areaId,
       ...action,
     });
-    const myNewAction: MyAction = await this.myActionRepository.save(newAction);
+    const myNewAction: MyActionEntity = await this.myActionRepository.save(newAction);
     this.addCron(
       action.actionId,
       { hour: action.hour, minute: action.minute, second: action.second },

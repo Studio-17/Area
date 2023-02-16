@@ -5,12 +5,16 @@ import {
   FlatList,
   StatusBar,
 } from "react-native";
+
+// Navigation
 import { createStackNavigator } from "@react-navigation/stack";
+
+// Screens
 import AppletDetailsScreen from "./AppletDetailsScreen";
+
+// Components
 import MainHeader from "../components/MainHeader";
 import Applet from "../components/Cards/AppletCard";
-import axios from "axios";
-import { useEffect, useState } from "react";
 
 const DATA = [
   {
@@ -51,7 +55,7 @@ function HomeScreen({ navigation }: { navigation: any }) {
   // };
 
   return (
-    <SafeAreaView style={styles.cardContainer}>
+    <SafeAreaView style={{ backgroundColor: "#FFF7FA" }}>
       <MainHeader />
       <FlatList
         data={data}
@@ -88,7 +92,7 @@ export default function HomeStack() {
 const styles = StyleSheet.create({
   cardContainer: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    paddingTop: StatusBar.currentHeight || 0,
     backgroundColor: "#FFF7FA",
   },
 });

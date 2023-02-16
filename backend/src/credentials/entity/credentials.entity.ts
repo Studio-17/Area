@@ -1,32 +1,27 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'user' })
-export class User {
+@Entity({ name: 'credential' })
+export class CredentialsEntity {
   @PrimaryGeneratedColumn('uuid')
   uuid: string;
 
   @Column()
-  firstName: string;
+  userId: string;
 
   @Column()
-  lastName: string;
+  service: string;
 
-  @Column({
-    unique: true,
-  })
-  email: string;
+  @Column()
+  accessToken: string;
 
-  @Column({ nullable: true })
-  password: string;
-
-  @Column({ nullable: true })
-  jwt: string;
+  @Column()
+  refreshToken: string;
 
   @CreateDateColumn({
     type: 'timestamp',

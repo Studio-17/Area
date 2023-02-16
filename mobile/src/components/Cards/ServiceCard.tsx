@@ -1,29 +1,35 @@
-import * as React from "react";
-import {
-  Text,
-  StyleSheet,
-  Pressable
-} from "react-native";
+import React from "react";
+import { StyleSheet, Pressable } from "react-native";
 
-interface AppletProps {
-  item: AppletItem;
+// Redux
+import { Service } from "../../redux/models/serviceModels";
+
+// Components
+import MyText from "../MyText";
+
+interface Props {
+  service: Service;
+  logo?: any;
+  setServiceSelected: any;
+  setOpenActionModal: any;
 }
 
-interface AppletItem {
-  title: string;
-  color: string;
-}
-
-export default function Service({ item }: AppletProps) {
-  const onPressFunction = () => {
-    alert("You pressed service: " + item.title);
+export default function ServiceCard({
+  service,
+  logo,
+  setServiceSelected,
+  setOpenActionModal,
+}: Props) {
+  const onClickOnCards = () => {
+    setServiceSelected(service);
+    setOpenActionModal(true);
   };
 
   return (
-    <Pressable style={[ styles.cardProperties, { backgroundColor: item.color } ]} onPress={onPressFunction}>
-      <Text style={styles.cardContainer}>
-        <Text style={styles.textProperties}>{item.title}</Text>
-      </Text>
+    <Pressable style={styles.cardProperties} onPress={onClickOnCards}>
+      <MyText style={styles.cardContainer}>
+        <MyText style={styles.textProperties}>{service.name}</MyText>
+      </MyText>
     </Pressable>
   );
 }
@@ -33,6 +39,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 20,
     marginVertical: 5,
+    backgroundColor: "gray",
   },
   cardContainer: {
     margin: "auto",
@@ -40,6 +47,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   textProperties: {
-    color: "#FFFFFF",
+    color: "black",
   },
 });

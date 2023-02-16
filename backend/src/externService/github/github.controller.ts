@@ -1,8 +1,10 @@
 import { Controller, Get, HttpStatus, Req, Res, Body, Post, UseGuards } from '@nestjs/common';
 import { GithubService } from './github.service';
 import { JwtAuthenticationGuard } from '../../authentication/guards/jwt-authentication.guard';
+import {ApiTags} from "@nestjs/swagger";
 
 // @UseGuards(JwtAuthenticationGuard)
+@ApiTags('Extern Service')
 @Controller('actions/github')
 export class GithubController {
   constructor(private readonly githubService: GithubService) {}

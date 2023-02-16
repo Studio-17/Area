@@ -1,27 +1,15 @@
-import {
-  Entity,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn} from 'typeorm';
 
-@Entity({ name: 'credential' })
-export class Credentials {
+@Entity({ name: 'area' })
+export class AreaEntity {
   @PrimaryGeneratedColumn('uuid')
-  uuid: number;
+  uuid!: string;
 
   @Column()
-  id: string;
+  userId!: string;
 
-  @Column()
-  service: string;
-
-  @Column()
-  accessToken: string;
-
-  @Column()
-  refreshToken: string;
+  @Column({ nullable: true })
+  name: string;
 
   @CreateDateColumn({
     type: 'timestamp',

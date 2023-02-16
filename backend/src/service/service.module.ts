@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServiceService } from './service.service';
 import { ServiceController } from './service.controller';
-import { Service } from './service.entity';
-import { ServiceSeederService } from '../../config/seeders/service.seeder';
+import { ServiceEntity} from './entity/service.entity';
+import { ServiceSeederService } from '../../config/seeder/service.seeder';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Service])],
+  imports: [TypeOrmModule.forFeature([ServiceEntity])],
   providers: [ServiceService, ServiceSeederService],
   controllers: [ServiceController],
   exports: [ServiceService, ServiceSeederService],

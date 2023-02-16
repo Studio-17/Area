@@ -6,16 +6,27 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'service' })
-export class Service {
+@Entity({ name: 'user' })
+export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
-  uuid!: string;
+  uuid: string;
 
   @Column()
-  name!: string;
+  firstName: string;
 
   @Column()
-  description!: string;
+  lastName: string;
+
+  @Column({
+    unique: true,
+  })
+  email: string;
+
+  @Column({ nullable: true })
+  password: string;
+
+  @Column({ nullable: true })
+  jwt: string;
 
   @CreateDateColumn({
     type: 'timestamp',

@@ -1,67 +1,72 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Action, ActionType } from './action.entity';
+import { ActionEntity, ActionType } from './entity/action.entity';
 import { CreateActionDto } from './dto/create-action-dto';
 import { UpdateActionDto } from './dto/update-action-dto';
 import { NotFoundException } from '../utils/exceptions/not-found.exception';
 import { ServiceService } from 'src/service/service.service';
+import {ServiceType} from "../service/entity/service.entity";
 
 @Injectable()
 export class ActionService {
   constructor(
-    @InjectRepository(Action)
-    private actionRepository: Repository<Action>,
+    @InjectRepository(ActionEntity)
+    private actionRepository: Repository<ActionEntity>,
     private readonly serviceService: ServiceService,
   ) {}
 
-  async create(serviceId: string, createActionDto: CreateActionDto) {
-    const service: boolean = await this.serviceService.exist(serviceId);
+  async create(serviceName: ServiceType, createActionDto: CreateActionDto) {
+    const service: boolean = await this.serviceService.exist(serviceName);
     if (!service) {
       throw NotFoundException('service');
     }
 
-    const action: Action = this.actionRepository.create({
+
+
+    const action = await this.actionRepository.create({
       ...createActionDto,
-      serviceId: serviceId,
+      service: serviceName,
     });
     return await this.actionRepository.save(action);
   }
 
-  async findAll() {
+  async findAll(): Promise<ActionEntity[]> {
     return this.actionRepository.find();
   }
 
-  async findByType(type: ActionType) {
+  async findByType(type: ActionType): Promise<ActionEntity[]> {
     return this.actionRepository.findBy({ type: type });
   }
 
-  async findOne(actionId: string) {
-    const res = this.actionRepository.findOneByOrFail({ uuid: actionId }).catch((e) => {
-      console.error(e);
-      throw NotFoundException('action');
-    });
+  async findOne(actionId: string): Promise<ActionEntity> {
+    const res: ActionEntity = await this.actionRepository
+      .findOneByOrFail({ uuid: actionId })
+      .catch((e) => {
+        console.error(e);
+        throw NotFoundException('action');
+      });
     if (!res) {
       throw NotFoundException('action');
     }
     return res;
   }
 
-  async findByService(serviceId: string) {
-    return this.actionRepository.findBy({ serviceId: serviceId }).catch((e) => {
+  async findByService(serviceName: ServiceType): Promise<ActionEntity[]> {
+    return this.actionRepository.findBy({ service: serviceName }).catch((e) => {
       console.error(e);
       throw NotFoundException('service');
     });
   }
 
-  async findByLink(link: string) {
+  async findByLink(link: string): Promise<ActionEntity> {
     return this.actionRepository.findOneBy({ link: link }).catch((e) => {
       console.error(e);
       throw NotFoundException('action');
     });
   }
 
-  async update(actionId: string, updateActionDto: UpdateActionDto) {
+  async update(actionId: string, updateActionDto: UpdateActionDto): Promise<ActionEntity> {
     await this.actionRepository.update({ uuid: actionId }, updateActionDto).catch((e) => {
       console.error(e);
       throw NotFoundException('action');
@@ -69,7 +74,7 @@ export class ActionService {
     return this.findOne(actionId);
   }
 
-  async remove(actionId: string) {
+  async remove(actionId: string): Promise<string> {
     const result = await this.actionRepository.delete({ uuid: actionId }).catch((e) => {
       console.error(e);
       throw NotFoundException('action');

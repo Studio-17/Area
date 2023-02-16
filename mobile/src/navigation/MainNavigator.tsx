@@ -1,7 +1,11 @@
-import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
-import NewAppletScreen from "../screens/NewAppletScreen";
+
+// Navigation
+import { createStackNavigator } from "@react-navigation/stack";
 import TabNavigator from "./TabNavigator";
+
+// Screens
+import NewAppletScreen from "../screens/NewAppletScreen";
 
 const Stack = createStackNavigator();
 

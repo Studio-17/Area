@@ -1,28 +1,20 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import {
-  LoginRequest,
-  LoginResponse,
-  RegisterRequest,
-  RegisterResponse,
-} from "../models/authModel";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LoginRequest, RegisterRequest } from "../models/authModel";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "../store/store";
 
-
-
 const API_ENDPOINT = "http://localhost:3000/api/reaccoon";
-
 
 let userToken = null;
 
 const tmp = async () => {
-  let Token = await AsyncStorage.getItem("userToken")
+  let Token = await AsyncStorage.getItem("userToken");
   if (Token !== null) {
     userToken = Token;
     return userToken;
   }
-}
+};
 
 export interface AuthState {
   user: null | any;
@@ -45,7 +37,6 @@ const initialState = {
   error: null | any;
   success: null | any;
 };
-
 
 export const registerUser = createAsyncThunk(
   "auth/register",
@@ -149,7 +140,7 @@ const slice = createSlice({
       .addCase(loginUser.rejected, (state: AuthState, { payload }) => {
         state.loading = false;
         state.error = payload;
-      })
+      });
   },
 });
 
@@ -158,27 +149,6 @@ export const { setCredentials, logoutUser } = slice.actions;
 export default slice.reducer;
 
 export const selectCurrentUser = (state: RootState) => state.auth.user;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // const authSlice = createSlice({
 //   name: 'userAuth',

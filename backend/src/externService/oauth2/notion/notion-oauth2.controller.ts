@@ -15,24 +15,35 @@ import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
 import { CredentialsService } from '../../../credentials/credentials.service';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtService } from '@nestjs/jwt';
 
 @ApiTags('/service/connect')
-// @UseGuards(JwtAuthenticationGuard)
 @Controller('/service/connect')
 export class NotionOAuth2Controller {
   constructor(
     private readonly connectionService: NotionOAuth2Service,
     private readonly credentialsService: CredentialsService,
     private readonly httpService: HttpService,
+    private readonly jwtService: JwtService,
   ) {}
 
   @Get('/notion')
-  public async notion(@Res() response, @Query() query: { id: string }) {
+  @UseGuards(AuthGuard('jwt'))
+  public async notion(@Req() request, @Res() response) {
     const clientID = process.env.NOTION_CLIENT_ID;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/notion/redirect`;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/notion/redirect`;
+    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
+    if (!token['id']) {
+      return response.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'Error unauthenticated (using jwt)',
+        data: token,
+        status: 401,
+      });
+    }
     return response.status(HttpStatus.OK).json({
-      url: `https://api.notion.com/v1/oauth/authorize?client_id=${clientID}&response_type=code&owner=user&redirect_uri=${callbackURL}&state=${query.id}`,
+      url: `https://api.notion.com/v1/oauth/authorize?client_id=${clientID}&response_type=code&owner=user&redirect_uri=${callbackURL}&state=${token['id']}`,
       status: 200,
     });
   }
@@ -42,8 +53,8 @@ export class NotionOAuth2Controller {
     const clientID = process.env.NOTION_CLIENT_ID;
     const clientSECRET = process.env.NOTION_CLIENT_SECRET;
     const code = query.code;
-    const id = query.id;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/notion/redirect`;
+    const id = query.state;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/notion/redirect`;
 
     const notionData = await firstValueFrom(
       this.httpService
@@ -72,7 +83,7 @@ export class NotionOAuth2Controller {
 
     if (accessToken) {
       const userCredentials = {
-        id: id,
+        userId: id,
         service: 'notion',
         accessToken: notionData.data.access_token,
         refreshToken: 'null',

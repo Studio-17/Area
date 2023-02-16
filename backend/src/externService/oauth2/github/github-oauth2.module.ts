@@ -3,6 +3,7 @@ import { GithubOAuth2Service } from './github-oauth2.service';
 import { GithubOAuth2Controller } from './github-oauth2.controller';
 import { HttpModule } from '@nestjs/axios';
 import { CredentialsModule } from '../../../credentials/credentials.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { CredentialsModule } from '../../../credentials/credentials.module';
     }),
     CredentialsModule,
   ],
-  providers: [GithubOAuth2Service],
+  providers: [GithubOAuth2Service, JwtService],
   controllers: [GithubOAuth2Controller],
 })
 export class GithubOAuth2Module {}

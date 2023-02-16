@@ -3,6 +3,7 @@ import { GoogleOAuth2Service } from './google-oauth2.service';
 import { GoogleOAuth2Controller } from './google-oauth2.controller';
 import { HttpModule } from '@nestjs/axios';
 import { CredentialsModule } from '../../../credentials/credentials.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { CredentialsModule } from '../../../credentials/credentials.module';
     }),
     CredentialsModule,
   ],
-  providers: [GoogleOAuth2Service],
+  providers: [GoogleOAuth2Service, JwtService],
   controllers: [GoogleOAuth2Controller],
 })
 export class GoogleOAuth2Module {}

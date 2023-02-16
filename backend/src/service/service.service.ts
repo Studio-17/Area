@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Service } from './service.entity';
+import { ServiceEntity } from './entity/service.entity';
 import { CreateServiceDto } from './dto/create-service-dto';
 import { UpdateServiceDto } from './dto/update-service-dto';
 import { NotFoundException } from '../utils/exceptions/not-found.exception';
@@ -9,47 +9,55 @@ import { NotFoundException } from '../utils/exceptions/not-found.exception';
 @Injectable()
 export class ServiceService {
   constructor(
-    @InjectRepository(Service)
-    private serviceRepository: Repository<Service>,
+    @InjectRepository(ServiceEntity)
+    private serviceRepository: Repository<ServiceEntity>,
   ) {}
 
   async create(createServiceDto: CreateServiceDto) {
-    const service: Service = this.serviceRepository.create(createServiceDto);
+    const service: ServiceEntity = this.serviceRepository.create(createServiceDto);
     return await this.serviceRepository.save(service);
   }
 
-  async findAll() {
+  async findAll(): Promise<ServiceEntity[]> {
     return this.serviceRepository.find();
   }
 
-  async findOne(serviceId: string) {
-    const res = this.serviceRepository.findOneByOrFail({ uuid: serviceId }).catch((e) => {
-      console.error(e);
-      throw NotFoundException('service');
-    });
+  async findOne(serviceName: string): Promise<ServiceEntity> {
+    const res: ServiceEntity = await this.serviceRepository
+      .findOneByOrFail({ name: serviceName.toLowerCase() })
+      .catch((e) => {
+        console.error(e);
+        throw NotFoundException('service');
+      });
     if (!res) {
       throw NotFoundException('service');
     }
     return res;
   }
 
-  async update(serviceId: string, updateServiceDto: UpdateServiceDto) {
-    await this.serviceRepository.update({ uuid: serviceId }, updateServiceDto).catch((e) => {
-      console.error(e);
-      throw NotFoundException('service');
-    });
-    return this.findOne(serviceId);
+  async update(serviceName: string, updateServiceDto: UpdateServiceDto): Promise<ServiceEntity> {
+    await this.serviceRepository
+      .update({ name: serviceName.toLowerCase() }, updateServiceDto)
+      .catch((e) => {
+        console.error(e);
+        throw NotFoundException('service');
+      });
+    return this.findOne(serviceName);
   }
 
-  async remove(serviceId: string) {
-    const result = await this.serviceRepository.delete({ uuid: serviceId }).catch((e) => {
-      console.error(e);
-      throw NotFoundException('service');
-    });
+  async remove(serviceName: string): Promise<string> {
+    const result = await this.serviceRepository
+      .delete({ name: serviceName.toLowerCase() })
+      .catch((e) => {
+        console.error(e);
+        throw NotFoundException('service');
+      });
     return result.affected + ' service has been successfully deleted';
   }
 
-  async exist(serviceId: string): Promise<boolean> {
-    return this.serviceRepository.exist({ where: { uuid: serviceId } });
+  async exist(serviceName: string): Promise<boolean> {
+    return this.serviceRepository.exist({
+      where: { name: serviceName.toLowerCase() },
+    });
   }
 }

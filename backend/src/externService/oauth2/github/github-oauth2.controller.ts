@@ -1,10 +1,21 @@
-import { Controller, Get, HttpException, HttpStatus, Query, Req, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { GithubOAuth2Service } from './github-oauth2.service';
 import { CredentialsService } from '../../../credentials/credentials.service';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import axios, { AxiosError } from 'axios';
+import { JwtService } from '@nestjs/jwt';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -13,26 +24,39 @@ export class GithubOAuth2Controller {
     private readonly connectionService: GithubOAuth2Service,
     private readonly credentialsService: CredentialsService,
     private readonly httpService: HttpService,
+    private readonly jwtService: JwtService,
   ) {}
 
   @Get('/github')
-  public async github(@Res() response, @Query() query: { id: string }) {
+  @UseGuards(AuthGuard('jwt'))
+  public async github(@Req() request, @Res() response) {
     const clientID = process.env.GITHUB_CLIENT_ID;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/github/redirect`;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/github/redirect`;
     const scope = 'repo user user:email';
+    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
+
+    if (!token['id']) {
+      return response.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'Error unauthenticated (using jwt)',
+        data: token,
+        status: 401,
+      });
+    }
+    console.log(`esttttt`)
 
     return response.status(HttpStatus.OK).json({
-      url: `https://github.com/login/oauth/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&allow_signup=false&state=${query.id}`,
+      url: `https://github.com/login/oauth/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&allow_signup=false&state=${token['id']}`,
       status: 200,
     });
   }
+
   @Get('/github/redirect')
   public async githubRedirect(@Req() request, @Res() response, @Query() query) {
     const clientID = process.env.GITHUB_CLIENT_ID;
     const clientSECRET = process.env.GITHUB_CLIENT_SECRET;
     const code = query.code;
-    const id = query.id || '0000';
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/github/redirect`;
+    const id = query.state;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/github/redirect`;
 
     const githubData = await firstValueFrom(
       this.httpService
@@ -76,7 +100,7 @@ export class GithubOAuth2Controller {
         });
 
       const userCredentials = {
-        id: id,
+        userId: id,
         service: 'github',
         accessToken: accessToken,
         refreshToken: 'null',

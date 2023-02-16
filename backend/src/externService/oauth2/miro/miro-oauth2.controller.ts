@@ -15,24 +15,35 @@ import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
 import { CredentialsService } from '../../../credentials/credentials.service';
+import { JwtService } from '@nestjs/jwt';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('/service/connect')
-// @UseGuards(JwtAuthenticationGuard)
 @Controller('/service/connect')
 export class MiroOAuth2Controller {
   constructor(
     private readonly connectionService: MiroOAuth2Service,
     private readonly credentialsService: CredentialsService,
     private readonly httpService: HttpService,
+    private readonly jwtService: JwtService,
   ) {}
 
   @Get('/miro')
-  public async miro(@Res() response, @Query() query: { id: string }) {
+  @UseGuards(AuthGuard('jwt'))
+  public async miro(@Req() request, @Res() response) {
     const clientID = process.env.MIRO_CLIENT_ID;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/miro/redirect`;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/miro/redirect`;
+    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
+    if (!token['id']) {
+      return response.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'Error unauthenticated (using jwt)',
+        data: token,
+        status: 401,
+      });
+    }
     return response.status(HttpStatus.OK).json({
-      url: `https://miro.com/oauth/authorize?response_type=code&client_id=${clientID}&redirect_uri=${callbackURL}&state=${query.id}`,
+      url: `https://miro.com/oauth/authorize?response_type=code&client_id=${clientID}&redirect_uri=${callbackURL}&state=${token['id']}`,
       status: 200,
     });
   }
@@ -42,8 +53,8 @@ export class MiroOAuth2Controller {
     const clientID = process.env.MIRO_CLIENT_ID;
     const clientSECRET = process.env.MIRO_CLIENT_SECRET;
     const code = query.code;
-    const id = query.id;
-    const callbackURL = `http://localhost:3000/api/reaccoon/service/connect/miro/redirect`;
+    const id = query.state;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/miro/redirect`;
 
     const miroData = await firstValueFrom(
       this.httpService
@@ -61,7 +72,7 @@ export class MiroOAuth2Controller {
 
     if (accessToken) {
       const userCredentials = {
-        id: id,
+        userId: id,
         service: 'miro',
         accessToken: miroData.data.access_token,
         refreshToken: miroData.data.refresh_token,

@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Area } from './area.entity';
+import { AreaEntity } from './entity/area.entity';
 import { CreateAreaDto } from './dto/create-area-dto';
 import { UpdateAreaDto } from './dto/update-area-dto';
 import { NotFoundException } from '../utils/exceptions/not-found.exception';
@@ -10,14 +10,14 @@ import { MyActionService } from 'src/myAction/myAction.service';
 @Injectable()
 export class AreaService {
   constructor(
-    @InjectRepository(Area)
-    private areaRepository: Repository<Area>,
+    @InjectRepository(AreaEntity)
+    private areaRepository: Repository<AreaEntity>,
     @Inject(forwardRef(() => MyActionService))
     private readonly myActionService: MyActionService,
   ) {}
 
-  async create(createAreaDto: CreateAreaDto, userId: string) {
-    const area: Area = this.areaRepository.create({ ...createAreaDto, userId: userId });
+  async create(createAreaDto: CreateAreaDto, userId: string): Promise<AreaEntity> {
+    const area: AreaEntity = this.areaRepository.create({ ...createAreaDto, userId: userId });
     const areaInData = await this.areaRepository.save(area);
     const action = await this.myActionService.addAction(
       areaInData.uuid,
@@ -41,7 +41,7 @@ export class AreaService {
           hour: createAreaDto.hour,
           minute: createAreaDto.minute,
           second: createAreaDto.second,
-          params: createAreaDto.reactionsParams[index],
+          params: createAreaDto.reactionsParams ? createAreaDto.reactionsParams[index] : null,
         },
         userId,
       );
@@ -50,7 +50,7 @@ export class AreaService {
     return areaInData;
   }
 
-  async findAll(userId: string) {
+  async findAll(userId: string): Promise<AreaEntity[]> {
     const areas = await this.areaRepository.findBy({ userId: userId });
     const results = [];
     for (const area of areas) {
@@ -65,7 +65,7 @@ export class AreaService {
     return results;
   }
 
-  async findOne(areaId: string, userId: string) {
+  async findOne(areaId: string, userId: string): Promise<any> {
     const res = await this.areaRepository
       .findOneByOrFail({ uuid: areaId, userId: userId })
       .catch((e) => {
@@ -80,7 +80,7 @@ export class AreaService {
     return { res, action: myAction, reactions: myReactions };
   }
 
-  async update(areaId: string, updateAreaDto: UpdateAreaDto, userId: string) {
+  async update(areaId: string, updateAreaDto: UpdateAreaDto, userId: string): Promise<AreaEntity> {
     await this.areaRepository.update({ uuid: areaId, userId: userId }, updateAreaDto).catch((e) => {
       console.error(e);
       throw NotFoundException('area');
@@ -88,7 +88,7 @@ export class AreaService {
     return this.findOne(areaId, userId);
   }
 
-  async remove(areaId: string, userId: string) {
+  async remove(areaId: string, userId: string): Promise<string> {
     this.myActionService.removeByAreaId(areaId, userId);
     const result = await this.areaRepository.delete({ uuid: areaId, userId: userId }).catch((e) => {
       console.error(e);

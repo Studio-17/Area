@@ -14,11 +14,11 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authentication.guard';
 import { CredentialsService } from './credentials.service';
-import { CredentialsInterface } from './interfaces/credentials.interface';
+import { CredentialsInterface } from './interface/credentials.interface';
 import { UpdateCredentialsDto } from './dto/update-credentials.dto';
 import { CreateCredentialsDto } from './dto/create-credentials.dto';
 
-@ApiTags('credentials')
+@ApiTags('Credentials')
 // @UseGuards(JwtAuthenticationGuard)
 @Controller('credentials')
 export class CredentialsController {
@@ -31,10 +31,10 @@ export class CredentialsController {
 
   @Get()
   public async findOneCredentials(
-    @Param('id') id: string,
+    @Param('userId') userId: string,
     @Param('service') service: string,
   ): Promise<CredentialsInterface> {
-    return this.credentialsService.findById(id, service);
+    return this.credentialsService.findById(userId, service);
   }
 
   @Post()
@@ -62,12 +62,12 @@ export class CredentialsController {
   @Put()
   public async updateCredentials(
     @Res() res,
-    @Param('id') id: string,
+    @Param('userId') userId: string,
     @Param('service') service: string,
     @Body() credentialsUpdateDto: UpdateCredentialsDto,
   ): Promise<any> {
     try {
-      await this.credentialsService.updateCredentialsUser(id, service, credentialsUpdateDto);
+      await this.credentialsService.updateCredentialsUser(userId, service, credentialsUpdateDto);
 
       return res.status(HttpStatus.OK).json({
         message: 'Credentials Updated successfully!',
@@ -83,12 +83,12 @@ export class CredentialsController {
 
   @Delete()
   public async deleteCredentials(
-    @Param('id') id: string,
+    @Param('userId') userId: string,
     @Param('service') service: string,
   ): Promise<void> {
-    const credentials = this.credentialsService.deleteCredentialsUser(id, service);
+    const credentials = this.credentialsService.deleteCredentialsUser(userId, service);
     if (!credentials) {
-      throw new NotFoundException(`Credentials for user #${id} does not exist!`);
+      throw new NotFoundException(`Credentials for user #${userId} does not exist!`);
     }
     return credentials;
   }
