@@ -11,6 +11,7 @@ interface Props {
   logo?: any;
   setServiceSelected: any;
   setOpenActionModal: any;
+  setOpenServicesModal: any;
 }
 
 export default function ServiceCard(
@@ -18,11 +19,13 @@ export default function ServiceCard(
     service,
     logo,
     setServiceSelected,
-    setOpenActionModal
+    setOpenActionModal,
+    setOpenServicesModal,
   }: Props) {
   const onClickOnCards = () => {
     setServiceSelected(service);
     setOpenActionModal(true);
+    setOpenServicesModal(false);
   };
 
   return (

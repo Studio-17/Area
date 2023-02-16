@@ -184,6 +184,7 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
           openActionsModal={openActionsModal}
           onCloseActionsModal={() => setOpenActionsModal(false)}
           onCloseServicesModal={() => setOpenServicesModal(false)}
+          setOpenServicesModal={setOpenServicesModal}
           onClickOnAreasCards={onClickOnAreasCards}
           typeSelected={typeSelected}
           service={serviceSelected}
@@ -192,6 +193,7 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
       <ServicesModal
         openServicesModal={openServicesModal}
         onCloseServicesModal={onCloseServiceModal}
+        setOpenServicesModal={setOpenServicesModal}
         setOpenActionModal={setOpenActionsModal}
         setServiceSelected={setServiceSelected}
         services={services}

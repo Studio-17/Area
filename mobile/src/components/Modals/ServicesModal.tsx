@@ -14,6 +14,7 @@ import ServiceCard from "../Cards/ServiceCard";
 interface Props {
   openServicesModal: boolean;
   onCloseServicesModal: () => void;
+  setOpenServicesModal: any;
   setOpenActionModal: any;
   setServiceSelected?: any;
   services?: Service[] | null;
@@ -23,6 +24,7 @@ export default function ServicesModal(
   {
     openServicesModal,
     onCloseServicesModal,
+    setOpenServicesModal,
     setServiceSelected,
     setOpenActionModal,
     services,
@@ -42,6 +44,7 @@ export default function ServicesModal(
               setServiceSelected={setServiceSelected}
               service={service}
               setOpenActionModal={setOpenActionModal}
+              setOpenServicesModal={setOpenServicesModal}
               key={index}
             />
           ))}
