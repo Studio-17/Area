@@ -23,6 +23,7 @@ export default function ServiceCard({
   const onClickOnCards = () => {
     setServiceSelected(service);
     setOpenActionModal(true);
+    console.log("openActionModal")
   };
 
   return (

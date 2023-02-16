@@ -48,9 +48,18 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
   const [typeSelected, setTypeSelected] = useState<"action" | "reaction">(
     "action"
   );
-  // const [blockNumberSelected, setBlockNumberSelected] = useState<number>(0);
+
+  const canAddThen = () => {
+    if (blocksState[blocksState.length + 1] != null && thensInstance[thensInstance.length] != null) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   const { data: services, isError, isLoading } = useServicesQuery();
+
+  console.log(openActionsModal);
 
   const onCloseServiceModal = () => {
     setOpenServicesModal(false);
@@ -94,6 +103,7 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
 
   const onClickAddthens = () => {
     setthensInstance((thens: any) => [...thens, { type: "then" }]);
+    console.log(canAddThen());
   };
 
   const onClickRemoveBlock = (index: number) => {
@@ -104,6 +114,8 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
       thensInstance.filter((then: any, i: number) => i !== index)
     );
   };
+
+  console.log("service", serviceSelected);
 
   return (
     <SafeAreaView style={styles.screenContainer}>
@@ -198,8 +210,8 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
                 borderColor: "#0165F5",
                 borderWidth: 3,
                 padding: 15,
-                marginVertical: 15,
-                marginHorizontal: 40,
+                margin: 40,
+                marginBottom: 100,
               }}
               onPress={onClickAddthens}
             >
@@ -211,7 +223,7 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
                   fontSize: 20,
                 }}
               >
-                Add thens
+                Add a reaction
               </MyText>
             </Pressable>
           </ScrollView>
@@ -262,6 +274,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     alignItems: "center",
     justifyContent: "center",
+    padding: 10,
   },
   textHeaderStyle: {
     fontSize: 25,
@@ -297,7 +310,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    // marginBottom: 30,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,

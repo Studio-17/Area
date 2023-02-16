@@ -43,6 +43,7 @@ export default function ActionsModal(
     isLoading,
     isFetching,
   } = useActionsQuery(service.uuid);
+  console.log("action", actions);
 
   return (
     <Modal animationType="slide" visible={openActionsModal} onRequestClose={onCloseActionsModal}>
