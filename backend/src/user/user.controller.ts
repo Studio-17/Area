@@ -33,7 +33,7 @@ export class UserController {
   //   return this.usersService.findById(id);
   // }
 
-  @Get('/profile')
+  @Get('/:id/profile')
   public async getUser(@Res() res, @Param('id') id: string): Promise<UserEntity> {
     const user = await this.usersService.findById(id);
 
@@ -47,7 +47,7 @@ export class UserController {
     });
   }
 
-  @Put('/profile')
+  @Put('/:id/profile')
   public async updateProfileUser(
     @Res() res,
     @Param('id') id: string,
