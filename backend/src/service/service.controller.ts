@@ -2,12 +2,12 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } fro
 import { ServiceService } from './service.service';
 import { ApiTags } from '@nestjs/swagger';
 import { IsServiceDto } from './dto/is-service.dto';
-import {JwtAuthenticationGuard} from "../authentication/guards/jwt-authentication.guard";
+import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authentication.guard';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { UserId } from '../utils/decorators/user-id.decorator';
 
 @ApiTags('Service')
-// @UseGuards(JwtAuthenticationGuard)
 @Controller('service')
 export class ServiceController {
   constructor(
@@ -15,6 +15,7 @@ export class ServiceController {
     private readonly jwtService: JwtService,
   ) {}
 
+  // COMMENTED BECAUSE OF SECURITY : SERVICE MODIFICATION ISN'T ACCESSIBLE FROM OUTSIDE THE APP
   // @Post()
   // async create(@Body() createServiceDto: CreateServiceDto) {
   //   return this.serviceService.create(createServiceDto);
@@ -27,20 +28,17 @@ export class ServiceController {
 
   @UseGuards(JwtAuthenticationGuard)
   @Get(':serviceName')
-  async getOne(@Param() { serviceName }: IsServiceDto, @Req() req: Request) {
-    // ----- TO CLEAN ---
-    const jwt = req.headers.authorization.replace('Bearer ', '');
-    const json = this.jwtService.decode(jwt, { json: true }) as { uuid: string };
-    console.log('-----', json, '-----');
-    // ----- TO CLEAN ---
-    return this.serviceService.findOne(serviceName, json);
+  async getOne(@UserId() userId, @Param() { serviceName }: IsServiceDto, @Req() req: Request) {
+    return this.serviceService.findOne(serviceName, userId);
   }
 
+  // COMMENTED BECAUSE OF SECURITY : SERVICE MODIFICATION ISN'T ACCESSIBLE FROM OUTSIDE THE APP
   // @Patch(':serviceName')
   // async update(@Param('serviceName') serviceName: string, @Body() updateServiceDto: UpdateServiceDto) {
   //   return this.serviceService.update(serviceName, updateServiceDto);
   // }
 
+  // COMMENTED BECAUSE OF SECURITY : SERVICE MODIFICATION ISN'T ACCESSIBLE FROM OUTSIDE THE APP
   // @Delete(':serviceName')
   // async delete(@Param('serviceName') serviceName: string) {
   //   return this.serviceService.remove(serviceName);

@@ -14,7 +14,7 @@ export class ServiceService {
     private credentialsRepository: Repository<CredentialsEntity>,
   ) {}
 
-  // COMMENTED BECAUSE OF SECURITY : SERVICE MODIFICATION ISN'T ACCESSIBLE FROM OUTSIDE OF THE APP
+  // COMMENTED BECAUSE OF SECURITY : SERVICE MODIFICATION ISN'T ACCESSIBLE FROM OUTSIDE THE APP
   // async create(createServiceDto: CreateServiceDto) {
   //   const service: ServiceEntity = this.serviceRepository.create(createServiceDto);
   //   return await this.serviceRepository.save(service);
@@ -26,7 +26,7 @@ export class ServiceService {
 
   async findOne(
     serviceName: ServiceList,
-    json: Record<string, string>,
+    userId: string,
   ): Promise<{
     createdAt: Date;
     name: ServiceList;
@@ -43,7 +43,7 @@ export class ServiceService {
       });
 
     const credentials = await this.credentialsRepository.findOneBy({
-      userId: json.userId,
+      userId: userId,
       service: serviceName,
     });
 
@@ -53,7 +53,7 @@ export class ServiceService {
     };
   }
 
-  // COMMENTED BECAUSE OF SECURITY : SERVICE MODIFICATION ISN'T ACCESSIBLE FROM OUTSIDE OF THE APP
+  // COMMENTED BECAUSE OF SECURITY : SERVICE MODIFICATION ISN'T ACCESSIBLE FROM OUTSIDE THE APP
   // async update(serviceName: ServiceList, updateServiceDto: UpdateServiceDto): Promise<ServiceEntity> {
   //   await this.serviceRepository
   //     .update({ name: serviceName }, updateServiceDto)
@@ -64,7 +64,7 @@ export class ServiceService {
   //   return this.findOne(serviceName);
   // }
 
-  // COMMENTED BECAUSE OF SECURITY : SERVICE MODIFICATION ISN'T ACCESSIBLE FROM OUTSIDE OF THE APP
+  // COMMENTED BECAUSE OF SECURITY : SERVICE MODIFICATION ISN'T ACCESSIBLE FROM OUTSIDE THE APP
   // async remove(serviceName: ServiceList): Promise<string> {
   //   const result = await this.serviceRepository
   //     .delete({ name: serviceName })
