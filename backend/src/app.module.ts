@@ -10,12 +10,10 @@ import { AreaModule } from './area/area.module';
 import { ServiceModule } from './service/service.module';
 import { ActionModule } from './action/action.module';
 import { MyActionModule } from './myAction/myAction.module';
-import { ServiceSeederService } from '../config/seeders/service.seeder';
-import { LoggerMiddleware } from '../config/middlewares/logger.middleware';
-
+import { ServiceSeederService } from '../config/seeder/service.seeder';
+import { LoggerMiddleware } from '../config/middleware/logger.middleware';
 import { GithubModule } from './externService/service/github/github.module';
 import { GoogleModule } from './externService/service/google/google.module';
-
 import { DiscordOAuth2Module } from './externService/oauth2/discord/discord-oauth2.module';
 import { GithubOAuth2Module } from './externService/oauth2/github/github-oauth2.module';
 import { GoogleOAuth2Module } from './externService/oauth2/google/google-oauth2.module';
@@ -23,6 +21,8 @@ import { MiroOAuth2Module } from './externService/oauth2/miro/miro-oauth2.module
 import { NotionOAuth2Module } from './externService/oauth2/notion/notion-oauth2.module';
 import { SpotifyOAuth2Module } from './externService/oauth2/spotify/spotify-oauth2.module';
 import { TwitchOAuth2Module } from './externService/oauth2/twitch/twitch-oauth2.module';
+import { JwtModule } from '@nestjs/jwt';
+import { TemplateSeederService} from '../config/seeder/template.seeder';
 
 @Module({
   imports: [
@@ -46,14 +46,14 @@ import { TwitchOAuth2Module } from './externService/oauth2/twitch/twitch-oauth2.
     AuthenticationModule,
     UserModule,
     CredentialsModule,
+    GoogleModule,
+    GithubModule,
     AreaModule,
     ServiceModule,
     ActionModule,
     MyActionModule,
-
     GithubModule,
     GoogleModule,
-
     DiscordOAuth2Module,
     GithubOAuth2Module,
     GoogleOAuth2Module,
@@ -66,15 +66,19 @@ import { TwitchOAuth2Module } from './externService/oauth2/twitch/twitch-oauth2.
   providers: [AppService],
 })
 export class AppModule implements NestModule {
-  constructor(private readonly serviceSeederService: ServiceSeederService) {}
+  constructor(
+    private readonly serviceSeederService: ServiceSeederService,
+    private readonly actionSeederService: TemplateSeederService,
+  ) {}
 
   configure(consumer: MiddlewareConsumer) {
+    console.log('Initializing request Logger...');
     consumer.apply(LoggerMiddleware).forRoutes('*');
+    console.log('Request Logger initialized.');
   }
 
   async onModuleInit() {
-    console.log('Initializing request Logger...');
     await this.serviceSeederService.seed();
-    console.log('Request Logger initialized.');
+    await this.actionSeederService.seed();
   }
 }

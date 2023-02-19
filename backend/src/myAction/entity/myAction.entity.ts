@@ -1,7 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn} from 'typeorm';
 
 @Entity({ name: 'myAction' })
-export class MyAction {
+export class MyActionEntity {
   @PrimaryGeneratedColumn('uuid')
   uuid!: string;
 
@@ -28,4 +28,17 @@ export class MyAction {
 
   @Column({ nullable: true })
   hour: string;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP()',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP()',
+    onUpdate: 'CURRENT_TIMESTAMP()',
+  })
+  updatedAt: Date;
 }

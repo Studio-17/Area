@@ -1,39 +1,46 @@
-import { Body, Controller, Delete, Get, Patch, Post, Req, UseGuards } from '@nestjs/common';
-import { IsUuidParam } from '../utils/decorators/Is-uuid-param.decorator';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { ServiceService } from './service.service';
-import { CreateServiceDto } from './dto/create-service-dto';
-import { UpdateServiceDto } from './dto/update-service-dto';
 import { ApiTags } from '@nestjs/swagger';
+import { IsServiceDto } from './dto/is-service.dto';
 import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authentication.guard';
+import { Request } from 'express';
+import { JwtService } from '@nestjs/jwt';
+import { UserId } from '../utils/decorators/user-id.decorator';
 
 @ApiTags('Service')
-// @UseGuards(JwtAuthenticationGuard)
 @Controller('service')
 export class ServiceController {
-  constructor(private readonly serviceService: ServiceService) {}
+  constructor(
+    private readonly serviceService: ServiceService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  @Post()
-  async create(@Body() createServiceDto: CreateServiceDto) {
-    return this.serviceService.create(createServiceDto);
-  }
+  // COMMENTED BECAUSE OF SECURITY : SERVICE MODIFICATION ISN'T ACCESSIBLE FROM OUTSIDE THE APP
+  // @Post()
+  // async create(@Body() createServiceDto: CreateServiceDto) {
+  //   return this.serviceService.create(createServiceDto);
+  // }
 
   @Get()
   async getAll() {
     return this.serviceService.findAll();
   }
 
-  @Get(':id')
-  async getOne(@IsUuidParam('id') id: string) {
-    return this.serviceService.findOne(id);
+  @UseGuards(JwtAuthenticationGuard)
+  @Get(':serviceName')
+  async getOne(@UserId() userId, @Param() { serviceName }: IsServiceDto, @Req() req: Request) {
+    return this.serviceService.findOne(serviceName, userId);
   }
 
-  @Patch(':id')
-  async update(@IsUuidParam('id') id: string, @Body() updateServiceDto: UpdateServiceDto) {
-    return this.serviceService.update(id, updateServiceDto);
-  }
+  // COMMENTED BECAUSE OF SECURITY : SERVICE MODIFICATION ISN'T ACCESSIBLE FROM OUTSIDE THE APP
+  // @Patch(':serviceName')
+  // async update(@Param('serviceName') serviceName: string, @Body() updateServiceDto: UpdateServiceDto) {
+  //   return this.serviceService.update(serviceName, updateServiceDto);
+  // }
 
-  @Delete(':id')
-  async delete(@IsUuidParam('id') id: string) {
-    return this.serviceService.remove(id);
-  }
+  // COMMENTED BECAUSE OF SECURITY : SERVICE MODIFICATION ISN'T ACCESSIBLE FROM OUTSIDE THE APP
+  // @Delete(':serviceName')
+  // async delete(@Param('serviceName') serviceName: string) {
+  //   return this.serviceService.remove(serviceName);
+  // }
 }
