@@ -11,7 +11,7 @@ export class CreateAreaDto {
 
   @IsArray()
   @IsOptional()
-  actionParams?: [{ name: string; content: string }];
+  actionParams?: { name: string; content: string }[];
 
   @IsArray()
   @IsNotEmpty()
@@ -19,7 +19,7 @@ export class CreateAreaDto {
 
   @IsArray()
   @IsOptional()
-  reactionsParams?: [[{ name: string; content: string }]];
+  reactionsParams?: [{ name: string; content: string }[]];
 
   @IsString()
   @IsOptional()

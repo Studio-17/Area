@@ -1,9 +1,11 @@
 import * as React from "react";
 import {
   SafeAreaView,
+  View,
   StyleSheet,
-  FlatList,
+  ScrollView,
   StatusBar,
+  Pressable,
 } from "react-native";
 
 // Navigation
@@ -15,6 +17,7 @@ import AppletDetailsScreen from "./AppletDetailsScreen";
 // Components
 import MainHeader from "../components/MainHeader";
 import Applet from "../components/Cards/AppletCard";
+import MyText from "../components/MyText";
 
 const DATA = [
   {
@@ -39,31 +42,23 @@ const DATA = [
   },
 ];
 
-
 function HomeScreen({ navigation }: { navigation: any }) {
-  // const [data, setData] = useState<any>([]);
-  // useEffect(() => {
-  //   getApplets();
-  // }, []);
   const data = DATA;
 
-  // const getApplets = () => {
-  //   axios.get("http://localhost:8000/api/area").then((response) => {
-  //     setData(response.data);
-  //     // data = DATA;
-  //   });
-  // };
-
   return (
-    <SafeAreaView style={{ backgroundColor: "#FFF7FA" }}>
+    <SafeAreaView style={styles.container}>
       <MainHeader />
-      <FlatList
-        data={data}
-        renderItem={({ item }) => (
-          <Applet navigation={navigation} item={item} />
-        )}
-        keyExtractor={(item) => item.uuid}
-      />
+      <ScrollView>
+        {data.map((item, key) => (
+          <Applet navigation={navigation} item={item} key={key} />
+        ))}
+        <Pressable
+          style={styles.buttonNew}
+          onPress={() => navigation.navigate("NewApplet")}
+        >
+          <MyText style={styles.textButtonNew}>Create a Reaccoon</MyText>
+        </Pressable>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -90,9 +85,24 @@ export default function HomeStack() {
 }
 
 const styles = StyleSheet.create({
-  cardContainer: {
+  container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight || 0,
     backgroundColor: "#FFF7FA",
+  },
+  buttonNew: {
+    borderRadius: 15,
+    borderColor: "black",
+    borderWidth: 3,
+    padding: 15,
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  textButtonNew: {
+    textAlign: "center",
+    color: "black",
+    fontSize: 20,
   },
 });

@@ -1,5 +1,10 @@
 import React from "react";
-import { View, TouchableOpacity, TextInput } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  TextInput,
+  Text,
+} from "react-native";
 
 // Components
 import MyText from "../components/MyText";
@@ -12,17 +17,30 @@ interface Props {
   fieldButtonLabel?: string;
   fieldButtonFunction?: any;
   inputTextValue?: any;
+  onFocus?: any;
+  error?: any;
 }
 
-export default function InputField({
-  label,
-  icon,
-  inputType,
-  keyboardType,
-  fieldButtonLabel,
-  fieldButtonFunction,
-  inputTextValue,
-}: Props) {
+
+export default function InputField(
+  {
+    label,
+    icon,
+    inputType,
+    keyboardType,
+    fieldButtonLabel,
+    fieldButtonFunction,
+    inputTextValue,
+    onFocus,
+    error,
+  }: Props) {
+  const [isFocused, setIsFocused] = React.useState(false);
+
+  // const handleFocus = () => {
+  //   onFocus();
+  //   // setIsFocused(true);
+  // };
+
   return (
     <View
       style={{
@@ -41,6 +59,7 @@ export default function InputField({
           style={{ flex: 1, paddingVertical: 0 }}
           secureTextEntry={true}
           onChangeText={inputTextValue}
+          // onFocus={() => onFocus()}
         />
       ) : (
         <TextInput
@@ -51,10 +70,15 @@ export default function InputField({
         />
       )}
       <TouchableOpacity onPress={fieldButtonFunction}>
-        <MyText style={{ color: "#0165F5", fontWeight: "700" }}>
+        <MyText style={{ color: "#0165F5" }}>
           {fieldButtonLabel}
         </MyText>
       </TouchableOpacity>
+      {error && (
+        <Text style={{marginTop: 7, color: "red", fontSize: 12}}>
+          {error}
+        </Text>
+      )}
     </View>
   );
 }

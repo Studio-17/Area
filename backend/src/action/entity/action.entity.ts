@@ -1,5 +1,11 @@
-import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn} from 'typeorm';
-import {ServiceList} from "../../service/entity/service.entity";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { ServiceList } from '../../service/entity/service.entity';
 
 export enum ActionType {
   ACTION = 'action',

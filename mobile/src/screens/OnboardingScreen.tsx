@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Image,
+  Text,
 } from "react-native";
 
 // Icons
@@ -20,7 +21,6 @@ export default function OnboardingScreen({ navigation }: any) {
       <View style={{ marginTop: 20 }}>
         <MyText
           style={{
-            fontWeight: "bold",
             fontSize: 35,
             color: "#A37C5B",
           }}
@@ -74,6 +74,5 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     textAlign: "center",
-    fontWeight: "bold",
   },
 });

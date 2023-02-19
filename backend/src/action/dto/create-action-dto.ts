@@ -25,5 +25,5 @@ export class CreateActionDto {
 
   @IsArray()
   @IsOptional()
-  params: [{ name: string; type: string; description: string }];
+  params: { name: string; type: string; description: string }[];
 }

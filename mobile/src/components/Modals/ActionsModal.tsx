@@ -23,6 +23,7 @@ interface Props {
   openActionsModal: boolean;
   onCloseActionsModal: () => void;
   onCloseServicesModal: () => void;
+  setOpenServicesModal: any;
   service: Service;
   onClickOnAreasCards: any;
   typeSelected: "action" | "reaction";
@@ -33,6 +34,7 @@ export default function ActionsModal(
     openActionsModal,
     onCloseActionsModal,
     onCloseServicesModal,
+    setOpenServicesModal,
     service,
     onClickOnAreasCards,
     typeSelected
@@ -44,11 +46,16 @@ export default function ActionsModal(
     isFetching,
   } = useActionsQuery(service.uuid);
 
+  const handleCloseModal = () => {
+    setOpenServicesModal(true);
+    onCloseActionsModal();
+  };
+
   return (
     <Modal animationType="slide" visible={openActionsModal} onRequestClose={onCloseActionsModal}>
       <SafeAreaView>
         <View style={styles.modalContainer}>
-          <Pressable style={styles.button} onPress={onCloseActionsModal}>
+          <Pressable style={styles.button} onPress={handleCloseModal}>
             <MaterialCommunityIcons name="close" color={"black"} size={50} />
           </Pressable>
         </View>

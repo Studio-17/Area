@@ -1,5 +1,8 @@
-import * as React from 'react';
-import { Text, StyleSheet } from 'react-native';
+import React from 'react';
+import {
+    Text,
+    StyleSheet
+} from 'react-native';
 import { useFonts } from 'expo-font';
 
 export default function MyText({ children, style }: { children: any, style?: any }) {
