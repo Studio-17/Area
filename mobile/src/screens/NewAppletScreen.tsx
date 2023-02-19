@@ -18,7 +18,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 // Redux
 import { Service } from "../redux/models/serviceModels";
-import { useServicesQuery } from "../redux/services/servicesApi";
+import { useAddAreaMutation, useServicesQuery } from "../redux/services/servicesApi";
 
 // Components
 import ServicesModal from "../components/Modals/ServicesModal";
@@ -51,6 +51,7 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
   );
 
   const { data: services, isError, isLoading } = useServicesQuery();
+  const [addArea] = useAddAreaMutation();
 
   const onCloseServiceModal = () => {
     setOpenServicesModal(false);
@@ -99,6 +100,26 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
       return false;
   };
 
+  const canSave = () => {
+    if (blocksState.length > 1 && blocksState[thensInstance.length] != null)
+      return true;
+    else
+      return false;
+  };
+
+  const onClickOnSaveButton = () => {
+    const reactions: any = [];
+    blocksState
+      .filter((value: any, index: number) => index !== 0)
+      .map((block: any) => reactions.push(block.uuid));
+    const areaToSend = {
+      action: blocksState[0].uuid,
+      reactions: reactions,
+    };
+    addArea(areaToSend);
+    navigation.navigate("Home");
+  };
+
   const onClickAddthens = () => {
     setthensInstance((thens: any) => [...thens, { type: "then" }]);
   };
@@ -126,6 +147,15 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
         },
         style: "destructive",
       },
+    ]);
+  };
+
+  const onClickCantSave = () => {
+    Alert.alert("Save", "Please add at least 1 Action and 1 Reaction", [
+      {
+        text: "Ok",
+        style: "cancel",
+      }
     ]);
   };
 
@@ -246,9 +276,15 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
             >
               <MyText style={styles.footerButtonsText}>Reset</MyText>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.footerButtons}>
+            {canSave() ? (
+            <TouchableOpacity style={[styles.footerButtons, { backgroundColor: "#54EE51" }]} onPress={onClickOnSaveButton}>
               <MyText style={styles.footerButtonsText}>Save</MyText>
             </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.footerButtons} onPress={onClickCantSave}>
+              <MyText style={styles.footerButtonsText}>Save</MyText>
+            </TouchableOpacity>
+          )}
           </View>
         </>
       ) : (
