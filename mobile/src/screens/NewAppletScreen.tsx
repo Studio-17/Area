@@ -7,6 +7,7 @@ import {
   StatusBar,
   Pressable,
   ScrollView,
+  Alert,
 } from "react-native";
 
 // Icons
@@ -48,14 +49,6 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
   const [typeSelected, setTypeSelected] = useState<"action" | "reaction">(
     "action"
   );
-
-  const canAddThen = () => {
-    if (blocksState[blocksState.length + 1] != null && thensInstance[thensInstance.length] != null) {
-      return true;
-    } else {
-      return false;
-    }
-  };
 
   const { data: services, isError, isLoading } = useServicesQuery();
 
@@ -99,9 +92,15 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
     setServiceSelected(null);
   };
 
+  const canAddThen = () => {
+    if (blocksState[thensInstance.length] != null)
+      return true;
+    else
+      return false;
+  };
+
   const onClickAddthens = () => {
     setthensInstance((thens: any) => [...thens, { type: "then" }]);
-    console.log(canAddThen());
   };
 
   const onClickRemoveBlock = (index: number) => {
@@ -111,6 +110,23 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
     setthensInstance(
       thensInstance.filter((then: any, i: number) => i !== index)
     );
+  };
+
+  const onClickReset = () => {
+    Alert.alert("Reset", "Are you sure you want to reset?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Reset",
+        onPress: () => {
+          setBlockState([]);
+          setthensInstance([]);
+        },
+        style: "destructive",
+      },
+    ]);
   };
 
   return (
@@ -200,6 +216,7 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
                 </View>
               </View>
             ))}
+            {canAddThen() ? (
             <Pressable
               style={{
                 borderRadius: 15,
@@ -207,7 +224,6 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
                 borderWidth: 3,
                 padding: 15,
                 margin: 40,
-                marginBottom: 100,
               }}
               onPress={onClickAddthens}
             >
@@ -221,7 +237,19 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
                 Add a reaction
               </MyText>
             </Pressable>
+          ) : (<></>)}
           </ScrollView>
+          <View style={styles.footerContainer}>
+            <TouchableOpacity
+              style={[styles.footerButtons, { backgroundColor: "#E6566E" }]}
+              onPress={onClickReset}
+            >
+              <MyText style={styles.footerButtonsText}>Reset</MyText>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.footerButtons}>
+              <MyText style={styles.footerButtonsText}>Save</MyText>
+            </TouchableOpacity>
+          </View>
         </>
       ) : (
         <ActionsModal
@@ -315,6 +343,41 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  footerContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 10,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  footerButtons: {
+    width: "45%",
+    height: 50,
+    padding: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 15,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    backgroundColor: "grey",
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  footerButtonsText: {
+    color: "black",
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
   },
   cardTitle: {
     margin: "auto",
