@@ -4,13 +4,12 @@ import { ActionService } from './action.service';
 import { ActionController } from './action.controller';
 import { ActionEntity } from './entity/action.entity';
 import { ServiceModule } from 'src/service/service.module';
-import { TemplateEntity } from './entity/template.entity';
-import { TemplateSeederService } from '../../config/seeder/template.seeder';
+import { ActionSeederService } from '../../config/seeder/action.seeder';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ActionEntity, TemplateEntity]), ServiceModule],
-  providers: [ActionService, TemplateSeederService],
+  imports: [TypeOrmModule.forFeature([ActionEntity]), ServiceModule],
+  providers: [ActionService, ActionSeederService],
   controllers: [ActionController],
-  exports: [ActionService, TemplateSeederService],
+  exports: [ActionService, ActionSeederService],
 })
 export class ActionModule {}

@@ -4,6 +4,7 @@ import { Repository, UpdateResult } from 'typeorm';
 import { CredentialsEntity } from './entity/credentials.entity';
 import { CredentialsDto } from './dto/credentials.dto';
 import { UpdateCredentialsDto } from './dto/update-credentials.dto';
+import { ServiceList } from '../service/entity/service.entity';
 
 @Injectable()
 export class CredentialsService {
@@ -16,14 +17,14 @@ export class CredentialsService {
     return await this.credentialRepository.find();
   }
 
-  public async findByService(service: string): Promise<CredentialsEntity[]> {
+  public async findByService(service: ServiceList): Promise<CredentialsEntity[]> {
     const credentials: CredentialsEntity[] = await this.credentialRepository.findBy({
       service: service,
     });
     return credentials;
   }
 
-  public async findById(userId: string, service: string): Promise<CredentialsEntity> {
+  public async findById(userId: string, service: ServiceList): Promise<CredentialsEntity> {
     const credentials: CredentialsEntity = await this.credentialRepository.findOneBy({
       userId: userId,
       service: service,
@@ -55,7 +56,7 @@ export class CredentialsService {
 
   public async updateCredentialsUser(
     userId: string,
-    service: string,
+    service: ServiceList,
     updateCredentialsDto: UpdateCredentialsDto,
   ): Promise<UpdateResult> {
     try {
@@ -77,7 +78,7 @@ export class CredentialsService {
     }
   }
 
-  public async deleteCredentialsUser(userId: string, service: string): Promise<void> {
+  public async deleteCredentialsUser(userId: string, service: ServiceList): Promise<void> {
     const credentials: CredentialsEntity = await this.findById(userId, service);
     await this.credentialRepository.remove(credentials);
   }

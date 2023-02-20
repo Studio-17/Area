@@ -5,24 +5,23 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ServiceList } from '../../service/entity/service.entity';
 
-@Entity({ name: 'credential' })
-export class CredentialsEntity {
-  @PrimaryGeneratedColumn('uuid')
+@Entity({ name: 'github-issue' })
+export class GithubIssueEntity {
+  @PrimaryGeneratedColumn()
   uuid: string;
 
   @Column()
-  userId: string;
+  email: string;
 
   @Column()
-  service: ServiceList;
+  repositoryName: string;
 
   @Column()
-  accessToken: string;
+  repositoryOwner: string;
 
-  @Column({ nullable: true })
-  refreshToken: string;
+  @Column()
+  issueId: string;
 
   @CreateDateColumn({
     type: 'timestamp',
