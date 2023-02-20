@@ -16,9 +16,12 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 // Navigation
 import { createStackNavigator } from "@react-navigation/stack";
 
+// Screens
+import CreateAreaScreen from "./CreateAreaScreen";
+
 // Redux
 import { Service } from "../redux/models/serviceModels";
-import { useAddAreaMutation, useServicesQuery } from "../redux/services/servicesApi";
+import { useServicesQuery } from "../redux/services/servicesApi";
 
 // Components
 import ServicesModal from "../components/Modals/ServicesModal";
@@ -27,20 +30,21 @@ import MyText from "../components/MyText";
 
 const Stack = createStackNavigator();
 
-export default function NewAppletStack() {
+export default function NewAreaStack() {
   return (
     <Stack.Navigator
-      initialRouteName="NewApplet"
+      initialRouteName="NewArea"
       screenOptions={{
         headerShown: false,
       }}
     >
-      <Stack.Screen name="NewApplet" component={NewAppletScreen} />
+      <Stack.Screen name="NewArea" component={NewAreaScreen} />
+      <Stack.Screen name="FinishArea" component={CreateAreaScreen} />
     </Stack.Navigator>
   );
 }
 
-function NewAppletScreen({ navigation }: { navigation: any }) {
+function NewAreaScreen({ navigation }: { navigation: any }) {
   const [openServicesModal, setOpenServicesModal] = useState<boolean>(false);
   const [openActionsModal, setOpenActionsModal] = useState<boolean>(false);
   const [serviceSelected, setServiceSelected] = useState<Service | null>(null);
@@ -51,7 +55,6 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
   );
 
   const { data: services, isError, isLoading } = useServicesQuery();
-  const [addArea] = useAddAreaMutation();
 
   const onCloseServiceModal = () => {
     setOpenServicesModal(false);
@@ -100,24 +103,11 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
       return false;
   };
 
-  const canSave = () => {
+  const canContinue = () => {
     if (blocksState.length > 1 && blocksState[thensInstance.length] != null)
       return true;
     else
       return false;
-  };
-
-  const onClickOnSaveButton = () => {
-    const reactions: any = [];
-    blocksState
-      .filter((value: any, index: number) => index !== 0)
-      .map((block: any) => reactions.push(block.uuid));
-    const areaToSend = {
-      action: blocksState[0].uuid,
-      reactions: reactions,
-    };
-    addArea(areaToSend);
-    navigation.navigate("Home");
   };
 
   const onClickAddthens = () => {
@@ -150,13 +140,17 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
     ]);
   };
 
-  const onClickCantSave = () => {
-    Alert.alert("Save", "Please add at least 1 Action and 1 Reaction", [
+  const onClickCantContinue = () => {
+    Alert.alert("Continue", "Please add at least 1 Action and 1 Reaction and fill all the values", [
       {
         text: "Ok",
         style: "cancel",
       }
     ]);
+  };
+
+  const onClickContinue = () => {
+    navigation.navigate("FinishArea", { navigation: navigation, item: {blocksState, setBlockState, setthensInstance }});
   };
 
   return (
@@ -276,13 +270,13 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
             >
               <MyText style={styles.footerButtonsText}>Reset</MyText>
             </TouchableOpacity>
-            {canSave() ? (
-            <TouchableOpacity style={[styles.footerButtons, { backgroundColor: "#54EE51" }]} onPress={onClickOnSaveButton}>
-              <MyText style={styles.footerButtonsText}>Save</MyText>
+            {canContinue() ? (
+            <TouchableOpacity style={[styles.footerButtons, { backgroundColor: "#54EE51" }]} onPress={onClickContinue}>
+              <MyText style={styles.footerButtonsText}>Continue</MyText>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity style={styles.footerButtons} onPress={onClickCantSave}>
-              <MyText style={styles.footerButtonsText}>Save</MyText>
+            <TouchableOpacity style={styles.footerButtons} onPress={onClickCantContinue}>
+              <MyText style={styles.footerButtonsText}>Continue</MyText>
             </TouchableOpacity>
           )}
           </View>

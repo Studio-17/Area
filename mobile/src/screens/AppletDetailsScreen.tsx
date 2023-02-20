@@ -4,6 +4,8 @@ import {
   StyleSheet,
   StatusBar,
   View,
+  ScrollView,
+  Animated,
 } from "react-native";
 
 // Icons
@@ -21,11 +23,11 @@ export default function AppletDetailsScreen({
 }) {
   const { item } = route.params;
   return (
-    <SafeAreaView style={styles.cardContainer}>
-      <View style={styles.headerContainer}>
+    <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.headerContainer}>
         <TouchableOpacity
           style={styles.backIcon}
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate("Home")}
         >
           <MaterialCommunityIcons
             name="chevron-left"
@@ -33,33 +35,37 @@ export default function AppletDetailsScreen({
             size={50}
           />
         </TouchableOpacity>
-        <MyText style={styles.textStyle}>{item.name}</MyText>
+        <MyText style={styles.textStyle}>{item.area.name}Name</MyText>
         <View style={{ flex: 1 }} />
-      </View>
+      </SafeAreaView>
+      <ScrollView>
+        <MyText>Description, list of actions + reactions</MyText>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  cardContainer: {
-    display: "flex",
+  container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    paddingTop: StatusBar.currentHeight || 0,
     backgroundColor: "#FFF7FA",
   },
   headerContainer: {
-    display: "flex",
-    alignItems: "center",
     flexDirection: "row",
-    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  contentContainer: {
+    flex: 5,
+    backgroundColor: '#FFF7FA',
   },
   backIcon: {
     flex: 1,
   },
   textStyle: {
-    fontSize: 35,
+    fontSize: 25,
     fontWeight: "bold",
     color: "black",
-    margin: 10,
+    textAlign: "center",
   },
 });

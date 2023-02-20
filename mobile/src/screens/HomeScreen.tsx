@@ -14,9 +14,13 @@ import { createStackNavigator } from "@react-navigation/stack";
 // Screens
 import AppletDetailsScreen from "./AppletDetailsScreen";
 
+// Redux
+import { useAreasQuery, useDeleteAreaMutation } from "../redux/services/servicesApi";
+import { Area } from "../redux/models/areaModels";
+
 // Components
 import MainHeader from "../components/MainHeader";
-import Applet from "../components/Cards/AppletCard";
+import AppletCard from "../components/Cards/AppletCard";
 import MyText from "../components/MyText";
 
 const DATA = [
@@ -43,21 +47,23 @@ const DATA = [
 ];
 
 function HomeScreen({ navigation }: { navigation: any }) {
-  const data = DATA;
+  const { data: areas, isLoading, isFetching, refetch } = useAreasQuery();
+
+  console.log("areas: ", areas)
 
   return (
     <SafeAreaView style={styles.container}>
       <MainHeader />
       <ScrollView>
-        {data.map((item, key) => (
-          <Applet navigation={navigation} item={item} key={key} />
-        ))}
-        <Pressable
-          style={styles.buttonNew}
-          onPress={() => navigation.navigate("NewApplet")}
-        >
-          <MyText style={styles.textButtonNew}>Create a Reaccoon</MyText>
-        </Pressable>
+          {areas?.length !== 0 ? (
+          <>
+            {areas?.map((area: Area, index: number) => (
+              <AppletCard navigation={navigation} area={area} key={index} />
+            ))}
+          </>
+        ) : (
+          <MyText style={styles.textNew}>No coonies yet ...</MyText>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -90,17 +96,7 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight || 0,
     backgroundColor: "#FFF7FA",
   },
-  buttonNew: {
-    borderRadius: 15,
-    borderColor: "black",
-    borderWidth: 3,
-    padding: 15,
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  textButtonNew: {
+  textNew: {
     textAlign: "center",
     color: "black",
     fontSize: 20,

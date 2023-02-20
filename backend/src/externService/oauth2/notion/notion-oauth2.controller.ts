@@ -44,7 +44,9 @@ export class NotionOAuth2Controller {
       });
     }
     return response.status(HttpStatus.OK).json({
-      url: `https://api.notion.com/v1/oauth/authorize?client_id=${clientID}&response_type=code&owner=user&redirect_uri=${callbackURL}&state=${token['id']}`,
+      url: encodeURI(
+        `https://api.notion.com/v1/oauth/authorize?client_id=${clientID}&response_type=code&owner=user&redirect_uri=${callbackURL}&state=${token['id']}`,
+      ),
       status: 200,
     });
   }
