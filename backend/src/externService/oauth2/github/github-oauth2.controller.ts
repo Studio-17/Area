@@ -42,6 +42,7 @@ export class GithubOAuth2Controller {
         status: 401,
       });
     }
+    console.log(`esttttt`)
 
     return response.status(HttpStatus.OK).json({
       url: encodeURI(

@@ -1,9 +1,11 @@
 import * as React from "react";
 import {
   SafeAreaView,
+  View,
   StyleSheet,
-  FlatList,
+  ScrollView,
   StatusBar,
+  Pressable,
 } from "react-native";
 
 // Navigation
@@ -12,9 +14,14 @@ import { createStackNavigator } from "@react-navigation/stack";
 // Screens
 import AppletDetailsScreen from "./AppletDetailsScreen";
 
+// Redux
+import { useAreasQuery, useDeleteAreaMutation } from "../redux/services/servicesApi";
+import { Area } from "../redux/models/areaModels";
+
 // Components
 import MainHeader from "../components/MainHeader";
-import Applet from "../components/Cards/AppletCard";
+import AppletCard from "../components/Cards/AppletCard";
+import MyText from "../components/MyText";
 
 const DATA = [
   {
@@ -39,31 +46,25 @@ const DATA = [
   },
 ];
 
-
 function HomeScreen({ navigation }: { navigation: any }) {
-  // const [data, setData] = useState<any>([]);
-  // useEffect(() => {
-  //   getApplets();
-  // }, []);
-  const data = DATA;
+  const { data: areas, isLoading, isFetching, refetch } = useAreasQuery();
 
-  // const getApplets = () => {
-  //   axios.get("http://localhost:8000/api/area").then((response) => {
-  //     setData(response.data);
-  //     // data = DATA;
-  //   });
-  // };
+  console.log("areas: ", areas)
 
   return (
-    <SafeAreaView style={{ backgroundColor: "#FFF7FA" }}>
+    <SafeAreaView style={styles.container}>
       <MainHeader />
-      <FlatList
-        data={data}
-        renderItem={({ item }) => (
-          <Applet navigation={navigation} item={item} />
+      <ScrollView>
+          {areas?.length !== 0 ? (
+          <>
+            {areas?.map((area: Area, index: number) => (
+              <AppletCard navigation={navigation} area={area} key={index} />
+            ))}
+          </>
+        ) : (
+          <MyText style={styles.textNew}>No coonies yet ...</MyText>
         )}
-        keyExtractor={(item) => item.uuid}
-      />
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -90,9 +91,14 @@ export default function HomeStack() {
 }
 
 const styles = StyleSheet.create({
-  cardContainer: {
+  container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight || 0,
     backgroundColor: "#FFF7FA",
+  },
+  textNew: {
+    textAlign: "center",
+    color: "black",
+    fontSize: 20,
   },
 });

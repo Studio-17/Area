@@ -4,20 +4,23 @@ import { StyleSheet, StatusBar, Pressable } from "react-native";
 // Components
 import MyText from "../MyText";
 
+// Redux
+import { Area } from "../../redux/models/areaModels";
+
 interface AppletProps {
   navigation: any;
-  item: any;
+  area: Area | undefined;
 }
 
-export default function AppletCard({ navigation, item }: AppletProps) {
+export default function AppletCard({ navigation, area}: AppletProps) {
   const onPressFunction = () => {
-    navigation.navigate("AppletDetailsScreen", { item: item });
+    navigation.navigate("AppletDetailsScreen", { navigation: navigation, item: area });
   };
 
   return (
     <Pressable style={styles.cardProperties} onPress={onPressFunction}>
       <MyText style={styles.appletContainer}>
-        <MyText style={styles.textProperties}>{item.name}</MyText>
+        <MyText style={styles.textProperties}>{area?.area.name}Name</MyText>
       </MyText>
     </Pressable>
   );

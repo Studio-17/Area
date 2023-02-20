@@ -1,5 +1,9 @@
-import * as React from "react";
-import { Text, StyleSheet, SafeAreaView, StatusBar } from "react-native";
+import React from "react";
+import {
+  StyleSheet,
+  SafeAreaView,
+  StatusBar
+} from "react-native";
 
 // Components
 import MyText from "../components/MyText";
@@ -20,7 +24,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 35,
-    fontWeight: "bold",
     color: "#A37C5B",
     margin: 10,
     marginLeft: 20,

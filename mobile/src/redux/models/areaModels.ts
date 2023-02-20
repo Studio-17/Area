@@ -5,6 +5,7 @@ export type Area = {
   reactions: [Action];
   area: {
     uuid: string;
+    name: string;
   };
 };
 

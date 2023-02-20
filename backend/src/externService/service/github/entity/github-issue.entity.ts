@@ -6,22 +6,22 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'credential' })
-export class Credentials {
-  @PrimaryGeneratedColumn('uuid')
+@Entity({ name: 'github-issue' })
+export class GithubIssueEntity {
+  @PrimaryGeneratedColumn()
   uuid: string;
 
   @Column()
-  userId: string;
+  email: string;
 
   @Column()
-  service: string;
+  repositoryName: string;
 
   @Column()
-  accessToken: string;
+  repositoryOwner: string;
 
   @Column()
-  refreshToken: string;
+  issueId: string;
 
   @CreateDateColumn({
     type: 'timestamp',

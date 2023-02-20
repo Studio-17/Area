@@ -6,7 +6,7 @@ interface Props {
   actionContent?: string;
   reactionContent?: string;
   uuidOfAction?: string
-  onClick: (actionContent?: string, reactionContent?: string, uuidOfAction?: string) => React.MouseEventHandler<HTMLButtonElement> | undefined;
+  onClick: (actionContent?: string, reactionContent?: string, uuidOfAction?: string) => void;
 }
 
 const ActionsCards = ({ actionContent, reactionContent, onClick, uuidOfAction }: Props) => {

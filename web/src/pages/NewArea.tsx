@@ -34,7 +34,7 @@ const NewArea = () => {
     setBlockNumberSelected(index);
   };
 
-  const onClickOnAreasCards: any = (
+  const onClickOnAction: any = (
     actionContent?: string,
     reactionContent?: string,
     uuidOfAction?: string
@@ -184,7 +184,7 @@ const NewArea = () => {
         </div>
       ) : (
         <ServicesInfos
-          onClickOnAreasCards={onClickOnAreasCards}
+          onClickOnActionCards={onClickOnAction}
           service={serviceSelected}
           typeSelected={typeSelected}
         />

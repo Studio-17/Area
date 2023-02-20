@@ -3,23 +3,22 @@ import { useEffect } from "react";
 import { theme } from "../constants/theme";
 import { Action } from "../models/actionModels";
 import { Service } from "../models/serviceModels";
-import {
-  useActionsQuery,
-  useLoginGoogleServiceQuery,
-} from "../services/servicesApi";
-import { RootState, useAppSelector } from "../store/store";
-import "../styles/ServicesInfos.css";
+import { useActionsQuery, useServiceQuery } from "../services/servicesApi";
 import ActionsCards from "./Cards/ActionsCards";
+import axios from "axios";
+import "../styles/ServicesInfos.css";
+
+const API_ENDPOINT = process.env.REACT_APP_API_URL;
 
 interface Props {
   service: Service;
-  onClickOnAreasCards: any;
+  onClickOnActionCards: any;
   typeSelected: "action" | "reaction";
 }
 
 const ServicesInfos = ({
   service,
-  onClickOnAreasCards,
+  onClickOnActionCards,
   typeSelected,
 }: Props) => {
   const {
@@ -27,19 +26,36 @@ const ServicesInfos = ({
     isError,
     isLoading,
     isFetching,
-  } = useActionsQuery(service.uuid);
-  const { user } = useAppSelector((state: RootState) => state.auth);
-
-    const { data: result } = useLoginGoogleServiceQuery(user.id);
+  } = useActionsQuery(service.name);
+  const { data: serviceInfo } = useServiceQuery(service.name);
 
   useEffect(() => {
-    console.log(user);
-    console.log(result);
-  }, []);
+    console.log(actions);
+    console.log(serviceInfo);
+  }, [actions, serviceInfo]);
 
-  useEffect(() => {
-    if (result) window.open(result.url, "", "popup,width=1020,height=1020");
-  }, [result]);
+  const handleOauthConnection = () => {
+    console.log("Handle Oauth");
+    axios
+      .get(`${API_ENDPOINT}/service/connect/${serviceInfo?.name}`)
+      .then((res) => console.log(res));
+  };
+
+  const onClickOnActionCardsCheck = (
+    actionContent?: string,
+    reactionContent?: string,
+    uuidOfAction?: string
+  ) => {
+    console.log("Check");
+    if (serviceInfo?.type === "external" && !serviceInfo.isConnected)
+      handleOauthConnection();
+    else
+      onClickOnActionCards(
+        actionContent && actionContent,
+        reactionContent && reactionContent,
+        uuidOfAction && uuidOfAction
+      );
+  };
 
   if (isLoading || isFetching) return <CircularProgress />;
 
@@ -64,7 +80,7 @@ const ServicesInfos = ({
               reactionContent={
                 typeSelected === "reaction" ? element.description : undefined
               }
-              onClick={onClickOnAreasCards}
+              onClick={onClickOnActionCardsCheck}
               uuidOfAction={element.uuid}
             />
           ))}

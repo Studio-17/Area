@@ -5,7 +5,6 @@ import {
   Body,
   Res,
   Param,
-  UseGuards,
   HttpStatus,
   NotFoundException,
   Delete,
@@ -13,9 +12,8 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserInterface } from './interfaces/user.interface';
+import { UserEntity } from './entity/user.entity';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authentication.guard';
 
 @ApiTags('User')
 // @UseGuards(JwtAuthenticationGuard)
@@ -23,18 +21,20 @@ import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authenticat
 export class UserController {
   constructor(private readonly usersService: UserService) {}
 
-  @Get()
-  public async findAllUser(): Promise<UserInterface[]> {
-    return this.usersService.findAll();
-  }
+  // COMMENTED BECAUSE OF SECURITY : USER DATS ISN'T ACCESSIBLE FROM OTHER USERS
+  // @Get()
+  // public async findAllUser(): Promise<UserEntity[]> {
+  //   return this.usersService.findAll();
+  // }
 
-  @Get('/:id')
-  public async findOneUser(@Param('id') id: string): Promise<UserInterface> {
-    return this.usersService.findById(id);
-  }
+  // COMMENTED BECAUSE OF SECURITY : USER DATS ISN'T ACCESSIBLE FROM OTHER USERS
+  // @Get('/:id')
+  // public async findOneUser(@Param('id') id: string): Promise<UserEntity> {
+  //   return this.usersService.findById(id);
+  // }
 
   @Get('/:id/profile')
-  public async getUser(@Res() res, @Param('id') id: string): Promise<UserInterface> {
+  public async getUser(@Res() res, @Param('id') id: string): Promise<UserEntity> {
     const user = await this.usersService.findById(id);
 
     if (!user) {
@@ -73,7 +73,7 @@ export class UserController {
     @Res() res,
     @Param('id') id: string,
     @Body() userUpdateDto: UpdateUserDto,
-  ) {
+  ): Promise<UserEntity> {
     try {
       await this.usersService.updateUser(id, userUpdateDto);
 
