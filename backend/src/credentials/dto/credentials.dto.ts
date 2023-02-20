@@ -7,7 +7,6 @@ export class CredentialsDto {
   @IsUUID()
   userId!: string;
 
-  @IsString()
   @IsNotEmpty()
   @IsEnum(ServiceList)
   service!: ServiceList;

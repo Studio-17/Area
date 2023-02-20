@@ -60,14 +60,15 @@ export class GithubController {
     @Req() request,
     @Res() response,
     @Body()
-    body: { accessToken: string; email: string; repositoryName: string; repositoryOwner: string },
+    @Body()
+    body: { accessToken: string; params?: { name: string; content: string }[] },
   ) {
     try {
       const pullRequestResult = await this.githubService.updateLastIssue(
         body.accessToken,
-        body.email,
-        body.repositoryName,
-        body.repositoryOwner,
+        body.params[0].content,
+        body.params[1].content,
+        body.params[2].content,
       );
 
       return response.status(HttpStatus.OK).json({

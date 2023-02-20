@@ -16,7 +16,7 @@ import { catchError, firstValueFrom } from 'rxjs';
 import axios, { AxiosError } from 'axios';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
-import {ServiceList} from "../../../service/entity/service.entity";
+import { ServiceList } from '../../../service/entity/service.entity';
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -43,7 +43,6 @@ export class GithubOAuth2Controller {
         status: 401,
       });
     }
-    console.log(`esttttt`)
 
     return response.status(HttpStatus.OK).json({
       url: `https://github.com/login/oauth/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&allow_signup=false&state=${token['id']}`,

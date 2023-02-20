@@ -14,13 +14,14 @@ import { IsServiceDto } from '../service/dto/is-service.dto';
 export class ActionController {
   constructor(private readonly actionService: ActionService) {}
 
-  @Post(':serviceName')
-  async create(
-    @Param() { serviceName }: IsServiceDto,
-    @Body() createActionDto: CreateActionDto,
-  ): Promise<ActionEntity> {
-    return this.actionService.create(serviceName, createActionDto);
-  }
+  // COMMENTED BECAUSE OF SECURITY : ACTION MODIFICATION ISN'T ACCESSIBLE FROM OUTSIDE THE APP
+  // @Post(':serviceName')
+  // async create(
+  //   @Param() { serviceName }: IsServiceDto,
+  //   @Body() createActionDto: CreateActionDto,
+  // ): Promise<ActionEntity> {
+  //   return this.actionService.create(serviceName, createActionDto);
+  // }
 
   @Get()
   async getAll(): Promise<ActionEntity[]> {
@@ -37,16 +38,18 @@ export class ActionController {
     return this.actionService.findOne(actionId);
   }
 
-  @Patch(':actionId')
-  async update(
-    @IsUuidParam('actionId') actionId: string,
-    @Body() updateActionDto: UpdateActionDto,
-  ): Promise<ActionEntity> {
-    return this.actionService.update(actionId, updateActionDto);
-  }
+  // COMMENTED BECAUSE OF SECURITY : ACTION MODIFICATION ISN'T ACCESSIBLE FROM OUTSIDE THE APP
+  // @Patch(':actionId')
+  // async update(
+  //   @IsUuidParam('actionId') actionId: string,
+  //   @Body() updateActionDto: UpdateActionDto,
+  // ): Promise<ActionEntity> {
+  //   return this.actionService.update(actionId, updateActionDto);
+  // }
 
-  @Delete(':actionId')
-  async delete(@IsUuidParam('actionId') actionId: string): Promise<string> {
-    return this.actionService.remove(actionId);
-  }
+  // COMMENTED BECAUSE OF SECURITY : ACTION MODIFICATION ISN'T ACCESSIBLE FROM OUTSIDE THE APP
+  // @Delete(':actionId')
+  // async delete(@IsUuidParam('actionId') actionId: string): Promise<string> {
+  //   return this.actionService.remove(actionId);
+  // }
 }

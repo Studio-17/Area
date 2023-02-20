@@ -23,7 +23,7 @@ export class ActionSeederService {
         name: 'Check Github Pull Request',
         description:
           'This action allow you to catch events when a new pull request is opened on a repository.',
-        link: '/github/check-pull-request',
+        link: 'github/check-pull-request/',
       },
       {
         uuid: '485c1317-ec8a-48b6-ab84-fd5f69ba41bd',
@@ -32,7 +32,7 @@ export class ActionSeederService {
         name: 'Check Github Issue',
         description:
           'This action allow you to catch events when a new issue is posted on a repository.',
-        link: '/github/check-issue',
+        link: 'github/check-issue/',
       },
       // ----- GOOGLE TEMPLATES -----
       {
@@ -41,7 +41,7 @@ export class ActionSeederService {
         type: ActionType.ACTION,
         name: 'Check Google Mail',
         description: 'This action allow you to catch events when you receive a new mail.',
-        link: '/github/check-mail',
+        link: 'github/check-mail/',
       },
       {
         uuid: 'df56e414-32b5-40fa-852c-60eaacfb7ebc',
@@ -49,7 +49,7 @@ export class ActionSeederService {
         type: ActionType.REACTION,
         name: 'Create file on Google Drive',
         description: 'This reaction allow you to create a file on Google Drive.',
-        link: '/github/publish-doc',
+        link: 'google/publish-doc/',
       },
       // ----- MIRO TEMPLATES -----
       // ----- NOTION TEMPLATES -----
@@ -58,6 +58,7 @@ export class ActionSeederService {
     ];
 
     for (const action of actions) {
+      console.log(`Seeding ${action.link} action of ${action.service} service`);
       const exists = await this.actionRepository.findOneBy({
         uuid: action.uuid,
       });

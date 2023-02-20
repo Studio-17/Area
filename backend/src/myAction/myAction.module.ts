@@ -5,8 +5,9 @@ import { ActionModule } from 'src/action/action.module';
 import { AreaModule } from 'src/area/area.module';
 import { GoogleModule } from 'src/externService/service/google/google.module';
 import { MyActionController } from './myAction.controller';
-import { MyActionEntity} from './entity/myAction.entity';
+import { MyActionEntity } from './entity/myAction.entity';
 import { MyActionService } from './myAction.service';
+import { GithubModule } from '../externService/service/github/github.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { MyActionService } from './myAction.service';
     ActionModule,
     forwardRef(() => AreaModule),
     forwardRef(() => GoogleModule),
+    forwardRef(() => GithubModule),
   ],
   providers: [MyActionService],
   controllers: [MyActionController],

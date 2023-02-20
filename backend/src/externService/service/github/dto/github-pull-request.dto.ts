@@ -8,14 +8,14 @@ export class GithubPullRequestDto {
 
   @IsString()
   @IsNotEmpty()
-  repositoryOwner: string;
+  repositoryOwner!: string;
 
   @IsString()
   @IsNotEmpty()
-  repositoryName: string;
+  repositoryName!: string;
 
   @IsString()
   @IsNotEmpty()
   @IsNumberString()
-  pullRequestId: string;
+  pullRequestId!: string;
 }

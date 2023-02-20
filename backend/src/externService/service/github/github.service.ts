@@ -1,12 +1,28 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { CronJob } from 'cron';
 import { HttpService } from '@nestjs/axios';
 import { GithubPullRequestEntity } from './entity/github-pull-request.entity';
 import { GithubPullRequestDto } from './dto/github-pull-request.dto';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GithubIssueEntity } from './entity/github-issue.entity';
 import { GithubIssueDto } from './dto/github-issue.dto';
+import { ServiceList } from '../../../service/entity/service.entity';
+import { CreateCronDto } from '../google/dto/gmail/add-cron.dto';
+import { SchedulerRegistry } from '@nestjs/schedule';
+import { UserService } from '../../../user/user.service';
+import { CredentialsService } from '../../../credentials/credentials.service';
+import { catchError, firstValueFrom } from 'rxjs';
+import { MyActionService } from '../../../myAction/myAction.service';
+import { ActionService } from '../../../action/action.service';
 
 @Injectable()
 export class GithubService {
@@ -16,10 +32,119 @@ export class GithubService {
     private readonly githubPullRequestRepository: Repository<GithubPullRequestEntity>,
     @InjectRepository(GithubIssueEntity)
     private readonly githubIssueRepository: Repository<GithubIssueEntity>,
+    private readonly userService: UserService,
+    private readonly credentialsService: CredentialsService,
+    private schedulerRegistry: SchedulerRegistry,
+    private readonly actionService: ActionService,
+
+    @Inject(forwardRef(() => MyActionService))
+    private readonly myActionService: MyActionService,
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   public async getRepository() {}
+
+  // TODO - Externalize this function
+  async handleCronReaction(userId: string, actionLink: string, accessToken: string) {
+    const action = await this.actionService.findByLink(actionLink);
+    const relatedActions = await this.myActionService.findByActionAndUserId(action.uuid, userId);
+
+    for (const relatedAction of relatedActions) {
+      const linkedReaction = await this.myActionService.findByLinkedFromId(relatedAction.uuid);
+
+      for (const linked of linkedReaction) {
+        const reaction = await this.actionService.findOne(linked.actionId);
+        await firstValueFrom(
+          this.httpService
+            .post<any>('http://localhost:3000/api/reaccoon/actions/' + reaction.link, {
+              accessToken: accessToken,
+              params: linked.params,
+            })
+            .pipe(
+              catchError((error: AxiosError) => {
+                throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+              }),
+            ),
+        );
+      }
+    }
+  }
+
+  public async addPullRequestCron(body: CreateCronDto) {
+    const job = new CronJob(
+      body.second + ` ` + body.minute + ` ` + body.hour + ` * * *`,
+      this.handleCheckPullRequestCron.bind(this, body.userId, body.params),
+    );
+    this.schedulerRegistry.addCronJob(body.name, job);
+    job.start();
+  }
+
+  public async addIssueCron(body: CreateCronDto) {
+    const job = new CronJob(
+      body.second + ` ` + body.minute + ` ` + body.hour + ` * * *`,
+      this.handleCheckIssueCron.bind(this, body.userId, body.params),
+    );
+    this.schedulerRegistry.addCronJob(body.name, job);
+    job.start();
+  }
+
+  async handleCheckPullRequestCron(userId: string, params?: { name: string; content: string }[]) {
+    // TODO: check if user exists sinon skip car on a déjà l'id
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      return;
+    }
+
+    let credential;
+    try {
+      credential = await this.credentialsService.findById(user.uuid, ServiceList.GITHUB);
+      console.log('GITHUB CREDENTIALS', credential);
+    } catch (error: any) {
+      return;
+    }
+
+    try {
+      const pullRequest = await this.updateLastPullRequest(
+        credential.accessToken,
+        params[0].content,
+        params[1].content,
+        params[2].content,
+      );
+      if (pullRequest.new) {
+        await this.handleCronReaction(userId, 'github/check-pull-request/', credential.accessToken);
+      }
+    } catch (error: any) {
+      return;
+    }
+  }
+
+  async handleCheckIssueCron(userId: string, params?: { name: string; content: string }[]) {
+    // TODO: check if user exists sinon skip car on a déjà l'id
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      return;
+    }
+    let credential;
+    try {
+      credential = await this.credentialsService.findById(user.uuid, ServiceList.GITHUB);
+    } catch (error: any) {
+      return;
+    }
+
+    try {
+      const issue = await this.updateLastIssue(
+        credential.accessToken,
+        params[0].content,
+        params[1].content,
+        params[2].content,
+      );
+      if (issue.new) {
+        await this.handleCronReaction(userId, 'github/check-issue/', credential.accessToken);
+      }
+    } catch (error: any) {
+      return;
+    }
+  }
 
   public async findPullRequest(
     email: string,
@@ -113,8 +238,8 @@ export class GithubService {
   public async findOrUpdateLastIssue(githubIssueDto: GithubIssueDto) {
     const record = await this.findIssue(
       githubIssueDto.email,
-      githubIssueDto.repositoryName,
       githubIssueDto.repositoryOwner,
+      githubIssueDto.repositoryName,
     );
 
     if (!record) {
@@ -143,8 +268,8 @@ export class GithubService {
           new: true,
           data: await this.findIssue(
             githubIssueDto.email,
-            githubIssueDto.repositoryName,
             githubIssueDto.repositoryOwner,
+            githubIssueDto.repositoryName,
           ),
         };
       } catch (err) {

@@ -36,13 +36,13 @@ export class GoogleService {
     private schedulerRegistry: SchedulerRegistry,
   ) {}
 
+  // TODO - Externalize this function
   async handleCronReaction(userId: string, actionLink: string, accessToken: string) {
     const action = await this.actionService.findByLink(actionLink);
     const relatedActions = await this.myActionService.findByActionAndUserId(action.uuid, userId);
 
     for (const relatedAction of relatedActions) {
       const linkedReaction = await this.myActionService.findByLinkedFromId(relatedAction.uuid);
-
       for (const linked of linkedReaction) {
         const reaction = await this.actionService.findOne(linked.actionId);
         await firstValueFrom(
@@ -53,6 +53,7 @@ export class GoogleService {
             })
             .pipe(
               catchError((error: AxiosError) => {
+                // console.log(error);
                 throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
               }),
             ),
@@ -61,6 +62,7 @@ export class GoogleService {
     }
   }
 
+  // TODO - Rename handleCron
   async handleCron(userId: string, params?: { name: string; content: string }[]) {
     // TODO: check if user exists sinon skip car on a déjà l'id
     const user = await this.userService.findById(userId);
@@ -79,7 +81,7 @@ export class GoogleService {
       const mail = await this.updateLastEmailReceived(credential.accessToken, user.uuid);
       if (mail.new) {
         // params.push({ name: 'actionParam', content: mail.mail.uuid });
-        this.handleCronReaction(userId, 'google/check-mail/', credential.accessToken);
+        await this.handleCronReaction(userId, 'google/check-mail/', credential.accessToken);
       }
     } catch (error: any) {
       return;
@@ -146,6 +148,7 @@ export class GoogleService {
   }
 
   public async updateLastEmailReceived(accessToken: string, userId: string) {
+
     const config = {
       method: 'get',
       url: `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=1`,
@@ -184,6 +187,7 @@ export class GoogleService {
       url: 'https://www.googleapis.com/drive/v3/files',
       headers: {
         Accept: 'application/json',
+        // TODO - Update accessToken by the good one
         Authorization: `Bearer ${accessToken}`,
         ContentType: 'application/json',
       },
@@ -197,6 +201,7 @@ export class GoogleService {
         return apiResponse.data.id;
       })
       .catch(function (error) {
+        console.log(JSON.stringify(error));
         throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
       });
 
