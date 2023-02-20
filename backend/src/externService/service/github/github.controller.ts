@@ -1,83 +1,87 @@
 import { Body, Controller, Get, HttpStatus, Req, Res, UseGuards } from '@nestjs/common';
-import { GithubService } from '../github/github.service';
-import { AuthGuard } from '@nestjs/passport';
+import { GithubService } from './github.service';
+import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authentication.guard';
+import { CredentialsGuard } from './guard/credentials.guard';
+import { CreateRepositoryDto } from './dto/repository/create-repository.dto';
+import { ForkRepositoryDto } from './dto/repository/fork-repository.dto';
 
 @Controller('actions/github')
 export class GithubController {
   constructor(private readonly githubService: GithubService) {}
 
+  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/get-repository')
-  @UseGuards(AuthGuard('jwt'))
-  public async pullRepository(@Req() request, @Res() response) {
+  public async getAuthenticatedUserRepositories(@Req() request, @Res() response) {
     try {
-      const gmailRecord = await this.githubService;
+      const userRepositories = await this.githubService.getAuthenticatedUserRepositories(
+        request.user.id,
+        request.credentials.accessToken,
+      );
 
       return response.status(HttpStatus.OK).json({
-        message: 'Got last email from Google services',
-        content: gmailRecord,
+        message: 'Got repositories list for the authenticated user using GitHub service',
+        data: userRepositories,
         status: 200,
       });
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error fetching emails from Google Apis',
+        message: 'Error fetching repositories from GitHub services',
         error: error,
         status: 400,
       });
     }
   }
 
-  @Get('/check-pull-requests')
-  public async checkNewPullRequest(
+  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
+  @Get('/create-repository')
+  public async createAuthenticatedUserRepository(
     @Req() request,
     @Res() response,
-    @Body()
-    body: { accessToken: string; email: string; repositoryName: string; repositoryOwner: string },
+    @Body() createRepositoryDto: CreateRepositoryDto,
   ) {
     try {
-      const pullRequestResult = await this.githubService.updateLastPullRequest(
-        body.accessToken,
-        body.email,
-        body.repositoryName,
-        body.repositoryOwner,
+      const userRepositories = await this.githubService.createAuthenticatedUserRepositories(
+        request.user.id,
+        request.credentials.accessToken,
+        createRepositoryDto,
       );
 
       return response.status(HttpStatus.OK).json({
-        message: 'Got last pull request from Github API',
-        content: pullRequestResult,
+        message: 'Got repositories list for the authenticated user using GitHub service',
+        data: userRepositories,
         status: 200,
       });
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error fetching pull requests from Github API',
+        message: 'Error fetching repositories from GitHub services',
         error: error,
         status: 400,
       });
     }
   }
 
-  @Get('/check-issues')
-  public async checkNewIssue(
+  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
+  @Get('/fork-repository')
+  public async forkRepository(
     @Req() request,
     @Res() response,
-    @Body()
-    body: { accessToken: string; email: string; repositoryName: string; repositoryOwner: string },
+    @Body() forkRepositoryDto: ForkRepositoryDto,
   ) {
     try {
-      const pullRequestResult = await this.githubService.updateLastIssue(
-        body.accessToken,
-        body.email,
-        body.repositoryName,
-        body.repositoryOwner,
+      const userRepositories = await this.githubService.forkRepository(
+        request.user.id,
+        request.credentials.accessToken,
+        forkRepositoryDto,
       );
 
       return response.status(HttpStatus.OK).json({
-        message: 'Got last issue from Github API',
-        content: pullRequestResult,
+        message: 'Got repositories list for the authenticated user using GitHub service',
+        data: userRepositories,
         status: 200,
       });
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error fetching issue from Github API',
+        message: 'Error fetching repositories from GitHub services',
         error: error,
         status: 400,
       });
