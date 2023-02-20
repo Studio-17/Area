@@ -16,6 +16,7 @@ import { catchError, firstValueFrom } from 'rxjs';
 import axios, { AxiosError } from 'axios';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
+import {ServiceList} from "../../../service/entity/service.entity";
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -109,7 +110,7 @@ export class TwitchOAuth2Controller {
 
       const userCredentials = {
         userId: id,
-        service: 'twitch',
+        service: ServiceList.TWITCH,
         accessToken: accessToken,
         refreshToken: twitchData.data.refresh_token,
       };

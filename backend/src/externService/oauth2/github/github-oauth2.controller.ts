@@ -16,6 +16,7 @@ import { catchError, firstValueFrom } from 'rxjs';
 import axios, { AxiosError } from 'axios';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
+import {ServiceList} from "../../../service/entity/service.entity";
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -101,7 +102,7 @@ export class GithubOAuth2Controller {
 
       const userCredentials = {
         userId: id,
-        service: 'github',
+        service: ServiceList.GITHUB,
         accessToken: accessToken,
         refreshToken: 'null',
       };

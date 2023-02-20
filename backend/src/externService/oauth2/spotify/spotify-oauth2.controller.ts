@@ -17,6 +17,7 @@ import { AxiosError } from 'axios';
 import { CredentialsService } from '../../../credentials/credentials.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
+import {ServiceList} from "../../../service/entity/service.entity";
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -106,7 +107,7 @@ export class SpotifyOAuth2Controller {
 
       const userCredentials = {
         userId: id,
-        service: 'spotify',
+        service: ServiceList.SPOTIFY,
         accessToken: spotifyData.data.access_token,
         refreshToken: 'null',
       };
