@@ -23,7 +23,6 @@ import CustomButton from "../components/CustomButton";
 
 // Components
 import MyText from "../components/MyText";
-import {color} from "react-native-elements/dist/helpers";
 
 export default function LoginScreen({ navigation }: any) {
   const { loading, error, user } = useAppSelector(

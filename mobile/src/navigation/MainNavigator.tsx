@@ -5,7 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import TabNavigator from "./TabNavigator";
 
 // Screens
-import NewAppletScreen from "../screens/NewAppletScreen";
+import NewAreaScreen from "../screens/NewAreaScreen";
 
 const Stack = createStackNavigator();
 
@@ -20,7 +20,7 @@ export default function MainNavigator() {
       <Stack.Screen name="main" component={TabNavigator} />
       </Stack.Group>
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="newapplet" component={NewAppletScreen} />
+        <Stack.Screen name="newarea" component={NewAreaScreen} />
       </Stack.Group>
     </Stack.Navigator>
   );
