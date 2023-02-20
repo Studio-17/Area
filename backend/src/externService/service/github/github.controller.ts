@@ -3,7 +3,7 @@ import { GithubService } from './github.service';
 import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authentication.guard';
 import { CredentialsGuard } from './guard/credentials.guard';
 import { CreateRepositoryDto } from './dto/repository/create-repository.dto';
-import {ForkRepositoryDto} from "./dto/repository/fork-repository.dto";
+import { ForkRepositoryDto } from './dto/repository/fork-repository.dto';
 
 @Controller('actions/github')
 export class GithubController {
@@ -82,64 +82,6 @@ export class GithubController {
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         message: 'Error fetching repositories from GitHub services',
-        error: error,
-        status: 400,
-      });
-    }
-  }
-
-  @Get('/check-pull-requests')
-  public async checkNewPullRequest(
-    @Req() request,
-    @Res() response,
-    @Body()
-    body: { accessToken: string; email: string; repositoryName: string; repositoryOwner: string },
-  ) {
-    try {
-      const pullRequestResult = await this.githubService.updateLastPullRequest(
-        body.accessToken,
-        body.email,
-        body.repositoryName,
-        body.repositoryOwner,
-      );
-
-      return response.status(HttpStatus.OK).json({
-        message: 'Got last pull request from Github API',
-        content: pullRequestResult,
-        status: 200,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error fetching pull requests from Github API',
-        error: error,
-        status: 400,
-      });
-    }
-  }
-
-  @Get('/check-issues')
-  public async checkNewIssue(
-    @Req() request,
-    @Res() response,
-    @Body()
-    body: { accessToken: string; email: string; repositoryName: string; repositoryOwner: string },
-  ) {
-    try {
-      const pullRequestResult = await this.githubService.updateLastIssue(
-        body.accessToken,
-        body.email,
-        body.repositoryName,
-        body.repositoryOwner,
-      );
-
-      return response.status(HttpStatus.OK).json({
-        message: 'Got last issue from Github API',
-        content: pullRequestResult,
-        status: 200,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error fetching issue from Github API',
         error: error,
         status: 400,
       });

@@ -12,13 +12,7 @@ import { ForkedRepository } from './interface/fork-repository.interface';
 
 @Injectable()
 export class GithubService {
-  constructor(
-    private readonly httpService: HttpService,
-    @InjectRepository(GithubPullRequestEntity)
-    private readonly githubPullRequestRepository: Repository<GithubPullRequestEntity>,
-    @InjectRepository(GithubIssueEntity)
-    private readonly githubIssueRepository: Repository<GithubIssueEntity>,
-  ) {}
+  constructor(private readonly httpService: HttpService) {}
 
   public async getAuthenticatedUserRepositories(
     userId: string,
