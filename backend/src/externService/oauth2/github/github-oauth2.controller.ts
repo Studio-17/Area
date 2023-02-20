@@ -104,7 +104,7 @@ export class GithubOAuth2Controller {
         userId: id,
         service: ServiceList.GITHUB,
         accessToken: accessToken,
-        refreshToken: 'null',
+        refreshToken: null,
       };
 
       await this.credentialsService.createCredentialsUser(userCredentials);

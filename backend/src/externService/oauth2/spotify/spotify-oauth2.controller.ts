@@ -109,7 +109,7 @@ export class SpotifyOAuth2Controller {
         userId: id,
         service: ServiceList.SPOTIFY,
         accessToken: spotifyData.data.access_token,
-        refreshToken: 'null',
+        refreshToken: null,
       };
 
       await this.credentialsService.createCredentialsUser(userCredentials);

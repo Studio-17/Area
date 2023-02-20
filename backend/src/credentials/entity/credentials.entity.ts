@@ -21,7 +21,7 @@ export class CredentialsEntity {
   @Column()
   accessToken: string;
 
-  @Column()
+  @Column({ nullable: true })
   refreshToken: string;
 
   @CreateDateColumn({

@@ -87,7 +87,7 @@ export class NotionOAuth2Controller {
         userId: id,
         service: ServiceList.NOTION,
         accessToken: notionData.data.access_token,
-        refreshToken: 'null',
+        refreshToken: null,
       };
 
       await this.credentialsService.createCredentialsUser(userCredentials);
