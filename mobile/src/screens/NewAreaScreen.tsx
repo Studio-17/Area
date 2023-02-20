@@ -17,7 +17,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 
 // Screens
-import CreateAreaScreen from "../screens/CreateAreaScreen";
+import CreateAreaScreen from "./CreateAreaScreen";
 
 // Redux
 import { Service } from "../redux/models/serviceModels";
@@ -150,7 +150,7 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
   };
 
   const onClickContinue = () => {
-    navigation.navigate("FinishArea", { navigation: navigation, item: blocksState });
+    navigation.navigate("FinishArea", { navigation: navigation, item: {blocksState, setBlockState, setthensInstance }});
   };
 
   return (
