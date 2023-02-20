@@ -17,6 +17,9 @@ export class AreaEntity {
   @Column({ nullable: true })
   name: string;
 
+  @Column({ nullable: true })
+  color: string;
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP()',
