@@ -30,13 +30,16 @@ const ServicesInfos = ({
     isLoading,
     isFetching,
   } = useActionsQuery(service.name);
-  const { data: serviceInfo, refetch: refetchServiceInfos } = useServiceQuery(
-    service.name
-  );
+  const {
+    data: serviceInfo,
+    refetch: refetchServiceInfos,
+    isFetching: isFetchingServiceInfo,
+  } = useServiceQuery(service.name);
 
   useEffect(() => {
     console.log(actions);
-    console.log(serviceInfo);
+    console.log("Service info", serviceInfo);
+    console.log("Is fetching service info", isFetchingServiceInfo);
     serviceInfo && setIsServiceConnected(serviceInfo?.isConnected);
   }, [actions, serviceInfo]);
 
@@ -51,6 +54,7 @@ const ServicesInfos = ({
         var myWindow = window.open(res.data.url, "");
         if (myWindow)
           myWindow.onunload = function () {
+            console.log("Refetch service info");
             refetchServiceInfos();
           };
       });
