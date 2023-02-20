@@ -1,25 +1,47 @@
-import { Card, CardActionArea, CardContent } from '@mui/material';
-import { theme } from '../../constants/theme';
-import '../../styles/ActionsCards.css';
+import { Card, CardActionArea, CardContent } from "@mui/material";
+import { theme } from "../../constants/theme";
+import "../../styles/ActionsCards.css";
 
 interface Props {
   actionContent?: string;
   reactionContent?: string;
-  uuidOfAction?: string
-  onClick: (actionContent?: string, reactionContent?: string, uuidOfAction?: string) => void;
+  uuidOfAction?: string;
+  onClick: (
+    actionContent?: string,
+    reactionContent?: string,
+    uuidOfAction?: string
+  ) => void;
+  disabled: boolean
 }
 
-const ActionsCards = ({ actionContent, reactionContent, onClick, uuidOfAction }: Props) => {
+const ActionsCards = ({
+  actionContent,
+  reactionContent,
+  onClick,
+  uuidOfAction,
+  disabled
+}: Props) => {
   return (
     <Card sx={{ width: 350, height: 250, borderRadius: 2 }}>
       <CardActionArea
-        sx={{ height: '100%' }}
-        onClick={() => onClick(actionContent && actionContent, reactionContent && reactionContent, uuidOfAction && uuidOfAction)}>
-        <CardContent sx={{ padding: '30px' }}>
+        sx={{ height: "100%" }}
+        onClick={() =>
+          onClick(
+            actionContent && actionContent,
+            reactionContent && reactionContent,
+            uuidOfAction && uuidOfAction
+          )
+        }
+        disabled={disabled}
+      >
+        <CardContent sx={{ padding: "30px" }}>
           {actionContent && (
             <>
               <div className="card-text-first-bloc">
-                <div className="card-text-if" style={{ color: theme.palette.primary }}>
+                <div
+                  className="card-text-if"
+                  style={{ color: theme.palette.primary }}
+                >
                   IF&nbsp;
                 </div>
 
@@ -29,7 +51,10 @@ const ActionsCards = ({ actionContent, reactionContent, onClick, uuidOfAction }:
           )}
           {reactionContent && (
             <div className="card-text-second-bloc">
-              <div className="card-text-then" style={{ color: theme.palette.primary }}>
+              <div
+                className="card-text-then"
+                style={{ color: theme.palette.primary }}
+              >
                 THEN&nbsp;
               </div>
               <div className="card-text-second-line">{reactionContent}</div>

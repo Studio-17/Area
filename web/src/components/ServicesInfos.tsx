@@ -1,16 +1,14 @@
 import { Alert, CircularProgress, Snackbar } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { theme } from "../constants/theme";
 import { Action } from "../models/actionModels";
 import { Service } from "../models/serviceModels";
-import {
-  useActionsQuery,
-  useLazyLoginServiceQuery,
-  useServiceQuery,
-} from "../services/servicesApi";
+import { useActionsQuery, useServiceQuery } from "../services/servicesApi";
+import DoneIcon from "@mui/icons-material/Done";
 import ActionsCards from "./Cards/ActionsCards";
 import axios from "axios";
 import "../styles/ServicesInfos.css";
+import BigRoundedButtonOutlined from "./Buttons/BigRoundedButtonOutlined";
 
 const API_ENDPOINT = process.env.REACT_APP_API_URL;
 
@@ -25,31 +23,37 @@ const ServicesInfos = ({
   onClickOnActionCards,
   typeSelected,
 }: Props) => {
+  const [isServiceConnected, setIsServiceConnected] = useState<boolean>(false);
   const {
     data: actions,
     isError,
     isLoading,
     isFetching,
   } = useActionsQuery(service.name);
-  const { data: serviceInfo } = useServiceQuery(service.name);
-  const [getLoginService, { data: loginServiceData }] =
-    useLazyLoginServiceQuery();
+  const { data: serviceInfo, refetch: refetchServiceInfos } = useServiceQuery(
+    service.name
+  );
 
   useEffect(() => {
     console.log(actions);
     console.log(serviceInfo);
+    serviceInfo && setIsServiceConnected(serviceInfo?.isConnected);
   }, [actions, serviceInfo]);
-
-  useEffect(() => {
-    console.log("Service login data", loginServiceData);
-  }, [loginServiceData]);
 
   const handleOauthConnection = async () => {
     console.log("Handle Oauth");
-    // axios
-    //   .get(`${API_ENDPOINT}/service/connect/${serviceInfo?.name}`)
-    //   .then((res) => console.log(res));
-    await getLoginService(service.name);
+    const token = localStorage.getItem("userToken");
+    axios
+      .get(`${API_ENDPOINT}/service/connect/${serviceInfo?.name}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        var myWindow = window.open(res.data.url, "");
+        if (myWindow)
+          myWindow.onunload = function () {
+            refetchServiceInfos();
+          };
+      });
   };
 
   const onClickOnActionCardsCheck = (
@@ -77,6 +81,17 @@ const ServicesInfos = ({
     >
       <div className="main-name" style={{ color: theme.palette.primary }}>
         {service.name}
+        <div className="connection-status-container">
+          {serviceInfo?.isConnected ? (
+            <DoneIcon />
+          ) : (
+            <BigRoundedButtonOutlined
+              label="Connect"
+              color="primary"
+              onClick={() => handleOauthConnection()}
+            />
+          )}
+        </div>
       </div>
       <div className="subtext">Choose one ...</div>
       <div className="list-of-cards-container">
@@ -93,6 +108,7 @@ const ServicesInfos = ({
               }
               onClick={onClickOnActionCardsCheck}
               uuidOfAction={element.uuid}
+              disabled={!isServiceConnected}
             />
           ))}
       </div>

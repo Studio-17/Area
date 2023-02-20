@@ -11,6 +11,14 @@
     font-size: 40px;
     text-align: center;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.connection-status-container {
+    margin: 0px 0px 0px 2vw;
+    font-size: 15px;
 }
 
 .subtext {
