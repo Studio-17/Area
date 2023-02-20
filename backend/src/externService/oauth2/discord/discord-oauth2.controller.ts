@@ -42,7 +42,9 @@ export class DiscordOAuth2Controller {
     }
 
     return response.status(HttpStatus.OK).json({
-      url: `https://discord.com/api/oauth2/authorize?client_id=${clientID}&redirect_uri=${callbackURL}&response_type=code&scope=${scope}&state=${token['id']}`,
+      url: encodeURI(
+        `https://discord.com/api/oauth2/authorize?client_id=${clientID}&redirect_uri=${callbackURL}&response_type=code&scope=${scope}&state=${token['id']}`,
+      ),
       status: 200,
     });
   }
