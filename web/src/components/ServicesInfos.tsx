@@ -3,7 +3,11 @@ import { useEffect } from "react";
 import { theme } from "../constants/theme";
 import { Action } from "../models/actionModels";
 import { Service } from "../models/serviceModels";
-import { useActionsQuery, useServiceQuery } from "../services/servicesApi";
+import {
+  useActionsQuery,
+  useLazyLoginServiceQuery,
+  useServiceQuery,
+} from "../services/servicesApi";
 import ActionsCards from "./Cards/ActionsCards";
 import axios from "axios";
 import "../styles/ServicesInfos.css";
@@ -28,17 +32,24 @@ const ServicesInfos = ({
     isFetching,
   } = useActionsQuery(service.name);
   const { data: serviceInfo } = useServiceQuery(service.name);
+  const [getLoginService, { data: loginServiceData }] =
+    useLazyLoginServiceQuery();
 
   useEffect(() => {
     console.log(actions);
     console.log(serviceInfo);
   }, [actions, serviceInfo]);
 
-  const handleOauthConnection = () => {
+  useEffect(() => {
+    console.log("Service login data", loginServiceData);
+  }, [loginServiceData]);
+
+  const handleOauthConnection = async () => {
     console.log("Handle Oauth");
-    axios
-      .get(`${API_ENDPOINT}/service/connect/${serviceInfo?.name}`)
-      .then((res) => console.log(res));
+    // axios
+    //   .get(`${API_ENDPOINT}/service/connect/${serviceInfo?.name}`)
+    //   .then((res) => console.log(res));
+    await getLoginService(service.name);
   };
 
   const onClickOnActionCardsCheck = (

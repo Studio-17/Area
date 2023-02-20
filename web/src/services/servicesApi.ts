@@ -75,8 +75,8 @@ export const servicesApi = createApi({
         body: credentials,
       }),
     }),
-    loginGoogleService: builder.query<any, string>({
-      query: (id) => `service/connect/google?id=${id}`
+    loginService: builder.query<any, string>({
+      query: (name) => `service/connect/${name}`
     })
   }),
 });
@@ -91,5 +91,5 @@ export const {
   useAreaQuery,
   useLoginMutation,
   useRegisterMutation,
-  useLoginGoogleServiceQuery,
+  useLazyLoginServiceQuery,
 } = servicesApi;
