@@ -20,6 +20,7 @@ import { catchError, firstValueFrom } from 'rxjs';
 import { CronJob } from 'cron';
 import { CreateCronDto } from './dto/gmail/add-cron.dto';
 import { UserService } from 'src/user/user.service';
+import { ServiceList } from '../../../service/entity/service.entity';
 
 @Injectable()
 export class GoogleService {
@@ -69,7 +70,7 @@ export class GoogleService {
 
     let credential;
     try {
-      credential = await this.credentialsService.findById(user.uuid, 'google');
+      credential = await this.credentialsService.findById(user.uuid, ServiceList.GOOGLE);
     } catch (error: any) {
       return;
     }
@@ -208,7 +209,7 @@ export class GoogleService {
       url: 'http://localhost:3000/api/reaccoon/credentials',
       data: {
         email: email,
-        service: 'google',
+        service: ServiceList.GOOGLE,
       },
     };
 
