@@ -1,32 +1,27 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'user' })
-export class User {
-  @PrimaryGeneratedColumn('uuid')
+@Entity({ name: 'github-pull-request' })
+export class GithubPullRequestEntity {
+  @PrimaryGeneratedColumn()
   uuid: string;
 
   @Column()
-  firstName: string;
-
-  @Column()
-  lastName: string;
-
-  @Column({
-    unique: true,
-  })
   email: string;
 
-  @Column({ nullable: true })
-  password: string;
+  @Column()
+  repositoryOwner: string;
 
-  @Column({ nullable: true })
-  jwt: string;
+  @Column()
+  repositoryName: string;
+
+  @Column()
+  pullRequestId: string;
 
   @CreateDateColumn({
     type: 'timestamp',

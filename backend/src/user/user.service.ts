@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException, HttpException, HttpStatus } from '@nestjs/common';
 import { Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { UserInterface } from './interfaces/user.interface';
+import { UserEntity } from './entity/user.entity';
+import { UserInterface } from './interface/user.interface';
 import { UserDto } from './dto/user.dto';
 import * as bcrypt from 'bcryptjs';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -11,16 +11,16 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  public async findAll(): Promise<User[]> {
+  public async findAll(): Promise<UserEntity[]> {
     return await this.userRepository.find();
   }
 
-  public async findByEmail(email: string): Promise<User> {
-    const user = await this.userRepository.findOne({
+  public async findByEmail(email: string): Promise<UserEntity> {
+    const user: UserEntity = await this.userRepository.findOne({
       where: {
         email: email,
       },
@@ -33,8 +33,8 @@ export class UserService {
     return user;
   }
 
-  public async findById(userId: string): Promise<User> {
-    const user = await this.userRepository.findOneBy({
+  public async findById(userId: string): Promise<UserEntity> {
+    const user: UserEntity = await this.userRepository.findOneBy({
       uuid: userId,
     });
     if (!user) {
@@ -51,9 +51,9 @@ export class UserService {
     }
   }
 
-  public async updateByEmail(email: string): Promise<User> {
+  public async updateByEmail(email: string): Promise<UserEntity> {
     try {
-      const user = await this.userRepository.findOneBy({ email: email });
+      const user: UserEntity = await this.userRepository.findOneBy({ email: email });
       user.password = bcrypt.hashSync(Math.random().toString(36).slice(-8), 8);
 
       return await this.userRepository.save(user);
@@ -62,9 +62,9 @@ export class UserService {
     }
   }
 
-  public async updateByPassword(email: string, password: string): Promise<User> {
+  public async updateByPassword(email: string, password: string): Promise<UserEntity> {
     try {
-      const user = await this.userRepository.findOneBy({ email: email });
+      const user: UserEntity = await this.userRepository.findOneBy({ email: email });
       user.password = bcrypt.hashSync(password, 8);
 
       return await this.userRepository.save(user);
@@ -73,9 +73,9 @@ export class UserService {
     }
   }
 
-  public async updateProfileUser(uuid: string, userProfileDto: CreateUserDto): Promise<User> {
+  public async updateProfileUser(uuid: string, userProfileDto: CreateUserDto): Promise<UserEntity> {
     try {
-      const user = await this.userRepository.findOneBy({ uuid: uuid });
+      const user: UserEntity = await this.userRepository.findOneBy({ uuid: uuid });
       user.firstName = userProfileDto.firstName;
       user.lastName = userProfileDto.lastName;
       user.email = userProfileDto.email;
@@ -88,7 +88,7 @@ export class UserService {
 
   public async updateUser(uuid: string, userUpdateDto: UpdateUserDto): Promise<UpdateResult> {
     try {
-      const user = await this.userRepository.update(
+      const user: UpdateResult = await this.userRepository.update(
         {
           uuid: uuid,
         },

@@ -1,10 +1,12 @@
-import { Body, Controller, Delete, Get, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { IsUuidParam } from '../utils/decorators/Is-uuid-param.decorator';
 import { ActionService } from './action.service';
 import { CreateActionDto } from './dto/create-action-dto';
 import { UpdateActionDto } from './dto/update-action-dto';
-import { ApiTags } from "@nestjs/swagger";
-import { JwtAuthenticationGuard } from "../authentication/guards/jwt-authentication.guard";
+import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authentication.guard';
+import { ActionEntity } from './entity/action.entity';
+import { IsServiceDto } from '../service/dto/is-service.dto';
 
 @ApiTags('Action')
 @UseGuards(JwtAuthenticationGuard)
@@ -12,36 +14,39 @@ import { JwtAuthenticationGuard } from "../authentication/guards/jwt-authenticat
 export class ActionController {
   constructor(private readonly actionService: ActionService) {}
 
-  @Post(':serviceId')
+  @Post(':serviceName')
   async create(
-    @IsUuidParam('serviceId') serviceId: string,
+    @Param() { serviceName }: IsServiceDto,
     @Body() createActionDto: CreateActionDto,
-  ) {
-    return this.actionService.create(serviceId, createActionDto);
+  ): Promise<ActionEntity> {
+    return this.actionService.create(serviceName, createActionDto);
   }
 
   @Get()
-  async getAll() {
+  async getAll(): Promise<ActionEntity[]> {
     return this.actionService.findAll();
   }
 
-  @Get('/service/:serviceId')
-  async getByService(@IsUuidParam('serviceId') serviceId: string) {
-    return this.actionService.findByService(serviceId);
+  @Get('/service/:serviceName')
+  async getByService(@Param() { serviceName }: IsServiceDto): Promise<ActionEntity[]> {
+    return this.actionService.findByService(serviceName);
   }
 
-  @Get(':id')
-  async getOne(@IsUuidParam('id') id: string) {
-    return this.actionService.findOne(id);
+  @Get(':actionId')
+  async getOne(@IsUuidParam('actionId') actionId: string): Promise<ActionEntity> {
+    return this.actionService.findOne(actionId);
   }
 
-  @Patch(':id')
-  async update(@IsUuidParam('id') id: string, @Body() updateActionDto: UpdateActionDto) {
-    return this.actionService.update(id, updateActionDto);
+  @Patch(':actionId')
+  async update(
+    @IsUuidParam('actionId') actionId: string,
+    @Body() updateActionDto: UpdateActionDto,
+  ): Promise<ActionEntity> {
+    return this.actionService.update(actionId, updateActionDto);
   }
 
-  @Delete(':id')
-  async delete(@IsUuidParam('id') id: string) {
-    return this.actionService.remove(id);
+  @Delete(':actionId')
+  async delete(@IsUuidParam('actionId') actionId: string): Promise<string> {
+    return this.actionService.remove(actionId);
   }
 }

@@ -44,7 +44,7 @@ export class SpotifyOAuth2Controller {
       });
     }
     return response.status(HttpStatus.OK).json({
-      url: encodeURIComponent(
+      url: encodeURI(
         `https://accounts.spotify.com/authorize?scope=${scope}&response_type=code&redirect_uri=${callbackURL}&client_id=${clientID}&state=${token['id']}`,
       ),
       status: 200,

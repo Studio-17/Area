@@ -6,6 +6,7 @@ import {
   StatusBar,
   TouchableOpacity,
   Image,
+  Keyboard,
 } from "react-native";
 
 // Icons
@@ -32,6 +33,9 @@ export default function LoginScreen({ navigation }: any) {
     dispatch(loginUser(dataToSend));
   };
 
+  // console.log('error: ', error);
+  // console.log('loading: ', loading);
+
   const [ email, setEmail ] = useState<string>("");
   const [ password, setPassword ] = useState<string>("");
 
@@ -41,6 +45,22 @@ export default function LoginScreen({ navigation }: any) {
       password: password,
     };
     dispatchLoginUser(dataToSend);
+  };
+
+  const validate = async () => {
+    Keyboard.dismiss();
+    let isValid = true;
+    if (!email) {
+      // handleError('Please input email', 'email');
+      isValid = false;
+    }
+    if (!password) {
+      // handleError('Please input password', 'password');
+      isValid = false;
+    }
+    // if (isValid) {
+    //   login();
+    // }
   };
 
   return (
@@ -53,7 +73,7 @@ export default function LoginScreen({ navigation }: any) {
         <MyText
           style={{
             fontSize: 28,
-            fontWeight: 'bold',
+            // fontWeight: 'bold',
             color: '#A37C5B',
             marginBottom: 30,
             textAlign: 'center',
@@ -72,6 +92,7 @@ export default function LoginScreen({ navigation }: any) {
             />
           }
           inputTextValue={(value: string) => setEmail(value)}
+          // onFocus={() => {}}
         />
 
         <InputField
@@ -87,6 +108,7 @@ export default function LoginScreen({ navigation }: any) {
           inputType="password"
           fieldButtonLabel={"Forgot?"}
           inputTextValue={(value: string) => setPassword(value)}
+          // onFocus={() => {}}
         />
 
         <CustomButton label="Login" onPress={onSubmit} />
@@ -110,7 +132,7 @@ export default function LoginScreen({ navigation }: any) {
         </View>
 
         <View style={styles.dontHaveAccount}>
-          <MyText>Don't have an account ? </MyText>
+          <MyText style={{ color: "#666" }}>Don't have an account ? </MyText>
           <TouchableOpacity
             onPress={() => navigation.navigate('Register')}
           >
@@ -146,11 +168,13 @@ const styles = StyleSheet.create({
   },
   registerTextBtn: {
     color: '#0165F5',
-    fontWeight: '700'
+    // fontWeight: '700'
   },
   otherLoginMethod: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 30
+    marginBottom: 30,
+    color: "#666",
+    textAlign: 'center'
   }
 });

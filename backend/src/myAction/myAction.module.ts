@@ -5,7 +5,7 @@ import { ActionModule } from 'src/action/action.module';
 import { AreaModule } from 'src/area/area.module';
 import { GoogleModule } from 'src/externService/service/google/google.module';
 import { MyActionController } from './myAction.controller';
-import { MyAction } from './myAction.entity';
+import { MyActionEntity} from './entity/myAction.entity';
 import { MyActionService } from './myAction.service';
 
 @Module({
@@ -14,7 +14,7 @@ import { MyActionService } from './myAction.service';
       timeout: 5000,
       maxRedirects: 5,
     }),
-    TypeOrmModule.forFeature([MyAction]),
+    TypeOrmModule.forFeature([MyActionEntity]),
     ActionModule,
     forwardRef(() => AreaModule),
     forwardRef(() => GoogleModule),

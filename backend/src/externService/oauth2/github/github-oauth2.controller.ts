@@ -1,12 +1,21 @@
-import {Controller, Get, HttpException, HttpStatus, Query, Req, Res, UseGuards} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { GithubOAuth2Service } from './github-oauth2.service';
 import { CredentialsService } from '../../../credentials/credentials.service';
 import { HttpService } from '@nestjs/axios';
-import { catchError, firstValueFrom } from 'rxjs';
+import { catchError, firstValueFrom, map } from 'rxjs';
 import axios, { AxiosError } from 'axios';
 import { JwtService } from '@nestjs/jwt';
-import {AuthGuard} from "@nestjs/passport";
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -33,9 +42,10 @@ export class GithubOAuth2Controller {
         status: 401,
       });
     }
+    console.log(`esttttt`)
 
     return response.status(HttpStatus.OK).json({
-      url: encodeURIComponent(
+      url: encodeURI(
         `https://github.com/login/oauth/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&allow_signup=false&state=${token['id']}`,
       ),
       status: 200,

@@ -1,30 +1,30 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
-import { Credentials } from './entities/credentials.entity';
+import { CredentialsEntity } from './entity/credentials.entity';
 import { CredentialsDto } from './dto/credentials.dto';
 import { UpdateCredentialsDto } from './dto/update-credentials.dto';
 
 @Injectable()
 export class CredentialsService {
   constructor(
-    @InjectRepository(Credentials)
-    private readonly credentialRepository: Repository<Credentials>,
+    @InjectRepository(CredentialsEntity)
+    private readonly credentialRepository: Repository<CredentialsEntity>,
   ) {}
 
-  public async findAll(): Promise<Credentials[]> {
+  public async findAll(): Promise<CredentialsEntity[]> {
     return await this.credentialRepository.find();
   }
 
-  public async findByService(service: string): Promise<Credentials[]> {
-    const credentials = await this.credentialRepository.findBy({
+  public async findByService(service: string): Promise<CredentialsEntity[]> {
+    const credentials: CredentialsEntity[] = await this.credentialRepository.findBy({
       service: service,
     });
     return credentials;
   }
 
-  public async findById(userId: string, service: string): Promise<Credentials> {
-    const credentials = await this.credentialRepository.findOneBy({
+  public async findById(userId: string, service: string): Promise<CredentialsEntity> {
+    const credentials: CredentialsEntity = await this.credentialRepository.findOneBy({
       userId: userId,
       service: service,
     });
@@ -38,7 +38,7 @@ export class CredentialsService {
 
   public async createCredentialsUser(credentialsDto: CredentialsDto): Promise<any> {
     try {
-      const isExisting = await this.credentialRepository.exist({
+      const isExisting: boolean = await this.credentialRepository.exist({
         where: { service: credentialsDto.service, userId: credentialsDto.userId },
       });
       if (isExisting) {
@@ -59,7 +59,7 @@ export class CredentialsService {
     updateCredentialsDto: UpdateCredentialsDto,
   ): Promise<UpdateResult> {
     try {
-      const credentials = await this.credentialRepository.update(
+      const credentials: UpdateResult = await this.credentialRepository.update(
         {
           userId: userId,
           service: service,
@@ -78,7 +78,7 @@ export class CredentialsService {
   }
 
   public async deleteCredentialsUser(userId: string, service: string): Promise<void> {
-    const credentials = await this.findById(userId, service);
+    const credentials: CredentialsEntity = await this.findById(userId, service);
     await this.credentialRepository.remove(credentials);
   }
 }

@@ -31,11 +31,11 @@ export const servicesApi = createApi({
       providesTags: ["Service"],
     }),
     service: builder.query<Service, string>({
-      query: (id) => `/service/${id}`,
+      query: (name) => `/service/${name}`,
       providesTags: ["Service"],
     }),
     actions: builder.query<Action[], string>({
-      query: (id) => `action/service/${id}`,
+      query: (name) => `action/service/${name}`,
       providesTags: ["Action"],
     }),
     areas: builder.query<Area[], void>({

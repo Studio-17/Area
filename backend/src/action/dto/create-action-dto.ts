@@ -1,10 +1,15 @@
 import { IsString, IsNotEmpty, IsEnum, IsOptional, IsArray } from 'class-validator';
-import { ActionType } from '../action.entity';
+import { ActionType } from '../entity/action.entity';
 
 export class CreateActionDto {
   @IsString()
   @IsNotEmpty()
   name!: string;
+
+  // @IsString()
+  // @IsNotEmpty()
+  // @IsEnum(ServiceList)
+  // serviceName!: string;
 
   @IsString()
   @IsNotEmpty()
