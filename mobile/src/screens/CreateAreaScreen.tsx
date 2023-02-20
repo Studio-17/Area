@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   SafeAreaView,
   TouchableOpacity,
@@ -5,7 +6,11 @@ import {
   StatusBar,
   View,
   ScrollView,
+  TextInput,
+  Button,
 } from "react-native";
+import { Platform } from "react-native";
+import { TimePicker } from 'react-native-simple-time-picker';
 
 // Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -26,6 +31,29 @@ export default function CreateAreaScreen({
   const { item } = route.params;
   const [addArea] = useAddAreaMutation();
 
+  const getTitle = () => {
+    let title = "If " + item.blocksState[0].name;
+    item.blocksState.slice(1).map((block: any) => {
+      title += " Then " + block.name;
+    });
+    return title;
+  };
+  const [title, setTitle] = useState<string>(getTitle);
+
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
+  const handleChange = (value: { hours: number, minutes: number, seconds: number }) => {
+    setHours(value.hours);
+    setMinutes(value.minutes);
+    setSeconds(value.seconds);
+  };
+  const handleReset = () => {
+    setHours(0);
+    setMinutes(0);
+    setSeconds(0);
+  };
+
   const onClickOnSaveButton = () => {
     const reactions: any = [];
     item.blocksState
@@ -34,6 +62,10 @@ export default function CreateAreaScreen({
     const areaToSend = {
       action: item.blocksState[0].uuid,
       reactions: reactions,
+      name: title,
+      hour: hours.toString(),
+      minute: minutes.toString(),
+      second: seconds.toString(),
     };
     addArea(areaToSend);
     item.setBlockState([]);
@@ -58,10 +90,37 @@ export default function CreateAreaScreen({
         <MyText style={styles.textStyle}>Verify and Finish</MyText>
         <View style={{ flex: 1 }} />
       </SafeAreaView>
-      <ScrollView >
-        <TouchableOpacity style={styles.finishButton} onPress={() => onClickOnSaveButton()}>
-          <MyText>Finish</MyText>
+      <ScrollView style={styles.contentContainer}>
+        <MyText style={[styles.textStyle, { color: "#A37C5B" }]}>Title</MyText>
+        <View style={styles.titleInput}>
+          <TextInput
+            editable
+            multiline
+            numberOfLines={4}
+            maxLength={140}
+            onChangeText={(text) => setTitle(text)}
+            value={title}
+            style={[styles.textTitleInput]}
+          />
+        </View>
+        <MyText style={[styles.textStyle, { color: "#A37C5B" }]}>Timer (hours - minutes)</MyText>
+        <View style={styles.timeContainer}>
+        <TimePicker value={{ hours, minutes, seconds }} onChange={handleChange} itemStyle={
+          {
+            borderColor: '#A37C5B',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }
+        } />
+        </View>
+        {title ? (
+        <TouchableOpacity
+          style={styles.finishButton}
+          onPress={() => onClickOnSaveButton()}
+        >
+          <MyText style={styles.textStyle}>Finish</MyText>
         </TouchableOpacity>
+        ) : null}
       </ScrollView>
     </SafeAreaView>
   );
@@ -77,9 +136,29 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  titleInput: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 15,
+    height: 100,
+    borderColor: "#A37C5B",
+    borderWidth: 3,
+    marginBottom: 20,
+  },
+  timeContainer: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 15,
+    borderColor: "#A37C5B",
+    borderWidth: 3,
+  },
+  textTitleInput: {
+    fontSize: 15,
+    fontWeight: "bold",
+    color: "black",
+    padding: 10,
+    fontFamily: "TitanOne",
+  },
   contentContainer: {
-    flex: 5,
-    backgroundColor: "#FFF7FA",
+    margin: 20,
   },
   backIcon: {
     flex: 1,
@@ -88,15 +167,14 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "bold",
     color: "black",
-    textAlign: "center",
   },
   finishButton: {
+    marginTop: 20,
     padding: 10,
     borderRadius: 15,
     display: "flex",
-    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -106,5 +184,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  datePicker: {
+    justifyContent: "center",
+    alignItems: "flex-start",
+    width: 320,
+    height: 260,
+    display: "flex",
   },
 });

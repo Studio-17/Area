@@ -59,7 +59,7 @@ export default function ActionsModal(
             <MaterialCommunityIcons name="close" color={"black"} size={50} />
           </Pressable>
         </View>
-        <View style={{ padding: 10 }}>
+        <View style={{ padding: 20 }}>
           {actions
             ?.filter((action: Action) => action.type === typeSelected)
             .map((action: Action, index: number) => (

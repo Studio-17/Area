@@ -97,17 +97,14 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
   };
 
   const canAddThen = () => {
-    if (blocksState[thensInstance.length] != null)
-      return true;
-    else
-      return false;
+    if (blocksState[thensInstance.length] != null) return true;
+    else return false;
   };
 
   const canContinue = () => {
     if (blocksState.length > 1 && blocksState[thensInstance.length] != null)
       return true;
-    else
-      return false;
+    else return false;
   };
 
   const onClickAddthens = () => {
@@ -141,16 +138,46 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
   };
 
   const onClickCantContinue = () => {
-    Alert.alert("Continue", "Please add at least 1 Action and 1 Reaction and fill all the values", [
-      {
-        text: "Ok",
-        style: "cancel",
-      }
-    ]);
+    Alert.alert(
+      "Continue",
+      "Please add at least 1 Action and 1 Reaction and fill all the values",
+      [
+        {
+          text: "Ok",
+          style: "cancel",
+        },
+      ]
+    );
   };
 
+  const changeThenButton = (index: number) => {
+    Alert.alert("Modify the reaction", "", [
+      {
+      text: "Modify",
+      onPress: () => {
+        onClickOpenModal(index + 1, "reaction");
+      },
+    },
+    {
+      text: "Delete",
+      onPress: () => {
+        onClickRemoveBlock(index);
+      },
+      style: "destructive",
+    },
+    {
+      text: "Cancel",
+      style: "cancel",
+    },
+  ]);
+  };
+
+
   const onClickContinue = () => {
-    navigation.navigate("FinishArea", { navigation: navigation, item: {blocksState, setBlockState, setthensInstance }});
+    navigation.navigate("FinishArea", {
+      navigation: navigation,
+      item: { blocksState, setBlockState, setthensInstance },
+    });
   };
 
   return (
@@ -163,17 +190,13 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
           <ScrollView>
             <View style={styles.contentContainer}>
               {blocksState[0] ? (
-                <View style={styles.cardPropertiesServiceSelected}>
+                <TouchableOpacity
+                  style={styles.cardPropertiesServiceSelected}
+                  onPress={() => onClickOpenModal(0, "action")}
+                >
                   <MyText style={styles.cardTitle}>IF</MyText>
                   <MyText>{blocksState[0].name}</MyText>
-                  <TouchableOpacity style={styles.cardButton}>
-                    <MaterialCommunityIcons
-                      name="minus"
-                      color={"black"}
-                      size={35}
-                    />
-                  </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
               ) : (
                 <View style={styles.cardPropertiesServiceSelected}>
                   <MyText style={styles.cardTitle}>IF</MyText>
@@ -208,20 +231,10 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
                 />
                 <View style={styles.thenContainer}>
                   {blocksState[index + 1] ? (
-                    <View style={styles.thenCardProperties}>
+                    <TouchableOpacity style={styles.thenCardProperties} onPress={() => changeThenButton(index + 1)}>
                       <MyText style={styles.cardTitle}>Then</MyText>
                       <MyText>{blocksState[index + 1].name}</MyText>
-                      <TouchableOpacity
-                        style={styles.cardButton}
-                        onPress={() => onClickRemoveBlock(index)}
-                      >
-                        <MaterialCommunityIcons
-                          name="minus"
-                          color={"black"}
-                          size={35}
-                        />
-                      </TouchableOpacity>
-                    </View>
+                    </TouchableOpacity>
                   ) : (
                     <View style={styles.thenCardProperties}>
                       <MyText style={styles.cardTitle}>Then</MyText>
@@ -241,27 +254,29 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
               </View>
             ))}
             {canAddThen() ? (
-            <Pressable
-              style={{
-                borderRadius: 15,
-                borderColor: "#0165F5",
-                borderWidth: 3,
-                padding: 15,
-                margin: 40,
-              }}
-              onPress={onClickAddthens}
-            >
-              <MyText
+              <Pressable
                 style={{
-                  textAlign: "center",
-                  color: "#0165F5",
-                  fontSize: 20,
+                  borderRadius: 15,
+                  borderColor: "#0165F5",
+                  borderWidth: 3,
+                  padding: 15,
+                  margin: 40,
                 }}
+                onPress={onClickAddthens}
               >
-                Add a reaction
-              </MyText>
-            </Pressable>
-          ) : (<></>)}
+                <MyText
+                  style={{
+                    textAlign: "center",
+                    color: "#0165F5",
+                    fontSize: 20,
+                  }}
+                >
+                  Add a reaction
+                </MyText>
+              </Pressable>
+            ) : (
+              <></>
+            )}
           </ScrollView>
           <View style={styles.footerContainer}>
             <TouchableOpacity
@@ -271,14 +286,20 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
               <MyText style={styles.footerButtonsText}>Reset</MyText>
             </TouchableOpacity>
             {canContinue() ? (
-            <TouchableOpacity style={[styles.footerButtons, { backgroundColor: "#54EE51" }]} onPress={onClickContinue}>
-              <MyText style={styles.footerButtonsText}>Continue</MyText>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.footerButtons} onPress={onClickCantContinue}>
-              <MyText style={styles.footerButtonsText}>Continue</MyText>
-            </TouchableOpacity>
-          )}
+              <TouchableOpacity
+                style={[styles.footerButtons, { backgroundColor: "#54EE51" }]}
+                onPress={onClickContinue}
+              >
+                <MyText style={styles.footerButtonsText}>Continue</MyText>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.footerButtons}
+                onPress={onClickCantContinue}
+              >
+                <MyText style={styles.footerButtonsText}>Continue</MyText>
+              </TouchableOpacity>
+            )}
           </View>
         </>
       ) : (
