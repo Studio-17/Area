@@ -16,11 +16,6 @@ import MyText from "../components/MyText";
 // Redux
 import { useAddAreaMutation } from "../redux/services/servicesApi";
 
-interface Props {
-  navigation: any;
-  blockState: any;
-}
-
 export default function CreateAreaScreen({
   route,
   navigation,
@@ -33,25 +28,26 @@ export default function CreateAreaScreen({
 
   const onClickOnSaveButton = () => {
     const reactions: any = [];
-    item
+    item.blocksState
       .filter((value: any, index: number) => index !== 0)
       .map((block: any) => reactions.push(block.uuid));
     const areaToSend = {
-      action: item[0].uuid,
+      action: item.blocksState[0].uuid,
       reactions: reactions,
     };
     addArea(areaToSend);
+    item.setBlockState([]);
+    item.setthensInstance([]);
+    navigation.navigate("NewArea");
     navigation.navigate("Home");
   };
-
-  console.log(item);
 
   return (
     <SafeAreaView style={styles.container}>
       <SafeAreaView style={styles.headerContainer}>
         <TouchableOpacity
           style={styles.backIcon}
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate("NewArea")}
         >
           <MaterialCommunityIcons
             name="chevron-left"
@@ -62,8 +58,8 @@ export default function CreateAreaScreen({
         <MyText style={styles.textStyle}>Verify and Finish</MyText>
         <View style={{ flex: 1 }} />
       </SafeAreaView>
-      <ScrollView>
-        <TouchableOpacity onPress={() => onClickOnSaveButton()}>
+      <ScrollView >
+        <TouchableOpacity style={styles.finishButton} onPress={() => onClickOnSaveButton()}>
           <MyText>Finish</MyText>
         </TouchableOpacity>
       </ScrollView>
@@ -93,5 +89,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "black",
     textAlign: "center",
+  },
+  finishButton: {
+    padding: 10,
+    borderRadius: 15,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    backgroundColor: "#0165F5",
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });
