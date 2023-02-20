@@ -43,7 +43,7 @@ export class MiroOAuth2Controller {
       });
     }
     return response.status(HttpStatus.OK).json({
-      url: encodeURIComponent(
+      url: encodeURI(
         `https://miro.com/oauth/authorize?response_type=code&client_id=${clientID}&redirect_uri=${callbackURL}&state=${token['id']}`,
       ),
       status: 200,
