@@ -41,7 +41,7 @@ const ServicesInfos = ({
     console.log("Service info", serviceInfo);
     console.log("Is fetching service info", isFetchingServiceInfo);
     serviceInfo && setIsServiceConnected(serviceInfo?.isConnected);
-  }, [actions, serviceInfo]);
+  }, [actions, serviceInfo, isFetchingServiceInfo]);
 
   const handleOauthConnection = async () => {
     console.log("Handle Oauth");
@@ -65,15 +65,11 @@ const ServicesInfos = ({
     reactionContent?: string,
     uuidOfAction?: string
   ) => {
-    console.log("Check");
-    if (serviceInfo?.type === "external" && !serviceInfo.isConnected)
-      handleOauthConnection();
-    else
-      onClickOnActionCards(
-        actionContent && actionContent,
-        reactionContent && reactionContent,
-        uuidOfAction && uuidOfAction
-      );
+    onClickOnActionCards(
+      actionContent && actionContent,
+      reactionContent && reactionContent,
+      uuidOfAction && uuidOfAction
+    );
   };
 
   if (isLoading || isFetching) return <CircularProgress />;

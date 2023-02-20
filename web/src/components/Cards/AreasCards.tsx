@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardActionArea,
-  CardContent,
-  IconButton,
-} from "@mui/material";
+import { Card, CardActionArea, CardContent, IconButton } from "@mui/material";
 import { theme } from "../../constants/theme";
 import { Area } from "../../models/areaModels";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -18,6 +13,7 @@ interface Props {
 }
 
 const AreasCards = ({ area, onClickOnCard, onClickDeleteArea }: Props) => {
+  console.log("area cards", area);
   return (
     <Card
       sx={{ width: 350, height: 250, borderRadius: 2, position: "relative" }}
@@ -42,7 +38,7 @@ const AreasCards = ({ area, onClickOnCard, onClickDeleteArea }: Props) => {
               IF&nbsp;
             </div>
 
-            <div className="card-text-first-line">{area?.action.name}</div>
+            <div className="card-text-first-line">{area?.action?.name}</div>
           </div>
           <div className="card-text-second-bloc">
             <div
@@ -52,7 +48,7 @@ const AreasCards = ({ area, onClickOnCard, onClickDeleteArea }: Props) => {
               THEN&nbsp;
             </div>
             <div className="card-text-second-line">
-              {area?.reactions[0].name}
+              {area?.reactions[0]?.name}
             </div>
           </div>
         </CardContent>

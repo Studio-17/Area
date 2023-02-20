@@ -1,26 +1,16 @@
-import { IsString, IsNotEmpty, IsArray, IsOptional, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, IsArray, IsOptional } from 'class-validator';
 
 export class CreateAreaDto {
   @IsString()
   @IsOptional()
   name: string;
 
-  @IsString()
   @IsNotEmpty()
-  @IsUUID()
-  action!: string;
-
-  @IsArray()
-  @IsOptional()
-  actionParams?: { name: string; content: string }[];
+  action!: { id: string; params: { name: string; content: string }[] };
 
   @IsArray()
   @IsNotEmpty()
-  reactions!: string[];
-
-  @IsArray()
-  @IsOptional()
-  reactionsParams?: [{ name: string; content: string }[]];
+  reactions!: { id: string; params: { name: string; content: string }[] }[];
 
   @IsString()
   @IsOptional()

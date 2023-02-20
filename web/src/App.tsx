@@ -104,7 +104,9 @@ function App() {
         style={{ backgroundColor: theme.palette.background }}
       >
         <Provider store={store}>
-          <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID ? GOOGLE_CLIENT_ID : ""}>
+          <GoogleOAuthProvider
+            clientId={GOOGLE_CLIENT_ID ? GOOGLE_CLIENT_ID : ""}
+          >
             <RouterProvider router={router} />
           </GoogleOAuthProvider>
         </Provider>
