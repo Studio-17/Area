@@ -26,7 +26,7 @@ export class GithubController {
     }
   }
 
-  @Get('/check-pull-requests')
+  @Get('/check-pull-request')
   public async checkNewPullRequest(
     @Req() request,
     @Res() response,
@@ -55,7 +55,7 @@ export class GithubController {
     }
   }
 
-  @Get('/check-issues')
+  @Get('/check-issue')
   public async checkNewIssue(
     @Req() request,
     @Res() response,
