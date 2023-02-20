@@ -44,7 +44,7 @@ export default function ActionsModal(
     isError,
     isLoading,
     isFetching,
-  } = useActionsQuery(service.uuid);
+  } = useActionsQuery(service.name);
 
   const handleCloseModal = () => {
     setOpenServicesModal(true);

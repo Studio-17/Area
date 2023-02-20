@@ -1,13 +1,13 @@
 export type Service = {
-  uuid: string;
   name: string;
   description: string;
+  type: "external" | "internal";
 };
 
-export type AddServiceDto = {
-  uuid: string;
-};
+// export type AddServiceDto = {
+//   uuid: string;
+// };
 
-export type DeleteServiceDto = {
-  uuid: string;
-};
+// export type DeleteServiceDto = {
+//   uuid: string;
+// };
