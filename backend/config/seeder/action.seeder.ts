@@ -12,10 +12,12 @@ export class ActionSeederService {
   ) {}
 
   async seed() {
+    // There are static UUIDs to avoid to seeders several times the same action
     const actions = [
       // ----- DISCORD TEMPLATES -----
       // ----- GITHUB TEMPLATES -----
       {
+        uuid: '0e423200-9d5a-4f7c-8949-3d9bbad368df',
         service: ServiceList.GITHUB,
         type: ActionType.ACTION,
         name: 'Check Github Pull Request',
@@ -24,6 +26,7 @@ export class ActionSeederService {
         link: '/github/check-pull-request',
       },
       {
+        uuid: '485c1317-ec8a-48b6-ab84-fd5f69ba41bd',
         service: ServiceList.GITHUB,
         type: ActionType.ACTION,
         name: 'Check Github Issue',
@@ -33,6 +36,7 @@ export class ActionSeederService {
       },
       // ----- GOOGLE TEMPLATES -----
       {
+        uuid: '6503b807-eec8-4d26-817e-45cbe3881ef3',
         service: ServiceList.GOOGLE,
         type: ActionType.ACTION,
         name: 'Check Google Mail',
@@ -40,6 +44,7 @@ export class ActionSeederService {
         link: '/github/check-mail',
       },
       {
+        uuid: 'df56e414-32b5-40fa-852c-60eaacfb7ebc',
         service: ServiceList.GOOGLE,
         type: ActionType.REACTION,
         name: 'Create file on Google Drive',
@@ -53,8 +58,13 @@ export class ActionSeederService {
     ];
 
     for (const action of actions) {
-      console.log(`Seeding ${action.name} action of ${action.service} service`);
-      await this.actionRepository.save(action);
+      const exists = await this.actionRepository.findOneBy({
+        uuid: action.uuid,
+      });
+
+      if (!exists) {
+        await this.actionRepository.save(action);
+      }
     }
   }
 }
