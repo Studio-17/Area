@@ -22,7 +22,7 @@ import { NotionOAuth2Module } from './externService/oauth2/notion/notion-oauth2.
 import { SpotifyOAuth2Module } from './externService/oauth2/spotify/spotify-oauth2.module';
 import { TwitchOAuth2Module } from './externService/oauth2/twitch/twitch-oauth2.module';
 import { JwtModule } from '@nestjs/jwt';
-import { TemplateSeederService} from '../config/seeder/template.seeder';
+import { ActionSeederService} from '../config/seeder/action.seeder';
 
 @Module({
   imports: [
@@ -68,7 +68,7 @@ import { TemplateSeederService} from '../config/seeder/template.seeder';
 export class AppModule implements NestModule {
   constructor(
     private readonly serviceSeederService: ServiceSeederService,
-    private readonly actionSeederService: TemplateSeederService,
+    private readonly actionSeederService: ActionSeederService,
   ) {}
 
   configure(consumer: MiddlewareConsumer) {

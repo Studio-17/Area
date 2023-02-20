@@ -1,44 +1,50 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TemplateEntity } from '../../src/action/entity/template.entity';
-import { ActionType } from '../../src/action/entity/action.entity';
+import { ActionEntity, ActionType } from '../../src/action/entity/action.entity';
 import { ServiceList } from '../../src/service/entity/service.entity';
 
 @Injectable()
-export class TemplateSeederService {
+export class ActionSeederService {
   constructor(
-    @InjectRepository(TemplateEntity)
-    private readonly templateRepository: Repository<TemplateEntity>,
+    @InjectRepository(ActionEntity)
+    private readonly actionRepository: Repository<ActionEntity>,
   ) {}
 
   async seed() {
-    const templates = [
+    const actions = [
       // ----- DISCORD TEMPLATES -----
       // ----- GITHUB TEMPLATES -----
       {
-        templateId: 'github-check-pull-request',
-        type: ActionType.ACTION,
         service: ServiceList.GITHUB,
-        name: 'Check Pull Request',
+        type: ActionType.ACTION,
+        name: 'Check Github Pull Request',
         description:
           'This action allow you to catch events when a new pull request is opened on a repository.',
+        link: '/github/check-pull-request',
       },
       {
-        templateId: 'github-check-issue',
-        type: ActionType.ACTION,
         service: ServiceList.GITHUB,
-        name: 'Check Issue',
+        type: ActionType.ACTION,
+        name: 'Check Github Issue',
         description:
           'This action allow you to catch events when a new issue is posted on a repository.',
+        link: '/github/check-issue',
       },
       // ----- GOOGLE TEMPLATES -----
       {
-        templateId: 'google-check-mail',
-        type: ActionType.ACTION,
         service: ServiceList.GOOGLE,
-        name: 'Check Mail',
+        type: ActionType.ACTION,
+        name: 'Check Google Mail',
         description: 'This action allow you to catch events when you receive a new mail.',
+        link: '/github/check-mail',
+      },
+      {
+        service: ServiceList.GOOGLE,
+        type: ActionType.REACTION,
+        name: 'Create file on Google Drive',
+        description: 'This reaction allow you to create a file on Google Drive.',
+        link: '/github/publish-doc',
       },
       // ----- MIRO TEMPLATES -----
       // ----- NOTION TEMPLATES -----
@@ -46,15 +52,9 @@ export class TemplateSeederService {
       // ----- TWITCH TEMPLATES -----
     ];
 
-    for (const template of templates) {
-      console.log(`Seeding ${template.name} action of ${template.service} service`);
-      const exists = await this.templateRepository.findOneBy({
-        templateId: template.templateId,
-      });
-
-      if (!exists) {
-        await this.templateRepository.save(template);
-      }
+    for (const action of actions) {
+      console.log(`Seeding ${action.name} action of ${action.service} service`);
+      await this.actionRepository.save(action);
     }
   }
 }
