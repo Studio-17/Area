@@ -5,6 +5,10 @@ export class CreateAreaDto {
   @IsOptional()
   name: string;
 
+  @IsOptional()
+  @IsString()
+  color?: string;
+
   @IsNotEmpty()
   action!: { id: string; params: { name: string; content: string }[] };
 
