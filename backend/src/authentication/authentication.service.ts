@@ -61,6 +61,13 @@ export class AuthenticationService {
 
         const accessToken = this.jwtService.sign(payload);
 
+        const updatedUser = this.usersService.updateUser(userData.uuid, {
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          email: userData.email,
+          jwt: accessToken,
+        });
+
         return {
           expiresIn: 3600,
           accessToken: accessToken,
