@@ -27,7 +27,7 @@ export default function AppletDetailsScreen({
       <SafeAreaView style={styles.headerContainer}>
         <TouchableOpacity
           style={styles.backIcon}
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate("Home")}
         >
           <MaterialCommunityIcons
             name="chevron-left"
