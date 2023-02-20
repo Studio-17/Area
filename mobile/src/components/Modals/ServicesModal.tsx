@@ -1,9 +1,17 @@
 import React from "react";
-import { Modal, StyleSheet, SafeAreaView, View, Pressable } from "react-native";
+import {
+  Modal,
+  StyleSheet,
+  SafeAreaView,
+  View,
+  Pressable,
+  Dimensions,
+} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Service } from "../../redux/models/serviceModels";
 
 import ServiceCard from "../Cards/ServiceCard";
+import { ScrollView } from "react-native-gesture-handler";
 
 interface Props {
   openServicesModal: boolean;
@@ -14,15 +22,15 @@ interface Props {
   services?: Service[] | null;
 }
 
-export default function ServicesModal(
-  {
-    openServicesModal,
-    onCloseServicesModal,
-    setOpenServicesModal,
-    setServiceSelected,
-    setOpenActionModal,
-    services,
-  }: Props) {
+export default function ServicesModal({
+  openServicesModal,
+  onCloseServicesModal,
+  setOpenServicesModal,
+  setServiceSelected,
+  setOpenActionModal,
+  services,
+}: Props) {
+  const cardGap = 20;
 
   return (
     <Modal
@@ -36,17 +44,29 @@ export default function ServicesModal(
             <MaterialCommunityIcons name="close" color={"black"} size={50} />
           </Pressable>
         </View>
-        <View style={{ padding: 10 }}>
-          {services?.map((service, index) => (
-            <ServiceCard
-              setServiceSelected={setServiceSelected}
-              service={service}
-              setOpenActionModal={setOpenActionModal}
-              setOpenServicesModal={setOpenServicesModal}
-              key={index}
-            />
-          ))}
-        </View>
+        <ScrollView>
+          <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
+              marginLeft: cardGap,
+              marginRight: cardGap,
+            }}
+          >
+            {services?.map((service, index) => (
+                <ServiceCard
+                  setServiceSelected={setServiceSelected}
+                  service={service}
+                  setOpenActionModal={setOpenActionModal}
+                  setOpenServicesModal={setOpenServicesModal}
+                  key={index}
+                  cardGap={cardGap}
+                  index={index}
+                />
+            ))}
+          </View>
+        </ScrollView>
       </SafeAreaView>
     </Modal>
   );
@@ -55,7 +75,6 @@ export default function ServicesModal(
 const styles = StyleSheet.create({
   modalContainer: {
     display: "flex",
-    alignItems: "center",
     flexDirection: "row",
     backgroundColor: "FFF7FA",
   },
