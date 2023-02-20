@@ -30,7 +30,7 @@ export class DiscordOAuth2Controller {
   public async discord(@Req() request, @Res() response) {
     const clientID = process.env.DISCORD_CLIENT_ID;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/discord/redirect`;
-    const scope = encodeURIComponent('email identify');
+    const scope = 'email identify';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
     if (!token['id']) {
