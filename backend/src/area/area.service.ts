@@ -22,30 +22,28 @@ export class AreaService {
     const action = await this.myActionService.addAction(
       areaInData.uuid,
       {
-        actionId: createAreaDto.action,
+        actionId: createAreaDto.action.id,
         linkedFromId: null,
         hour: createAreaDto.hour,
         minute: createAreaDto.minute,
         second: createAreaDto.second,
-        params: createAreaDto.actionParams,
+        params: createAreaDto.action.params,
       },
       userId,
     );
-    let index = 0;
     for (const myAction of createAreaDto.reactions) {
       await this.myActionService.addAction(
         areaInData.uuid,
         {
-          actionId: myAction,
+          actionId: myAction.id,
           linkedFromId: action.uuid,
           hour: createAreaDto.hour,
           minute: createAreaDto.minute,
           second: createAreaDto.second,
-          params: createAreaDto.reactionsParams ? createAreaDto.reactionsParams[index] : null,
+          params: myAction.params ? myAction.params : null,
         },
         userId,
       );
-      index++;
     }
     return areaInData;
   }
