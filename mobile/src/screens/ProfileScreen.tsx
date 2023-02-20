@@ -22,11 +22,12 @@ import MyText from "../components/MyText";
 
 export default function ProfileScreen({ navigation }: { navigation: any }) {
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state: RootState) => state.auth);
+  const { user, token } = useAppSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     console.log("User profile: user: ", user);
-  }, [user]);
+    console.log("User profile: token: ", token)
+  }, [user, token]);
 
   const dispatchDeconnection = () => {
     dispatch(logoutUser());

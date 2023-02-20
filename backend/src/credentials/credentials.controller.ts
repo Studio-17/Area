@@ -14,20 +14,20 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authentication.guard';
 import { CredentialsService } from './credentials.service';
-import { CredentialsInterface } from './interfaces/credentials.interface';
+import { CredentialsInterface } from './interface/credentials.interface';
 import { UpdateCredentialsDto } from './dto/update-credentials.dto';
 import { CreateCredentialsDto } from './dto/create-credentials.dto';
 
-@ApiTags('credentials')
+@ApiTags('Credentials')
 // @UseGuards(JwtAuthenticationGuard)
 @Controller('credentials')
 export class CredentialsController {
   constructor(private readonly credentialsService: CredentialsService) {}
 
-  @Get('/all')
-  public async findAllUser(): Promise<CredentialsInterface[]> {
-    return this.credentialsService.findAll();
-  }
+  // @Get('/all')
+  // public async findAllUser(): Promise<CredentialsInterface[]> {
+  //   return this.credentialsService.findAll();
+  // }
 
   @Get()
   public async findOneCredentials(

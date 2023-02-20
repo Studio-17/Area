@@ -9,7 +9,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // Screens
 import HomeStack from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
-import NewAppletStack from "../screens/NewAppletScreen";
+import NewAreaStack from "../screens/NewAreaScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -46,7 +46,7 @@ export default function TabNavigator() {
       />
       <Tab.Screen
         name="New"
-        component={NewAppletStack}
+        component={NewAreaStack}
         options={{
           tabBarLabel: "New",
           tabBarIcon: ({ color, size }) => (

@@ -7,6 +7,7 @@ import {
   StatusBar,
   Pressable,
   ScrollView,
+  Alert,
 } from "react-native";
 
 // Icons
@@ -14,6 +15,9 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // Navigation
 import { createStackNavigator } from "@react-navigation/stack";
+
+// Screens
+import CreateAreaScreen from "./CreateAreaScreen";
 
 // Redux
 import { Service } from "../redux/models/serviceModels";
@@ -26,20 +30,21 @@ import MyText from "../components/MyText";
 
 const Stack = createStackNavigator();
 
-export default function NewAppletStack() {
+export default function NewAreaStack() {
   return (
     <Stack.Navigator
-      initialRouteName="NewApplet"
+      initialRouteName="NewArea"
       screenOptions={{
         headerShown: false,
       }}
     >
-      <Stack.Screen name="NewApplet" component={NewAppletScreen} />
+      <Stack.Screen name="NewArea" component={NewAreaScreen} />
+      <Stack.Screen name="FinishArea" component={CreateAreaScreen} />
     </Stack.Navigator>
   );
 }
 
-function NewAppletScreen({ navigation }: { navigation: any }) {
+function NewAreaScreen({ navigation }: { navigation: any }) {
   const [openServicesModal, setOpenServicesModal] = useState<boolean>(false);
   const [openActionsModal, setOpenActionsModal] = useState<boolean>(false);
   const [serviceSelected, setServiceSelected] = useState<Service | null>(null);
@@ -48,7 +53,6 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
   const [typeSelected, setTypeSelected] = useState<"action" | "reaction">(
     "action"
   );
-  // const [blockNumberSelected, setBlockNumberSelected] = useState<number>(0);
 
   const { data: services, isError, isLoading } = useServicesQuery();
 
@@ -92,6 +96,20 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
     setServiceSelected(null);
   };
 
+  const canAddThen = () => {
+    if (blocksState[thensInstance.length] != null)
+      return true;
+    else
+      return false;
+  };
+
+  const canContinue = () => {
+    if (blocksState.length > 1 && blocksState[thensInstance.length] != null)
+      return true;
+    else
+      return false;
+  };
+
   const onClickAddthens = () => {
     setthensInstance((thens: any) => [...thens, { type: "then" }]);
   };
@@ -103,6 +121,36 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
     setthensInstance(
       thensInstance.filter((then: any, i: number) => i !== index)
     );
+  };
+
+  const onClickReset = () => {
+    Alert.alert("Reset", "Are you sure you want to reset?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Reset",
+        onPress: () => {
+          setBlockState([]);
+          setthensInstance([]);
+        },
+        style: "destructive",
+      },
+    ]);
+  };
+
+  const onClickCantContinue = () => {
+    Alert.alert("Continue", "Please add at least 1 Action and 1 Reaction and fill all the values", [
+      {
+        text: "Ok",
+        style: "cancel",
+      }
+    ]);
+  };
+
+  const onClickContinue = () => {
+    navigation.navigate("FinishArea", { navigation: navigation, item: {blocksState, setBlockState, setthensInstance }});
   };
 
   return (
@@ -192,14 +240,14 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
                 </View>
               </View>
             ))}
+            {canAddThen() ? (
             <Pressable
               style={{
                 borderRadius: 15,
                 borderColor: "#0165F5",
                 borderWidth: 3,
                 padding: 15,
-                marginVertical: 15,
-                marginHorizontal: 40,
+                margin: 40,
               }}
               onPress={onClickAddthens}
             >
@@ -207,20 +255,38 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
                 style={{
                   textAlign: "center",
                   color: "#0165F5",
-                  fontWeight: "bold",
                   fontSize: 20,
                 }}
               >
-                Add thens
+                Add a reaction
               </MyText>
             </Pressable>
+          ) : (<></>)}
           </ScrollView>
+          <View style={styles.footerContainer}>
+            <TouchableOpacity
+              style={[styles.footerButtons, { backgroundColor: "#E6566E" }]}
+              onPress={onClickReset}
+            >
+              <MyText style={styles.footerButtonsText}>Reset</MyText>
+            </TouchableOpacity>
+            {canContinue() ? (
+            <TouchableOpacity style={[styles.footerButtons, { backgroundColor: "#54EE51" }]} onPress={onClickContinue}>
+              <MyText style={styles.footerButtonsText}>Continue</MyText>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.footerButtons} onPress={onClickCantContinue}>
+              <MyText style={styles.footerButtonsText}>Continue</MyText>
+            </TouchableOpacity>
+          )}
+          </View>
         </>
       ) : (
         <ActionsModal
           openActionsModal={openActionsModal}
           onCloseActionsModal={() => setOpenActionsModal(false)}
           onCloseServicesModal={() => setOpenServicesModal(false)}
+          setOpenServicesModal={setOpenServicesModal}
           onClickOnAreasCards={onClickOnAreasCards}
           typeSelected={typeSelected}
           service={serviceSelected}
@@ -229,6 +295,7 @@ function NewAppletScreen({ navigation }: { navigation: any }) {
       <ServicesModal
         openServicesModal={openServicesModal}
         onCloseServicesModal={onCloseServiceModal}
+        setOpenServicesModal={setOpenServicesModal}
         setOpenActionModal={setOpenActionsModal}
         setServiceSelected={setServiceSelected}
         services={services}
@@ -262,10 +329,10 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     alignItems: "center",
     justifyContent: "center",
+    padding: 10,
   },
   textHeaderStyle: {
     fontSize: 25,
-    fontWeight: "bold",
     color: "black",
   },
   modalContainer: {
@@ -297,7 +364,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    // marginBottom: 30,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -308,12 +374,46 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  footerContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 10,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  footerButtons: {
+    width: "45%",
+    height: 50,
+    padding: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 15,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    backgroundColor: "grey",
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  footerButtonsText: {
+    color: "black",
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
   cardTitle: {
     margin: "auto",
     padding: 10,
     color: "black",
     fontSize: 30,
-    fontWeight: "bold",
   },
   cardButton: {
     backgroundColor: "white",

@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   },
   textBtn: {
     textAlign: "center",
-    fontWeight: "700",
+    // fontWeight: "700",
     fontSize: 16,
     color: "#fff",
   },

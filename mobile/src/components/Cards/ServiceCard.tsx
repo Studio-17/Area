@@ -12,17 +12,21 @@ interface Props {
   logo?: any;
   setServiceSelected: any;
   setOpenActionModal: any;
+  setOpenServicesModal: any;
 }
 
-export default function ServiceCard({
-  service,
-  logo,
-  setServiceSelected,
-  setOpenActionModal,
-}: Props) {
+export default function ServiceCard(
+  {
+    service,
+    logo,
+    setServiceSelected,
+    setOpenActionModal,
+    setOpenServicesModal,
+  }: Props) {
   const onClickOnCards = () => {
     setServiceSelected(service);
     setOpenActionModal(true);
+    setOpenServicesModal(false);
   };
 
   return (

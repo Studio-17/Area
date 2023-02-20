@@ -45,9 +45,7 @@ export class GoogleOAuth2Controller {
     }
 
     return response.status(HttpStatus.OK).json({
-      url: encodeURIComponent(
-        `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${token['id']}&redirect_uri=${callbackURL}&client_id=${clientID}`,
-      ),
+      url: `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${token['id']}&redirect_uri=${callbackURL}&client_id=${clientID}`,
       status: 200,
     });
   }

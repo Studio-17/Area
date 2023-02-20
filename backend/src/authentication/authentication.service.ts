@@ -1,12 +1,13 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
-import { UserInterface } from '../user/interfaces/user.interface';
+import { UserInterface } from '../user/interface/user.interface';
 import * as bcrypt from 'bcryptjs';
 import { JwtInterface } from './interfaces/jwt.interfaces';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserRegisterDto } from './dto/user-register.dto';
 import { OAuth2Client } from 'google-auth-library';
+import { UserEntity } from '../user/entity/user.entity';
 
 const client = new OAuth2Client(
   process.env.GOOGLE_ACCOUNT_CLIENT_ID,
@@ -98,7 +99,7 @@ export class AuthenticationService {
 
   // Used in the STRATEGY to check if user exists and return its associated token
   public async validateUserByEmail(email: string) {
-    const user = await this.usersService.findByEmail(email);
+    const user: UserEntity = await this.usersService.findByEmail(email);
 
     if (!user) {
       throw new UnauthorizedException();
@@ -140,9 +141,9 @@ export class AuthenticationService {
       audience: process.env.GOOGLE_ACCOUNT_CLIENT_ID,
     });
     const payload = ticket.getPayload();
-    const isExistingUser = await this.usersService.exist(payload.email);
+    const isExistingUser: boolean = await this.usersService.exist(payload.email);
 
-    const user = await this.usersService.findByEmail(payload.email);
+    const user: UserEntity = await this.usersService.findByEmail(payload.email);
     const jwtPayload = this.createJwtPayload(user);
 
     if (!isExistingUser) {
