@@ -12,9 +12,6 @@ export class GithubIssueEntity {
   uuid: string;
 
   @Column()
-  email: string;
-
-  @Column()
   repositoryName: string;
 
   @Column()

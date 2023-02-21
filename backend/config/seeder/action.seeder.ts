@@ -22,7 +22,6 @@ export class ActionSeederService {
         type: ActionType.ACTION,
         name: 'Check Github Pull Request',
         params: [
-          { name: 'email', type: 'string', description: 'Email of the owner.' },
           { name: 'owner', type: 'string', description: 'Name of the owner.' },
           { name: 'repo', type: 'string', description: 'Name of the repository.' },
         ],
@@ -36,7 +35,6 @@ export class ActionSeederService {
         type: ActionType.ACTION,
         name: 'Check Github Issue',
         params: [
-          { name: 'email', type: 'string', description: 'Email of the owner.' },
           { name: 'owner', type: 'string', description: 'Name of the owner.' },
           { name: 'repo', type: 'string', description: 'Name of the repository.' },
         ],
