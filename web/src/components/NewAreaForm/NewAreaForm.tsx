@@ -29,15 +29,20 @@ const NewAreaForm = ({ blocksState }: Props) => {
       reactions: reactions,
       name: target?.name.value,
       hour: target?.hour.value.toString() && target?.hour.value.toString(),
-      minute: target?.minute.value.toString() && target?.minute.value.toString(),
-      second: target?.second.value.toString() && target?.second.value.toString(),
+      minute:
+        target?.minute.value.toString() && target?.minute.value.toString(),
+      second:
+        target?.second.value.toString() && target?.second.value.toString(),
     };
     addArea(areaToSend);
     navigate("/home");
   };
   return (
     <>
-      <div className="form-container">
+      <div
+        className="form-container"
+        style={{ backgroundColor: theme.palette.background }}
+      >
         <div
           className="main-title-container"
           style={{ color: theme.palette.secondary }}

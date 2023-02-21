@@ -9,6 +9,7 @@ import ActionsCards from "./Cards/ActionsCards";
 import axios from "axios";
 import "../styles/ServicesInfos.css";
 import BigRoundedButtonOutlined from "./Buttons/BigRoundedButtonOutlined";
+import { GetParamsDto } from "../models/paramsModel";
 
 const API_ENDPOINT = process.env.REACT_APP_API_URL;
 
@@ -63,8 +64,10 @@ const ServicesInfos = ({
   const onClickOnActionCardsCheck = (
     actionContent?: string,
     reactionContent?: string,
-    uuidOfAction?: string
+    uuidOfAction?: string,
+    params?: GetParamsDto[] | null
   ) => {
+    if (!params) console.log("Params");
     onClickOnActionCards(
       actionContent && actionContent,
       reactionContent && reactionContent,
@@ -101,14 +104,15 @@ const ServicesInfos = ({
             <ActionsCards
               key={index}
               actionContent={
-                typeSelected === "action" ? element.description : undefined
+                typeSelected === "action" ? element.name : undefined
               }
               reactionContent={
-                typeSelected === "reaction" ? element.description : undefined
+                typeSelected === "reaction" ? element.name : undefined
               }
               onClick={onClickOnActionCardsCheck}
               uuidOfAction={element.uuid}
               disabled={!isServiceConnected}
+              params={element.params}
             />
           ))}
       </div>

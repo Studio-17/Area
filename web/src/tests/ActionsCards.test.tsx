@@ -8,6 +8,7 @@ test("Renders action content", () => {
       onClick={() => undefined}
       disabled={false}
       actionContent="Action content"
+      params={null}
     />
   );
   const test = screen.getByText("Action content");
@@ -20,6 +21,7 @@ test("Renders reaction content", () => {
       onClick={() => undefined}
       disabled={false}
       reactionContent="Reaction content"
+      params={null}
     />
   );
   const test = screen.getByText("Reaction content");
