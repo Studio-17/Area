@@ -49,8 +49,6 @@ const DATA = [
 function HomeScreen({ navigation }: { navigation: any }) {
   const { data: areas, isLoading, isFetching, refetch } = useAreasQuery();
 
-  console.log("areas: ", areas)
-
   return (
     <SafeAreaView style={styles.container}>
       <MainHeader />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -13,12 +13,6 @@ import {
 // Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-// Navigation
-import { createStackNavigator } from "@react-navigation/stack";
-
-// Screens
-import CreateAreaScreen from "./CreateAreaScreen";
-
 // Redux
 import { Service } from "../redux/models/serviceModels";
 import { useServicesQuery } from "../redux/services/servicesApi";
@@ -28,23 +22,7 @@ import ServicesModal from "../components/Modals/ServicesModal";
 import ActionsModal from "../components/Modals/ActionsModal";
 import MyText from "../components/MyText";
 
-const Stack = createStackNavigator();
-
-export default function NewAreaStack() {
-  return (
-    <Stack.Navigator
-      initialRouteName="NewArea"
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="NewArea" component={NewAreaScreen} />
-      <Stack.Screen name="FinishArea" component={CreateAreaScreen} />
-    </Stack.Navigator>
-  );
-}
-
-function NewAreaScreen({ navigation }: { navigation: any }) {
+export default function NewAreaScreen({ navigation, route }: { navigation: any, route: any }) {
   const [openServicesModal, setOpenServicesModal] = useState<boolean>(false);
   const [openActionsModal, setOpenActionsModal] = useState<boolean>(false);
   const [serviceSelected, setServiceSelected] = useState<Service | null>(null);
@@ -56,24 +34,31 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
 
   const { data: services, isError, isLoading } = useServicesQuery();
 
-  const onCloseServiceModal = () => {
-    setOpenServicesModal(false);
-    setServiceSelected(null);
-  };
+  useEffect(() => {
+    if (route.params?.serviceValue) {
+      setServiceSelected(route.params?.serviceValue);
+    }
+  }, [route.params?.serviceValue]);
 
-  const onClickOpenModal = (
-    index: number,
-    typeOfAction: "action" | "reaction"
-  ) => {
-    setTypeSelected(typeOfAction);
-    setOpenServicesModal(true);
-    // setBlockNumberSelected(index);
-  };
+  // const onCloseServiceModal = () => {
+  //   setOpenServicesModal(false);
+  //   setServiceSelected(null);
+  //   navigation.navigate("NewArea");
+  // };
 
-  const onClickOnAreasCards: any = (
+  // const onClickOpenModal = (
+  //   index: number,
+  //   typeOfAction: "action" | "reaction"
+  // ) => {
+  //   setTypeSelected(typeOfAction);
+  //   navigation.navigate("Services", {item: { services, typeSelected, setServiceSelected, onClickOnAreasCards }})
+  //   // setOpenServicesModal(true);
+  //   // setBlockNumberSelected(index);
+  // };
+
+  const onClickOnAreasCards = (
     actionContent?: string,
     reactionContent?: string,
-    uuidOfAction?: string
   ) => {
     actionContent &&
       setBlockState((state: any) => [
@@ -81,7 +66,6 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
         {
           name: actionContent,
           service: serviceSelected?.name,
-          uuid: uuidOfAction,
         },
       ]);
     reactionContent &&
@@ -90,10 +74,19 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
         {
           name: reactionContent,
           service: serviceSelected?.name,
-          uuid: uuidOfAction,
         },
       ]);
     setServiceSelected(null);
+  };
+
+  const onClickOpenModal = (
+    index: number,
+    typeOfAction: "action" | "reaction"
+  ) => {
+    setTypeSelected(typeOfAction);
+    navigation.navigate("Services", {item: { services, typeOfAction, onClickOnAreasCards }})
+    // setOpenServicesModal(true);
+    // setBlockNumberSelected(index);
   };
 
   const canAddThen = () => {
@@ -150,97 +143,104 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
   };
 
   const onClickContinue = () => {
-    navigation.navigate("FinishArea", { navigation: navigation, item: {blocksState, setBlockState, setthensInstance }});
+    navigation.navigate("FinishArea", { navigation: navigation, item: { blocksState, setBlockState, setthensInstance } });
   };
+
+  // const onClickService = () => {
+  //   // console.log("onClickService");
+  //   // console.log("serviceSelected", serviceSelected);
+  //   // const item: { setOpenServicesModal: any, onClickOnAreasCards: any, typeSelected: "action" | "reaction", serviceSelected: Service | null } = { setOpenServicesModal, onClickOnAreasCards, typeSelected, serviceSelected };
+  //   // navigation.navigate("ActionsList", { navigation: navigation, item: item })
+  //   navigation.navigate("ActionsList");
+  // };
 
   return (
     <SafeAreaView style={styles.screenContainer}>
-      {!serviceSelected ? (
-        <>
-          <View style={styles.headerContainer}>
-            <MyText style={styles.textHeaderStyle}>New coonie u said ?</MyText>
-          </View>
-          <ScrollView>
-            <View style={styles.contentContainer}>
-              {blocksState[0] ? (
-                <View style={styles.cardPropertiesServiceSelected}>
-                  <MyText style={styles.cardTitle}>IF</MyText>
-                  <MyText>{blocksState[0].name}</MyText>
-                  <TouchableOpacity style={styles.cardButton}>
-                    <MaterialCommunityIcons
-                      name="minus"
-                      color={"black"}
-                      size={35}
-                    />
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <View style={styles.cardPropertiesServiceSelected}>
-                  <MyText style={styles.cardTitle}>IF</MyText>
-                  <TouchableOpacity
-                    style={styles.cardButton}
-                    onPress={() => onClickOpenModal(0, "action")}
-                  >
-                    <MaterialCommunityIcons
-                      name="plus"
-                      color={"black"}
-                      size={35}
-                    />
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
-            {thensInstance.map((block: any, index: number) => (
-              <View
-                key={index}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <View
-                  style={{
-                    backgroundColor: "#E2DDFF",
-                    width: 10,
-                    height: 30,
-                  }}
-                />
-                <View style={styles.thenContainer}>
-                  {blocksState[index + 1] ? (
-                    <View style={styles.thenCardProperties}>
-                      <MyText style={styles.cardTitle}>Then</MyText>
-                      <MyText>{blocksState[index + 1].name}</MyText>
-                      <TouchableOpacity
-                        style={styles.cardButton}
-                        onPress={() => onClickRemoveBlock(index)}
-                      >
-                        <MaterialCommunityIcons
-                          name="minus"
-                          color={"black"}
-                          size={35}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  ) : (
-                    <View style={styles.thenCardProperties}>
-                      <MyText style={styles.cardTitle}>Then</MyText>
-                      <TouchableOpacity
-                        style={styles.cardButton}
-                        onPress={() => onClickOpenModal(index + 1, "reaction")}
-                      >
-                        <MaterialCommunityIcons
-                          name="plus"
-                          color={"black"}
-                          size={35}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                </View>
+      <>
+        <View style={styles.headerContainer}>
+          <MyText style={styles.textHeaderStyle}>New coonie u said ?</MyText>
+        </View>
+        <ScrollView>
+          <View style={styles.contentContainer}>
+            {blocksState[0] ? (
+              <View style={styles.cardPropertiesServiceSelected}>
+                <MyText style={styles.cardTitle}>IF</MyText>
+                <MyText>{blocksState[0].name}</MyText>
+                <TouchableOpacity style={styles.cardButton}>
+                  <MaterialCommunityIcons
+                    name="minus"
+                    color={"black"}
+                    size={35}
+                  />
+                </TouchableOpacity>
               </View>
-            ))}
-            {canAddThen() ? (
+            ) : (
+              <View style={styles.cardPropertiesServiceSelected}>
+                <MyText style={styles.cardTitle}>IF</MyText>
+                <TouchableOpacity
+                  style={styles.cardButton}
+                  onPress={() => onClickOpenModal(0, "action")}
+                >
+                  <MaterialCommunityIcons
+                    name="plus"
+                    color={"black"}
+                    size={35}
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+          {thensInstance.map((block: any, index: number) => (
+            <View
+              key={index}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#E2DDFF",
+                  width: 10,
+                  height: 30,
+                }}
+              />
+              <View style={styles.thenContainer}>
+                {blocksState[index + 1] ? (
+                  <View style={styles.thenCardProperties}>
+                    <MyText style={styles.cardTitle}>Then</MyText>
+                    <MyText>{blocksState[index + 1].name}</MyText>
+                    <TouchableOpacity
+                      style={styles.cardButton}
+                      onPress={() => onClickRemoveBlock(index)}
+                    >
+                      <MaterialCommunityIcons
+                        name="minus"
+                        color={"black"}
+                        size={35}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View style={styles.thenCardProperties}>
+                    <MyText style={styles.cardTitle}>Then</MyText>
+                    <TouchableOpacity
+                      style={styles.cardButton}
+                      onPress={() => onClickOpenModal(index + 1, "reaction")}
+                    >
+                      <MaterialCommunityIcons
+                        name="plus"
+                        color={"black"}
+                        size={35}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            </View>
+          ))}
+          {canAddThen() ? (
             <Pressable
               style={{
                 borderRadius: 15,
@@ -262,15 +262,15 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
               </MyText>
             </Pressable>
           ) : (<></>)}
-          </ScrollView>
-          <View style={styles.footerContainer}>
-            <TouchableOpacity
-              style={[styles.footerButtons, { backgroundColor: "#E6566E" }]}
-              onPress={onClickReset}
-            >
-              <MyText style={styles.footerButtonsText}>Reset</MyText>
-            </TouchableOpacity>
-            {canContinue() ? (
+        </ScrollView>
+        <View style={styles.footerContainer}>
+          <TouchableOpacity
+            style={[styles.footerButtons, { backgroundColor: "#E6566E" }]}
+            onPress={onClickReset}
+          >
+            <MyText style={styles.footerButtonsText}>Reset</MyText>
+          </TouchableOpacity>
+          {canContinue() ? (
             <TouchableOpacity style={[styles.footerButtons, { backgroundColor: "#54EE51" }]} onPress={onClickContinue}>
               <MyText style={styles.footerButtonsText}>Continue</MyText>
             </TouchableOpacity>
@@ -279,27 +279,8 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
               <MyText style={styles.footerButtonsText}>Continue</MyText>
             </TouchableOpacity>
           )}
-          </View>
-        </>
-      ) : (
-        <ActionsModal
-          openActionsModal={openActionsModal}
-          onCloseActionsModal={() => setOpenActionsModal(false)}
-          onCloseServicesModal={() => setOpenServicesModal(false)}
-          setOpenServicesModal={setOpenServicesModal}
-          onClickOnAreasCards={onClickOnAreasCards}
-          typeSelected={typeSelected}
-          service={serviceSelected}
-        />
-      )}
-      <ServicesModal
-        openServicesModal={openServicesModal}
-        onCloseServicesModal={onCloseServiceModal}
-        setOpenServicesModal={setOpenServicesModal}
-        setOpenActionModal={setOpenActionsModal}
-        setServiceSelected={setServiceSelected}
-        services={services}
-      />
+        </View>
+      </>
     </SafeAreaView>
   );
 }

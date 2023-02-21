@@ -10,27 +10,31 @@ import MyText from "../MyText";
 interface Props {
   service: Service;
   logo?: any;
-  setServiceSelected: any;
-  setOpenActionModal: any;
-  setOpenServicesModal: any;
+  // setServiceSelected: any;
+  // setOpenActionModal: any;
+  // setOpenServicesModal?: any;
+  onClickService: any;
 }
 
 export default function ServiceCard(
   {
     service,
     logo,
-    setServiceSelected,
-    setOpenActionModal,
-    setOpenServicesModal,
+    // setServiceSelected,
+    // setOpenActionModal,
+    // setOpenServicesModal,
+    onClickService
   }: Props) {
-  const onClickOnCards = () => {
-    setServiceSelected(service);
-    setOpenActionModal(true);
-    setOpenServicesModal(false);
-  };
+  // const onClickOnCards = () => {
+  //   // setServiceSelected(service);
+  //   onClickService();
+  //   // setOpenActionModal(true);
+  //   // onClickService();
+  //   // setOpenServicesModal(false);
+  // };
 
   return (
-    <Pressable style={styles.cardProperties} onPress={onClickOnCards}>
+    <Pressable style={styles.cardProperties} onPress={onClickService}>
       <MyText style={styles.cardContainer}>
         <MyText style={styles.textProperties}>{service.name}</MyText>
       </MyText>

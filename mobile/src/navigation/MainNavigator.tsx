@@ -16,12 +16,12 @@ export default function MainNavigator() {
           headerShown: false,
       }}
     >
-      <Stack.Group>
       <Stack.Screen name="main" component={TabNavigator} />
-      </Stack.Group>
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="newarea" component={NewAreaScreen} />
-      </Stack.Group>
+      {/*<Stack.Group>*/}
+      {/*</Stack.Group>*/}
+      {/*<Stack.Group screenOptions={{ presentation: 'modal' }}>*/}
+      {/*  <Stack.Screen name="newarea" component={NewAreaScreen} />*/}
+      {/*</Stack.Group>*/}
     </Stack.Navigator>
   );
 }

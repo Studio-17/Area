@@ -11,28 +11,25 @@ interface Props {
   onClick: (
     actionContent?: string,
     reactionContent?: string,
-    uuidOfAction?: string
   ) => any | undefined;
   onClose: () => void;
-  onCloseServicesModal: () => void;
+  // onCloseServicesModal: () => void;
   logo?: any;
 }
 
 export default function ActionCard({
   onClose,
-  onCloseServicesModal,
+  // onCloseServicesModal,
   actionContent,
   reactionContent,
-  uuidOfAction,
   onClick,
 }: Props) {
   const onClickOnCards = () => {
     onClose();
-    onCloseServicesModal();
+    // onCloseServicesModal();
     onClick(
       actionContent && actionContent,
       reactionContent && reactionContent,
-      uuidOfAction && uuidOfAction
     );
   };
 

@@ -9,9 +9,10 @@ interface Props {
   openServicesModal: boolean;
   onCloseServicesModal: () => void;
   setOpenServicesModal: any;
-  setOpenActionModal: any;
+  // setOpenActionModal?: any;
   setServiceSelected?: any;
   services?: Service[] | null;
+  onClickService: any;
 }
 
 export default function ServicesModal(
@@ -20,8 +21,9 @@ export default function ServicesModal(
     onCloseServicesModal,
     setOpenServicesModal,
     setServiceSelected,
-    setOpenActionModal,
+    // setOpenActionModal,
     services,
+    onClickService
   }: Props) {
 
   return (
@@ -39,10 +41,11 @@ export default function ServicesModal(
         <View style={{ padding: 10 }}>
           {services?.map((service, index) => (
             <ServiceCard
-              setServiceSelected={setServiceSelected}
+              // setServiceSelected={setServiceSelected}
               service={service}
-              setOpenActionModal={setOpenActionModal}
-              setOpenServicesModal={setOpenServicesModal}
+              // setOpenActionModal={setOpenActionModal}
+              // setOpenServicesModal={setOpenServicesModal}
+              onClickService={onClickService}
               key={index}
             />
           ))}
