@@ -41,7 +41,7 @@ export class ActionSeederService {
         type: ActionType.ACTION,
         name: 'Check Google Mail',
         description: 'This action allow you to catch events when you receive a new mail.',
-        link: 'github/check-mail/',
+        link: 'google/check-mail/',
       },
       {
         uuid: 'df56e414-32b5-40fa-852c-60eaacfb7ebc',
