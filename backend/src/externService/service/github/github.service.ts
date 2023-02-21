@@ -26,8 +26,6 @@ import { ActionService } from '../../../action/action.service';
 import { MyActionService } from '../../../myAction/myAction.service';
 import axios from 'axios';
 
-class C {}
-
 @Injectable()
 export class GithubService {
   constructor(
