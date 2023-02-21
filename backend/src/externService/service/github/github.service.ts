@@ -288,7 +288,7 @@ export class GithubService {
       } catch (err) {
         throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       }
-    } else if (record.pullRequestId !== githubPullRequestDto.pullRequestId) {
+    } else if (record.pullRequestId.toString() !== githubPullRequestDto.pullRequestId.toString()) {
       try {
         const newRecord = await this.githubPullRequestRepository.update(
           {
@@ -322,7 +322,11 @@ export class GithubService {
       githubIssueDto.repositoryName,
     );
 
+    console.log('record : ', record);
+    console.log('githubIssueDto : ', githubIssueDto);
+
     if (!record) {
+      console.log('first issue detected');
       try {
         return {
           new: true,
@@ -331,7 +335,8 @@ export class GithubService {
       } catch (err) {
         throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       }
-    } else if (record.issueId !== githubIssueDto.issueId) {
+    } else if (record.issueId.toString() !== githubIssueDto.issueId.toString()) {
+      console.log('new issue detected');
       try {
         const newRecord = await this.githubIssueRepository.update(
           {
@@ -346,24 +351,18 @@ export class GithubService {
 
         return {
           new: true,
-          data: await this.findIssue(
-            githubIssueDto.repositoryOwner,
-            githubIssueDto.repositoryName,
-          ),
+          data: await this.findIssue(githubIssueDto.repositoryOwner, githubIssueDto.repositoryName),
         };
       } catch (err) {
         throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       }
     } else {
+      console.log('old issue detected');
       return { new: false, data: record };
     }
   }
 
-  public async updateLastPullRequest(
-    accessToken: string,
-    owner: string,
-    repo: string,
-  ) {
+  public async updateLastPullRequest(accessToken: string, owner: string, repo: string) {
     const config = {
       method: 'get',
       url: `https://api.github.com/repos/${owner}/${repo}/pulls`,
@@ -413,12 +412,14 @@ export class GithubService {
     try {
       const issueId = await axios(config)
         .then(function (apiResponse): string {
+          console.log('then');
           if (apiResponse.data.length === 0) {
             return;
           }
           return apiResponse.data[0].id;
         })
         .catch(function (error) {
+          console.log('catch');
           throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
         });
 
