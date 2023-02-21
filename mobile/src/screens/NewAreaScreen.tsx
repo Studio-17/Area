@@ -18,19 +18,19 @@ import { Service } from "../redux/models/serviceModels";
 import { useServicesQuery } from "../redux/services/servicesApi";
 
 // Components
-import ServicesModal from "../components/Modals/ServicesModal";
-import ActionsModal from "../components/Modals/ActionsModal";
 import MyText from "../components/MyText";
 
-export default function NewAreaScreen({ navigation, route }: { navigation: any, route: any }) {
-  const [openServicesModal, setOpenServicesModal] = useState<boolean>(false);
-  const [openActionsModal, setOpenActionsModal] = useState<boolean>(false);
+export default function NewAreaScreen(
+  {
+    navigation,
+    route
+  }: {
+    navigation: any,
+    route: any
+  }) {
   const [serviceSelected, setServiceSelected] = useState<Service | null>(null);
   const [blocksState, setBlockState] = useState<any>([]);
   const [thensInstance, setthensInstance] = useState<any>([]);
-  const [typeSelected, setTypeSelected] = useState<"action" | "reaction">(
-    "action"
-  );
 
   const { data: services, isError, isLoading } = useServicesQuery();
 
@@ -38,23 +38,11 @@ export default function NewAreaScreen({ navigation, route }: { navigation: any, 
     if (route.params?.serviceValue) {
       setServiceSelected(route.params?.serviceValue);
     }
-  }, [route.params?.serviceValue]);
-
-  // const onCloseServiceModal = () => {
-  //   setOpenServicesModal(false);
-  //   setServiceSelected(null);
-  //   navigation.navigate("NewArea");
-  // };
-
-  // const onClickOpenModal = (
-  //   index: number,
-  //   typeOfAction: "action" | "reaction"
-  // ) => {
-  //   setTypeSelected(typeOfAction);
-  //   navigation.navigate("Services", {item: { services, typeSelected, setServiceSelected, onClickOnAreasCards }})
-  //   // setOpenServicesModal(true);
-  //   // setBlockNumberSelected(index);
-  // };
+    if (route.params?.actionContent || route.params?.reactionContent) {
+      console.log("route.params?.actionContent", route.params?.actionContent);
+      onClickOnAreasCards(route.params?.actionContent, route.params?.reactionContent);
+    }
+  }, [route.params?.serviceValue, route.params?.actionContent, route.params?.reactionContent]);
 
   const onClickOnAreasCards = (
     actionContent?: string,
@@ -79,14 +67,11 @@ export default function NewAreaScreen({ navigation, route }: { navigation: any, 
     setServiceSelected(null);
   };
 
-  const onClickOpenModal = (
+  const onClickOpenServiceNavigator = (
     index: number,
     typeOfAction: "action" | "reaction"
   ) => {
-    setTypeSelected(typeOfAction);
-    navigation.navigate("Services", {item: { services, typeOfAction, onClickOnAreasCards }})
-    // setOpenServicesModal(true);
-    // setBlockNumberSelected(index);
+    navigation.navigate("Services", {item: { services, typeOfAction }})
   };
 
   const canAddThen = () => {
@@ -146,14 +131,6 @@ export default function NewAreaScreen({ navigation, route }: { navigation: any, 
     navigation.navigate("FinishArea", { navigation: navigation, item: { blocksState, setBlockState, setthensInstance } });
   };
 
-  // const onClickService = () => {
-  //   // console.log("onClickService");
-  //   // console.log("serviceSelected", serviceSelected);
-  //   // const item: { setOpenServicesModal: any, onClickOnAreasCards: any, typeSelected: "action" | "reaction", serviceSelected: Service | null } = { setOpenServicesModal, onClickOnAreasCards, typeSelected, serviceSelected };
-  //   // navigation.navigate("ActionsList", { navigation: navigation, item: item })
-  //   navigation.navigate("ActionsList");
-  // };
-
   return (
     <SafeAreaView style={styles.screenContainer}>
       <>
@@ -179,7 +156,7 @@ export default function NewAreaScreen({ navigation, route }: { navigation: any, 
                 <MyText style={styles.cardTitle}>IF</MyText>
                 <TouchableOpacity
                   style={styles.cardButton}
-                  onPress={() => onClickOpenModal(0, "action")}
+                  onPress={() => onClickOpenServiceNavigator(0, "action")}
                 >
                   <MaterialCommunityIcons
                     name="plus"
@@ -227,7 +204,7 @@ export default function NewAreaScreen({ navigation, route }: { navigation: any, 
                     <MyText style={styles.cardTitle}>Then</MyText>
                     <TouchableOpacity
                       style={styles.cardButton}
-                      onPress={() => onClickOpenModal(index + 1, "reaction")}
+                      onPress={() => onClickOpenServiceNavigator(index + 1, "reaction")}
                     >
                       <MaterialCommunityIcons
                         name="plus"

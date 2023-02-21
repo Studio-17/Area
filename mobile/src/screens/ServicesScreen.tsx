@@ -1,23 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   StyleSheet,
   View,
   SafeAreaView,
-  TouchableOpacity,
   StatusBar,
   Pressable,
-  ScrollView,
-  Alert,
 } from "react-native";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
 import { Service } from "../redux/models/serviceModels";
-import { LogBox } from 'react-native';
 
 import ServiceCard from "../components/Cards/ServiceCard";
-
-LogBox.ignoreLogs([
-  'Non-serializable values were found in the navigation state',
-]);
 
 interface Props {
   navigation: any;
@@ -28,8 +20,6 @@ export default function ServicesScreen({ navigation, route }: Props) {
   const { item } = route.params;
   const services: Service[] | null = item.services;
   const typeOfAction: "action" | "reaction" = item.typeOfAction;
-  const onClickOnAreasCards: () => void = item.onClickOnAreasCards;
-
 
   const handleClose = () => {
     navigation.navigate("NewArea");
@@ -47,7 +37,7 @@ export default function ServicesScreen({ navigation, route }: Props) {
           <ServiceCard
             service={service}
             onClickService={() => {
-              navigation.navigate("ActionsList", { item: { service, typeOfAction, onClickOnAreasCards } })
+              navigation.navigate("ActionsList", { item: { service, typeOfAction } })
             }}
             key={index}
           />

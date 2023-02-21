@@ -23,7 +23,6 @@ export default function ActionsListScreen(
   const { item } = route.params;
   const service: Service = item.service;
   const typeOfAction: "action" | "reaction" = item.typeOfAction;
-  const onClickOnAreasCards: any = item.onClickOnAreasCards;
 
   const {
     data: actions,
@@ -33,9 +32,7 @@ export default function ActionsListScreen(
   } = useActionsQuery(service.name);
 
   const handleCloseModal = () => {
-    // item.setOpenServicesModal(true);
     navigation.navigate("NewArea");
-    // onCloseActionsModal();
   };
 
   return (
@@ -50,14 +47,21 @@ export default function ActionsListScreen(
           ?.filter((action: Action) => action.type === typeOfAction)
           .map((action: Action, index: number) => (
             <ActionCard
-              onClose={() => navigation.navigate({name: "NewArea", params: { serviceValue: service }, merge: true})}
+              onClose={(actionContents?: string, reactionContents?: string) => {
+                console.log("actionContents", actionContents);
+                console.log("reactionContents", reactionContents);
+                navigation.navigate({
+                  name: "NewArea",
+                  params: { serviceValue: service, actionContent: actionContents, reactionContent: reactionContents },
+                  merge: true
+                });
+              }}
               actionContent={
                 typeOfAction === "action" ? action.name : undefined
               }
               reactionContent={
                 typeOfAction === "reaction" ? action.name : undefined
               }
-              onClick={onClickOnAreasCards}
               key={index}
             />
           ))}

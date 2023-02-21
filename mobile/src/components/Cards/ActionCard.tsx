@@ -1,5 +1,8 @@
 import React from "react";
-import { Pressable, StyleSheet } from "react-native";
+import {
+  Pressable,
+  StyleSheet
+} from "react-native";
 
 // Components
 import MyText from "../MyText";
@@ -8,29 +11,26 @@ interface Props {
   actionContent?: string;
   reactionContent?: string;
   uuidOfAction?: string;
-  onClick: (
-    actionContent?: string,
-    reactionContent?: string,
-  ) => any | undefined;
-  onClose: () => void;
-  // onCloseServicesModal: () => void;
+  // onClick: (
+  //   actionContent?: string,
+  //   reactionContent?: string,
+  // ) => any | undefined;
+  onClose: (actionContent?: string, reactionContent?: string) => any;
   logo?: any;
 }
 
 export default function ActionCard({
   onClose,
-  // onCloseServicesModal,
   actionContent,
   reactionContent,
-  onClick,
+  // onClick,
 }: Props) {
   const onClickOnCards = () => {
-    onClose();
-    // onCloseServicesModal();
-    onClick(
-      actionContent && actionContent,
-      reactionContent && reactionContent,
-    );
+    onClose(actionContent && actionContent, reactionContent && reactionContent);
+    // onClick(
+    //   actionContent && actionContent,
+    //   reactionContent && reactionContent,
+    // );
   };
 
   return (
