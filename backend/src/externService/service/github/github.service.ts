@@ -141,17 +141,21 @@ export class GithubService {
 
     for (const relatedAction of relatedActions) {
       const linkedReaction = await this.myActionService.findByLinkedFromId(relatedAction.uuid);
-
       for (const linked of linkedReaction) {
         const reaction = await this.actionService.findOne(linked.actionId);
+        const newAccessToken = await this.credentialsService.findById(userId, reaction.service);
+        if (!newAccessToken) {
+          return;
+        }
         await firstValueFrom(
           this.httpService
             .post<any>('http://localhost:3000/api/reaccoon/actions/' + reaction.link, {
-              accessToken: accessToken,
+              accessToken: newAccessToken.accessToken,
               params: linked.params,
             })
             .pipe(
               catchError((error: AxiosError) => {
+                // console.log(error);
                 throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
               }),
             ),
