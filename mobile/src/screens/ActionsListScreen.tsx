@@ -3,11 +3,8 @@ import {
   StyleSheet,
   View,
   SafeAreaView,
-  TouchableOpacity,
   StatusBar,
   Pressable,
-  ScrollView,
-  Alert,
 } from "react-native";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
 import { Action } from "../redux/models/actionModels";
@@ -47,12 +44,10 @@ export default function ActionsListScreen(
           ?.filter((action: Action) => action.type === typeOfAction)
           .map((action: Action, index: number) => (
             <ActionCard
-              onClose={(actionContents?: string, reactionContents?: string) => {
-                console.log("actionContents", actionContents);
-                console.log("reactionContents", reactionContents);
+              onClick={(actionContent?: string, reactionContent?: string, uuidAction?: string) => {
                 navigation.navigate({
                   name: "NewArea",
-                  params: { serviceValue: service, actionContent: actionContents, reactionContent: reactionContents },
+                  params: { serviceValue: service, actionContent: actionContent, reactionContent: reactionContent, uuidOfAction: uuidAction},
                   merge: true
                 });
               }}
@@ -62,6 +57,7 @@ export default function ActionsListScreen(
               reactionContent={
                 typeOfAction === "reaction" ? action.name : undefined
               }
+              uuidOfAction={action.uuid}
               key={index}
             />
           ))}

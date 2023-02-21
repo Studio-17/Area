@@ -28,25 +28,24 @@ export default function NewAreaScreen(
     navigation: any,
     route: any
   }) {
+  const { data: services, isError, isLoading } = useServicesQuery();
+
   const [serviceSelected, setServiceSelected] = useState<Service | null>(null);
   const [blocksState, setBlockState] = useState<any>([]);
   const [thensInstance, setthensInstance] = useState<any>([]);
 
-  const { data: services, isError, isLoading } = useServicesQuery();
-
   useEffect(() => {
-    if (route.params?.serviceValue) {
+    if (route.params?.serviceValue || route.params?.actionContent || route.params?.reactionContent) {
       setServiceSelected(route.params?.serviceValue);
+      onClickOnAreasCards(serviceSelected, route.params?.actionContent, route.params?.reactionContent, route.params?.uuidOfAction);
     }
-    if (route.params?.actionContent || route.params?.reactionContent) {
-      console.log("route.params?.actionContent", route.params?.actionContent);
-      onClickOnAreasCards(route.params?.actionContent, route.params?.reactionContent);
-    }
-  }, [route.params?.serviceValue, route.params?.actionContent, route.params?.reactionContent]);
+  }, [route.params?.serviceValue, route.params?.actionContent, route.params?.reactionContent, route.params?.uuidOfAction]);
 
   const onClickOnAreasCards = (
-    actionContent?: string,
-    reactionContent?: string,
+    serviceSelected: Service | null,
+    actionContent: string,
+    reactionContent: string,
+    uuidOfAction: string
   ) => {
     actionContent &&
       setBlockState((state: any) => [
@@ -54,6 +53,7 @@ export default function NewAreaScreen(
         {
           name: actionContent,
           service: serviceSelected?.name,
+          uuid: uuidOfAction,
         },
       ]);
     reactionContent &&
@@ -62,6 +62,7 @@ export default function NewAreaScreen(
         {
           name: reactionContent,
           service: serviceSelected?.name,
+          uuid: uuidOfAction,
         },
       ]);
     setServiceSelected(null);
@@ -128,7 +129,7 @@ export default function NewAreaScreen(
   };
 
   const onClickContinue = () => {
-    navigation.navigate("FinishArea", { navigation: navigation, item: { blocksState, setBlockState, setthensInstance } });
+    navigation.navigate("FinishArea", { item: { blocksState, setBlockState, setthensInstance } });
   };
 
   return (

@@ -11,26 +11,26 @@ interface Props {
   actionContent?: string;
   reactionContent?: string;
   uuidOfAction?: string;
-  // onClick: (
-  //   actionContent?: string,
-  //   reactionContent?: string,
-  // ) => any | undefined;
-  onClose: (actionContent?: string, reactionContent?: string) => any;
+  onClick: (
+    actionContent?: string,
+    reactionContent?: string,
+    uuidAction?: string,
+  ) => any | undefined;
   logo?: any;
 }
 
 export default function ActionCard({
-  onClose,
+  onClick,
   actionContent,
   reactionContent,
-  // onClick,
+  uuidOfAction,
 }: Props) {
   const onClickOnCards = () => {
-    onClose(actionContent && actionContent, reactionContent && reactionContent);
-    // onClick(
-    //   actionContent && actionContent,
-    //   reactionContent && reactionContent,
-    // );
+    onClick(
+      actionContent && actionContent,
+      reactionContent && reactionContent,
+      uuidOfAction && uuidOfAction
+    );
   };
 
   return (
