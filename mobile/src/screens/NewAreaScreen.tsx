@@ -175,7 +175,6 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
 
   const onClickContinue = () => {
     navigation.navigate("FinishArea", {
-      navigation: navigation,
       item: { blocksState, setBlockState, setthensInstance },
     });
   };
