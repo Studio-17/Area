@@ -45,10 +45,14 @@ export class GoogleService {
       const linkedReaction = await this.myActionService.findByLinkedFromId(relatedAction.uuid);
       for (const linked of linkedReaction) {
         const reaction = await this.actionService.findOne(linked.actionId);
+        const newAccessToken = await this.credentialsService.findById(userId, reaction.service);
+        if (!newAccessToken) {
+          return;
+        }
         await firstValueFrom(
           this.httpService
             .post<any>('http://localhost:3000/api/reaccoon/actions/' + reaction.link, {
-              accessToken: accessToken,
+              accessToken: newAccessToken.accessToken,
               params: linked.params,
             })
             .pipe(
@@ -148,7 +152,6 @@ export class GoogleService {
   }
 
   public async updateLastEmailReceived(accessToken: string, userId: string) {
-
     const config = {
       method: 'get',
       url: `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=1`,

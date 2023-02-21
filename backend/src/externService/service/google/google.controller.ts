@@ -40,11 +40,15 @@ export class GoogleController {
     @Res() response,
     @Body() body?: { accessToken: string; params?: { name: string; content: string }[] },
   ) {
+    let filename: string;
+    if (!body.params || body.params.length === 0) {
+      filename = 'Untitled';
+    } else {
+      filename = body.params[0].content;
+    }
+
     try {
-      const fileId = await this.googleService.createGoogleDocOnDrive(
-        body.accessToken,
-        body.params[0].content,
-      );
+      const fileId = await this.googleService.createGoogleDocOnDrive(body.accessToken, filename);
 
       return response.status(HttpStatus.OK).json({
         message: 'Successfully created document on personal drive',
