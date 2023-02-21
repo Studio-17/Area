@@ -32,8 +32,8 @@ export class ActionEntity {
   @Column()
   link!: string;
 
-  @Column('text', { array: true, nullable: true })
-  params: [{ name: string; type: string; description: string }];
+  @Column({ type: 'json', nullable: true })
+  params: { name: string; type: string; description: string }[];
 
   @CreateDateColumn({
     type: 'timestamp',
