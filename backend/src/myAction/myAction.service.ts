@@ -91,9 +91,17 @@ export class MyActionService {
   }
 
   availableActions = new Map([
-    ['google/check-mail/', this.googleService.addCron.bind(this.googleService)],
+    // DISCORD
+    // GITHUB
     ['github/check-pull-request/', this.githubService.addPullRequestCron.bind(this.githubService)],
     ['github/check-issue/', this.githubService.addIssueCron.bind(this.githubService)],
+    // ['github/get-repository/', this.githubService.addRepositoryCron.bind(this.githubService)],
+    // GOOGLE
+    ['google/check-mail/', this.googleService.addCron.bind(this.googleService)],
+    // MIRO
+    // NOTION
+    // SPOTIFY
+    // TWITCH
   ]);
 
   async addCron(

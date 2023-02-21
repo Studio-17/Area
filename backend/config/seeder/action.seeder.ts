@@ -21,6 +21,11 @@ export class ActionSeederService {
         service: ServiceList.GITHUB,
         type: ActionType.ACTION,
         name: 'Check Github Pull Request',
+        params: [
+          { name: 'email', type: 'string', description: 'Email of the owner.' },
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
         description:
           'This action allow you to catch events when a new pull request is opened on a repository.',
         link: 'github/check-pull-request/',
@@ -30,6 +35,11 @@ export class ActionSeederService {
         service: ServiceList.GITHUB,
         type: ActionType.ACTION,
         name: 'Check Github Issue',
+        params: [
+          { name: 'email', type: 'string', description: 'Email of the owner.' },
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
         description:
           'This action allow you to catch events when a new issue is posted on a repository.',
         link: 'github/check-issue/',
@@ -41,13 +51,20 @@ export class ActionSeederService {
         type: ActionType.ACTION,
         name: 'Check Google Mail',
         description: 'This action allow you to catch events when you receive a new mail.',
-        link: 'github/check-mail/',
+        link: 'google/check-mail/',
       },
       {
         uuid: 'df56e414-32b5-40fa-852c-60eaacfb7ebc',
         service: ServiceList.GOOGLE,
         type: ActionType.REACTION,
         name: 'Create file on Google Drive',
+        params: [
+          {
+            name: 'filename',
+            type: 'string',
+            description: 'Name of the file you want to create on Drive.',
+          },
+        ],
         description: 'This reaction allow you to create a file on Google Drive.',
         link: 'google/publish-doc/',
       },
