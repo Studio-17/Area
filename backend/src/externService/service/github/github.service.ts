@@ -322,11 +322,7 @@ export class GithubService {
       githubIssueDto.repositoryName,
     );
 
-    console.log('record : ', record);
-    console.log('githubIssueDto : ', githubIssueDto);
-
     if (!record) {
-      console.log('first issue detected');
       try {
         return {
           new: true,
@@ -336,7 +332,6 @@ export class GithubService {
         throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       }
     } else if (record.issueId.toString() !== githubIssueDto.issueId.toString()) {
-      console.log('new issue detected');
       try {
         const newRecord = await this.githubIssueRepository.update(
           {
@@ -357,7 +352,6 @@ export class GithubService {
         throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       }
     } else {
-      console.log('old issue detected');
       return { new: false, data: record };
     }
   }
@@ -412,14 +406,12 @@ export class GithubService {
     try {
       const issueId = await axios(config)
         .then(function (apiResponse): string {
-          console.log('then');
           if (apiResponse.data.length === 0) {
             return;
           }
           return apiResponse.data[0].id;
         })
         .catch(function (error) {
-          console.log('catch');
           throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
         });
 
