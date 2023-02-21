@@ -12,9 +12,6 @@ export class GithubPullRequestEntity {
   uuid: string;
 
   @Column()
-  email: string;
-
-  @Column()
   repositoryOwner: string;
 
   @Column()

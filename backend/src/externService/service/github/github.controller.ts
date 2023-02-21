@@ -40,7 +40,6 @@ export class GithubController {
     try {
       const pullRequestResult = await this.githubService.updateLastPullRequest(
         body.accessToken,
-        body.email,
         body.repositoryName,
         body.repositoryOwner,
       );
@@ -72,7 +71,6 @@ export class GithubController {
         body.accessToken,
         body.params[0].content,
         body.params[1].content,
-        body.params[2].content,
       );
 
       return response.status(HttpStatus.OK).json({

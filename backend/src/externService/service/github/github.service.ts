@@ -197,7 +197,6 @@ export class GithubService {
         credential.accessToken,
         params[0].content,
         params[1].content,
-        params[2].content,
       );
       if (pullRequest.new) {
         await this.handleCronReaction(userId, 'github/check-pull-request/', credential.accessToken);
@@ -225,7 +224,6 @@ export class GithubService {
         credential.accessToken,
         params[0].content,
         params[1].content,
-        params[2].content,
       );
       if (issue.new) {
         await this.handleCronReaction(userId, 'github/check-issue/', credential.accessToken);
@@ -236,13 +234,11 @@ export class GithubService {
   }
 
   public async findPullRequest(
-    email: string,
     repositoryOwner: string,
     repositoryName: string,
   ): Promise<GithubPullRequestEntity> {
     try {
       const records = await this.githubPullRequestRepository.findOneBy({
-        email: email,
         repositoryOwner: repositoryOwner,
         repositoryName: repositoryName,
       });
@@ -258,13 +254,11 @@ export class GithubService {
   }
 
   public async findIssue(
-    email: string,
     repositoryOwner: string,
     repositoryName: string,
   ): Promise<GithubIssueEntity> {
     try {
       const records = await this.githubIssueRepository.findOneBy({
-        email: email,
         repositoryOwner: repositoryOwner,
         repositoryName: repositoryName,
       });
@@ -281,7 +275,6 @@ export class GithubService {
 
   public async findOrUpdateLastPullRequest(githubPullRequestDto: GithubPullRequestDto) {
     const record = await this.findPullRequest(
-      githubPullRequestDto.email,
       githubPullRequestDto.repositoryName,
       githubPullRequestDto.repositoryOwner,
     );
@@ -311,7 +304,6 @@ export class GithubService {
         return {
           new: true,
           data: await this.findPullRequest(
-            githubPullRequestDto.email,
             githubPullRequestDto.repositoryName,
             githubPullRequestDto.repositoryOwner,
           ),
@@ -326,7 +318,6 @@ export class GithubService {
 
   public async findOrUpdateLastIssue(githubIssueDto: GithubIssueDto) {
     const record = await this.findIssue(
-      githubIssueDto.email,
       githubIssueDto.repositoryOwner,
       githubIssueDto.repositoryName,
     );
@@ -356,7 +347,6 @@ export class GithubService {
         return {
           new: true,
           data: await this.findIssue(
-            githubIssueDto.email,
             githubIssueDto.repositoryOwner,
             githubIssueDto.repositoryName,
           ),
@@ -371,7 +361,6 @@ export class GithubService {
 
   public async updateLastPullRequest(
     accessToken: string,
-    email: string,
     owner: string,
     repo: string,
   ) {
@@ -399,7 +388,6 @@ export class GithubService {
 
       if (pullRequestId) {
         const record = new GithubPullRequestEntity();
-        record.email = email;
         record.repositoryName = repo;
         record.repositoryOwner = owner;
         record.pullRequestId = pullRequestId;
@@ -411,7 +399,7 @@ export class GithubService {
     }
   }
 
-  public async updateLastIssue(accessToken: string, email: string, owner: string, repo: string) {
+  public async updateLastIssue(accessToken: string, owner: string, repo: string) {
     const config = {
       method: 'get',
       url: `https://api.github.com/repos/${owner}/${repo}/issues`,
@@ -436,7 +424,6 @@ export class GithubService {
 
       if (issueId) {
         const record = new GithubIssueEntity();
-        record.email = email;
         record.repositoryName = repo;
         record.repositoryOwner = owner;
         record.issueId = issueId;
