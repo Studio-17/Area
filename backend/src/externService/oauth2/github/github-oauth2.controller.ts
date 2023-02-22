@@ -16,6 +16,7 @@ import { catchError, firstValueFrom, map } from 'rxjs';
 import axios, { AxiosError } from 'axios';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
+import { ServiceList } from '../../../service/entity/service.entity';
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -42,7 +43,6 @@ export class GithubOAuth2Controller {
         status: 401,
       });
     }
-    console.log(`esttttt`)
 
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
@@ -103,9 +103,9 @@ export class GithubOAuth2Controller {
 
       const userCredentials = {
         userId: id,
-        service: 'github',
+        service: ServiceList.GITHUB,
         accessToken: accessToken,
-        refreshToken: 'null',
+        refreshToken: null,
       };
 
       await this.credentialsService.createCredentialsUser(userCredentials);

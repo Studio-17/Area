@@ -17,7 +17,7 @@ const NewAreaForm = ({ blocksState }: Props) => {
     const reactions: any = [];
     blocksState
       .filter((value: any, index: number) => index !== 0)
-      .map((block: any) => reactions.push(block.uuid));
+      .map((block: any) => reactions.push({ id: block.uuid, params: block.params }));
     const target = e.target as typeof e.target & {
       name: { value: string };
       hour: { value: number };
@@ -25,19 +25,19 @@ const NewAreaForm = ({ blocksState }: Props) => {
       second: { value: number };
     };
     const areaToSend = {
-      action: blocksState[0].uuid,
+      action: { id: blocksState[0].uuid, params: blocksState[0].params },
       reactions: reactions,
       name: target?.name.value,
-      hour: target?.hour.value.toString() && target?.hour.value.toString(),
-      minute: target?.minute.value.toString() && target?.minute.value.toString(),
-      second: target?.second.value.toString() && target?.second.value.toString(),
     };
     addArea(areaToSend);
     navigate("/home");
   };
   return (
     <>
-      <div className="form-container">
+      <div
+        className="form-container"
+        style={{ backgroundColor: theme.palette.background }}
+      >
         <div
           className="main-title-container"
           style={{ color: theme.palette.secondary }}

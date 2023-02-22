@@ -17,6 +17,7 @@ import { AxiosError } from 'axios';
 import { CredentialsService } from '../../../credentials/credentials.service';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
+import {ServiceList} from "../../../service/entity/service.entity";
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -86,9 +87,9 @@ export class NotionOAuth2Controller {
     if (accessToken) {
       const userCredentials = {
         userId: id,
-        service: 'notion',
+        service: ServiceList.NOTION,
         accessToken: notionData.data.access_token,
-        refreshToken: 'null',
+        refreshToken: null,
       };
 
       await this.credentialsService.createCredentialsUser(userCredentials);

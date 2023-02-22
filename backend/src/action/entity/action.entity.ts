@@ -20,6 +20,9 @@ export class ActionEntity {
   @Column({ type: 'enum', enum: ServiceList })
   service!: ServiceList;
 
+  @Column({ type: 'enum', enum: ActionType })
+  type!: ActionType;
+
   @Column()
   name!: string;
 
@@ -29,11 +32,8 @@ export class ActionEntity {
   @Column()
   link!: string;
 
-  @Column({ type: 'enum', enum: ActionType })
-  type!: ActionType;
-
-  @Column('text', { array: true, nullable: true })
-  params: [{ name: string; type: string; description: string }];
+  @Column({ type: 'json', nullable: true })
+  params: { name: string; type: string; description: string }[];
 
   @CreateDateColumn({
     type: 'timestamp',

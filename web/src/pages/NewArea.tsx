@@ -11,6 +11,7 @@ import { useAddAreaMutation, useServicesQuery } from "../services/servicesApi";
 import { Service } from "../models/serviceModels";
 import { useNavigate } from "react-router-dom";
 import NewAreaForm from "../components/NewAreaForm/NewAreaForm";
+import { PostParamsDto } from "../models/paramsModel";
 
 const NewArea = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -39,7 +40,8 @@ const NewArea = () => {
   const onClickOnAction: any = (
     actionContent?: string,
     reactionContent?: string,
-    uuidOfAction?: string
+    uuidOfAction?: string,
+    params?: PostParamsDto[]
   ) => {
     actionContent &&
       setBlockState((state: any) => [
@@ -48,6 +50,7 @@ const NewArea = () => {
           name: actionContent,
           service: serviceSelected?.name,
           uuid: uuidOfAction,
+          params: params ? params : null,
         },
       ]);
     reactionContent &&
@@ -57,6 +60,7 @@ const NewArea = () => {
           name: reactionContent,
           service: serviceSelected?.name,
           uuid: uuidOfAction,
+          params: params ? params : null,
         },
       ]);
     setServiceSelected(null);
@@ -67,16 +71,6 @@ const NewArea = () => {
   };
 
   const onClickOnSaveButton = () => {
-    const reactions: any = [];
-    blocksState
-      .filter((value: any, index: number) => index !== 0)
-      .map((block: any) => reactions.push(block.uuid));
-    const areaToSend = {
-      action: blocksState[0].uuid,
-      reactions: reactions,
-    };
-    // addArea(areaToSend);
-    // navigate("/home");
     setIsInAreaForm(true);
   };
 
@@ -132,6 +126,7 @@ const NewArea = () => {
                     <div
                       className="link"
                       style={{ backgroundColor: theme.palette.common.grey }}
+                      key={index}
                     ></div>
                     <div
                       className="then-container"
@@ -197,7 +192,7 @@ const NewArea = () => {
         </>
       ) : (
         <>
-          <NewAreaForm blocksState={blocksState}/>
+          <NewAreaForm blocksState={blocksState} />
         </>
       )}
       <ServicesModal

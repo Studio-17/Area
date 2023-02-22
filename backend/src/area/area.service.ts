@@ -87,7 +87,7 @@ export class AreaService {
   }
 
   async remove(areaId: string, userId: string): Promise<string> {
-    this.myActionService.removeByAreaId(areaId, userId);
+    await this.myActionService.removeByAreaId(areaId, userId);
     const result = await this.areaRepository.delete({ uuid: areaId, userId: userId }).catch((e) => {
       console.error(e);
       throw NotFoundException('area');

@@ -9,6 +9,7 @@ import { ActionModule } from 'src/action/action.module';
 import { MyActionModule } from 'src/myAction/myAction.module';
 import { HttpModule } from '@nestjs/axios';
 import { UserModule } from 'src/user/user.module';
+import { CronModule } from 'src/cron/cron.module';
 
 @Module({
   imports: [
@@ -20,8 +21,10 @@ import { UserModule } from 'src/user/user.module';
     ScheduleModule.forRoot(),
     CredentialsModule,
     ActionModule,
-    forwardRef(() => MyActionModule),
+    // forwardRef(() => MyActionModule),
     UserModule,
+    forwardRef(() => CronModule),
+    CronModule,
   ],
   providers: [GoogleService],
   controllers: [GoogleController],

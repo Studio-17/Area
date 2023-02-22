@@ -14,6 +14,7 @@ import { CredentialsService } from '../../../credentials/credentials.service';
 import { HttpService } from '@nestjs/axios';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
+import {ServiceList} from "../../../service/entity/service.entity";
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -100,7 +101,7 @@ export class DiscordOAuth2Controller {
 
       const userCredentials = {
         userId: id,
-        service: 'discord',
+        service: ServiceList.DISCORD,
         accessToken: accessToken,
         refreshToken: discordData.refresh_token,
       };

@@ -9,6 +9,7 @@ import { AreaService } from '../area/area.service';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { ActionType } from 'src/action/entity/action.entity';
 import { GoogleService } from 'src/externService/service/google/google.service';
+import { GithubService } from '../externService/service/github/github.service';
 
 @Injectable()
 export class MyActionService {
@@ -20,6 +21,8 @@ export class MyActionService {
     private readonly areaService: AreaService,
     @Inject(forwardRef(() => GoogleService))
     private readonly googleService: GoogleService,
+    @Inject(forwardRef(() => GithubService))
+    private readonly githubService: GithubService,
     private schedulerRegistry: SchedulerRegistry,
   ) {}
 
@@ -88,7 +91,17 @@ export class MyActionService {
   }
 
   availableActions = new Map([
+    // DISCORD
+    // GITHUB
+    ['github/check-pull-request/', this.githubService.addPullRequestCron.bind(this.githubService)],
+    ['github/check-issue/', this.githubService.addIssueCron.bind(this.githubService)],
+    // ['github/get-repository/', this.githubService.addRepositoryCron.bind(this.githubService)],
+    // GOOGLE
     ['google/check-mail/', this.googleService.addCron.bind(this.googleService)],
+    // MIRO
+    // NOTION
+    // SPOTIFY
+    // TWITCH
   ]);
 
   async addCron(
@@ -152,14 +165,14 @@ export class MyActionService {
   }
 
   async removeAction(actionId: string, userId: string) {
-    this.removeCron(actionId, userId);
+    await this.removeCron(actionId, userId);
     return await this.myActionRepository.delete({ uuid: actionId, userId: userId });
   }
 
   async removeByAreaId(areaId: string, userId: string) {
     const myActions = await this.findAll(areaId);
     for (const myAction of myActions) {
-      this.removeCron(myAction.uuid, userId);
+      await this.removeCron(myAction.uuid, userId);
     }
     return await this.myActionRepository.delete({ areaId: areaId, userId: userId });
   }
@@ -169,7 +182,7 @@ export class MyActionService {
     for (const action of allActions) {
       const myActions = await this.findByActionId(action.uuid);
       for (const myAction of myActions) {
-        this.addCron(
+        await this.addCron(
           action.uuid,
           { hour: myAction.hour, minute: myAction.minute, second: myAction.second },
           // myAction.token,
