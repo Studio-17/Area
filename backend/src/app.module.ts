@@ -23,6 +23,9 @@ import { SpotifyOAuth2Module } from './externService/oauth2/spotify/spotify-oaut
 import { TwitchOAuth2Module } from './externService/oauth2/twitch/twitch-oauth2.module';
 import { SpotifyModule } from './externService/service/spotify/spotify.module';
 import { ActionSeederService } from '../config/seeder/action.seeder';
+import { DeezerOAuth2Module } from './externService/oauth2/deezer/deezer-oauth2.module';
+import { DropboxOAuth2Module } from './externService/oauth2/dropbox/dropbox-oauth2.module';
+import { TypeformOAuth2Module } from './externService/oauth2/typeform/typeform-oauth2.module';
 import { CronModule } from './cron/cron.module';
 
 @Module({
@@ -57,13 +60,16 @@ import { CronModule } from './cron/cron.module';
     GithubModule,
     GoogleModule,
     SpotifyModule,
+    DeezerOAuth2Module,
     DiscordOAuth2Module,
+    DropboxOAuth2Module,
     GithubOAuth2Module,
     GoogleOAuth2Module,
     MiroOAuth2Module,
     NotionOAuth2Module,
     SpotifyOAuth2Module,
     TwitchOAuth2Module,
+    TypeformOAuth2Module,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -9,7 +9,7 @@ import ActionsCards from "./Cards/ActionsCards";
 import axios from "axios";
 import "../styles/ServicesInfos.css";
 import BigRoundedButtonOutlined from "./Buttons/BigRoundedButtonOutlined";
-import { GetParamsDto } from "../models/paramsModel";
+import { GetParamsDto, PostParamsDto } from "../models/paramsModel";
 import ActionParamsForm from "./ActionParamsForm/ActionParamsForm";
 
 const API_ENDPOINT = process.env.REACT_APP_API_URL;
@@ -31,6 +31,7 @@ const ServicesInfos = ({
   const [currentActionParams, setCurrentActionParams] = useState<
     GetParamsDto[] | null
   >(null);
+  const [currentAction, setCurrentAction] = useState<any | null>(null);
   const {
     data: actions,
     isError,
@@ -44,14 +45,10 @@ const ServicesInfos = ({
   } = useServiceQuery(service.name);
 
   useEffect(() => {
-    console.log(actions);
-    console.log("Service info", serviceInfo);
-    console.log("Is fetching service info", isFetchingServiceInfo);
     serviceInfo && setIsServiceConnected(serviceInfo?.isConnected);
   }, [actions, serviceInfo, isFetchingServiceInfo]);
 
   const handleOauthConnection = async () => {
-    console.log("Handle Oauth");
     const token = localStorage.getItem("userToken");
     axios
       .get(`${API_ENDPOINT}/service/connect/${serviceInfo?.name}`, {
@@ -61,21 +58,38 @@ const ServicesInfos = ({
         var myWindow = window.open(res.data.url, "");
         if (myWindow)
           myWindow.onunload = function () {
-            console.log("Refetch service info");
             refetchServiceInfos();
           };
       });
+  };
+
+  const onSubmitActionParamsForm = (
+    actionContent?: string,
+    reactionContent?: string,
+    uuidOfAction?: string,
+    params?: PostParamsDto[]
+  ) => {
+    setShouldPrintActionParamsForm(false);
+    setCurrentActionParams(null);
+    onClickOnActionCards(
+      actionContent && actionContent,
+      reactionContent && reactionContent,
+      uuidOfAction && uuidOfAction,
+      params && params
+    );
   };
 
   const onClickOnActionCardsCheck = (
     actionContent?: string,
     reactionContent?: string,
     uuidOfAction?: string,
-    params?: GetParamsDto[] | null
+    params?: GetParamsDto[] | null,
+    action?: Action
   ) => {
     if (params) {
       setShouldPrintActionParamsForm(true);
       setCurrentActionParams(params);
+      setCurrentAction(action);
     } else {
       onClickOnActionCards(
         actionContent && actionContent,
@@ -126,6 +140,7 @@ const ServicesInfos = ({
                     uuidOfAction={element.uuid}
                     disabled={!isServiceConnected}
                     params={element.params}
+                    action={element}
                   />
                 ))}
             </div>
@@ -135,7 +150,11 @@ const ServicesInfos = ({
           </div>
         </>
       ) : (
-        <ActionParamsForm params={currentActionParams} />
+        <ActionParamsForm
+          params={currentActionParams}
+          action={currentAction}
+          onSubmitForm={onSubmitActionParamsForm}
+        />
       )}
     </>
   );

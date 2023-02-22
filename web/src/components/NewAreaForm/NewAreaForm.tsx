@@ -17,7 +17,7 @@ const NewAreaForm = ({ blocksState }: Props) => {
     const reactions: any = [];
     blocksState
       .filter((value: any, index: number) => index !== 0)
-      .map((block: any) => reactions.push({ id: block.uuid, params: null }));
+      .map((block: any) => reactions.push({ id: block.uuid, params: block.params }));
     const target = e.target as typeof e.target & {
       name: { value: string };
       hour: { value: number };
@@ -25,7 +25,7 @@ const NewAreaForm = ({ blocksState }: Props) => {
       second: { value: number };
     };
     const areaToSend = {
-      action: { id: blocksState[0].uuid, params: null },
+      action: { id: blocksState[0].uuid, params: blocksState[0].params },
       reactions: reactions,
       name: target?.name.value,
     };
