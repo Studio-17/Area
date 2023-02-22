@@ -9,7 +9,7 @@ import ActionsCards from "./Cards/ActionsCards";
 import axios from "axios";
 import "../styles/ServicesInfos.css";
 import BigRoundedButtonOutlined from "./Buttons/BigRoundedButtonOutlined";
-import { GetParamsDto } from "../models/paramsModel";
+import { GetParamsDto, PostParamsDto } from "../models/paramsModel";
 import ActionParamsForm from "./ActionParamsForm/ActionParamsForm";
 
 const API_ENDPOINT = process.env.REACT_APP_API_URL;
@@ -64,17 +64,18 @@ const ServicesInfos = ({
   };
 
   const onSubmitActionParamsForm = (
-    e: any,
     actionContent?: string,
     reactionContent?: string,
-    uuidOfAction?: string
+    uuidOfAction?: string,
+    params?: PostParamsDto[]
   ) => {
     setShouldPrintActionParamsForm(false);
     setCurrentActionParams(null);
     onClickOnActionCards(
       actionContent && actionContent,
       reactionContent && reactionContent,
-      uuidOfAction && uuidOfAction
+      uuidOfAction && uuidOfAction,
+      params && params
     );
   };
 
