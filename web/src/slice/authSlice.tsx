@@ -76,15 +76,12 @@ export const loginUserGoogle = createAsyncThunk(
   "auth/loginGoogle",
   async ({ token }: LogInGoogleRequest, { rejectWithValue }) => {
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      const { data } = await axios.post(
+      const { data } = await axios.get(
         `${API_ENDPOINT}/authentication/login/google`,
-        { token: token },
-        config
+        {
+          params: { token: token },
+          headers: { "Content-Type": "application/json" },
+        }
       );
       console.log("loginUserGoogle: thunk: ", data);
       localStorage.setItem("userToken", data.accessToken);
