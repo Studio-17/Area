@@ -12,6 +12,7 @@ import { CredentialsMiddleware } from './middleware/credentials.middleware';
 import { JwtService } from '@nestjs/jwt';
 import { GithubPullRequestEntity } from './entity/github-pull-request.entity';
 import { GithubIssueEntity } from './entity/github-issue.entity';
+import { CronModule } from 'src/cron/cron.module';
 
 @Module({
   imports: [
@@ -22,9 +23,8 @@ import { GithubIssueEntity } from './entity/github-issue.entity';
     TypeOrmModule.forFeature([GithubPullRequestEntity, GithubIssueEntity]),
     ScheduleModule.forRoot(),
     CredentialsModule,
-    ActionModule,
-    forwardRef(() => MyActionModule),
     UserModule,
+    CronModule,
   ],
   providers: [GithubService, JwtService],
   controllers: [GithubController],
