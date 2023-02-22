@@ -22,7 +22,8 @@ import { NotionOAuth2Module } from './externService/oauth2/notion/notion-oauth2.
 import { SpotifyOAuth2Module } from './externService/oauth2/spotify/spotify-oauth2.module';
 import { TwitchOAuth2Module } from './externService/oauth2/twitch/twitch-oauth2.module';
 import { JwtModule } from '@nestjs/jwt';
-import { TemplateSeederService} from '../config/seeder/template.seeder';
+import { TemplateSeederService } from '../config/seeder/template.seeder';
+import { SpotifyModule } from './externService/service/spotify/spotify.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { TemplateSeederService} from '../config/seeder/template.seeder';
     MyActionModule,
     GithubModule,
     GoogleModule,
+    SpotifyModule,
     DiscordOAuth2Module,
     GithubOAuth2Module,
     GoogleOAuth2Module,
