@@ -11,6 +11,7 @@ import { useAddAreaMutation, useServicesQuery } from "../services/servicesApi";
 import { Service } from "../models/serviceModels";
 import { useNavigate } from "react-router-dom";
 import NewAreaForm from "../components/NewAreaForm/NewAreaForm";
+import { PostParamsDto } from "../models/paramsModel";
 
 const NewArea = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -39,7 +40,8 @@ const NewArea = () => {
   const onClickOnAction: any = (
     actionContent?: string,
     reactionContent?: string,
-    uuidOfAction?: string
+    uuidOfAction?: string,
+    params?: PostParamsDto[]
   ) => {
     actionContent &&
       setBlockState((state: any) => [
@@ -48,6 +50,7 @@ const NewArea = () => {
           name: actionContent,
           service: serviceSelected?.name,
           uuid: uuidOfAction,
+          params: params ? params : null
         },
       ]);
     reactionContent &&
@@ -57,6 +60,7 @@ const NewArea = () => {
           name: reactionContent,
           service: serviceSelected?.name,
           uuid: uuidOfAction,
+          params: params ? params : null
         },
       ]);
     setServiceSelected(null);

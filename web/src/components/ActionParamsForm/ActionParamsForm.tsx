@@ -1,24 +1,26 @@
 import { Box, Button, TextField } from "@mui/material";
-import { useEffect } from "react";
 import { theme } from "../../constants/theme";
+import { Action } from "../../models/actionModels";
 import { GetParamsDto } from "../../models/paramsModel";
 
 import "../../styles/RegisterForm.css";
 
 interface Props {
   params: GetParamsDto[] | null;
+  onSubmitForm: any;
+  action: Action;
 }
 
-const ActionParamsForm = ({ params }: Props) => {
+const ActionParamsForm = ({ params, onSubmitForm, action }: Props) => {
   const onSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    console.log(e.target);
+    onSubmitForm(
+      e,
+      action.type === "action" && action.name,
+      action.type === "reaction" && action.name,
+      action.uuid
+    );
   };
-
-  useEffect(() => {
-    params && console.log(params[0]);
-    params && console.log(params[0]["name"]);
-  }, [params]);
   return (
     <>
       <div
