@@ -23,6 +23,7 @@ import { SpotifyOAuth2Module } from './externService/oauth2/spotify/spotify-oaut
 import { TwitchOAuth2Module } from './externService/oauth2/twitch/twitch-oauth2.module';
 import { SpotifyModule } from './externService/service/spotify/spotify.module';
 import { ActionSeederService } from '../config/seeder/action.seeder';
+import { CronModule } from './cron/cron.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { ActionSeederService } from '../config/seeder/action.seeder';
       }),
       inject: [ConfigService],
     }),
+    CronModule,
     AuthenticationModule,
     UserModule,
     CredentialsModule,
