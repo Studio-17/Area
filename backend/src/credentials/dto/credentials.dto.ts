@@ -1,19 +1,21 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID} from 'class-validator';
+import { ServiceList } from '../../service/entity/service.entity';
 
 export class CredentialsDto {
   @IsString()
   @IsNotEmpty()
+  @IsUUID()
   userId!: string;
 
-  @IsString()
   @IsNotEmpty()
-  service!: string;
+  @IsEnum(ServiceList)
+  service!: ServiceList;
 
   @IsString()
   @IsNotEmpty()
   accessToken!: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   refreshToken!: string;
 }

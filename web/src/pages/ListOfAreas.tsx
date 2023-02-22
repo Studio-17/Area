@@ -15,12 +15,8 @@ const ListOfAreas = () => {
     useState<boolean>(false);
   const [currentAreaIdToDelete, setCurrentAreaIdToDelete] =
     useState<string>("");
-  const { data: areas, isLoading, isFetching, refetch } = useAreasQuery();
+  const { data: areas, isLoading, isFetching } = useAreasQuery();
   const [deleteArea] = useDeleteAreaMutation();
-
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
 
   const onClickOnAreaCards: any = (areaUuid: string | undefined) => {
     navigate(`/area/${areaUuid}`);

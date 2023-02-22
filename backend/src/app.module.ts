@@ -24,6 +24,7 @@ import { TwitchOAuth2Module } from './externService/oauth2/twitch/twitch-oauth2.
 import { JwtModule } from '@nestjs/jwt';
 import { TemplateSeederService } from '../config/seeder/template.seeder';
 import { SpotifyModule } from './externService/service/spotify/spotify.module';
+import { ActionSeederService} from '../config/seeder/action.seeder';
 
 @Module({
   imports: [
@@ -70,7 +71,7 @@ import { SpotifyModule } from './externService/service/spotify/spotify.module';
 export class AppModule implements NestModule {
   constructor(
     private readonly serviceSeederService: ServiceSeederService,
-    private readonly actionSeederService: TemplateSeederService,
+    private readonly actionSeederService: ActionSeederService,
   ) {}
 
   configure(consumer: MiddlewareConsumer) {

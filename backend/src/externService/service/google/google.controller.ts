@@ -1,16 +1,5 @@
-import {
-  Controller,
-  Get,
-  HttpStatus,
-  Req,
-  Res,
-  Body,
-  Post,
-  UseGuards,
-  Param,
-} from '@nestjs/common';
+import { Controller, Get, HttpStatus, Req, Res, Body, Post } from '@nestjs/common';
 import { GoogleService } from './google.service';
-import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authentication.guard';
 
 // @UseGuards(JwtAuthenticationGuard)
 @Controller('actions/google')
@@ -49,13 +38,17 @@ export class GoogleController {
   public async createGoogleDoc(
     @Req() request,
     @Res() response,
-    @Body() body: { accessToken: string; params?: { name: string; content: string }[] },
+    @Body() body?: { accessToken: string; params?: { name: string; content: string }[] },
   ) {
+    let filename: string;
+    if (!body.params || body.params.length === 0) {
+      filename = 'Untitled';
+    } else {
+      filename = body.params[0].content;
+    }
+
     try {
-      const fileId = await this.googleService.createGoogleDocOnDrive(
-        body.accessToken,
-        body.params[0].content,
-      );
+      const fileId = await this.googleService.createGoogleDocOnDrive(body.accessToken, filename);
 
       return response.status(HttpStatus.OK).json({
         message: 'Successfully created document on personal drive',

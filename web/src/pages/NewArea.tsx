@@ -10,6 +10,7 @@ import BigRoundedButton from "../components/Buttons/BigRoundedButton";
 import { useAddAreaMutation, useServicesQuery } from "../services/servicesApi";
 import { Service } from "../models/serviceModels";
 import { useNavigate } from "react-router-dom";
+import NewAreaForm from "../components/NewAreaForm/NewAreaForm";
 
 const NewArea = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -20,10 +21,11 @@ const NewArea = () => {
   const [typeSelected, setTypeSelected] = useState<"action" | "reaction">(
     "action"
   );
+
+  const [isInAreaForm, setIsInAreaForm] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const { data: services, isError, isLoading } = useServicesQuery();
-  const [addArea] = useAddAreaMutation();
 
   const onClickOpenModal = (
     index: number,
@@ -73,82 +75,43 @@ const NewArea = () => {
       action: blocksState[0].uuid,
       reactions: reactions,
     };
-    addArea(areaToSend);
-    navigate("/home");
+    // addArea(areaToSend);
+    // navigate("/home");
+    setIsInAreaForm(true);
   };
 
   if (isLoading) return <CircularProgress />;
 
   return (
     <>
-      {!serviceSelected ? (
-        <div
-          className="new-area-main-container"
-          style={{ backgroundColor: theme.palette.background }}
-        >
-          <div className="main-text">New coonie u said ?</div>
-          <div className="if-then-container">
+      {!isInAreaForm ? (
+        <>
+          {!serviceSelected ? (
             <div
-              className="if-container"
-              style={{ backgroundColor: theme.palette.secondary }}
+              className="new-area-main-container"
+              style={{ backgroundColor: theme.palette.background }}
             >
-              {blocksState[0] ? (
-                <>
-                  <div className="if-text">
-                    <span style={{ margin: "0px 2vw" }}>IF</span>
-                  </div>
-                  <div className="infos-container">
-                    <div className="action-service">
-                      {blocksState[0].service}
-                    </div>
-                    <div className="action-name">{blocksState[0].name}</div>
-                  </div>
-                </>
-              ) : (
-                <div className="if-text">
-                  <span style={{ margin: "0px 2vw" }}>IF</span>
-                </div>
-              )}
-              <Fab
-                style={{
-                  position: "absolute",
-                  right: 26,
-                  width: 50,
-                  height: 50,
-                }}
-                color="warning"
-                onClick={() => onClickOpenModal(0, "action")}
-              >
-                <AddIcon />
-              </Fab>
-            </div>
-            {thensInstance.map((block: any, index: number) => (
-              <>
+              <div className="main-text">New coonie u said ?</div>
+              <div className="if-then-container">
                 <div
-                  className="link"
-                  style={{ backgroundColor: theme.palette.common.grey }}
-                ></div>
-                <div
-                  className="then-container"
-                  style={{ backgroundColor: theme.palette.primary }}
+                  className="if-container"
+                  style={{ backgroundColor: theme.palette.secondary }}
                 >
-                  {blocksState[index + 1] ? (
+                  {blocksState[0] ? (
                     <>
                       <div className="if-text">
-                        <span style={{ margin: "0px 2vw" }}>then</span>
+                        <span style={{ margin: "0px 2vw" }}>IF</span>
                       </div>
                       <div className="infos-container">
                         <div className="action-service">
-                          {blocksState[index + 1].service}
+                          {blocksState[0].service}
                         </div>
-                        <div className="action-name">
-                          {blocksState[index + 1].name}
-                        </div>
+                        <div className="action-name">{blocksState[0].name}</div>
                       </div>
                     </>
                   ) : (
                     <div className="if-text">
-                      <span style={{ margin: "0px 2vw" }}>then</span>
+                      <span style={{ margin: "0px 2vw" }}>IF</span>
                     </div>
                   )}
                   <Fab
@@ -159,35 +122,83 @@ const NewArea = () => {
                       height: 50,
                     }}
                     color="warning"
-                    onClick={() => onClickOpenModal(index + 1, "reaction")}
+                    onClick={() => onClickOpenModal(0, "action")}
                   >
                     <AddIcon />
                   </Fab>
                 </div>
-              </>
-            ))}
-            <div className="more-thens-button">
-              <BigRoundedButtonOutlined
-                label="Add thens"
-                color="primary"
-                onClick={onClickAddthens}
-              />
+                {thensInstance.map((block: any, index: number) => (
+                  <>
+                    <div
+                      className="link"
+                      style={{ backgroundColor: theme.palette.common.grey }}
+                    ></div>
+                    <div
+                      className="then-container"
+                      style={{ backgroundColor: theme.palette.primary }}
+                    >
+                      {blocksState[index + 1] ? (
+                        <>
+                          <div className="if-text">
+                            <span style={{ margin: "0px 2vw" }}>then</span>
+                          </div>
+                          <div className="infos-container">
+                            <div className="action-service">
+                              {blocksState[index + 1].service}
+                            </div>
+                            <div className="action-name">
+                              {blocksState[index + 1].name}
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="if-text">
+                          <span style={{ margin: "0px 2vw" }}>then</span>
+                        </div>
+                      )}
+                      <Fab
+                        style={{
+                          position: "absolute",
+                          right: 26,
+                          width: 50,
+                          height: 50,
+                        }}
+                        color="warning"
+                        onClick={() => onClickOpenModal(index + 1, "reaction")}
+                      >
+                        <AddIcon />
+                      </Fab>
+                    </div>
+                  </>
+                ))}
+                <div className="more-thens-button">
+                  <BigRoundedButtonOutlined
+                    label="Add thens"
+                    color="primary"
+                    onClick={onClickAddthens}
+                  />
+                </div>
+              </div>
+              <div className="save-button-container">
+                <BigRoundedButton
+                  label="Save"
+                  color="primary"
+                  onClick={onClickOnSaveButton}
+                />
+              </div>
             </div>
-          </div>
-          <div className="save-button-container">
-            <BigRoundedButton
-              label="Save"
-              color="primary"
-              onClick={onClickOnSaveButton}
+          ) : (
+            <ServicesInfos
+              onClickOnActionCards={onClickOnAction}
+              service={serviceSelected}
+              typeSelected={typeSelected}
             />
-          </div>
-        </div>
+          )}
+        </>
       ) : (
-        <ServicesInfos
-          onClickOnActionCards={onClickOnAction}
-          service={serviceSelected}
-          typeSelected={typeSelected}
-        />
+        <>
+          <NewAreaForm blocksState={blocksState}/>
+        </>
       )}
       <ServicesModal
         setServiceSelected={setServiceSelected}

@@ -14,13 +14,13 @@ interface AppletProps {
 
 export default function AppletCard({ navigation, area}: AppletProps) {
   const onPressFunction = () => {
-    navigation.navigate("AppletDetailsScreen", { navigation: navigation, item: area });
+    navigation.navigate("AppletDetailsScreen", { item: area });
   };
 
   return (
     <Pressable style={styles.cardProperties} onPress={onPressFunction}>
       <MyText style={styles.appletContainer}>
-        <MyText style={styles.textProperties}>{area?.area.name}Name</MyText>
+        <MyText style={styles.textProperties}>{area?.area.name}</MyText>
       </MyText>
     </Pressable>
   );

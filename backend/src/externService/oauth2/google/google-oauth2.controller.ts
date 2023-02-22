@@ -16,6 +16,7 @@ import { AxiosError } from 'axios';
 import { CredentialsService } from '../../../credentials/credentials.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
+import {ServiceList} from "../../../service/entity/service.entity";
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -89,7 +90,7 @@ export class GoogleOAuth2Controller {
     if (accessToken) {
       const userCredentials = {
         userId: id,
-        service: 'google',
+        service: ServiceList.GOOGLE,
         accessToken: googleData.data.access_token,
         refreshToken: googleData.data.refresh_token,
       };

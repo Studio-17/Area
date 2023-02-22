@@ -37,32 +37,38 @@ export default function ActionCard({
   };
 
   return (
-    <Pressable style={styles.cardProperties} onPress={onClickOnCards}>
-      <MyText style={styles.cardContainer}>
+    <Pressable style={[styles.actionCard, { backgroundColor: "grey" }]} onPress={onClickOnCards}>
         {actionContent && (
-          <MyText style={styles.textProperties}>{actionContent}</MyText>
+          <MyText style={styles.cardTitle}>{actionContent}</MyText>
         )}
         {reactionContent && (
-          <MyText style={styles.textProperties}>{reactionContent}</MyText>
+          <MyText style={styles.cardTitle}>{reactionContent}</MyText>
         )}
-      </MyText>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  cardProperties: {
-    padding: 10,
-    borderRadius: 20,
-    marginVertical: 5,
-    backgroundColor: "red",
+  actionCard: {
+    borderRadius: 10,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    marginBottom: 20,
   },
-  cardContainer: {
+  cardTitle: {
     margin: "auto",
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-  textProperties: {
+    padding: 15,
     color: "black",
+    fontSize: 15,
   },
 });

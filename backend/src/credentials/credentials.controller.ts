@@ -9,14 +9,13 @@ import {
   Post,
   Put,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authentication.guard';
 import { CredentialsService } from './credentials.service';
 import { CredentialsInterface } from './interface/credentials.interface';
 import { UpdateCredentialsDto } from './dto/update-credentials.dto';
 import { CreateCredentialsDto } from './dto/create-credentials.dto';
+import { ServiceList } from '../service/entity/service.entity';
 
 @ApiTags('Credentials')
 // @UseGuards(JwtAuthenticationGuard)
@@ -32,7 +31,7 @@ export class CredentialsController {
   @Get()
   public async findOneCredentials(
     @Param('userId') userId: string,
-    @Param('service') service: string,
+    @Param('service') service: ServiceList,
   ): Promise<CredentialsInterface> {
     return this.credentialsService.findById(userId, service);
   }
@@ -63,7 +62,7 @@ export class CredentialsController {
   public async updateCredentials(
     @Res() res,
     @Param('userId') userId: string,
-    @Param('service') service: string,
+    @Param('service') service: ServiceList,
     @Body() credentialsUpdateDto: UpdateCredentialsDto,
   ): Promise<any> {
     try {
@@ -84,7 +83,7 @@ export class CredentialsController {
   @Delete()
   public async deleteCredentials(
     @Param('userId') userId: string,
-    @Param('service') service: string,
+    @Param('service') service: ServiceList,
   ): Promise<void> {
     const credentials = this.credentialsService.deleteCredentialsUser(userId, service);
     if (!credentials) {

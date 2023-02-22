@@ -60,17 +60,17 @@ export default function RegisterScreen({ navigation }: any) {
 
   const [result, setResult] = useState<any>(null);
   const handlePressGoogleButton = async () => {
-    console.log("Google button pressed");
-    let result = await axios
-      .get(
-        "http://localhost:3000/api/reaccoon/service/connect/google?id=fdd65677-c44f-4d3d-8b39-6a498abb527b"
-      )
-      .then((res) => {
-        // WebBrowser.openBrowserAsync(encodeURI(res.data.url));
-      });
-    // setResult(result);
-    console.log(result);
     WebBrowser.openBrowserAsync(encodeURI("https://google.com"));
+    console.log("Google button pressed");
+    // let result = await axios
+    //   .get(
+    //     "http://localhost:3000/api/reaccoon/service/connect/google?id=fdd65677-c44f-4d3d-8b39-6a498abb527b"
+    //   )
+    //   .then((res) => {
+    //     // WebBrowser.openBrowserAsync(encodeURI(res.data.url));
+    //   });
+    // setResult(result);
+    // console.log(result);
   };
 
   return (
