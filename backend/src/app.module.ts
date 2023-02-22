@@ -21,10 +21,8 @@ import { MiroOAuth2Module } from './externService/oauth2/miro/miro-oauth2.module
 import { NotionOAuth2Module } from './externService/oauth2/notion/notion-oauth2.module';
 import { SpotifyOAuth2Module } from './externService/oauth2/spotify/spotify-oauth2.module';
 import { TwitchOAuth2Module } from './externService/oauth2/twitch/twitch-oauth2.module';
-import { JwtModule } from '@nestjs/jwt';
-import { TemplateSeederService } from '../config/seeder/template.seeder';
 import { SpotifyModule } from './externService/service/spotify/spotify.module';
-import { ActionSeederService} from '../config/seeder/action.seeder';
+import { ActionSeederService } from '../config/seeder/action.seeder';
 
 @Module({
   imports: [

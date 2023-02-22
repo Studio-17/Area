@@ -1,12 +1,7 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  HttpStatus,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { CredentialsService } from 'src/credentials/credentials.service';
+import { ServiceList } from '../../../../service/entity/service.entity';
 
 @Injectable()
 export class CredentialsGuard implements CanActivate {
@@ -25,7 +20,7 @@ export class CredentialsGuard implements CanActivate {
     }
 
     const credential = await this.credentialsService
-      .findById(user.uuid, 'spotify')
+      .findById(user.uuid, ServiceList.SPOTIFY)
       .then((res) => res)
       .catch((error) => error);
 
