@@ -34,7 +34,8 @@ export class SpotifyOAuth2Controller {
   public async spotify(@Req() request, @Res() response) {
     const clientID = process.env.SPOTIFY_CLIENT_ID;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/spotify/redirect`;
-    const scope = 'playlist-read-private user-read-email';
+    const scope =
+      'ugc-image-upload user-read-playback-state user-modify-playback-state user-read-currently-playing app-remote-control streaming playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public user-follow-modify user-follow-read user-read-playback-position user-top-read user-read-recently-played user-library-modify user-library-read user-read-email user-read-private';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
     if (!token['id']) {
@@ -106,6 +107,9 @@ export class SpotifyOAuth2Controller {
         .catch(function (error) {
           throw new HttpException(error, HttpStatus.BAD_REQUEST);
         });
+
+      console.log('data:', userEmail);
+      console.log('token:', spotifyData.data.access_token);
 
       const userCredentials = {
         userId: id,
