@@ -57,26 +57,4 @@ export class AuthenticationController {
       });
     }
   }
-
-  @Get('/login/facebook')
-  public async loginWithFacebook(@Res() response) {
-    try {
-      await this.authenticationService.facebookConnect();
-
-      return response.status(HttpStatus.OK).json({
-        message: 'User login successfully (using facebook)!',
-        status: 200,
-      });
-    } catch (err) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error: User not logged in (using facebook)!',
-        status: 400,
-      });
-    }
-  }
-
-  @Get('/login/facebook/redirect')
-  public async loginWithFacebookRedirect(@Req() request, @Res() response, @Query() query) {
-    return undefined;
-  }
 }
