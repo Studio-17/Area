@@ -70,10 +70,8 @@ export class AuthenticationService {
         });
 
         return {
-          expiresIn: 3600,
           accessToken: accessToken,
           user: payload,
-          status: 200,
         };
       })
       .catch((err) => {
@@ -135,7 +133,7 @@ export class AuthenticationService {
       });
   }
 
-  public async googleConnect(token: string) {
+  public async googleConnect(token: string): Promise<any | { status: number; message: string }> {
     const ticket = await client.verifyIdToken({
       idToken: token,
       audience: process.env.GOOGLE_ACCOUNT_CLIENT_ID,
@@ -149,7 +147,7 @@ export class AuthenticationService {
       };
       const jwt = this.createJwtPayload(user);
 
-      await this.usersService.create({
+      const userCreated = await this.usersService.create({
         email: payload.email,
         firstName: payload.given_name,
         lastName: payload.family_name,
@@ -157,7 +155,10 @@ export class AuthenticationService {
         jwt: jwt.token,
       });
 
-      return payload;
+      return {
+        user: userCreated,
+        accessToken: jwt.token,
+      };
     } else {
       const user: UserEntity = await this.usersService.findByEmail(payload.email);
       const jwt = this.createJwtPayload(user);
@@ -166,7 +167,10 @@ export class AuthenticationService {
         jwt: jwt.token,
       });
 
-      return user;
+      return {
+        user: user,
+        accessToken: jwt.token,
+      };
     }
   }
 
