@@ -28,6 +28,34 @@ export class GoogleOAuth2Controller {
     private readonly jwtService: JwtService,
   ) {}
 
+  @Get('/google')
+  @UseGuards(AuthGuard('jwt'))
+  public async google(@Req() request, @Res() response) {
+    const clientID = process.env.GOOGLE_CLIENT_ID;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
+    const scope =
+      'email profile https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/gmail.readonly';
+    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
+
+    if (!token['id']) {
+      return response.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'Error unauthenticated (using jwt)',
+        data: token,
+        status: 401,
+      });
+    }
+
+    const googleServiceName = 'google';
+    const state = `${token['id']}+${googleServiceName}`;
+
+    return response.status(HttpStatus.OK).json({
+      url: encodeURI(
+        `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${state}&redirect_uri=${callbackURL}&client_id=${clientID}`,
+      ),
+      status: 200,
+    });
+  }
+
   @Get('/google-analytics')
   @UseGuards(AuthGuard('jwt'))
   public async googleAnalytics(@Req() request, @Res() response) {
