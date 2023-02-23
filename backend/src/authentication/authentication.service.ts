@@ -139,7 +139,7 @@ export class AuthenticationService {
       audience: process.env.GOOGLE_ACCOUNT_CLIENT_ID,
     });
     const payload = ticket.getPayload();
-    const isExistingUser: boolean = await this.usersService.exist(payload.email);
+    const isExistingUser: boolean = await this.usersService.existByEmail(payload.email);
 
     if (!isExistingUser) {
       const user = {

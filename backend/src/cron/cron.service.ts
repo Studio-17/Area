@@ -1,10 +1,15 @@
 import { HttpService } from '@nestjs/axios';
 import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { SchedulerRegistry } from '@nestjs/schedule';
 import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { ActionService } from 'src/action/action.service';
 import { CredentialsService } from 'src/credentials/credentials.service';
 import { MyActionService } from 'src/myAction/myAction.service';
+import { UserService } from 'src/user/user.service';
+import { ServiceList } from '../service/entity/service.entity';
+import { CreateCronDto } from './dto/add-cron.dto';
+import { CronJob } from 'cron';
 
 @Injectable()
 export class CronService {
@@ -14,9 +19,60 @@ export class CronService {
     @Inject(forwardRef(() => MyActionService))
     private readonly myActionService: MyActionService,
     private readonly httpService: HttpService,
+    private readonly userService: UserService,
+    private schedulerRegistry: SchedulerRegistry,
   ) {}
 
-  async handleCronReaction(userId: string, actionLink: string, accessToken: string) {
+  async handleCronAddition(
+    userId: string,
+    actionLink: string,
+    actionHandling: (string, params: { name: string; content: string }[]) => boolean,
+    params: { name: string; content: string }[],
+  ) {
+    if (!actionHandling) {
+      return;
+    }
+    this.userService.existByUserId(userId).then((exist) => {
+      if (!exist) {
+        return;
+      }
+    });
+
+    try {
+      const credential = await this.credentialsService.findById(userId, ServiceList.GOOGLE);
+      const conditionChecked = await actionHandling(credential.accessToken, [
+        { name: 'userId', content: userId },
+        ...params,
+      ]);
+      if (conditionChecked) {
+        await this.handleCronReaction(userId, actionLink);
+      }
+    } catch (error: any) {
+      return;
+    }
+  }
+
+  addCron(body: CreateCronDto, availableActions: Map<string, any>) {
+    if (!availableActions.has(body.link)) {
+      console.log('No such function');
+      return;
+    }
+
+    const job = new CronJob(
+      body.second + ` ` + body.minute + ` ` + body.hour + ` * * *`,
+      this.handleCronAddition.bind(
+        this,
+        body.userId,
+        body.link,
+        availableActions.get(body.link),
+        body.params,
+      ),
+    );
+    this.schedulerRegistry.addCronJob(body.name, job);
+    job.start();
+  }
+
+  async handleCronReaction(userId: string, actionLink: string) {
     const action = await this.actionService.findByLink(actionLink);
     const relatedActions = await this.myActionService.findByActionAndUserId(action.uuid, userId);
 

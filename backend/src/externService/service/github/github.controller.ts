@@ -40,8 +40,8 @@ export class GithubController {
     try {
       const pullRequestResult = await this.githubService.updateLastPullRequest(
         body.accessToken,
-        body.repositoryName,
-        body.repositoryOwner,
+        [{name: 'repo', content: body.repositoryName},
+        { name: 'owner', content: body.repositoryOwner }],
       );
 
       return response.status(HttpStatus.OK).json({
@@ -64,13 +64,12 @@ export class GithubController {
     @Res() response,
     @Body()
     @Body()
-    body: { accessToken: string; params?: { name: string; content: string }[] },
+    body: { accessToken: string; params: { name: string; content: string }[] },
   ) {
     try {
       const pullRequestResult = await this.githubService.updateLastIssue(
         body.accessToken,
-        body.params[0].content,
-        body.params[1].content,
+        body.params,
       );
 
       return response.status(HttpStatus.OK).json({

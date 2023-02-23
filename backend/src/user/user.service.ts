@@ -110,7 +110,11 @@ export class UserService {
     await this.userRepository.remove(user);
   }
 
-  async exist(email: string): Promise<boolean> {
+  public async existByEmail(email: string): Promise<boolean> {
     return this.userRepository.exist({ where: { email: email } });
+  }
+
+  public async existByUserId(userId: string): Promise<boolean> {
+    return this.userRepository.exist({ where: { uuid: userId } });
   }
 }
