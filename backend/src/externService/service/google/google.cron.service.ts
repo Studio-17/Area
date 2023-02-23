@@ -19,8 +19,8 @@ export class GoogleCronService {
   ) {}
 
   async handleCheckMailCron(userId: string, params?: { name: string; content: string }[]) {
+    void params;
     if (!(await this.userService.existByUserId(userId))) {
-      console.log('user not found');
       return;
     }
 
@@ -31,7 +31,6 @@ export class GoogleCronService {
         await this.cronService.handleCronReaction(userId, 'google/check-mail/');
       }
     } catch (error: any) {
-      console.log('error: ', error);
       return;
     }
   }
