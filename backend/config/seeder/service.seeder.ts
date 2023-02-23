@@ -13,8 +13,18 @@ export class ServiceSeederService {
   async seed() {
     const services = [
       {
+        name: ServiceList.DEEZER,
+        description: 'Deezer service description',
+        type: ServiceType.EXTERNAL,
+      },
+      {
         name: ServiceList.DISCORD,
         description: 'Discord service description',
+        type: ServiceType.EXTERNAL,
+      },
+      {
+        name: ServiceList.DROPBOX,
+        description: 'Dropbox service description',
         type: ServiceType.EXTERNAL,
       },
       {
@@ -75,6 +85,11 @@ export class ServiceSeederService {
       {
         name: ServiceList.TWITCH,
         description: 'Twitch service description',
+        type: ServiceType.EXTERNAL,
+      },
+      {
+        name: ServiceList.TYPEFORM,
+        description: 'Typeform service description',
         type: ServiceType.EXTERNAL,
       },
     ];
