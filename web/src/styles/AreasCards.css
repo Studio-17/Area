@@ -16,3 +16,9 @@
     flex-wrap: nowrap;
     overflow: hidden;
 }
+
+.area-name {
+    font-family: 'Titan One', cursive !important;
+    font-size: 20px;
+
+}

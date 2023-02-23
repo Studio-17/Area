@@ -143,31 +143,23 @@ export class AuthenticationService {
     const payload = ticket.getPayload();
     const isExistingUser: boolean = await this.usersService.exist(payload.email);
 
-    if (!isExistingUser) {
-      const user = {
-        email: payload.email,
-      };
-      const jwt = this.createJwtPayload(user);
+    const user: UserEntity = await this.usersService.findByEmail(payload.email);
+    const jwtPayload = this.createJwtPayload(user);
 
+    if (!isExistingUser) {
       await this.usersService.create({
         email: payload.email,
         firstName: payload.given_name,
         lastName: payload.family_name,
         password: '',
-        jwt: jwt.token,
+        jwt: jwtPayload.token,
       });
-
-      return payload;
     } else {
-      const user: UserEntity = await this.usersService.findByEmail(payload.email);
-      const jwt = this.createJwtPayload(user);
-
       await this.usersService.updateUser(user.uuid, {
-        jwt: jwt.token,
+        jwt: jwtPayload.token,
       });
-
-      return user;
     }
+    return user;
   }
 
   public async facebookConnect() {

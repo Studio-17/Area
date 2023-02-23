@@ -17,17 +17,24 @@ const NewAreaForm = ({ blocksState }: Props) => {
     const reactions: any = [];
     blocksState
       .filter((value: any, index: number) => index !== 0)
-      .map((block: any) => reactions.push({ id: block.uuid, params: block.params }));
+      .map((block: any) =>
+        reactions.push({ id: block.uuid, params: block.params })
+      );
     const target = e.target as typeof e.target & {
       name: { value: string };
       hour: { value: number };
       minute: { value: number };
       second: { value: number };
     };
+    console.log(target.hour.value.toString());
+    console.log(typeof target.hour.value.toString());
     const areaToSend = {
       action: { id: blocksState[0].uuid, params: blocksState[0].params },
       reactions: reactions,
       name: target?.name.value,
+      hour: target?.hour.value ? target?.hour.value.toString() : "*",
+      minute: target?.minute.value ? target?.minute.value.toString() : "*",
+      second: target?.second.value ? target?.second.value.toString() : "*"
     };
     addArea(areaToSend);
     navigate("/home");
@@ -62,7 +69,6 @@ const NewAreaForm = ({ blocksState }: Props) => {
             name="hour"
             type="number"
             autoComplete="name"
-            required
           />
           <TextField
             margin="normal"
@@ -71,7 +77,6 @@ const NewAreaForm = ({ blocksState }: Props) => {
             label="Minutes"
             name="minute"
             autoComplete="name"
-            required
           />
           <TextField
             margin="normal"
@@ -80,7 +85,6 @@ const NewAreaForm = ({ blocksState }: Props) => {
             label="Seconds"
             name="second"
             autoComplete="name"
-            required
           />
           <div className="form-buttons-container">
             <Button variant="contained" className="submit-button" type="submit">

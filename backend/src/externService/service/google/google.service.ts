@@ -9,18 +9,16 @@ import {
 import { GmailRecord } from './entity/gmail/gmail.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { GmailRecordDto } from './dto/gmail/gmail.dto';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { CredentialsService } from 'src/credentials/credentials.service';
 import { ActionService } from 'src/action/action.service';
-import { MyActionService } from 'src/myAction/myAction.service';
-import { HttpService } from '@nestjs/axios';
-import { catchError, firstValueFrom } from 'rxjs';
 import { CronJob } from 'cron';
 import { CreateCronDto } from './dto/gmail/add-cron.dto';
 import { UserService } from 'src/user/user.service';
 import { ServiceList } from '../../../service/entity/service.entity';
+import { CronService } from 'src/cron/cron.service';
 
 @Injectable()
 export class GoogleService {
@@ -29,42 +27,11 @@ export class GoogleService {
     private readonly gmailRecordRepository: Repository<GmailRecord>,
     private readonly credentialsService: CredentialsService,
     private readonly actionService: ActionService,
-    @Inject(forwardRef(() => MyActionService))
-    private readonly myActionService: MyActionService,
     private readonly userService: UserService,
-    private readonly httpService: HttpService,
     private schedulerRegistry: SchedulerRegistry,
+    @Inject(forwardRef(() => CronService))
+    private readonly cronService: CronService,
   ) {}
-
-  // TODO - Externalize this function
-  async handleCronReaction(userId: string, actionLink: string, accessToken: string) {
-    const action = await this.actionService.findByLink(actionLink);
-    const relatedActions = await this.myActionService.findByActionAndUserId(action.uuid, userId);
-
-    for (const relatedAction of relatedActions) {
-      const linkedReaction = await this.myActionService.findByLinkedFromId(relatedAction.uuid);
-      for (const linked of linkedReaction) {
-        const reaction = await this.actionService.findOne(linked.actionId);
-        const newAccessToken = await this.credentialsService.findById(userId, reaction.service);
-        if (!newAccessToken) {
-          return;
-        }
-        await firstValueFrom(
-          this.httpService
-            .post<any>('http://localhost:3000/api/reaccoon/actions/' + reaction.link, {
-              accessToken: newAccessToken.accessToken,
-              params: linked.params,
-            })
-            .pipe(
-              catchError((error: AxiosError) => {
-                // console.log(error);
-                throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
-              }),
-            ),
-        );
-      }
-    }
-  }
 
   // TODO - Rename handleCron
   async handleCron(userId: string, params?: { name: string; content: string }[]) {
@@ -84,8 +51,11 @@ export class GoogleService {
     try {
       const mail = await this.updateLastEmailReceived(credential.accessToken, user.uuid);
       if (mail.new) {
-        // params.push({ name: 'actionParam', content: mail.mail.uuid });
-        await this.handleCronReaction(userId, 'google/check-mail/', credential.accessToken);
+        await this.cronService.handleCronReaction(
+          userId,
+          'google/check-mail/',
+          credential.accessToken,
+        );
       }
     } catch (error: any) {
       return;
