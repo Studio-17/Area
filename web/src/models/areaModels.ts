@@ -11,4 +11,8 @@ export type Area = {
 export type createAreaDto = {
   action: string;
   reactions: [string];
+  name?: string;
+  hours?: string;
+  minutes?: string;
+  seconds?: string;
 };

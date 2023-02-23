@@ -1,4 +1,10 @@
-import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn} from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity({ name: 'area' })
 export class AreaEntity {
@@ -10,6 +16,9 @@ export class AreaEntity {
 
   @Column({ nullable: true })
   name: string;
+
+  @Column({ nullable: true })
+  color: string;
 
   @CreateDateColumn({
     type: 'timestamp',

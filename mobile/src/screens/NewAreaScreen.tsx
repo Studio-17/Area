@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -22,30 +22,28 @@ import MyText from "../components/MyText";
 
 export default function NewAreaScreen(
   {
-    navigation,
-    route
+    navigation
   }: {
-    navigation: any,
-    route: any
+    navigation: any
   }) {
   const { data: services, isError, isLoading } = useServicesQuery();
 
-  const [serviceSelected, setServiceSelected] = useState<Service | null>(null);
+  // const [serviceSelected, setServiceSelected] = useState<Service | null>(null);
   const [blocksState, setBlockState] = useState<any>([]);
   const [thensInstance, setthensInstance] = useState<any>([]);
 
-  useEffect(() => {
-    if (route.params?.serviceValue || route.params?.actionContent || route.params?.reactionContent) {
-      setServiceSelected(route.params?.serviceValue);
-      onClickOnAreasCards(serviceSelected, route.params?.actionContent, route.params?.reactionContent, route.params?.uuidOfAction);
-    }
-  }, [route.params?.serviceValue, route.params?.actionContent, route.params?.reactionContent, route.params?.uuidOfAction]);
+  // useEffect(() => {
+  //   if (route.params?.serviceValue || route.params?.actionContent || route.params?.reactionContent) {
+  //     setServiceSelected(route.params?.serviceValue);
+  //     onClickOnAreasCards(serviceSelected, route.params?.actionContent, route.params?.reactionContent, route.params?.uuidOfAction);
+  //   }
+  // }, [route.params?.serviceValue, route.params?.actionContent, route.params?.reactionContent, route.params?.uuidOfAction]);
 
   const onClickOnAreasCards = (
-    serviceSelected: Service | null,
-    actionContent: string,
-    reactionContent: string,
-    uuidOfAction: string
+    serviceSelected?: Service | undefined,
+    actionContent?: string,
+    reactionContent?: string,
+    uuidOfAction?: string
   ) => {
     actionContent &&
       setBlockState((state: any) => [
@@ -65,28 +63,26 @@ export default function NewAreaScreen(
           uuid: uuidOfAction,
         },
       ]);
-    setServiceSelected(null);
+    // setServiceSelected(null);
   };
 
   const onClickOpenServiceNavigator = (
     index: number,
-    typeOfAction: "action" | "reaction"
+    typeOfAction: "action" | "reaction",
+    onClickOnAreasCards: (serviceSelected?: Service, actionContent?: string, responseContent?: string, uuidOfAction?: string) => void
   ) => {
-    navigation.navigate("Services", {item: { services, typeOfAction }})
+    navigation.navigate("Services", {item: { services, typeOfAction, onClickOnAreasCards }})
   };
 
   const canAddThen = () => {
-    if (blocksState[thensInstance.length] != null)
-      return true;
-    else
-      return false;
+    if (blocksState[thensInstance.length] != null) return true;
+    else return false;
   };
 
   const canContinue = () => {
     if (blocksState.length > 1 && blocksState[thensInstance.length] != null)
       return true;
-    else
-      return false;
+    else return false;
   };
 
   const onClickAddthens = () => {
@@ -101,6 +97,8 @@ export default function NewAreaScreen(
       thensInstance.filter((then: any, i: number) => i !== index)
     );
   };
+  // console.log("\nblockstate :", blocksState);
+  // console.log("thenstate :", thensInstance);
 
   const onClickReset = () => {
     Alert.alert("Reset", "Are you sure you want to reset?", [
@@ -120,16 +118,46 @@ export default function NewAreaScreen(
   };
 
   const onClickCantContinue = () => {
-    Alert.alert("Continue", "Please add at least 1 Action and 1 Reaction and fill all the values", [
-      {
-        text: "Ok",
-        style: "cancel",
-      }
-    ]);
+    Alert.alert(
+      "Continue",
+      "Please add at least 1 Action and 1 Reaction and fill all the values",
+      [
+        {
+          text: "Ok",
+          style: "cancel",
+        },
+      ]
+    );
   };
 
+  const changeThenButton = (index: number) => {
+    console.log("index :", index);
+    Alert.alert("Modify the reaction", "", [
+    {
+      text: "Modify",
+      onPress: () => {
+        onClickOpenServiceNavigator(index + 1, "reaction", onClickOnAreasCards)
+      },
+    },
+    {
+      text: "Delete",
+      onPress: () => {
+        onClickRemoveBlock(index);
+      },
+      style: "destructive",
+    },
+    {
+      text: "Cancel",
+      style: "cancel",
+    },
+  ]);
+  };
+
+
   const onClickContinue = () => {
-    navigation.navigate("FinishArea", { item: { blocksState, setBlockState, setthensInstance } });
+    navigation.navigate("FinishArea", {
+      item: { blocksState, setBlockState, setthensInstance },
+    });
   };
 
   return (
@@ -141,23 +169,19 @@ export default function NewAreaScreen(
         <ScrollView>
           <View style={styles.contentContainer}>
             {blocksState[0] ? (
-              <View style={styles.cardPropertiesServiceSelected}>
+              <TouchableOpacity
+              style={styles.cardPropertiesServiceSelected}
+              onPress={() => onClickOpenServiceNavigator(0, "action", onClickOnAreasCards)}
+              >
                 <MyText style={styles.cardTitle}>IF</MyText>
                 <MyText>{blocksState[0].name}</MyText>
-                <TouchableOpacity style={styles.cardButton}>
-                  <MaterialCommunityIcons
-                    name="minus"
-                    color={"black"}
-                    size={35}
-                  />
-                </TouchableOpacity>
-              </View>
+              </TouchableOpacity>
             ) : (
               <View style={styles.cardPropertiesServiceSelected}>
                 <MyText style={styles.cardTitle}>IF</MyText>
                 <TouchableOpacity
                   style={styles.cardButton}
-                  onPress={() => onClickOpenServiceNavigator(0, "action")}
+                  onPress={() => onClickOpenServiceNavigator(0, "action", onClickOnAreasCards)}
                 >
                   <MaterialCommunityIcons
                     name="plus"
@@ -186,26 +210,19 @@ export default function NewAreaScreen(
               />
               <View style={styles.thenContainer}>
                 {blocksState[index + 1] ? (
-                  <View style={styles.thenCardProperties}>
+                  <TouchableOpacity
+                    style={styles.thenCardProperties}
+                    onPress={() => changeThenButton(index)}
+                  >
                     <MyText style={styles.cardTitle}>Then</MyText>
                     <MyText>{blocksState[index + 1].name}</MyText>
-                    <TouchableOpacity
-                      style={styles.cardButton}
-                      onPress={() => onClickRemoveBlock(index)}
-                    >
-                      <MaterialCommunityIcons
-                        name="minus"
-                        color={"black"}
-                        size={35}
-                      />
-                    </TouchableOpacity>
-                  </View>
+                  </TouchableOpacity>
                 ) : (
                   <View style={styles.thenCardProperties}>
                     <MyText style={styles.cardTitle}>Then</MyText>
                     <TouchableOpacity
                       style={styles.cardButton}
-                      onPress={() => onClickOpenServiceNavigator(index + 1, "reaction")}
+                      onPress={() => onClickOpenServiceNavigator(index + 1, "reaction", onClickOnAreasCards)}
                     >
                       <MaterialCommunityIcons
                         name="plus"
@@ -242,22 +259,28 @@ export default function NewAreaScreen(
           ) : (<></>)}
         </ScrollView>
         <View style={styles.footerContainer}>
-          <TouchableOpacity
-            style={[styles.footerButtons, { backgroundColor: "#E6566E" }]}
-            onPress={onClickReset}
-          >
-            <MyText style={styles.footerButtonsText}>Reset</MyText>
-          </TouchableOpacity>
-          {canContinue() ? (
-            <TouchableOpacity style={[styles.footerButtons, { backgroundColor: "#54EE51" }]} onPress={onClickContinue}>
-              <MyText style={styles.footerButtonsText}>Continue</MyText>
+            <TouchableOpacity
+              style={[styles.footerButtons, { backgroundColor: "#E6566E" }]}
+              onPress={onClickReset}
+            >
+              <MyText style={styles.footerButtonsText}>Reset</MyText>
             </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.footerButtons} onPress={onClickCantContinue}>
-              <MyText style={styles.footerButtonsText}>Continue</MyText>
-            </TouchableOpacity>
-          )}
-        </View>
+            {canContinue() ? (
+              <TouchableOpacity
+                style={[styles.footerButtons, { backgroundColor: "#54EE51" }]}
+                onPress={onClickContinue}
+              >
+                <MyText style={styles.footerButtonsText}>Continue</MyText>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.footerButtons}
+                onPress={onClickCantContinue}
+              >
+                <MyText style={styles.footerButtonsText}>Continue</MyText>
+              </TouchableOpacity>
+            )}
+          </View>
       </>
     </SafeAreaView>
   );

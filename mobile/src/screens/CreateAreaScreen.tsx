@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   SafeAreaView,
   TouchableOpacity,
@@ -5,7 +6,11 @@ import {
   StatusBar,
   View,
   ScrollView,
+  TextInput,
+  Button,
 } from "react-native";
+import { Platform } from "react-native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 // Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -24,22 +29,63 @@ export default function CreateAreaScreen({
   navigation: any;
 }) {
   const { item } = route.params;
-  const [addArea] = useAddAreaMutation();
+  const [addArea, error] = useAddAreaMutation();
+
+  const getTitle = () => {
+    let title = "If " + item.blocksState[0].name;
+    item.blocksState.slice(1).map((block: any) => {
+      title += " Then " + block.name;
+    });
+    return title;
+  };
+  const [title, setTitle] = useState<string>(getTitle);
+
+  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+  const [hours, setHours] = useState("0");
+  const [minutes, setMinutes] = useState("0");
+  const [seconds, setSeconds] = useState("0");
+  const [color, setColorSelected] = useState("#db643a");
 
   const onClickOnSaveButton = () => {
     const reactions: any = [];
     item.blocksState
       .filter((value: any, index: number) => index !== 0)
-      .map((block: any) => reactions.push(block.uuid));
+      .map((block: any) => reactions.push({ id: block.uuid }));
     const areaToSend = {
-      action: item.blocksState[0].uuid,
+      action: {
+        id: item.blocksState[0].uuid,
+        params: [{ name: "filename", content: "areafile" }],
+      },
       reactions: reactions,
+      name: title,
+      hour: hours.toString(),
+      minute: minutes.toString(),
+      second: seconds.toString(),
     };
     addArea(areaToSend);
     item.setBlockState([]);
     item.setthensInstance([]);
     navigation.navigate("NewArea");
     navigation.navigate("Home");
+  };
+
+  const showTimePicker = () => {
+    setTimePickerVisibility(true);
+  };
+
+  const hideTimePicker = () => {
+    setTimePickerVisibility(false);
+  };
+
+  const handleConfirm = (time: any) => {
+    const dt = new Date(time);
+    const x = dt.toLocaleTimeString();
+    console.log(x);
+    const finalTime = x.split(":", 2);
+    setHours(finalTime[0]);
+    setMinutes(finalTime[1]);
+
+    hideTimePicker();
   };
 
   return (
@@ -58,10 +104,44 @@ export default function CreateAreaScreen({
         <MyText style={styles.textStyle}>Verify and Finish</MyText>
         <View style={{ flex: 1 }} />
       </SafeAreaView>
-      <ScrollView >
-        <TouchableOpacity style={styles.finishButton} onPress={() => onClickOnSaveButton()}>
-          <MyText>Finish</MyText>
+      <ScrollView style={styles.contentContainer}>
+        <MyText style={[styles.textStyle, { color: "#A37C5B" }]}>Title</MyText>
+        <View style={styles.titleInput}>
+          <TextInput
+            editable
+            multiline
+            numberOfLines={4}
+            maxLength={140}
+            onChangeText={(text) => setTitle(text)}
+            value={title}
+            style={styles.textTitleInput}
+          />
+        </View>
+        <MyText style={[styles.textStyle, { color: "#A37C5B" }]}>
+          Run every:
+        </MyText>
+        <TouchableOpacity
+          style={styles.selectTimeButton}
+          onPress={showTimePicker}
+        >
+          <MyText style={styles.textTitleInput}>
+            Hours: {hours} Minutes: {minutes}
+          </MyText>
         </TouchableOpacity>
+        <DateTimePickerModal
+          isVisible={isTimePickerVisible}
+          mode="time"
+          onConfirm={handleConfirm}
+          onCancel={hideTimePicker}
+        />
+        {title ? (
+          <TouchableOpacity
+            style={styles.finishButton}
+            onPress={() => onClickOnSaveButton()}
+          >
+            <MyText style={styles.textStyle}>Finish</MyText>
+          </TouchableOpacity>
+        ) : null}
       </ScrollView>
     </SafeAreaView>
   );
@@ -77,9 +157,29 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  titleInput: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 15,
+    height: 100,
+    borderColor: "#A37C5B",
+    borderWidth: 3,
+    marginBottom: 20,
+  },
+  timeContainer: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 15,
+    borderColor: "#A37C5B",
+    borderWidth: 3,
+  },
+  textTitleInput: {
+    fontSize: 17,
+    fontWeight: "bold",
+    color: "black",
+    padding: 10,
+    fontFamily: "TitanOne",
+  },
   contentContainer: {
-    flex: 5,
-    backgroundColor: "#FFF7FA",
+    margin: 20,
   },
   backIcon: {
     flex: 1,
@@ -88,15 +188,22 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "bold",
     color: "black",
-    textAlign: "center",
   },
-  finishButton: {
-    padding: 10,
+  selectTimeButton: {
     borderRadius: 15,
     display: "flex",
     flexDirection: "row",
+    justifyContent: "center",
+    borderColor: "#A37C5B",
+    borderWidth: 3,
+  },
+  finishButton: {
+    marginTop: 20,
+    padding: 10,
+    borderRadius: 15,
+    display: "flex",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -106,5 +213,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  datePicker: {
+    justifyContent: "center",
+    alignItems: "flex-start",
+    width: 320,
+    height: 260,
+    display: "flex",
+  },
+  colorContainer: {
+    alignItems: 'center',
   },
 });

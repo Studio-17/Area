@@ -5,21 +5,16 @@ export class CreateAreaDto {
   @IsOptional()
   name: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  action!: string;
+  color?: string;
 
-  @IsArray()
-  @IsOptional()
-  actionParams?: { name: string; content: string }[];
+  @IsNotEmpty()
+  action!: { id: string; params: { name: string; content: string }[] };
 
   @IsArray()
   @IsNotEmpty()
-  reactions!: string[];
-
-  @IsArray()
-  @IsOptional()
-  reactionsParams?: [{ name: string; content: string }[]];
+  reactions!: { id: string; params: { name: string; content: string }[] }[];
 
   @IsString()
   @IsOptional()

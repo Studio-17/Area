@@ -30,7 +30,7 @@ export class DiscordOAuth2Controller {
   public async discord(@Req() request, @Res() response) {
     const clientID = process.env.DISCORD_CLIENT_ID;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/discord/redirect`;
-    const scope = encodeURIComponent('email identify');
+    const scope = 'email identify';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
     if (!token['id']) {
@@ -42,7 +42,9 @@ export class DiscordOAuth2Controller {
     }
 
     return response.status(HttpStatus.OK).json({
-      url: `https://discord.com/api/oauth2/authorize?client_id=${clientID}&redirect_uri=${callbackURL}&response_type=code&scope=${scope}&state=${token['id']}`,
+      url: encodeURI(
+        `https://discord.com/api/oauth2/authorize?client_id=${clientID}&redirect_uri=${callbackURL}&response_type=code&scope=${scope}&state=${token['id']}`,
+      ),
       status: 200,
     });
   }

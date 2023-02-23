@@ -20,6 +20,7 @@ export default function ActionsListScreen(
   const { item } = route.params;
   const service: Service = item.service;
   const typeOfAction: "action" | "reaction" = item.typeOfAction;
+  const onClickOnAreasCards: (serviceSelected?: Service | undefined, actionContent?: string, responseContent?: string, uuidOfAction?: string) => void = item.onClickOnAreasCards;
 
   const {
     data: actions,
@@ -44,12 +45,14 @@ export default function ActionsListScreen(
           ?.filter((action: Action) => action.type === typeOfAction)
           .map((action: Action, index: number) => (
             <ActionCard
-              onClick={(actionContent?: string, reactionContent?: string, uuidAction?: string) => {
-                navigation.navigate({
-                  name: "NewArea",
-                  params: { serviceValue: service, actionContent: actionContent, reactionContent: reactionContent, uuidOfAction: uuidAction},
-                  merge: true
-                });
+              onClick={(actionContent, reactionContent, uuidAction) => {
+                // navigation.navigate({
+                //   name: "NewArea",
+                //   params: { serviceValue: service, actionContent: actionContent, reactionContent: reactionContent, uuidOfAction: uuidAction},
+                //   merge: true
+                // });
+                onClickOnAreasCards(service, actionContent, reactionContent, uuidAction);
+                navigation.navigate("NewArea");
               }}
               actionContent={
                 typeOfAction === "action" ? action.name : undefined

@@ -41,14 +41,14 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
     <SafeAreaView style={styles.screenContainer}>
       <MainHeader />
       <View style={styles.contentContainer}>
-        <MyText>Prénom : {user?.firstName}</MyText>
-        <MyText>Nom : {user?.lastName}</MyText>
-        <MyText>Email : {user?.email}</MyText>
+        <MyText style={styles.text}>Prénom : {user?.firstName}</MyText>
+        <MyText style={styles.text}>Nom : {user?.lastName}</MyText>
+        <MyText style={styles.text}>Email : {user?.email}</MyText>
         <TouchableOpacity
-          style={styles.disconectionButton}
+          style={[styles.disconnectionButton, {padding: 15}]}
           onPress={() => handleDeconnection()}
         >
-          <MyText>Disconnect</MyText>
+          <MyText style={styles.text}>Disconnect</MyText>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -61,12 +61,30 @@ const styles = StyleSheet.create({
     marginTop: StatusBar.currentHeight || 0,
     backgroundColor: "#FFF7FA",
   },
-  disconectionButton: {
-    alignItems: "center",
-    backgroundColor: "#DDDDDD",
-    padding: 10,
-  },
   contentContainer: {
     margin: 20,
+  },
+  disconnectionButton: {
+    marginTop: 20,
+    borderRadius: 10,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    backgroundColor: "#E6566E",
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    marginBottom: 20,
+  },
+  text: {
+    margin: "auto",
+    color: "black",
+    fontSize: 20,
   },
 });

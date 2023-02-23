@@ -1,45 +1,76 @@
 import { Alert, CircularProgress, Snackbar } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { theme } from "../constants/theme";
 import { Action } from "../models/actionModels";
 import { Service } from "../models/serviceModels";
-import {
-  useActionsQuery,
-  useLoginGoogleServiceQuery,
-} from "../services/servicesApi";
-import { RootState, useAppSelector } from "../store/store";
-import "../styles/ServicesInfos.css";
+import { useActionsQuery, useServiceQuery } from "../services/servicesApi";
+import DoneIcon from "@mui/icons-material/Done";
 import ActionsCards from "./Cards/ActionsCards";
+import axios from "axios";
+import "../styles/ServicesInfos.css";
+import BigRoundedButtonOutlined from "./Buttons/BigRoundedButtonOutlined";
+
+const API_ENDPOINT = process.env.REACT_APP_API_URL;
 
 interface Props {
   service: Service;
-  onClickOnAreasCards: any;
+  onClickOnActionCards: any;
   typeSelected: "action" | "reaction";
 }
 
 const ServicesInfos = ({
   service,
-  onClickOnAreasCards,
+  onClickOnActionCards,
   typeSelected,
 }: Props) => {
+  const [isServiceConnected, setIsServiceConnected] = useState<boolean>(false);
   const {
     data: actions,
     isError,
     isLoading,
     isFetching,
-  } = useActionsQuery(service.uuid);
-  const { user } = useAppSelector((state: RootState) => state.auth);
-
-    const { data: result } = useLoginGoogleServiceQuery(user.id);
-
-  useEffect(() => {
-    console.log(user);
-    console.log(result);
-  }, []);
+  } = useActionsQuery(service.name);
+  const {
+    data: serviceInfo,
+    refetch: refetchServiceInfos,
+    isFetching: isFetchingServiceInfo,
+  } = useServiceQuery(service.name);
 
   useEffect(() => {
-    if (result) window.open(result.url, "", "popup,width=1020,height=1020");
-  }, [result]);
+    console.log(actions);
+    console.log("Service info", serviceInfo);
+    console.log("Is fetching service info", isFetchingServiceInfo);
+    serviceInfo && setIsServiceConnected(serviceInfo?.isConnected);
+  }, [actions, serviceInfo, isFetchingServiceInfo]);
+
+  const handleOauthConnection = async () => {
+    console.log("Handle Oauth");
+    const token = localStorage.getItem("userToken");
+    axios
+      .get(`${API_ENDPOINT}/service/connect/${serviceInfo?.name}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        var myWindow = window.open(res.data.url, "");
+        if (myWindow)
+          myWindow.onunload = function () {
+            console.log("Refetch service info");
+            refetchServiceInfos();
+          };
+      });
+  };
+
+  const onClickOnActionCardsCheck = (
+    actionContent?: string,
+    reactionContent?: string,
+    uuidOfAction?: string
+  ) => {
+    onClickOnActionCards(
+      actionContent && actionContent,
+      reactionContent && reactionContent,
+      uuidOfAction && uuidOfAction
+    );
+  };
 
   if (isLoading || isFetching) return <CircularProgress />;
 
@@ -50,6 +81,17 @@ const ServicesInfos = ({
     >
       <div className="main-name" style={{ color: theme.palette.primary }}>
         {service.name}
+        <div className="connection-status-container">
+          {serviceInfo?.isConnected ? (
+            <DoneIcon />
+          ) : (
+            <BigRoundedButtonOutlined
+              label="Connect"
+              color="primary"
+              onClick={() => handleOauthConnection()}
+            />
+          )}
+        </div>
       </div>
       <div className="subtext">Choose one ...</div>
       <div className="list-of-cards-container">
@@ -64,8 +106,9 @@ const ServicesInfos = ({
               reactionContent={
                 typeSelected === "reaction" ? element.description : undefined
               }
-              onClick={onClickOnAreasCards}
+              onClick={onClickOnActionCardsCheck}
               uuidOfAction={element.uuid}
+              disabled={!isServiceConnected}
             />
           ))}
       </div>

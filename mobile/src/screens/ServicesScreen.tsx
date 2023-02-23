@@ -5,11 +5,17 @@ import {
   SafeAreaView,
   StatusBar,
   Pressable,
+  ScrollView,
 } from "react-native";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
 import { Service } from "../redux/models/serviceModels";
+import { LogBox } from 'react-native';
 
 import ServiceCard from "../components/Cards/ServiceCard";
+
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 interface Props {
   navigation: any;
@@ -20,6 +26,7 @@ export default function ServicesScreen({ navigation, route }: Props) {
   const { item } = route.params;
   const services: Service[] | null = item.services;
   const typeOfAction: "action" | "reaction" = item.typeOfAction;
+  const onClickOnAreasCards: (serviceSelected?: Service | undefined, actionContent?: string, responseContent?: string, uuidOfAction?: string) => void = item.onClickOnAreasCards;
 
   const handleClose = () => {
     navigation.navigate("NewArea");
@@ -32,17 +39,31 @@ export default function ServicesScreen({ navigation, route }: Props) {
           <MaterialCommunityIcons name="close" color={"black"} size={50} />
         </Pressable>
       </View>
-      <View style={{ padding: 10 }}>
-        {services?.map((service: Service, index: number) => (
-          <ServiceCard
-            service={service}
-            onClickService={() => {
-              navigation.navigate("ActionsList", { item: { service, typeOfAction } })
-            }}
-            key={index}
-          />
-        ))}
-      </View>
+      <ScrollView>
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            marginLeft: 20,
+            marginRight: 20,
+          }}
+        >
+          {services?.map((service, index) => (
+            <ServiceCard
+              service={service}
+              onClickService={() => {
+                navigation.navigate("ActionsList", {
+                  item: { service, typeOfAction, onClickOnAreasCards },
+                });
+              }}
+              cardGap={20}
+              index={index}
+              key={index}
+            />
+          ))}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

@@ -7,7 +7,7 @@ import {
   RegisterResponse,
   LoginResponse,
 } from "../models/authModel";
-import { Service } from "../models/serviceModels";
+import { Service, ServiceInfo } from "../models/serviceModels";
 import { RootState } from "../store/store";
 
 const API_ENDPOINT = process.env.REACT_APP_API_URL;
@@ -30,12 +30,12 @@ export const servicesApi = createApi({
       query: () => "/service",
       providesTags: ["Service"],
     }),
-    service: builder.query<Service, string>({
-      query: (id) => `/service/${id}`,
+    service: builder.query<ServiceInfo, string>({
+      query: (name) => `/service/${name}`,
       providesTags: ["Service"],
     }),
     actions: builder.query<Action[], string>({
-      query: (id) => `action/service/${id}`,
+      query: (name) => `action/service/${name}`,
       providesTags: ["Action"],
     }),
     areas: builder.query<Area[], void>({
@@ -75,14 +75,15 @@ export const servicesApi = createApi({
         body: credentials,
       }),
     }),
-    loginGoogleService: builder.query<any, string>({
-      query: (id) => `service/connect/google?id=${id}`
+    loginService: builder.query<any, string>({
+      query: (name) => `service/connect/${name}`
     })
   }),
 });
 
 export const {
   useServicesQuery,
+  useServiceQuery,
   useActionsQuery,
   useAddAreaMutation,
   useAreasQuery,
@@ -90,5 +91,5 @@ export const {
   useAreaQuery,
   useLoginMutation,
   useRegisterMutation,
-  useLoginGoogleServiceQuery,
+  useLazyLoginServiceQuery,
 } = servicesApi;
