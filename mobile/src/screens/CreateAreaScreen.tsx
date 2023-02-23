@@ -10,7 +10,7 @@ import {
   Button,
 } from "react-native";
 import { Platform } from "react-native";
-import { TimePicker } from 'react-native-simple-time-picker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 // Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -29,7 +29,7 @@ export default function CreateAreaScreen({
   navigation: any;
 }) {
   const { item } = route.params;
-  const [addArea] = useAddAreaMutation();
+  const [addArea, error] = useAddAreaMutation();
 
   const getTitle = () => {
     let title = "If " + item.blocksState[0].name;
@@ -40,27 +40,22 @@ export default function CreateAreaScreen({
   };
   const [title, setTitle] = useState<string>(getTitle);
 
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
-  const handleChange = (value: { hours: number, minutes: number, seconds: number }) => {
-    setHours(value.hours);
-    setMinutes(value.minutes);
-    setSeconds(value.seconds);
-  };
-  const handleReset = () => {
-    setHours(0);
-    setMinutes(0);
-    setSeconds(0);
-  };
+  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+  const [hours, setHours] = useState("0");
+  const [minutes, setMinutes] = useState("0");
+  const [seconds, setSeconds] = useState("0");
+  const [color, setColorSelected] = useState("#db643a");
 
   const onClickOnSaveButton = () => {
     const reactions: any = [];
     item.blocksState
       .filter((value: any, index: number) => index !== 0)
-      .map((block: any) => reactions.push(block.uuid));
+      .map((block: any) => reactions.push({ id: block.uuid }));
     const areaToSend = {
-      action: item.blocksState[0].uuid,
+      action: {
+        id: item.blocksState[0].uuid,
+        params: [{ name: "filename", content: "areafile" }],
+      },
       reactions: reactions,
       name: title,
       hour: hours.toString(),
@@ -72,6 +67,25 @@ export default function CreateAreaScreen({
     item.setthensInstance([]);
     navigation.navigate("NewArea");
     navigation.navigate("Home");
+  };
+
+  const showTimePicker = () => {
+    setTimePickerVisibility(true);
+  };
+
+  const hideTimePicker = () => {
+    setTimePickerVisibility(false);
+  };
+
+  const handleConfirm = (time: any) => {
+    const dt = new Date(time);
+    const x = dt.toLocaleTimeString();
+    console.log(x);
+    const finalTime = x.split(":", 2);
+    setHours(finalTime[0]);
+    setMinutes(finalTime[1]);
+
+    hideTimePicker();
   };
 
   return (
@@ -100,26 +114,33 @@ export default function CreateAreaScreen({
             maxLength={140}
             onChangeText={(text) => setTitle(text)}
             value={title}
-            style={[styles.textTitleInput]}
+            style={styles.textTitleInput}
           />
         </View>
-        <MyText style={[styles.textStyle, { color: "#A37C5B" }]}>Timer (hours - minutes)</MyText>
-        <View style={styles.timeContainer}>
-        <TimePicker value={{ hours, minutes, seconds }} onChange={handleChange} itemStyle={
-          {
-            borderColor: '#A37C5B',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }
-        } />
-        </View>
-        {title ? (
+        <MyText style={[styles.textStyle, { color: "#A37C5B" }]}>
+          Run every:
+        </MyText>
         <TouchableOpacity
-          style={styles.finishButton}
-          onPress={() => onClickOnSaveButton()}
+          style={styles.selectTimeButton}
+          onPress={showTimePicker}
         >
-          <MyText style={styles.textStyle}>Finish</MyText>
+          <MyText style={styles.textTitleInput}>
+            Hours: {hours} Minutes: {minutes}
+          </MyText>
         </TouchableOpacity>
+        <DateTimePickerModal
+          isVisible={isTimePickerVisible}
+          mode="time"
+          onConfirm={handleConfirm}
+          onCancel={hideTimePicker}
+        />
+        {title ? (
+          <TouchableOpacity
+            style={styles.finishButton}
+            onPress={() => onClickOnSaveButton()}
+          >
+            <MyText style={styles.textStyle}>Finish</MyText>
+          </TouchableOpacity>
         ) : null}
       </ScrollView>
     </SafeAreaView>
@@ -151,7 +172,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
   },
   textTitleInput: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: "bold",
     color: "black",
     padding: 10,
@@ -167,6 +188,14 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "bold",
     color: "black",
+  },
+  selectTimeButton: {
+    borderRadius: 15,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    borderColor: "#A37C5B",
+    borderWidth: 3,
   },
   finishButton: {
     marginTop: 20,
@@ -191,5 +220,8 @@ const styles = StyleSheet.create({
     width: 320,
     height: 260,
     display: "flex",
+  },
+  colorContainer: {
+    alignItems: 'center',
   },
 });

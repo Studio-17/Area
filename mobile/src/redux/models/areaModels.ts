@@ -10,6 +10,8 @@ export type Area = {
 };
 
 export type createAreaDto = {
-  action: string;
-  reactions: [string];
+  // action: { id: string };
+  reactions: [{ id: string }];
+  action: { id: string, params: { name: string, content: string }[] };
+  // reactions: [{ id: string, params: { name: string, content: string }[] }];
 };
