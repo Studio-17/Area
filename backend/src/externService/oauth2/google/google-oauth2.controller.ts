@@ -46,7 +46,7 @@ export class GoogleOAuth2Controller {
     }
 
     const googleServiceName = 'google';
-    const state = `${token['id']}+${googleServiceName}`;
+    const state = token['id'];
 
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
@@ -284,12 +284,9 @@ export class GoogleOAuth2Controller {
     const accessToken = googleData.data.access_token;
 
     if (accessToken) {
-      const userId = id.split('+', 1)[0];
-      const serviceName = id.split('+', 1)[1];
-
       const userCredentials = {
-        userId: userId,
-        service: ServiceList[serviceName],
+        userId: id,
+        service: ServiceList.GOOGLE,
         accessToken: googleData.data.access_token,
         refreshToken: googleData.data.refresh_token,
       };
