@@ -89,7 +89,7 @@ export class DeezerOauth2Controller {
     if (accessToken) {
       const userCredentials = {
         userId: id,
-        service: ServiceList.DEEZER,
+        service: ServiceList.DISCORD,
         accessToken: deezerData.access_token,
         refreshToken: 'null',
       };
