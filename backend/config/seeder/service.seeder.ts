@@ -33,38 +33,8 @@ export class ServiceSeederService {
         type: ServiceType.EXTERNAL,
       },
       {
-        name: ServiceList.GOOGLE_ANALYTICS,
-        description: 'Google Analytics service description',
-        type: ServiceType.EXTERNAL,
-      },
-      {
-        name: ServiceList.GOOGLE_DRIVE,
-        description: 'Google Drive service description',
-        type: ServiceType.EXTERNAL,
-      },
-      {
-        name: ServiceList.GOOGLE_EVENT,
-        description: 'Google Event service description',
-        type: ServiceType.EXTERNAL,
-      },
-      {
-        name: ServiceList.GOOGLE_FORMS,
-        description: 'Google Forms service description',
-        type: ServiceType.EXTERNAL,
-      },
-      {
-        name: ServiceList.GOOGLE_MAIL,
-        description: 'Google Mail service description',
-        type: ServiceType.EXTERNAL,
-      },
-      {
-        name: ServiceList.GOOGLE_SUITE,
-        description: 'Google Suite service description',
-        type: ServiceType.EXTERNAL,
-      },
-      {
-        name: ServiceList.GOOGLE_YOUTUBE,
-        description: 'Google YouTube service description',
+        name: ServiceList.GOOGLE,
+        description: 'Google service description',
         type: ServiceType.EXTERNAL,
       },
       {
