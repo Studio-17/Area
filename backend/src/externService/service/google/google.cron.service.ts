@@ -28,11 +28,7 @@ export class GoogleCronService {
       const credential = await this.credentialsService.findById(userId, ServiceList.GOOGLE);
       const mail = await this.googleService.updateLastEmailReceived(credential.accessToken, userId);
       if (mail.new) {
-        await this.cronService.handleCronReaction(
-          userId,
-          'google/check-mail/',
-          credential.accessToken,
-        );
+        await this.cronService.handleCronReaction(userId, 'google/check-mail/');
       }
     } catch (error: any) {
       console.log('error: ', error);
