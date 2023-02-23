@@ -15,7 +15,7 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { CredentialsService } from 'src/credentials/credentials.service';
 import { ActionService } from 'src/action/action.service';
 import { CronJob } from 'cron';
-import { CreateCronDto } from './dto/gmail/add-cron.dto';
+import { CreateCronDto } from '../../../cron/dto/add-cron.dto';
 import { UserService } from 'src/user/user.service';
 import { ServiceList } from '../../../service/entity/service.entity';
 import { CronService } from 'src/cron/cron.service';

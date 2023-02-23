@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
-import { CreateCronDto } from './dto/gmail/add-cron.dto';
+import { CreateCronDto } from '../../../cron/dto/add-cron.dto';
 import { GoogleService } from './google.service';
 import { CronJob } from 'cron';
 
