@@ -9,7 +9,7 @@ COPY --chown=node:node . /home/node/app
 
 RUN npm install
 
-EXPOSE 3000
+EXPOSE 8080
 
 ENTRYPOINT [ "npm" ]
 CMD [ "run", "start:dev", "--tsc" ]

@@ -20,7 +20,7 @@ networks:
 #---------- SERVICES ----------#
 services:
 
-  web:
+  client_web:
     profiles:
       - web
       - all
@@ -33,10 +33,10 @@ services:
     volumes:
       - ./web:/home/node/app
     depends_on:
-      - backend
+      - server
     entrypoint: [ "npm", "start" ]
 
-  mobile:
+  client_mobile:
     profiles:
       - mobile
       - all
@@ -57,12 +57,12 @@ services:
     volumes:
       - ./mobile:/home/node/app
     depends_on:
-      - backend
+      - server
     healthcheck:
       disable: true
     entrypoint: [ "npm", "run", "web" ]
 
-  backend:
+  server:
     profiles:
       - backend
       - mobile
