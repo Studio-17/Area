@@ -28,67 +28,13 @@ export class GoogleOAuth2Controller {
     private readonly jwtService: JwtService,
   ) {}
 
-  @Get('/google-analytics')
+  @Get('/google')
   @UseGuards(AuthGuard('jwt'))
-  public async googleAnalytics(@Req() request, @Res() response) {
-    const clientID = process.env.GOOGLE_CLIENT_ID;
-    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
-    const scope = 'email profile https://www.googleapis.com/auth/analytics';
-    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
-
-    if (!token['id']) {
-      return response.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'Error unauthenticated (using jwt)',
-        data: token,
-        status: 401,
-      });
-    }
-
-    const googleServiceName = 'google-analytics';
-    const state = `${token['id']}+${googleServiceName}`;
-
-    return response.status(HttpStatus.OK).json({
-      url: encodeURI(
-        `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${state}&redirect_uri=${callbackURL}&client_id=${clientID}`,
-      ),
-      status: 200,
-    });
-  }
-
-  @Get('/google-drive')
-  @UseGuards(AuthGuard('jwt'))
-  public async googleDrive(@Req() request, @Res() response) {
-    const clientID = process.env.GOOGLE_CLIENT_ID;
-    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
-    const scope = 'email profile https://www.googleapis.com/auth/drive';
-    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
-
-    if (!token['id']) {
-      return response.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'Error unauthenticated (using jwt)',
-        data: token,
-        status: 401,
-      });
-    }
-
-    const googleServiceName = 'google-drive';
-    const state = `${token['id']}+${googleServiceName}`;
-
-    return response.status(HttpStatus.OK).json({
-      url: encodeURI(
-        `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${state}&redirect_uri=${callbackURL}&client_id=${clientID}`,
-      ),
-      status: 200,
-    });
-  }
-
-  @Get('/google-event')
-  @UseGuards(AuthGuard('jwt'))
-  public async googleEvengt(@Req() request, @Res() response) {
+  public async google(@Req() request, @Res() response) {
     const clientID = process.env.GOOGLE_CLIENT_ID;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
     const scope =
-      'email profile https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.calendarlist';
+      'email profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/drive';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
     if (!token['id']) {
@@ -99,123 +45,9 @@ export class GoogleOAuth2Controller {
       });
     }
 
-    const googleServiceName = 'google-event';
-    const state = `${token['id']}+${googleServiceName}`;
-
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
-        `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${state}&redirect_uri=${callbackURL}&client_id=${clientID}`,
-      ),
-      status: 200,
-    });
-  }
-
-  @Get('/google-forms')
-  @UseGuards(AuthGuard('jwt'))
-  public async googleForms(@Req() request, @Res() response) {
-    const clientID = process.env.GOOGLE_CLIENT_ID;
-    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
-    const scope =
-      'email profile https://www.googleapis.com/auth/forms.body https://www.googleapis.com/auth/forms.responses.readonly';
-    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
-
-    if (!token['id']) {
-      return response.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'Error unauthenticated (using jwt)',
-        data: token,
-        status: 401,
-      });
-    }
-
-    const googleServiceName = 'google-forms';
-    const state = `${token['id']}+${googleServiceName}`;
-
-    return response.status(HttpStatus.OK).json({
-      url: encodeURI(
-        `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${state}&redirect_uri=${callbackURL}&client_id=${clientID}`,
-      ),
-      status: 200,
-    });
-  }
-
-  @Get('/google-gmail')
-  @UseGuards(AuthGuard('jwt'))
-  public async googleGmail(@Req() request, @Res() response) {
-    const clientID = process.env.GOOGLE_CLIENT_ID;
-    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
-    const scope = 'email profile https://www.googleapis.com/auth/gmail.readonly';
-    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
-
-    if (!token['id']) {
-      return response.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'Error unauthenticated (using jwt)',
-        data: token,
-        status: 401,
-      });
-    }
-
-    const googleServiceName = 'google-mail';
-    const state = `${token['id']}+${googleServiceName}`;
-
-    return response.status(HttpStatus.OK).json({
-      url: encodeURI(
-        `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${state}&redirect_uri=${callbackURL}&client_id=${clientID}`,
-      ),
-      status: 200,
-    });
-  }
-
-  @Get('/google-suite')
-  @UseGuards(AuthGuard('jwt'))
-  public async googleSuite(@Req() request, @Res() response) {
-    const clientID = process.env.GOOGLE_CLIENT_ID;
-    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
-    const scope =
-      'email profile https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/presentations https://www.googleapis.com/auth/spreadsheets';
-    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
-
-    if (!token['id']) {
-      return response.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'Error unauthenticated (using jwt)',
-        data: token,
-        status: 401,
-      });
-    }
-
-    const googleServiceName = 'google-suite';
-    const state = `${token['id']}+${googleServiceName}`;
-
-    return response.status(HttpStatus.OK).json({
-      url: encodeURI(
-        `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${state}&redirect_uri=${callbackURL}&client_id=${clientID}`,
-      ),
-      status: 200,
-    });
-  }
-
-  @Get('/google-youtube')
-  @UseGuards(AuthGuard('jwt'))
-  public async googleYoutube(@Req() request, @Res() response) {
-    const clientID = process.env.GOOGLE_CLIENT_ID;
-    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
-    const scope =
-      'email profile https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.readonly';
-    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
-
-    if (!token['id']) {
-      return response.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'Error unauthenticated (using jwt)',
-        data: token,
-        status: 401,
-      });
-    }
-
-    const googleServiceName = 'google-youtube';
-    const state = `${token['id']}+${googleServiceName}`;
-
-    return response.status(HttpStatus.OK).json({
-      url: encodeURI(
-        `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${state}&redirect_uri=${callbackURL}&client_id=${clientID}`,
+        `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${token['id']}&redirect_uri=${callbackURL}&client_id=${clientID}`,
       ),
       status: 200,
     });
@@ -256,12 +88,9 @@ export class GoogleOAuth2Controller {
     const accessToken = googleData.data.access_token;
 
     if (accessToken) {
-      const userId = id.split('+', 1)[0];
-      const serviceName = id.split('+', 1)[1];
-
       const userCredentials = {
-        userId: userId,
-        service: ServiceList[serviceName],
+        userId: id,
+        service: ServiceList.GOOGLE,
         accessToken: googleData.data.access_token,
         refreshToken: googleData.data.refresh_token,
       };
