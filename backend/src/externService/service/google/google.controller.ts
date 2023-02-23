@@ -15,7 +15,7 @@ export class GoogleController {
     try {
       const gmailRecord = await this.googleService.updateLastEmailReceived(
         body.accessToken,
-        body.email,
+        [{ name: 'userId', content: body.email }],
       );
 
       console.log(gmailRecord);

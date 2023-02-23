@@ -243,7 +243,18 @@ export class GithubService {
     }
   }
 
-  public async updateLastPullRequest(accessToken: string, owner: string, repo: string) {
+  public async updateLastPullRequest(
+    accessToken: string,
+    params: { name: string; content: string }[],
+  ) {
+    let owner = '';
+    try {
+      owner = params.find((param) => param.name === 'owner').content;
+    } catch (error) {}
+    let repo = '';
+    try {
+      repo = params.find((param) => param.name === 'repo').content;
+    } catch (error) {}
     const config = {
       method: 'get',
       url: `https://api.github.com/repos/${owner}/${repo}/pulls`,
@@ -279,7 +290,15 @@ export class GithubService {
     }
   }
 
-  public async updateLastIssue(accessToken: string, owner: string, repo: string) {
+  public async updateLastIssue(accessToken: string, params: { name: string; content: string }[]) {
+    let owner = params.find((param) => param.name === 'owner').content;
+    if (!owner) {
+      owner = '';
+    }
+    let repo = params.find((param) => param.name === 'repo').content;
+    if (!repo) {
+      repo = '';
+    }
     const config = {
       method: 'get',
       url: `https://api.github.com/repos/${owner}/${repo}/issues`,

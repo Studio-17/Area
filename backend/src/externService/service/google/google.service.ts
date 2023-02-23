@@ -34,7 +34,7 @@ export class GoogleService {
 
     if (!record) {
       try {
-        return { new: true, mail: await this.gmailRecordRepository.save(gmailRecord) };
+        return { new: false, mail: await this.gmailRecordRepository.save(gmailRecord) };
       } catch (err) {
         throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       }
@@ -62,7 +62,10 @@ export class GoogleService {
     }
   }
 
-  public async updateLastEmailReceived(accessToken: string, userId: string) {
+  public async updateLastEmailReceived(
+    accessToken: string,
+    params: { name: string; content: string }[],
+  ) {
     const config = {
       method: 'get',
       url: `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=1`,
@@ -70,7 +73,6 @@ export class GoogleService {
         Authorization: `Bearer ${accessToken}`,
       },
     };
-
     try {
       console.log('try to get last email');
       const emailId = await axios(config)
@@ -85,10 +87,10 @@ export class GoogleService {
 
       if (emailId) {
         const record = new GmailRecordDto();
-        record.email = userId;
+        record.email = params.find((param) => param.name === 'userId').content;
         record.lastEmailId = emailId;
 
-        return await this.findOrUpdateLastEmailReceived(record);
+        return (await this.findOrUpdateLastEmailReceived(record)).new;
       }
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });

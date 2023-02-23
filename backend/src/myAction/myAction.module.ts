@@ -9,6 +9,7 @@ import { MyActionEntity } from './entity/myAction.entity';
 import { MyActionService } from './myAction.service';
 import { GithubModule } from '../externService/service/github/github.module';
 import { SpotifyModule } from 'src/externService/service/spotify/spotify.module';
+import { CronModule } from 'src/cron/cron.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { SpotifyModule } from 'src/externService/service/spotify/spotify.module'
     TypeOrmModule.forFeature([MyActionEntity]),
     ActionModule,
     forwardRef(() => AreaModule),
+    forwardRef(() => CronModule),
     forwardRef(() => GoogleModule),
     forwardRef(() => GithubModule),
     forwardRef(() => SpotifyModule),

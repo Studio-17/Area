@@ -12,6 +12,7 @@ import { SpotifyCronService } from 'src/externService/service/spotify/spotify.cr
 import { ServiceList } from 'src/service/entity/service.entity';
 import { GithubCronService } from 'src/externService/service/github/github.cron.service';
 import { GoogleCronService } from 'src/externService/service/google/google.cron.service';
+import { CronService } from 'src/cron/cron.service';
 
 @Injectable()
 export class MyActionService {
@@ -25,6 +26,7 @@ export class MyActionService {
     private readonly googleCronService: GoogleCronService,
     private readonly githubCronService: GithubCronService,
     private readonly spotifyCronService: SpotifyCronService,
+    private readonly cronService: CronService,
   ) {}
 
   async findAction(areaId: string) {
@@ -99,9 +101,9 @@ export class MyActionService {
     // NOTION
     // SPOTIFY
     // TWITCH:
-    [ServiceList.GOOGLE, this.googleCronService.addGoogleCron.bind(this.googleCronService)],
-    [ServiceList.GITHUB, this.githubCronService.addGithubCron.bind(this.githubCronService)],
-    [ServiceList.SPOTIFY, this.spotifyCronService.addSpotifyCron.bind(this.spotifyCronService)],
+    [ServiceList.GOOGLE, this.googleCronService.availableActions],
+    [ServiceList.GITHUB, this.githubCronService.availableActions],
+    // [ServiceList.SPOTIFY, this.spotifyCronService.availableActions],
   ]);
 
   async addCron(
@@ -114,13 +116,16 @@ export class MyActionService {
     const action = await this.actionService.findOne(actionId);
 
     if (action.type === 'action') {
-      this.availableActions.get(action.service)({
-        name: action.name + '-' + myActionId,
-        userId: userId,
-        link: action.link,
-        ...timer,
-        params: params,
-      });
+      this.cronService.addCron(
+        {
+          name: action.name + '-' + myActionId,
+          userId: userId,
+          link: action.link,
+          ...timer,
+          params: params,
+        },
+        this.availableActions.get(action.service),
+      );
     }
   }
 
