@@ -13,8 +13,18 @@ export class ServiceSeederService {
   async seed() {
     const services = [
       {
+        name: ServiceList.DEEZER,
+        description: 'Deezer service description',
+        type: ServiceType.EXTERNAL,
+      },
+      {
         name: ServiceList.DISCORD,
         description: 'Discord service description',
+        type: ServiceType.EXTERNAL,
+      },
+      {
+        name: ServiceList.DROPBOX,
+        description: 'Dropbox service description',
         type: ServiceType.EXTERNAL,
       },
       {
@@ -23,8 +33,38 @@ export class ServiceSeederService {
         type: ServiceType.EXTERNAL,
       },
       {
-        name: ServiceList.GOOGLE,
-        description: 'Google service description',
+        name: ServiceList.GOOGLE_ANALYTICS,
+        description: 'Google Analytics service description',
+        type: ServiceType.EXTERNAL,
+      },
+      {
+        name: ServiceList.GOOGLE_DRIVE,
+        description: 'Google Drive service description',
+        type: ServiceType.EXTERNAL,
+      },
+      {
+        name: ServiceList.GOOGLE_EVENT,
+        description: 'Google Event service description',
+        type: ServiceType.EXTERNAL,
+      },
+      {
+        name: ServiceList.GOOGLE_FORMS,
+        description: 'Google Forms service description',
+        type: ServiceType.EXTERNAL,
+      },
+      {
+        name: ServiceList.GOOGLE_MAIL,
+        description: 'Google Mail service description',
+        type: ServiceType.EXTERNAL,
+      },
+      {
+        name: ServiceList.GOOGLE_SUITE,
+        description: 'Google Suite service description',
+        type: ServiceType.EXTERNAL,
+      },
+      {
+        name: ServiceList.GOOGLE_YOUTUBE,
+        description: 'Google YouTube service description',
         type: ServiceType.EXTERNAL,
       },
       {
@@ -45,6 +85,11 @@ export class ServiceSeederService {
       {
         name: ServiceList.TWITCH,
         description: 'Twitch service description',
+        type: ServiceType.EXTERNAL,
+      },
+      {
+        name: ServiceList.TYPEFORM,
+        description: 'Typeform service description',
         type: ServiceType.EXTERNAL,
       },
     ];
