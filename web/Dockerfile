@@ -9,7 +9,7 @@ COPY --chown=node:node . /home/node/app
 
 RUN npm install
 
-EXPOSE 3001
+EXPOSE 8081
 
 ENTRYPOINT [ "npm" ]
 CMD [ "start" ]
