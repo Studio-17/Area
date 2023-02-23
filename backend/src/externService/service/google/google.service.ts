@@ -34,43 +34,43 @@ export class GoogleService {
   ) {}
 
   // TODO - Rename handleCron
-  async handleCron(userId: string, params?: { name: string; content: string }[]) {
-    // TODO: check if user exists sinon skip car on a déjà l'id
-    const user = await this.userService.findById(userId);
-    if (!user) {
-      return;
-    }
+  // async handleCron(userId: string, params?: { name: string; content: string }[]) {
+  //   // TODO: check if user exists sinon skip car on a déjà l'id
+  //   const user = await this.userService.findById(userId);
+  //   if (!user) {
+  //     return;
+  //   }
 
-    let credential;
-    try {
-      credential = await this.credentialsService.findById(user.uuid, ServiceList.GOOGLE);
-    } catch (error: any) {
-      return;
-    }
+  //   let credential;
+  //   try {
+  //     credential = await this.credentialsService.findById(user.uuid, ServiceList.GOOGLE);
+  //   } catch (error: any) {
+  //     return;
+  //   }
 
-    try {
-      const mail = await this.updateLastEmailReceived(credential.accessToken, user.uuid);
-      if (mail.new) {
-        await this.cronService.handleCronReaction(
-          userId,
-          'google/check-mail/',
-          credential.accessToken,
-        );
-      }
-    } catch (error: any) {
-      return;
-    }
-  }
+  //   try {
+  //     const mail = await this.updateLastEmailReceived(credential.accessToken, user.uuid);
+  //     if (mail.new) {
+  //       await this.cronService.handleCronReaction(
+  //         userId,
+  //         'google/check-mail/',
+  //         credential.accessToken,
+  //       );
+  //     }
+  //   } catch (error: any) {
+  //     return;
+  //   }
+  // }
 
   // TODO ajouter la vérification de si il existe déjà / revoir si on le fait pas à partir de l'uuid du myaction
-  public async addCron(body: CreateCronDto) {
-    const job = new CronJob(
-      body.second + ` ` + body.minute + ` ` + body.hour + ` * * *`,
-      this.handleCron.bind(this, body.userId, body.params),
-    );
-    this.schedulerRegistry.addCronJob(body.name, job);
-    job.start();
-  }
+  // public async addCron(body: CreateCronDto) {
+  //   const job = new CronJob(
+  //     body.second + ` ` + body.minute + ` ` + body.hour + ` * * *`,
+  //     this.handleCron.bind(this, body.userId, body.params),
+  //   );
+  //   this.schedulerRegistry.addCronJob(body.name, job);
+  //   job.start();
+  // }
 
   public async findByEmail(email: string): Promise<GmailRecord> {
     try {
