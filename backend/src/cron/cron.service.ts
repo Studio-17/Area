@@ -16,7 +16,7 @@ export class CronService {
     private readonly httpService: HttpService,
   ) {}
 
-  async handleCronReaction(userId: string, actionLink: string, accessToken: string) {
+  async handleCronReaction(userId: string, actionLink: string) {
     const action = await this.actionService.findByLink(actionLink);
     const relatedActions = await this.myActionService.findByActionAndUserId(action.uuid, userId);
 

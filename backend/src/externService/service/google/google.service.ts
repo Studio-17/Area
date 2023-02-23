@@ -1,76 +1,17 @@
-import {
-  forwardRef,
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { GmailRecord } from './entity/gmail/gmail.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import axios from 'axios';
 import { GmailRecordDto } from './dto/gmail/gmail.dto';
-import { SchedulerRegistry } from '@nestjs/schedule';
-import { CredentialsService } from 'src/credentials/credentials.service';
-import { ActionService } from 'src/action/action.service';
-import { CronJob } from 'cron';
-import { CreateCronDto } from './dto/gmail/add-cron.dto';
-import { UserService } from 'src/user/user.service';
 import { ServiceList } from '../../../service/entity/service.entity';
-import { CronService } from 'src/cron/cron.service';
 
 @Injectable()
 export class GoogleService {
   constructor(
     @InjectRepository(GmailRecord)
     private readonly gmailRecordRepository: Repository<GmailRecord>,
-    private readonly credentialsService: CredentialsService,
-    private readonly actionService: ActionService,
-    private readonly userService: UserService,
-    private schedulerRegistry: SchedulerRegistry,
-    @Inject(forwardRef(() => CronService))
-    private readonly cronService: CronService,
   ) {}
-
-  // TODO - Rename handleCron
-  async handleCron(userId: string, params?: { name: string; content: string }[]) {
-    // TODO: check if user exists sinon skip car on a déjà l'id
-    const user = await this.userService.findById(userId);
-    if (!user) {
-      return;
-    }
-
-    let credential;
-    try {
-      credential = await this.credentialsService.findById(user.uuid, ServiceList.GOOGLE);
-    } catch (error: any) {
-      return;
-    }
-
-    try {
-      const mail = await this.updateLastEmailReceived(credential.accessToken, user.uuid);
-      if (mail.new) {
-        await this.cronService.handleCronReaction(
-          userId,
-          'google/check-mail/',
-          credential.accessToken,
-        );
-      }
-    } catch (error: any) {
-      return;
-    }
-  }
-
-  // TODO ajouter la vérification de si il existe déjà / revoir si on le fait pas à partir de l'uuid du myaction
-  public async addCron(body: CreateCronDto) {
-    const job = new CronJob(
-      body.second + ` ` + body.minute + ` ` + body.hour + ` * * *`,
-      this.handleCron.bind(this, body.userId, body.params),
-    );
-    this.schedulerRegistry.addCronJob(body.name, job);
-    job.start();
-  }
 
   public async findByEmail(email: string): Promise<GmailRecord> {
     try {

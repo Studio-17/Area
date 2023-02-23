@@ -6,10 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CredentialsModule } from 'src/credentials/credentials.module';
 import { ActionModule } from 'src/action/action.module';
-import { MyActionModule } from 'src/myAction/myAction.module';
 import { HttpModule } from '@nestjs/axios';
 import { UserModule } from 'src/user/user.module';
 import { CronModule } from 'src/cron/cron.module';
+import { GoogleCronService } from './google.cron.service';
 
 @Module({
   imports: [
@@ -21,13 +21,12 @@ import { CronModule } from 'src/cron/cron.module';
     ScheduleModule.forRoot(),
     CredentialsModule,
     ActionModule,
-    // forwardRef(() => MyActionModule),
     UserModule,
     forwardRef(() => CronModule),
     CronModule,
   ],
-  providers: [GoogleService],
+  providers: [GoogleService, GoogleCronService],
   controllers: [GoogleController],
-  exports: [GoogleService],
+  exports: [GoogleService, GoogleCronService],
 })
 export class GoogleModule {}

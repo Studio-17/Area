@@ -5,6 +5,10 @@ export class CreateCronDto {
   @IsNotEmpty()
   name!: string;
 
+  @IsString()
+  @IsNotEmpty()
+  link!: string;
+
   @IsUUID()
   @IsNotEmpty()
   userId!: string;
