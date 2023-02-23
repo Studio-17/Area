@@ -8,6 +8,7 @@ import { MyActionController } from './myAction.controller';
 import { MyActionEntity } from './entity/myAction.entity';
 import { MyActionService } from './myAction.service';
 import { GithubModule } from '../externService/service/github/github.module';
+import { SpotifyModule } from 'src/externService/service/spotify/spotify.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { GithubModule } from '../externService/service/github/github.module';
     forwardRef(() => AreaModule),
     forwardRef(() => GoogleModule),
     forwardRef(() => GithubModule),
+    forwardRef(() => SpotifyModule),
   ],
   providers: [MyActionService],
   controllers: [MyActionController],

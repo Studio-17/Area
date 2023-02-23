@@ -8,8 +8,10 @@ import { ActionService } from 'src/action/action.service';
 import { AreaService } from '../area/area.service';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { ActionType } from 'src/action/entity/action.entity';
-import { GoogleService } from 'src/externService/service/google/google.service';
-import { GithubService } from '../externService/service/github/github.service';
+import { SpotifyCronService } from 'src/externService/service/spotify/spotify.cron.service';
+import { ServiceList } from 'src/service/entity/service.entity';
+import { GithubCronService } from 'src/externService/service/github/github.cron.service';
+import { GoogleCronService } from 'src/externService/service/google/google.cron.service';
 
 @Injectable()
 export class MyActionService {
@@ -19,11 +21,10 @@ export class MyActionService {
     private readonly actionService: ActionService,
     @Inject(forwardRef(() => AreaService))
     private readonly areaService: AreaService,
-    @Inject(forwardRef(() => GoogleService))
-    private readonly googleService: GoogleService,
-    @Inject(forwardRef(() => GithubService))
-    private readonly githubService: GithubService,
     private schedulerRegistry: SchedulerRegistry,
+    private readonly googleCronService: GoogleCronService,
+    private readonly githubCronService: GithubCronService,
+    private readonly spotifyCronService: SpotifyCronService,
   ) {}
 
   async findAction(areaId: string) {
@@ -93,15 +94,14 @@ export class MyActionService {
   availableActions = new Map([
     // DISCORD
     // GITHUB
-    ['github/check-pull-request/', this.githubService.addPullRequestCron.bind(this.githubService)],
-    ['github/check-issue/', this.githubService.addIssueCron.bind(this.githubService)],
-    // ['github/get-repository/', this.githubService.addRepositoryCron.bind(this.githubService)],
     // GOOGLE
-    ['google/check-mail/', this.googleService.addCron.bind(this.googleService)],
     // MIRO
     // NOTION
     // SPOTIFY
-    // TWITCH
+    // TWITCH:
+    [ServiceList.GOOGLE, this.googleCronService.addGoogleCron.bind(this.googleCronService)],
+    [ServiceList.GITHUB, this.githubCronService.addGithubCron.bind(this.githubCronService)],
+    [ServiceList.SPOTIFY, this.spotifyCronService.addSpotifyCron.bind(this.spotifyCronService)],
   ]);
 
   async addCron(
@@ -111,13 +111,13 @@ export class MyActionService {
     userId: string,
     params: { name: string; content: string }[],
   ) {
-    // token
     const action = await this.actionService.findOne(actionId);
 
     if (action.type === 'action') {
-      this.availableActions.get(action.link)({
+      this.availableActions.get(action.service)({
         name: action.name + '-' + myActionId,
         userId: userId,
+        link: action.link,
         ...timer,
         params: params,
       });
