@@ -28,16 +28,9 @@ export default function NewAreaScreen(
   }) {
   const { data: services, isError, isLoading } = useServicesQuery();
 
-  // const [serviceSelected, setServiceSelected] = useState<Service | null>(null);
   const [blocksState, setBlockState] = useState<any>([]);
   const [thensInstance, setthensInstance] = useState<any>([]);
-
-  // useEffect(() => {
-  //   if (route.params?.serviceValue || route.params?.actionContent || route.params?.reactionContent) {
-  //     setServiceSelected(route.params?.serviceValue);
-  //     onClickOnAreasCards(serviceSelected, route.params?.actionContent, route.params?.reactionContent, route.params?.uuidOfAction);
-  //   }
-  // }, [route.params?.serviceValue, route.params?.actionContent, route.params?.reactionContent, route.params?.uuidOfAction]);
+  const [indexBlock, setIndexBlock] = useState<number | undefined>(undefined);
 
   const onClickOnAreasCards = (
     serviceSelected?: Service | undefined,
@@ -63,15 +56,46 @@ export default function NewAreaScreen(
           uuid: uuidOfAction,
         },
       ]);
-    // setServiceSelected(null);
+  };
+
+  const onClickOnModifyAreasCards = (
+    serviceSelected?: Service | undefined,
+    actionContent?: string,
+    reactionContent?: string,
+    uuidOfAction?: string,
+  ) => {
+    let blockToBeModified = {};
+    if (actionContent !== undefined && reactionContent === undefined) {
+      blockToBeModified = {
+        name: actionContent,
+        service: serviceSelected?.name,
+        uuid: uuidOfAction,
+      };
+    } else if (actionContent === undefined && reactionContent !== undefined) {
+      blockToBeModified = {
+        name: reactionContent,
+        service: serviceSelected?.name,
+        uuid: uuidOfAction,
+      };
+    }
+    const nouveauTableau = blocksState.map((block: {}, i: number) => i === indexBlock ? blockToBeModified : block);
+
+    actionContent &&
+    setBlockState(nouveauTableau);
+    reactionContent &&
+    setBlockState(nouveauTableau);
+
+    setIndexBlock(undefined);
   };
 
   const onClickOpenServiceNavigator = (
     index: number,
     typeOfAction: "action" | "reaction",
-    onClickOnAreasCards: (serviceSelected?: Service, actionContent?: string, responseContent?: string, uuidOfAction?: string) => void
+    typeOfRequest: "new" | "modify",
+    onClickOnAreasCards: () => void
   ) => {
-    navigation.navigate("Services", {item: { services, typeOfAction, onClickOnAreasCards }})
+    setIndexBlock(index);
+    navigation.navigate("Services", { item: { services, typeOfAction, typeOfRequest, onClickOnAreasCards } })
   };
 
   const canAddThen = () => {
@@ -97,8 +121,6 @@ export default function NewAreaScreen(
       thensInstance.filter((then: any, i: number) => i !== index)
     );
   };
-  // console.log("\nblockstate :", blocksState);
-  // console.log("thenstate :", thensInstance);
 
   const onClickReset = () => {
     Alert.alert("Reset", "Are you sure you want to reset?", [
@@ -131,12 +153,11 @@ export default function NewAreaScreen(
   };
 
   const changeThenButton = (index: number) => {
-    console.log("index :", index);
     Alert.alert("Modify the reaction", "", [
     {
       text: "Modify",
       onPress: () => {
-        onClickOpenServiceNavigator(index + 1, "reaction", onClickOnAreasCards)
+        onClickOpenServiceNavigator(index + 1, "reaction", "modify", onClickOnModifyAreasCards)
       },
     },
     {
@@ -171,7 +192,7 @@ export default function NewAreaScreen(
             {blocksState[0] ? (
               <TouchableOpacity
               style={styles.cardPropertiesServiceSelected}
-              onPress={() => onClickOpenServiceNavigator(0, "action", onClickOnAreasCards)}
+              onPress={() => onClickOpenServiceNavigator(0, "action", "new", onClickOnAreasCards)}
               >
                 <MyText style={styles.cardTitle}>IF</MyText>
                 <MyText>{blocksState[0].name}</MyText>
@@ -181,7 +202,7 @@ export default function NewAreaScreen(
                 <MyText style={styles.cardTitle}>IF</MyText>
                 <TouchableOpacity
                   style={styles.cardButton}
-                  onPress={() => onClickOpenServiceNavigator(0, "action", onClickOnAreasCards)}
+                  onPress={() => onClickOpenServiceNavigator(0, "action", "new", onClickOnAreasCards)}
                 >
                   <MaterialCommunityIcons
                     name="plus"
@@ -222,7 +243,7 @@ export default function NewAreaScreen(
                     <MyText style={styles.cardTitle}>Then</MyText>
                     <TouchableOpacity
                       style={styles.cardButton}
-                      onPress={() => onClickOpenServiceNavigator(index + 1, "reaction", onClickOnAreasCards)}
+                      onPress={() => onClickOpenServiceNavigator(index + 1, "reaction", "new", onClickOnAreasCards)}
                     >
                       <MaterialCommunityIcons
                         name="plus"
