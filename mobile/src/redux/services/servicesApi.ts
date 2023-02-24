@@ -7,10 +7,11 @@ import {
   RegisterResponse,
   LoginResponse,
 } from "../models/authModel";
-import { Service } from "../models/serviceModels";
+import { Service, ServiceInfo } from "../models/serviceModels";
 import { RootState } from "../store/store";
+import { REACT_NATIVE_APP_API_URL } from "@env";
 
-const API_ENDPOINT = "http://localhost:8080/api/reaccoon";
+const API_ENDPOINT = REACT_NATIVE_APP_API_URL;
 
 export const servicesApi = createApi({
   reducerPath: "servicesApi",
@@ -30,7 +31,7 @@ export const servicesApi = createApi({
       query: () => "/service",
       providesTags: ["Service"],
     }),
-    service: builder.query<Service, string>({
+    service: builder.query<ServiceInfo, string>({
       query: (name) => `/service/${name}`,
       providesTags: ["Service"],
     }),
@@ -80,6 +81,7 @@ export const servicesApi = createApi({
 
 export const {
   useServicesQuery,
+  useServiceQuery,
   useActionsQuery,
   useAddAreaMutation,
   useAreasQuery,

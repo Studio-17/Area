@@ -14,8 +14,10 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // Redux
-import { Service } from "../redux/models/serviceModels";
 import { useServicesQuery } from "../redux/services/servicesApi";
+import { Service } from "../redux/models/serviceModels";
+import { PostParamsDto } from "../redux/models/paramsModel";
+
 
 // Components
 import MyText from "../components/MyText";
@@ -36,7 +38,8 @@ export default function NewAreaScreen(
     serviceSelected?: Service | undefined,
     actionContent?: string,
     reactionContent?: string,
-    uuidOfAction?: string
+    uuidOfAction?: string,
+    params?: PostParamsDto[],
   ) => {
     actionContent &&
       setBlockState((state: any) => [
@@ -45,6 +48,7 @@ export default function NewAreaScreen(
           name: actionContent,
           service: serviceSelected?.name,
           uuid: uuidOfAction,
+          params: params ? params : null,
         },
       ]);
     reactionContent &&
@@ -54,6 +58,7 @@ export default function NewAreaScreen(
           name: reactionContent,
           service: serviceSelected?.name,
           uuid: uuidOfAction,
+          params: params ? params : null,
         },
       ]);
   };
@@ -63,6 +68,7 @@ export default function NewAreaScreen(
     actionContent?: string,
     reactionContent?: string,
     uuidOfAction?: string,
+    params?: PostParamsDto[],
   ) => {
     let blockToBeModified = {};
     if (actionContent !== undefined && reactionContent === undefined) {
@@ -70,12 +76,14 @@ export default function NewAreaScreen(
         name: actionContent,
         service: serviceSelected?.name,
         uuid: uuidOfAction,
+        params: params ? params : null,
       };
     } else if (actionContent === undefined && reactionContent !== undefined) {
       blockToBeModified = {
         name: reactionContent,
         service: serviceSelected?.name,
         uuid: uuidOfAction,
+        params: params ? params : null,
       };
     }
     const nouveauTableau = blocksState.map((block: {}, i: number) => i === indexBlock ? blockToBeModified : block);
