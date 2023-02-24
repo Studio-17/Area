@@ -86,10 +86,14 @@ export class CronService {
         }
         await firstValueFrom(
           this.httpService
-            .post<any>('http://localhost:3000/api/reaccoon/actions/' + reaction.link, {
-              accessToken: newAccessToken.accessToken,
-              params: linked.params,
-            })
+            .post<any>(
+              `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/actions/` +
+                reaction.link,
+              {
+                accessToken: newAccessToken.accessToken,
+                params: linked.params,
+              },
+            )
             .pipe(
               catchError((error: AxiosError) => {
                 // console.log(error);
