@@ -12,27 +12,19 @@ import MyText from "../MyText";
 interface Props {
   service: Service;
   logo?: any;
-  setServiceSelected: any;
-  setOpenActionModal: any;
-  setOpenServicesModal: any;
+  onClickService: any;
   cardGap: number;
   index: number;
 }
 
-export default function ServiceCard({
-  service,
-  logo,
-  setServiceSelected,
-  setOpenActionModal,
-  setOpenServicesModal,
-  cardGap,
-  index,
-}: Props) {
-  const onClickOnCards = () => {
-    setServiceSelected(service);
-    setOpenActionModal(true);
-    setOpenServicesModal(false);
-  };
+export default function ServiceCard(
+  {
+    service,
+    logo,
+    onClickService,
+    cardGap,
+    index,
+  }: Props) {
 
   const cardWidth = (Dimensions.get("window").width - cardGap * 3) / 2;
 
@@ -46,7 +38,7 @@ export default function ServiceCard({
           width: cardWidth,
         },
       ]}
-      onPress={onClickOnCards}
+      onPress={onClickService}
     >
       <MyText style={styles.textProperties}>{service.name}</MyText>
     </TouchableOpacity>

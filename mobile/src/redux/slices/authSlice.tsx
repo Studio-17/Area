@@ -149,30 +149,3 @@ export const { setCredentials, logoutUser } = slice.actions;
 export default slice.reducer;
 
 export const selectCurrentUser = (state: RootState) => state.auth.user;
-
-// const authSlice = createSlice({
-//   name: 'userAuth',
-//   initialState,
-//   reducers: {
-//     setSignIn: (state, action) => {
-//
-//       state.email = action.payload.email;
-//       state.isLoggedIn = action.payload.isLoggedIn;
-//       state.password = action.payload.password;
-//
-//     },
-//     setSignOut: (state) => {
-//       state.email = null;
-//       state.password = null;
-//       state.isLoggedIn = false;
-//     }
-//   }
-// });
-//
-// export const { setSignIn, setSignOut } = authSlice.actions;
-//
-// export const selectIsLoggedIn = (state: any) => state.userAuth.isLoggedIn;
-// export const selectEmail = (state: any) => state.userAuth.email;
-// export const selectPassword = (state: any) => state.userAuth.password;
-//
-// export default authSlice.reducer;

@@ -13,64 +13,27 @@ import {
 // Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-// Navigation
-import { createStackNavigator } from "@react-navigation/stack";
-
-// Screens
-import CreateAreaScreen from "./CreateAreaScreen";
-
 // Redux
 import { Service } from "../redux/models/serviceModels";
 import { useServicesQuery } from "../redux/services/servicesApi";
 
 // Components
-import ServicesModal from "../components/Modals/ServicesModal";
-import ActionsModal from "../components/Modals/ActionsModal";
 import MyText from "../components/MyText";
 
-const Stack = createStackNavigator();
-
-export default function NewAreaStack() {
-  return (
-    <Stack.Navigator
-      initialRouteName="NewArea"
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="NewArea" component={NewAreaScreen} />
-      <Stack.Screen name="FinishArea" component={CreateAreaScreen} />
-    </Stack.Navigator>
-  );
-}
-
-function NewAreaScreen({ navigation }: { navigation: any }) {
-  const [openServicesModal, setOpenServicesModal] = useState<boolean>(false);
-  const [openActionsModal, setOpenActionsModal] = useState<boolean>(false);
-  const [serviceSelected, setServiceSelected] = useState<Service | null>(null);
-  const [blocksState, setBlockState] = useState<any>([]);
-  const [thensInstance, setthensInstance] = useState<any>([]);
-  const [typeSelected, setTypeSelected] = useState<"action" | "reaction">(
-    "action"
-  );
-
+export default function NewAreaScreen(
+  {
+    navigation
+  }: {
+    navigation: any
+  }) {
   const { data: services, isError, isLoading } = useServicesQuery();
 
-  const onCloseServiceModal = () => {
-    setOpenServicesModal(false);
-    setServiceSelected(null);
-  };
+  const [blocksState, setBlockState] = useState<any>([]);
+  const [thensInstance, setthensInstance] = useState<any>([]);
+  const [indexBlock, setIndexBlock] = useState<number | undefined>(undefined);
 
-  const onClickOpenModal = (
-    index: number,
-    typeOfAction: "action" | "reaction"
-  ) => {
-    setTypeSelected(typeOfAction);
-    setOpenServicesModal(true);
-    // setBlockNumberSelected(index);
-  };
-
-  const onClickOnAreasCards: any = (
+  const onClickOnAreasCards = (
+    serviceSelected?: Service | undefined,
     actionContent?: string,
     reactionContent?: string,
     uuidOfAction?: string
@@ -93,7 +56,46 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
           uuid: uuidOfAction,
         },
       ]);
-    setServiceSelected(null);
+  };
+
+  const onClickOnModifyAreasCards = (
+    serviceSelected?: Service | undefined,
+    actionContent?: string,
+    reactionContent?: string,
+    uuidOfAction?: string,
+  ) => {
+    let blockToBeModified = {};
+    if (actionContent !== undefined && reactionContent === undefined) {
+      blockToBeModified = {
+        name: actionContent,
+        service: serviceSelected?.name,
+        uuid: uuidOfAction,
+      };
+    } else if (actionContent === undefined && reactionContent !== undefined) {
+      blockToBeModified = {
+        name: reactionContent,
+        service: serviceSelected?.name,
+        uuid: uuidOfAction,
+      };
+    }
+    const nouveauTableau = blocksState.map((block: {}, i: number) => i === indexBlock ? blockToBeModified : block);
+
+    actionContent &&
+    setBlockState(nouveauTableau);
+    reactionContent &&
+    setBlockState(nouveauTableau);
+
+    setIndexBlock(undefined);
+  };
+
+  const onClickOpenServiceNavigator = (
+    index: number,
+    typeOfAction: "action" | "reaction",
+    typeOfRequest: "new" | "modify",
+    onClickOnAreasCards: () => void
+  ) => {
+    setIndexBlock(index);
+    navigation.navigate("Services", { item: { services, typeOfAction, typeOfRequest, onClickOnAreasCards } })
   };
 
   const canAddThen = () => {
@@ -152,10 +154,10 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
 
   const changeThenButton = (index: number) => {
     Alert.alert("Modify the reaction", "", [
-      {
+    {
       text: "Modify",
       onPress: () => {
-        onClickOpenModal(index + 1, "reaction");
+        onClickOpenServiceNavigator(index + 1, "reaction", "modify", onClickOnModifyAreasCards)
       },
     },
     {
@@ -181,103 +183,103 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
 
   return (
     <SafeAreaView style={styles.screenContainer}>
-      {!serviceSelected ? (
-        <>
-          <View style={styles.headerContainer}>
-            <MyText style={styles.textHeaderStyle}>New coonie u said ?</MyText>
-          </View>
-          <ScrollView>
-            <View style={styles.contentContainer}>
-              {blocksState[0] ? (
-                <TouchableOpacity
-                  style={styles.cardPropertiesServiceSelected}
-                  onPress={() => onClickOpenModal(0, "action")}
-                >
-                  <MyText style={styles.cardTitle}>IF</MyText>
-                  <MyText>{blocksState[0].name}</MyText>
-                </TouchableOpacity>
-              ) : (
-                <View style={styles.cardPropertiesServiceSelected}>
-                  <MyText style={styles.cardTitle}>IF</MyText>
-                  <TouchableOpacity
-                    style={styles.cardButton}
-                    onPress={() => onClickOpenModal(0, "action")}
-                  >
-                    <MaterialCommunityIcons
-                      name="plus"
-                      color={"black"}
-                      size={35}
-                    />
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
-            {thensInstance.map((block: any, index: number) => (
-              <View
-                key={index}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+      <>
+        <View style={styles.headerContainer}>
+          <MyText style={styles.textHeaderStyle}>New coonie u said ?</MyText>
+        </View>
+        <ScrollView>
+          <View style={styles.contentContainer}>
+            {blocksState[0] ? (
+              <TouchableOpacity
+              style={styles.cardPropertiesServiceSelected}
+              onPress={() => onClickOpenServiceNavigator(0, "action", "new", onClickOnAreasCards)}
               >
-                <View
-                  style={{
-                    backgroundColor: "#E2DDFF",
-                    width: 10,
-                    height: 30,
-                  }}
-                />
-                <View style={styles.thenContainer}>
-                  {blocksState[index + 1] ? (
-                    <TouchableOpacity style={styles.thenCardProperties} onPress={() => changeThenButton(index + 1)}>
-                      <MyText style={styles.cardTitle}>Then</MyText>
-                      <MyText>{blocksState[index + 1].name}</MyText>
-                    </TouchableOpacity>
-                  ) : (
-                    <View style={styles.thenCardProperties}>
-                      <MyText style={styles.cardTitle}>Then</MyText>
-                      <TouchableOpacity
-                        style={styles.cardButton}
-                        onPress={() => onClickOpenModal(index + 1, "reaction")}
-                      >
-                        <MaterialCommunityIcons
-                          name="plus"
-                          color={"black"}
-                          size={35}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                </View>
-              </View>
-            ))}
-            {canAddThen() ? (
-              <Pressable
-                style={{
-                  borderRadius: 15,
-                  borderColor: "#0165F5",
-                  borderWidth: 3,
-                  padding: 15,
-                  margin: 40,
-                }}
-                onPress={onClickAddthens}
-              >
-                <MyText
-                  style={{
-                    textAlign: "center",
-                    color: "#0165F5",
-                    fontSize: 20,
-                  }}
-                >
-                  Add a reaction
-                </MyText>
-              </Pressable>
+                <MyText style={styles.cardTitle}>IF</MyText>
+                <MyText>{blocksState[0].name}</MyText>
+              </TouchableOpacity>
             ) : (
-              <></>
+              <View style={styles.cardPropertiesServiceSelected}>
+                <MyText style={styles.cardTitle}>IF</MyText>
+                <TouchableOpacity
+                  style={styles.cardButton}
+                  onPress={() => onClickOpenServiceNavigator(0, "action", "new", onClickOnAreasCards)}
+                >
+                  <MaterialCommunityIcons
+                    name="plus"
+                    color={"black"}
+                    size={35}
+                  />
+                </TouchableOpacity>
+              </View>
             )}
-          </ScrollView>
-          <View style={styles.footerContainer}>
+          </View>
+          {thensInstance.map((block: any, index: number) => (
+            <View
+              key={index}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#E2DDFF",
+                  width: 10,
+                  height: 30,
+                }}
+              />
+              <View style={styles.thenContainer}>
+                {blocksState[index + 1] ? (
+                  <TouchableOpacity
+                    style={styles.thenCardProperties}
+                    onPress={() => changeThenButton(index)}
+                  >
+                    <MyText style={styles.cardTitle}>Then</MyText>
+                    <MyText>{blocksState[index + 1].name}</MyText>
+                  </TouchableOpacity>
+                ) : (
+                  <View style={styles.thenCardProperties}>
+                    <MyText style={styles.cardTitle}>Then</MyText>
+                    <TouchableOpacity
+                      style={styles.cardButton}
+                      onPress={() => onClickOpenServiceNavigator(index + 1, "reaction", "new", onClickOnAreasCards)}
+                    >
+                      <MaterialCommunityIcons
+                        name="plus"
+                        color={"black"}
+                        size={35}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            </View>
+          ))}
+          {canAddThen() ? (
+            <Pressable
+              style={{
+                borderRadius: 15,
+                borderColor: "#0165F5",
+                borderWidth: 3,
+                padding: 15,
+                margin: 40,
+              }}
+              onPress={onClickAddthens}
+            >
+              <MyText
+                style={{
+                  textAlign: "center",
+                  color: "#0165F5",
+                  fontSize: 20,
+                }}
+              >
+                Add a reaction
+              </MyText>
+            </Pressable>
+          ) : (<></>)}
+        </ScrollView>
+        <View style={styles.footerContainer}>
             <TouchableOpacity
               style={[styles.footerButtons, { backgroundColor: "#E6566E" }]}
               onPress={onClickReset}
@@ -300,26 +302,7 @@ function NewAreaScreen({ navigation }: { navigation: any }) {
               </TouchableOpacity>
             )}
           </View>
-        </>
-      ) : (
-        <ActionsModal
-          openActionsModal={openActionsModal}
-          onCloseActionsModal={() => setOpenActionsModal(false)}
-          onCloseServicesModal={() => setOpenServicesModal(false)}
-          setOpenServicesModal={setOpenServicesModal}
-          onClickOnAreasCards={onClickOnAreasCards}
-          typeSelected={typeSelected}
-          service={serviceSelected}
-        />
-      )}
-      <ServicesModal
-        openServicesModal={openServicesModal}
-        onCloseServicesModal={onCloseServiceModal}
-        setOpenServicesModal={setOpenServicesModal}
-        setOpenActionModal={setOpenActionsModal}
-        setServiceSelected={setServiceSelected}
-        services={services}
-      />
+      </>
     </SafeAreaView>
   );
 }

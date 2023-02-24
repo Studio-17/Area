@@ -26,7 +26,6 @@ import MyText from "../components/MyText";
 function HomeScreen({ navigation }: { navigation: any }) {
   const { data: areas, isLoading, isFetching, refetch } = useAreasQuery();
 
-
   return (
     <SafeAreaView style={styles.container}>
       <MainHeader />

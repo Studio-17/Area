@@ -17,9 +17,10 @@ interface Props {
   openServicesModal: boolean;
   onCloseServicesModal: () => void;
   setOpenServicesModal: any;
-  setOpenActionModal: any;
+  // setOpenActionModal?: any;
   setServiceSelected?: any;
   services?: Service[] | null;
+  onClickService: any;
 }
 
 export default function ServicesModal({
@@ -27,7 +28,7 @@ export default function ServicesModal({
   onCloseServicesModal,
   setOpenServicesModal,
   setServiceSelected,
-  setOpenActionModal,
+  // setOpenActionModal,
   services,
 }: Props) {
   const cardGap = 20;
@@ -54,17 +55,17 @@ export default function ServicesModal({
               marginRight: cardGap,
             }}
           >
-            {services?.map((service, index) => (
-                <ServiceCard
-                  setServiceSelected={setServiceSelected}
-                  service={service}
-                  setOpenActionModal={setOpenActionModal}
-                  setOpenServicesModal={setOpenServicesModal}
-                  key={index}
-                  cardGap={cardGap}
-                  index={index}
-                />
-            ))}
+            {/* {services?.map((service, index) => (
+                // <ServiceCard
+                //   // setServiceSelected={setServiceSelected}
+                //   service={service}
+                //   setOpenActionModal={setOpenActionModal}
+                //   setOpenServicesModal={setOpenServicesModal}
+                //   key={index}
+                //   cardGap={cardGap}
+                //   index={index}
+                // />
+            ))} */}
           </View>
         </ScrollView>
       </SafeAreaView>

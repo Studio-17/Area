@@ -9,7 +9,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // Screens
 import HomeStack from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
-import NewAreaStack from "../screens/NewAreaScreen";
+import NewAreaStack from "../navigation/NewAreaNavigator";
 
 const Tab = createBottomTabNavigator();
 
