@@ -127,7 +127,7 @@ export class GoogleService {
   public async getCredentialsForApi(email: string): Promise<any> {
     const config = {
       method: 'get',
-      url: 'http://localhost:3000/api/reaccoon/credentials',
+      url: `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/credentials`,
       data: {
         email: email,
         service: ServiceList.GOOGLE,
