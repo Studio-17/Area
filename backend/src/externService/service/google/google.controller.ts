@@ -1,4 +1,5 @@
 import { Controller, Get, HttpStatus, Req, Res, Body, Post } from '@nestjs/common';
+import { ReactionDto } from 'src/cron/dto/reaction.dto';
 import { GoogleService } from './google.service';
 
 // @UseGuards(JwtAuthenticationGuard)
@@ -35,11 +36,7 @@ export class GoogleController {
   }
 
   @Post('/publish-doc')
-  public async createGoogleDoc(
-    @Req() request,
-    @Res() response,
-    @Body() body?: { accessToken: string; params?: { name: string; content: string }[] },
-  ) {
+  public async createGoogleDoc(@Req() request, @Res() response, @Body() body: ReactionDto) {
     let filename: string;
     if (!body.params || body.params.length === 0) {
       filename = 'Untitled';

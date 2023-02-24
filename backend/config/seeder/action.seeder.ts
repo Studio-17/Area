@@ -69,6 +69,50 @@ export class ActionSeederService {
       // ----- MIRO TEMPLATES -----
       // ----- NOTION TEMPLATES -----
       // ----- SPOTIFY TEMPLATES -----
+      {
+        uuid: 'df56e414-32b5-40fa-852c-60eaacfb7e2c',
+        service: ServiceList.SPOTIFY,
+        type: ActionType.ACTION,
+        name: 'A new track is playing',
+        description: 'This action check the current playing track on Spotify.',
+        link: 'spotify/get-current-playing-track/',
+      },
+      {
+        uuid: 'df56e414-32b5-40fa-852c-60eaacfb2e2c',
+        service: ServiceList.SPOTIFY,
+        type: ActionType.ACTION,
+        name: 'The top artist has changed',
+        description: 'This action check the current top artist on Spotify.',
+        link: 'spotify/get-top-artists',
+      },
+      {
+        uuid: 'df56e414-32b5-40fa-852c-60eaacfa7e2c',
+        service: ServiceList.SPOTIFY,
+        type: ActionType.ACTION,
+        name: 'The top track has changed',
+        description: 'This action check the current top track on Spotify.',
+        link: 'spotify/get-top-tracks/',
+      },
+      {
+        uuid: 'df56e414-32b5-40fa-852c-61eaacfa7e2c',
+        service: ServiceList.SPOTIFY,
+        type: ActionType.REACTION,
+        name: 'Create a playlist',
+        params: [
+          {
+            name: 'name',
+            type: 'string',
+            description: 'Name of the new playlist to create on Spotify.',
+          },
+          {
+            name: 'public',
+            type: 'boolean',
+            description: 'Is the playlist is public on Spotify ?',
+          },
+        ],
+        description: 'This reaction add a new playlist on Spotify.',
+        link: 'spotify/create-playlist/',
+      },
       // ----- TWITCH TEMPLATES -----
     ];
 
