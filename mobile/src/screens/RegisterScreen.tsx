@@ -58,21 +58,6 @@ export default function RegisterScreen({ navigation }: any) {
     navigation.navigate("Login");
   };
 
-  const [result, setResult] = useState<any>(null);
-  const handlePressGoogleButton = async () => {
-    WebBrowser.openBrowserAsync(encodeURI("https://google.com"));
-    console.log("Google button pressed");
-    // let result = await axios
-    //   .get(
-    //     "http://localhost:3000/api/reaccoon/service/connect/google?id=fdd65677-c44f-4d3d-8b39-6a498abb527b"
-    //   )
-    //   .then((res) => {
-    //     // WebBrowser.openBrowserAsync(encodeURI(res.data.url));
-    //   });
-    // setResult(result);
-    // console.log(result);
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -87,30 +72,6 @@ export default function RegisterScreen({ navigation }: any) {
         </View>
 
         <MyText style={styles.createAccountText}>Create an account</MyText>
-
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            marginBottom: 30,
-          }}
-        >
-          <TouchableOpacity
-            onPress={handlePressGoogleButton}
-            style={styles.socialmediaBtn}
-          >
-            <Image
-              source={require("../assets/images/social/google.png")}
-              style={{ width: 30, height: 30 }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {}} style={styles.socialmediaBtn}>
-            <Image
-              source={require("../assets/images/social/twitter.png")}
-              style={{ width: 30, height: 30 }}
-            />
-          </TouchableOpacity>
-        </View>
 
         <MyText style={styles.otherRegisterMethod}>
           Or, register with email ...
@@ -186,6 +147,7 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: StatusBar.currentHeight || 0,
     backgroundColor: "#FFF7FA",
+    flex: 1,
   },
   reaccoonPNG: {
     width: 300,

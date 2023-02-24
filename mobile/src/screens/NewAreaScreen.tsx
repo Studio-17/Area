@@ -192,7 +192,7 @@ export default function NewAreaScreen(
             {blocksState[0] ? (
               <TouchableOpacity
               style={styles.cardPropertiesServiceSelected}
-              onPress={() => onClickOpenServiceNavigator(0, "action", "new", onClickOnAreasCards)}
+              onPress={() => onClickOpenServiceNavigator(0, "action", "new", onClickOnModifyAreasCards)}
               >
                 <MyText style={styles.cardTitle}>IF</MyText>
                 <MyText>{blocksState[0].name}</MyText>

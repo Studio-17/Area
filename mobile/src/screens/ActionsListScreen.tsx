@@ -30,14 +30,14 @@ export default function ActionsListScreen(
   } = useActionsQuery(service.name);
 
   const handleCloseModal = () => {
-    navigation.navigate("NewArea");
+    navigation.goBack();
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.modalContainer}>
         <Pressable style={styles.button} onPress={handleCloseModal}>
-          <MaterialCommunityIcons name="close" color={"black"} size={50} />
+          <MaterialCommunityIcons name="arrow-left" color={"black"} size={50} />
         </Pressable>
       </View>
       <View style={{ padding: 10 }}>
