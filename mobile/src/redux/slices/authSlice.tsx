@@ -4,7 +4,7 @@ import { LoginRequest, RegisterRequest } from "../models/authModel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "../store/store";
 
-const API_ENDPOINT = "http://10.0.2.2:3000/api/reaccoon";
+const API_ENDPOINT = "http://localhost:8080/api/reaccoon";
 
 let userToken = null;
 
@@ -149,30 +149,3 @@ export const { setCredentials, logoutUser } = slice.actions;
 export default slice.reducer;
 
 export const selectCurrentUser = (state: RootState) => state.auth.user;
-
-// const authSlice = createSlice({
-//   name: 'userAuth',
-//   initialState,
-//   reducers: {
-//     setSignIn: (state, action) => {
-//
-//       state.email = action.payload.email;
-//       state.isLoggedIn = action.payload.isLoggedIn;
-//       state.password = action.payload.password;
-//
-//     },
-//     setSignOut: (state) => {
-//       state.email = null;
-//       state.password = null;
-//       state.isLoggedIn = false;
-//     }
-//   }
-// });
-//
-// export const { setSignIn, setSignOut } = authSlice.actions;
-//
-// export const selectIsLoggedIn = (state: any) => state.userAuth.isLoggedIn;
-// export const selectEmail = (state: any) => state.userAuth.email;
-// export const selectPassword = (state: any) => state.userAuth.password;
-//
-// export default authSlice.reducer;
