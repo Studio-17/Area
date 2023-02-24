@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { LoginRequest, RegisterRequest } from "../models/authModel";
+import { LogInGoogleRequest, LoginRequest, RegisterRequest } from "../models/authModel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "../store/store";
 
@@ -37,6 +37,30 @@ const initialState = {
   error: null | any;
   success: null | any;
 };
+
+export const loginUserGoogle = createAsyncThunk(
+  "auth/loginGoogle",
+  async ({ token }: LogInGoogleRequest, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(
+        `${API_ENDPOINT}/authentication/login/google`,
+        {
+          params: { token: token },
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log("loginUserGoogle: thunk: ", data);
+      localStorage.setItem("userToken", data.accessToken);
+      return data;
+    } catch (error: any) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
 
 export const registerUser = createAsyncThunk(
   "auth/register",

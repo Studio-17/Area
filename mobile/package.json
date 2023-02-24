@@ -34,7 +34,10 @@
     "react-native-screens": "~3.18.0",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.9",
-    "react-redux": "^8.0.5"
+    "react-redux": "^8.0.5",
+    "expo-application": "~5.0.1",
+    "expo-auth-session": "~3.8.0",
+    "expo-random": "~13.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
