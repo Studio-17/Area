@@ -8,6 +8,7 @@ import {
 import { UserService } from '../../../../user/user.service';
 import { CredentialsService } from '../../../../credentials/credentials.service';
 import { JwtService } from '@nestjs/jwt';
+import { ServiceList } from 'src/service/entity/service.entity';
 
 @Injectable()
 export class CredentialsGuard implements CanActivate {
@@ -26,7 +27,7 @@ export class CredentialsGuard implements CanActivate {
     }
 
     const credential = await this.credentialsService
-      .findById(user.uuid, 'github')
+      .findById(user.uuid, ServiceList.GITHUB)
       .then((res) => res)
       .catch((error) => error);
 

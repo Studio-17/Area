@@ -5,8 +5,11 @@ import { ActionModule } from 'src/action/action.module';
 import { AreaModule } from 'src/area/area.module';
 import { GoogleModule } from 'src/externService/service/google/google.module';
 import { MyActionController } from './myAction.controller';
-import { MyActionEntity} from './entity/myAction.entity';
+import { MyActionEntity } from './entity/myAction.entity';
 import { MyActionService } from './myAction.service';
+import { GithubModule } from '../externService/service/github/github.module';
+import { SpotifyModule } from 'src/externService/service/spotify/spotify.module';
+import { CronModule } from 'src/cron/cron.module';
 
 @Module({
   imports: [
@@ -17,7 +20,10 @@ import { MyActionService } from './myAction.service';
     TypeOrmModule.forFeature([MyActionEntity]),
     ActionModule,
     forwardRef(() => AreaModule),
+    forwardRef(() => CronModule),
     forwardRef(() => GoogleModule),
+    forwardRef(() => GithubModule),
+    forwardRef(() => SpotifyModule),
   ],
   providers: [MyActionService],
   controllers: [MyActionController],

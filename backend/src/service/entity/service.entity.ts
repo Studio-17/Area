@@ -1,13 +1,22 @@
 import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryColumn } from 'typeorm';
 
 export enum ServiceList {
+  DEEZER = 'deezer',
   DISCORD = 'discord',
+  DROPBOX = 'dropbox',
   GITHUB = 'github',
+  GITLAB = 'gitlab',
   GOOGLE = 'google',
+  LINKEDIN = 'linkedin',
+  MAILCHIMP = 'mailchimp',
   MIRO = 'miro',
   NOTION = 'notion',
+  PINTEREST = 'pinterest',
+  SOUNDCLOUD = 'soundcloud',
   SPOTIFY = 'spotify',
+  TUMBLR = 'tumblr',
   TWITCH = 'twitch',
+  TYPEFORM = 'typeform',
 }
 
 export enum ServiceType {

@@ -8,7 +8,11 @@ import { ActionService } from 'src/action/action.service';
 import { AreaService } from '../area/area.service';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { ActionType } from 'src/action/entity/action.entity';
-import { GoogleService } from 'src/externService/service/google/google.service';
+import { SpotifyCronService } from 'src/externService/service/spotify/spotify.cron.service';
+import { ServiceList } from 'src/service/entity/service.entity';
+import { GithubCronService } from 'src/externService/service/github/github.cron.service';
+import { GoogleCronService } from 'src/externService/service/google/google.cron.service';
+import { CronService } from 'src/cron/cron.service';
 
 @Injectable()
 export class MyActionService {
@@ -18,9 +22,11 @@ export class MyActionService {
     private readonly actionService: ActionService,
     @Inject(forwardRef(() => AreaService))
     private readonly areaService: AreaService,
-    @Inject(forwardRef(() => GoogleService))
-    private readonly googleService: GoogleService,
     private schedulerRegistry: SchedulerRegistry,
+    private readonly googleCronService: GoogleCronService,
+    private readonly githubCronService: GithubCronService,
+    private readonly spotifyCronService: SpotifyCronService,
+    private readonly cronService: CronService,
   ) {}
 
   async findAction(areaId: string) {
@@ -88,7 +94,16 @@ export class MyActionService {
   }
 
   availableActions = new Map([
-    ['google/check-mail/', this.googleService.addCron.bind(this.googleService)],
+    // DISCORD
+    // GITHUB
+    // GOOGLE
+    // MIRO
+    // NOTION
+    // SPOTIFY
+    // TWITCH:
+    [ServiceList.GOOGLE, this.googleCronService.availableActions],
+    [ServiceList.GITHUB, this.githubCronService.availableActions],
+    // [ServiceList.SPOTIFY, this.spotifyCronService.availableActions],
   ]);
 
   async addCron(
@@ -98,16 +113,19 @@ export class MyActionService {
     userId: string,
     params: { name: string; content: string }[],
   ) {
-    // token
     const action = await this.actionService.findOne(actionId);
 
     if (action.type === 'action') {
-      this.availableActions.get(action.link)({
-        name: action.name + '-' + myActionId,
-        userId: userId,
-        ...timer,
-        params: params,
-      });
+      this.cronService.addCron(
+        {
+          name: action.name + '-' + myActionId,
+          userId: userId,
+          link: action.link,
+          ...timer,
+          params: params,
+        },
+        this.availableActions.get(action.service),
+      );
     }
   }
 
@@ -152,14 +170,14 @@ export class MyActionService {
   }
 
   async removeAction(actionId: string, userId: string) {
-    this.removeCron(actionId, userId);
+    await this.removeCron(actionId, userId);
     return await this.myActionRepository.delete({ uuid: actionId, userId: userId });
   }
 
   async removeByAreaId(areaId: string, userId: string) {
     const myActions = await this.findAll(areaId);
     for (const myAction of myActions) {
-      this.removeCron(myAction.uuid, userId);
+      await this.removeCron(myAction.uuid, userId);
     }
     return await this.myActionRepository.delete({ areaId: areaId, userId: userId });
   }
@@ -169,7 +187,7 @@ export class MyActionService {
     for (const action of allActions) {
       const myActions = await this.findByActionId(action.uuid);
       for (const myAction of myActions) {
-        this.addCron(
+        await this.addCron(
           action.uuid,
           { hour: myAction.hour, minute: myAction.minute, second: myAction.second },
           // myAction.token,

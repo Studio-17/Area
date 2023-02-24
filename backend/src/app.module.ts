@@ -21,8 +21,12 @@ import { MiroOAuth2Module } from './externService/oauth2/miro/miro-oauth2.module
 import { NotionOAuth2Module } from './externService/oauth2/notion/notion-oauth2.module';
 import { SpotifyOAuth2Module } from './externService/oauth2/spotify/spotify-oauth2.module';
 import { TwitchOAuth2Module } from './externService/oauth2/twitch/twitch-oauth2.module';
-import { JwtModule } from '@nestjs/jwt';
-import { TemplateSeederService} from '../config/seeder/template.seeder';
+import { SpotifyModule } from './externService/service/spotify/spotify.module';
+import { ActionSeederService } from '../config/seeder/action.seeder';
+import { DeezerOAuth2Module } from './externService/oauth2/deezer/deezer-oauth2.module';
+import { DropboxOAuth2Module } from './externService/oauth2/dropbox/dropbox-oauth2.module';
+import { TypeformOAuth2Module } from './externService/oauth2/typeform/typeform-oauth2.module';
+import { CronModule } from './cron/cron.module';
 
 @Module({
   imports: [
@@ -43,6 +47,7 @@ import { TemplateSeederService} from '../config/seeder/template.seeder';
       }),
       inject: [ConfigService],
     }),
+    CronModule,
     AuthenticationModule,
     UserModule,
     CredentialsModule,
@@ -54,13 +59,17 @@ import { TemplateSeederService} from '../config/seeder/template.seeder';
     MyActionModule,
     GithubModule,
     GoogleModule,
+    SpotifyModule,
+    DeezerOAuth2Module,
     DiscordOAuth2Module,
+    DropboxOAuth2Module,
     GithubOAuth2Module,
     GoogleOAuth2Module,
     MiroOAuth2Module,
     NotionOAuth2Module,
     SpotifyOAuth2Module,
     TwitchOAuth2Module,
+    TypeformOAuth2Module,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -68,7 +77,7 @@ import { TemplateSeederService} from '../config/seeder/template.seeder';
 export class AppModule implements NestModule {
   constructor(
     private readonly serviceSeederService: ServiceSeederService,
-    private readonly actionSeederService: TemplateSeederService,
+    private readonly actionSeederService: ActionSeederService,
   ) {}
 
   configure(consumer: MiddlewareConsumer) {

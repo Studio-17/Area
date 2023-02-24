@@ -29,28 +29,40 @@ const AreasCards = ({ area, onClickOnCard, onClickDeleteArea }: Props) => {
         sx={{ height: "82%" }}
         onClick={() => onClickOnCard(area?.area.uuid)}
       >
-        <CardContent sx={{ padding: "30px" }}>
-          <div className="card-text-first-bloc">
-            <div
-              className="card-text-if"
-              style={{ color: theme.palette.primary }}
-            >
-              IF&nbsp;
-            </div>
+        <CardContent
+          sx={{
+            padding: "30px",
+            display: area?.area.name ? "flex" : "",
+            justifyContent: area?.area.name ? "center" : "",
+          }}
+        >
+          {area?.area.name ? (
+            <div className="area-name">{area?.area.name}</div>
+          ) : (
+            <>
+              <div className="card-text-first-bloc">
+                <div
+                  className="card-text-if"
+                  style={{ color: theme.palette.primary }}
+                >
+                  IF&nbsp;
+                </div>
 
-            <div className="card-text-first-line">{area?.action?.name}</div>
-          </div>
-          <div className="card-text-second-bloc">
-            <div
-              className="card-text-then"
-              style={{ color: theme.palette.primary }}
-            >
-              THEN&nbsp;
-            </div>
-            <div className="card-text-second-line">
-              {area?.reactions[0]?.name}
-            </div>
-          </div>
+                <div className="card-text-first-line">{area?.action?.name}</div>
+              </div>
+              <div className="card-text-second-bloc">
+                <div
+                  className="card-text-then"
+                  style={{ color: theme.palette.primary }}
+                >
+                  THEN&nbsp;
+                </div>
+                <div className="card-text-second-line">
+                  {area?.reactions[0]?.name}
+                </div>
+              </div>
+            </>
+          )}
         </CardContent>
       </CardActionArea>
     </Card>

@@ -44,39 +44,14 @@ export class AuthenticationController {
   @Get('/login/google')
   public async loginWithGoogle(@Req() request, @Res() response, @Query() query: { token: string }) {
     try {
-      await this.authenticationService.googleConnect(query.token);
+      const user = await this.authenticationService.googleConnect(query.token);
 
-      return response.status(HttpStatus.OK).json({
-        message: 'User login (using google)!',
-        status: 200,
-      });
+      return response.status(HttpStatus.OK).json(user);
     } catch (err) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         message: 'Error: User not logged in (using google)!',
         status: 400,
       });
     }
-  }
-
-  @Get('/login/facebook')
-  public async loginWithFacebook(@Res() response) {
-    try {
-      await this.authenticationService.facebookConnect();
-
-      return response.status(HttpStatus.OK).json({
-        message: 'User login successfully (using facebook)!',
-        status: 200,
-      });
-    } catch (err) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error: User not logged in (using facebook)!',
-        status: 400,
-      });
-    }
-  }
-
-  @Get('/login/facebook/redirect')
-  public async loginWithFacebookRedirect(@Req() request, @Res() response, @Query() query) {
-    return undefined;
   }
 }

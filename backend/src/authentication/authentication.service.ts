@@ -70,10 +70,8 @@ export class AuthenticationService {
         });
 
         return {
-          expiresIn: 3600,
           accessToken: accessToken,
           user: payload,
-          status: 200,
         };
       })
       .catch((err) => {
@@ -135,31 +133,45 @@ export class AuthenticationService {
       });
   }
 
-  public async googleConnect(token: string) {
+  public async googleConnect(token: string): Promise<any | { status: number; message: string }> {
     const ticket = await client.verifyIdToken({
       idToken: token,
       audience: process.env.GOOGLE_ACCOUNT_CLIENT_ID,
     });
     const payload = ticket.getPayload();
-    const isExistingUser: boolean = await this.usersService.exist(payload.email);
-
-    const user: UserEntity = await this.usersService.findByEmail(payload.email);
-    const jwtPayload = this.createJwtPayload(user);
+    const isExistingUser: boolean = await this.usersService.existByEmail(payload.email);
 
     if (!isExistingUser) {
-      await this.usersService.create({
+      const user = {
+        email: payload.email,
+      };
+      const jwt = this.createJwtPayload(user);
+
+      const userCreated = await this.usersService.create({
         email: payload.email,
         firstName: payload.given_name,
         lastName: payload.family_name,
         password: '',
-        jwt: jwtPayload.token,
+        jwt: jwt.token,
       });
+
+      return {
+        user: userCreated,
+        accessToken: jwt.token,
+      };
     } else {
+      const user: UserEntity = await this.usersService.findByEmail(payload.email);
+      const jwt = this.createJwtPayload(user);
+
       await this.usersService.updateUser(user.uuid, {
-        jwt: jwtPayload.token,
+        jwt: jwt.token,
       });
+
+      return {
+        user: user,
+        accessToken: jwt.token,
+      };
     }
-    return user;
   }
 
   public async facebookConnect() {

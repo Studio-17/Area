@@ -1,0 +1,111 @@
+import {
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { DropboxOauth2Service } from './dropbox-oauth2.service';
+import { CredentialsService } from 'src/credentials/credentials.service';
+import { HttpService } from '@nestjs/axios';
+import { JwtService } from '@nestjs/jwt';
+import { AuthGuard } from '@nestjs/passport';
+import { ServiceList } from 'src/service/entity/service.entity';
+import { catchError, firstValueFrom, map } from 'rxjs';
+import { AxiosError } from 'axios/index';
+
+@ApiTags('/service/connect')
+@Controller('/service/connect')
+export class DropboxOauth2Controller {
+  constructor(
+    private readonly connectionService: DropboxOauth2Service,
+    private readonly credentialsService: CredentialsService,
+    private readonly httpService: HttpService,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  @Get('/dropbox')
+  @UseGuards(AuthGuard('jwt'))
+  public async discord(@Req() request, @Res() response) {
+    const clientID = process.env.DROPBOX_CLIENT_ID;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/dropbox/redirect`;
+    const scope =
+      'basic_access,email,manage_library,manage_community,delete_library,listening_history';
+    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
+
+    if (!token['id']) {
+      return response.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'Error unauthenticated (using jwt)',
+        data: token,
+        status: 401,
+      });
+    }
+
+    return response.status(HttpStatus.OK).json({
+      url: encodeURI(
+        `https://www.dropbox.com/oauth2/authorize?client_id=${clientID}&token_access_type=offline&response_type=code&state=${token['id']}&redirect_uri=${callbackURL}`,
+      ),
+      status: 200,
+    });
+  }
+
+  @Get('/dropbox/redirect')
+  public async discordRedirect(@Req() request, @Res() response, @Query() query) {
+    const clientID = process.env.DROPBOX_CLIENT_ID;
+    const clientSECRET = process.env.DROPBOX_CLIENT_SECRET;
+    const code = query.code;
+    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/dropbox/redirect`;
+    const id = query.state;
+
+    const dropboxData = await firstValueFrom(
+      this.httpService
+        .post(
+          `https://api.dropbox.com/oauth2/token`,
+          {
+            code: code,
+            grant_type: 'authorization_code',
+            redirect_uri: callbackURL,
+            client_id: clientID,
+            client_secret: clientSECRET,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          },
+        )
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+
+    const accessToken = dropboxData.access_token;
+
+    if (accessToken) {
+      const userCredentials = {
+        userId: id,
+        service: ServiceList.DROPBOX,
+        accessToken: dropboxData.access_token,
+        refreshToken: dropboxData.refresh_token,
+      };
+
+      await this.credentialsService.createCredentialsUser(userCredentials);
+    }
+
+    return response.status(HttpStatus.OK).json({
+      message: 'User credentials stored in database !',
+      status: 200,
+    });
+  }
+}

@@ -5,6 +5,7 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ServiceList } from '../../service/entity/service.entity';
 
 @Entity({ name: 'credential' })
 export class CredentialsEntity {
@@ -15,12 +16,12 @@ export class CredentialsEntity {
   userId: string;
 
   @Column()
-  service: string;
+  service: ServiceList;
 
   @Column()
   accessToken: string;
 
-  @Column()
+  @Column({ nullable: true })
   refreshToken: string;
 
   @CreateDateColumn({

@@ -1,5 +1,7 @@
 import { Card, CardActionArea, CardContent } from "@mui/material";
 import { theme } from "../../constants/theme";
+import { Action } from "../../models/actionModels";
+import { GetParamsDto } from "../../models/paramsModel";
 import "../../styles/ActionsCards.css";
 
 interface Props {
@@ -9,9 +11,13 @@ interface Props {
   onClick: (
     actionContent?: string,
     reactionContent?: string,
-    uuidOfAction?: string
+    uuidOfAction?: string,
+    params?: GetParamsDto[] | null,
+    action?: Action
   ) => void;
-  disabled: boolean
+  disabled: boolean;
+  params: GetParamsDto[] | null;
+  action?: Action;
 }
 
 const ActionsCards = ({
@@ -19,7 +25,9 @@ const ActionsCards = ({
   reactionContent,
   onClick,
   uuidOfAction,
-  disabled
+  disabled,
+  params,
+  action,
 }: Props) => {
   return (
     <Card sx={{ width: 350, height: 250, borderRadius: 2 }}>
@@ -29,7 +37,9 @@ const ActionsCards = ({
           onClick(
             actionContent && actionContent,
             reactionContent && reactionContent,
-            uuidOfAction && uuidOfAction
+            uuidOfAction && uuidOfAction,
+            params,
+            action
           )
         }
         disabled={disabled}
