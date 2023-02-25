@@ -1,11 +1,12 @@
 import { Body, Controller, Delete, Get, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { IsUuidParam } from '../utils/decorators/Is-uuid-param.decorator';
 import { AreaService } from './area.service';
-import { CreateAreaDto } from './dto/create-area-dto';
-import { UpdateAreaDto } from './dto/update-area-dto';
+import { CreateAreaDto } from './dto/create-area.dto';
+import { UpdateAreaDto } from './dto/update-area.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authentication.guard';
 import { AreaEntity } from './entity/area.entity';
+import {UserId} from "../utils/decorators/user-id.decorator";
 
 @ApiTags('Area')
 @UseGuards(JwtAuthenticationGuard)
@@ -32,9 +33,9 @@ export class AreaController {
   async update(
     @IsUuidParam('areaId') areaId: string,
     @Body() updateAreaDto: UpdateAreaDto,
-    @Req() request: any,
+    @UserId() userId: string,
   ): Promise<AreaEntity> {
-    return this.areaService.update(areaId, updateAreaDto, request.user.userId);
+    return this.areaService.update(areaId, updateAreaDto, userId);
   }
 
   @Delete(':areaId')
