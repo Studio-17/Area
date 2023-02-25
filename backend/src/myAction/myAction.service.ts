@@ -145,7 +145,7 @@ export class MyActionService {
       ...action,
     });
     const myNewAction: MyActionEntity = await this.myActionRepository.save(newAction);
-    this.addCron(
+    await this.addCron(
       action.actionId,
       { hour: action.hour, minute: action.minute, second: action.second },
       // token,
