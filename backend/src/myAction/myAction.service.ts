@@ -103,7 +103,7 @@ export class MyActionService {
     // TWITCH:
     [ServiceList.GOOGLE, this.googleCronService.availableActions],
     [ServiceList.GITHUB, this.githubCronService.availableActions],
-    // [ServiceList.SPOTIFY, this.spotifyCronService.availableActions],
+    [ServiceList.SPOTIFY, this.spotifyCronService.availableActions],
   ]);
 
   async addCron(
@@ -121,6 +121,7 @@ export class MyActionService {
           name: action.name + '-' + myActionId,
           userId: userId,
           link: action.link,
+          service: action.service,
           ...timer,
           params: params,
         },

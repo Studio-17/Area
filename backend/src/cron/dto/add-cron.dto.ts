@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString, IsOptional, IsArray, IsUUID } from 'class-validator';
+import { ServiceList } from 'src/service/entity/service.entity';
 
 export class CreateCronDto {
   @IsString()
@@ -8,6 +9,9 @@ export class CreateCronDto {
   @IsString()
   @IsNotEmpty()
   link!: string;
+
+  @IsNotEmpty()
+  service!: ServiceList;
 
   @IsUUID()
   @IsNotEmpty()

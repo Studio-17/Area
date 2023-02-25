@@ -23,11 +23,6 @@ import { ServiceList } from '../service/entity/service.entity';
 export class CredentialsController {
   constructor(private readonly credentialsService: CredentialsService) {}
 
-  // @Get('/all')
-  // public async findAllUser(): Promise<CredentialsInterface[]> {
-  //   return this.credentialsService.findAll();
-  // }
-
   @Get()
   public async findOneCredentials(
     @Param('userId') userId: string,
