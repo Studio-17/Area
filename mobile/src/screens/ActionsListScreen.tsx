@@ -5,16 +5,20 @@ import {
   SafeAreaView,
   StatusBar,
   Pressable,
+  ScrollView,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import * as WebBrowser from 'expo-web-browser';
+import * as WebBrowser from "expo-web-browser";
 
 // WebBrowser.maybeCompleteAuthSession();
 
 // Redux
 import axios from "axios";
-import { useActionsQuery, useServiceQuery } from "../redux/services/servicesApi";
+import {
+  useActionsQuery,
+  useServiceQuery,
+} from "../redux/services/servicesApi";
 import { Service } from "../redux/models/serviceModels";
 import { Action } from "../redux/models/actionModels";
 import { GetParamsDto, PostParamsDto } from "../redux/models/paramsModel";
@@ -24,23 +28,31 @@ const API_ENDPOINT = REACT_NATIVE_APP_API_URL;
 
 // Components
 import ActionCard from "../components/Cards/ActionCard";
-import ConnectionToServiceModal from "../components/Modals/ConnectionToServiceModal";
+import FormModal from "../components/Modals/FormModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MyText from "../components/MyText";
 
-export default function ActionsListScreen(
-  {
-    navigation,
-    route
-  }: any) {
+export default function ActionsListScreen({ navigation, route }: any) {
   const { item } = route.params;
   const service: Service = item.service;
   const typeOfAction: "action" | "reaction" = item.typeOfAction;
-  const onClickOnAreasCards: (serviceSelected?: Service | undefined, actionContent?: string, responseContent?: string, uuidOfAction?: string) => void = item.onClickOnAreasCards;
+  const onClickOnAreasCards: (
+    serviceSelected?: Service | undefined,
+    actionContent?: string,
+    responseContent?: string,
+    uuidOfAction?: string,
+    params?: PostParamsDto[] | null
+  ) => void = item.onClickOnAreasCards;
 
   const [isServiceConnected, setIsServiceConnected] = useState<boolean>(false);
-  const [shouldPrintActionParamsForm, setShouldPrintActionParamsForm] = useState<boolean>(false);
-  const [currentActionParams, setCurrentActionParams] = useState<GetParamsDto[] | null>(null);
-  const [openConnectToServiceModal, setOpenConnectToServiceModal] = useState<boolean>(false);
+  const [shouldPrintActionParamsForm, setShouldPrintActionParamsForm] =
+    useState<boolean>(false);
+  const [openFormModal, setOpenFormModal] = useState<boolean>(false);
+
+  const [currentActionParams, setCurrentActionParams] = useState<
+    GetParamsDto[] | null
+  >(null);
+  const [currentAction, setCurrentAction] = useState<any | null>(null);
 
   const {
     data: actions,
@@ -68,13 +80,24 @@ export default function ActionsListScreen(
       .then((res) => {
         console.log(res.data.url);
         WebBrowser.openBrowserAsync(res.data.url);
-      })
-      //   var myWindow = window.open(res.data.url, "");
-      //   if (myWindow)
-      //     myWindow.onunload = function () {
-      //       refetchServiceInfos();
-      //     };
-      // });
+      });
+    //   var myWindow = window.open(res.data.url, "");
+    //   if (myWindow)
+    //     myWindow.onunload = function () {
+    //       refetchServiceInfos();
+    //     };
+    // });
+  };
+
+  const onSubmitActionParamsForm = (
+    actionContent?: string,
+    reactionContent?: string,
+    uuidOfAction?: string,
+    params?: PostParamsDto[]
+  ) => {
+    setShouldPrintActionParamsForm(false);
+    setCurrentActionParams(null);
+    onClickOnAreasCards(service, actionContent, reactionContent, uuidOfAction, params);
   };
 
   const handleCloseActionsListScreen = () => {
@@ -85,16 +108,35 @@ export default function ActionsListScreen(
     actionContent?: string,
     reactionContent?: string,
     uuidOfAction?: string,
-    // params?: GetParamsDto[] | null,
+    params?: GetParamsDto[] | null,
+    action?: Action
   ) => {
-    if (!serviceInfo?.isConnected) {
-      setOpenConnectToServiceModal(true);
+    if (params) {
+      setCurrentActionParams(params);
+      setCurrentAction(action);
+      setOpenFormModal(true);
     } else {
-      setOpenConnectToServiceModal(false);
-      onClickOnAreasCards(service, actionContent, reactionContent, uuidOfAction);
+      // onClickOnActionCards(
+      //   actionContent && actionContent,
+      //   reactionContent && reactionContent,
+      //   uuidOfAction && uuidOfAction
+      // );
+      onClickOnAreasCards(
+        service,
+        actionContent,
+        reactionContent,
+        uuidOfAction,
+        params
+      );
       navigation.navigate("NewArea");
+      // console.log("no params");
     }
-  }
+    // if (!serviceInfo?.isConnected) {
+    //   setOpenFormModal(true);
+    // } else {
+    // onClickOnAreasCards(service, actionContent, reactionContent, uuidOfAction);
+    // }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -102,25 +144,38 @@ export default function ActionsListScreen(
         <Pressable style={styles.button} onPress={handleCloseActionsListScreen}>
           <MaterialCommunityIcons name="arrow-left" color={"black"} size={50} />
         </Pressable>
+        <MyText style={styles.textHeaderStyle}>Choose a trigger</MyText>
+        <View style={{ flex: 1 }} />
       </View>
-      <View style={{ padding: 10 }}>
-        {actions
-          ?.filter((action: Action) => action.type === typeOfAction)
-          .map((action: Action, index: number) => (
-            <ActionCard
-              onClick={onClickOnActionCardsCheck}
-              actionContent={
-                typeOfAction === "action" ? action.name : undefined
-              }
-              reactionContent={
-                typeOfAction === "reaction" ? action.name : undefined
-              }
-              uuidOfAction={action.uuid}
-              key={index}
-            />
-          ))}
-      </View>
-      <ConnectionToServiceModal openConnectToServiceModal={openConnectToServiceModal} setOpenConnectToServiceModal={setOpenConnectToServiceModal} service={service} onClickToConnect={handleOauthConnection} />
+      <ScrollView>
+        <View style={{ padding: 10 }}>
+          {actions
+            ?.filter((action: Action) => action.type === typeOfAction)
+            .map((element: Action, index: number) => (
+              <ActionCard
+                onClick={onClickOnActionCardsCheck}
+                actionContent={
+                  typeOfAction === "action" ? element.name : undefined
+                }
+                reactionContent={
+                  typeOfAction === "reaction" ? element.name : undefined
+                }
+                uuidOfAction={element.uuid}
+                key={index}
+                params={element.params}
+                action={element}
+              />
+            ))}
+        </View>
+      </ScrollView>
+      <FormModal
+        openFormModal={openFormModal}
+        setOpenFormModal={setOpenFormModal}
+        action={currentAction}
+        params={currentActionParams}
+        onSubmitForm={onSubmitActionParamsForm}
+        navigation={navigation}
+      />
     </SafeAreaView>
   );
 }
@@ -135,7 +190,13 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     flexDirection: "row",
-    backgroundColor: "FFF7FA",
+  },
+  textHeaderStyle: {
+    fontSize: 25,
+    fontWeight: "bold",
+    color: "black",
+    textAlign: "center",
+    width: "70%",
   },
   textModal: {
     fontSize: 25,

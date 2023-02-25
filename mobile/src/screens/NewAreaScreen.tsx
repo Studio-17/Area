@@ -18,16 +18,10 @@ import { useServicesQuery } from "../redux/services/servicesApi";
 import { Service } from "../redux/models/serviceModels";
 import { PostParamsDto } from "../redux/models/paramsModel";
 
-
 // Components
 import MyText from "../components/MyText";
 
-export default function NewAreaScreen(
-  {
-    navigation
-  }: {
-    navigation: any
-  }) {
+export default function NewAreaScreen({ navigation }: { navigation: any }) {
   const { data: services, isError, isLoading } = useServicesQuery();
 
   const [blocksState, setBlockState] = useState<any>([]);
@@ -39,7 +33,7 @@ export default function NewAreaScreen(
     actionContent?: string,
     reactionContent?: string,
     uuidOfAction?: string,
-    params?: PostParamsDto[],
+    params?: PostParamsDto[] | null
   ) => {
     actionContent &&
       setBlockState((state: any) => [
@@ -68,7 +62,7 @@ export default function NewAreaScreen(
     actionContent?: string,
     reactionContent?: string,
     uuidOfAction?: string,
-    params?: PostParamsDto[],
+    params?: PostParamsDto[]
   ) => {
     let blockToBeModified = {};
     if (actionContent !== undefined && reactionContent === undefined) {
@@ -86,12 +80,12 @@ export default function NewAreaScreen(
         params: params ? params : null,
       };
     }
-    const nouveauTableau = blocksState.map((block: {}, i: number) => i === indexBlock ? blockToBeModified : block);
+    const nouveauTableau = blocksState.map((block: {}, i: number) =>
+      i === indexBlock ? blockToBeModified : block
+    );
 
-    actionContent &&
-    setBlockState(nouveauTableau);
-    reactionContent &&
-    setBlockState(nouveauTableau);
+    actionContent && setBlockState(nouveauTableau);
+    reactionContent && setBlockState(nouveauTableau);
 
     setIndexBlock(undefined);
   };
@@ -103,7 +97,9 @@ export default function NewAreaScreen(
     onClickOnAreasCards: () => void
   ) => {
     setIndexBlock(index);
-    navigation.navigate("Services", { item: { services, typeOfAction, typeOfRequest, onClickOnAreasCards } })
+    navigation.navigate("Services", {
+      item: { services, typeOfAction, typeOfRequest, onClickOnAreasCards },
+    });
   };
 
   const canAddThen = () => {
@@ -162,26 +158,30 @@ export default function NewAreaScreen(
 
   const changeThenButton = (index: number) => {
     Alert.alert("Modify the reaction", "", [
-    {
-      text: "Modify",
-      onPress: () => {
-        onClickOpenServiceNavigator(index + 1, "reaction", "modify", onClickOnModifyAreasCards)
+      {
+        text: "Modify",
+        onPress: () => {
+          onClickOpenServiceNavigator(
+            index + 1,
+            "reaction",
+            "modify",
+            onClickOnModifyAreasCards
+          );
+        },
       },
-    },
-    {
-      text: "Delete",
-      onPress: () => {
-        onClickRemoveBlock(index);
+      {
+        text: "Delete",
+        onPress: () => {
+          onClickRemoveBlock(index);
+        },
+        style: "destructive",
       },
-      style: "destructive",
-    },
-    {
-      text: "Cancel",
-      style: "cancel",
-    },
-  ]);
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+    ]);
   };
-
 
   const onClickContinue = () => {
     navigation.navigate("FinishArea", {
@@ -199,8 +199,15 @@ export default function NewAreaScreen(
           <View style={styles.contentContainer}>
             {blocksState[0] ? (
               <TouchableOpacity
-              style={styles.cardPropertiesServiceSelected}
-              onPress={() => onClickOpenServiceNavigator(0, "action", "new", onClickOnModifyAreasCards)}
+                style={styles.cardPropertiesServiceSelected}
+                onPress={() =>
+                  onClickOpenServiceNavigator(
+                    0,
+                    "action",
+                    "new",
+                    onClickOnModifyAreasCards
+                  )
+                }
               >
                 <MyText style={styles.cardTitle}>IF</MyText>
                 <MyText>{blocksState[0].name}</MyText>
@@ -210,7 +217,14 @@ export default function NewAreaScreen(
                 <MyText style={styles.cardTitle}>IF</MyText>
                 <TouchableOpacity
                   style={styles.cardButton}
-                  onPress={() => onClickOpenServiceNavigator(0, "action", "new", onClickOnAreasCards)}
+                  onPress={() =>
+                    onClickOpenServiceNavigator(
+                      0,
+                      "action",
+                      "new",
+                      onClickOnAreasCards
+                    )
+                  }
                 >
                   <MaterialCommunityIcons
                     name="plus"
@@ -251,7 +265,14 @@ export default function NewAreaScreen(
                     <MyText style={styles.cardTitle}>Then</MyText>
                     <TouchableOpacity
                       style={styles.cardButton}
-                      onPress={() => onClickOpenServiceNavigator(index + 1, "reaction", "new", onClickOnAreasCards)}
+                      onPress={() =>
+                        onClickOpenServiceNavigator(
+                          index + 1,
+                          "reaction",
+                          "new",
+                          onClickOnAreasCards
+                        )
+                      }
                     >
                       <MaterialCommunityIcons
                         name="plus"
@@ -285,31 +306,33 @@ export default function NewAreaScreen(
                 Add a reaction
               </MyText>
             </Pressable>
-          ) : (<></>)}
+          ) : (
+            <></>
+          )}
         </ScrollView>
         <View style={styles.footerContainer}>
+          <TouchableOpacity
+            style={[styles.footerButtons, { backgroundColor: "#E6566E" }]}
+            onPress={onClickReset}
+          >
+            <MyText style={styles.footerButtonsText}>Reset</MyText>
+          </TouchableOpacity>
+          {canContinue() ? (
             <TouchableOpacity
-              style={[styles.footerButtons, { backgroundColor: "#E6566E" }]}
-              onPress={onClickReset}
+              style={[styles.footerButtons, { backgroundColor: "#54EE51" }]}
+              onPress={onClickContinue}
             >
-              <MyText style={styles.footerButtonsText}>Reset</MyText>
+              <MyText style={styles.footerButtonsText}>Continue</MyText>
             </TouchableOpacity>
-            {canContinue() ? (
-              <TouchableOpacity
-                style={[styles.footerButtons, { backgroundColor: "#54EE51" }]}
-                onPress={onClickContinue}
-              >
-                <MyText style={styles.footerButtonsText}>Continue</MyText>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                style={styles.footerButtons}
-                onPress={onClickCantContinue}
-              >
-                <MyText style={styles.footerButtonsText}>Continue</MyText>
-              </TouchableOpacity>
-            )}
-          </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.footerButtons}
+              onPress={onClickCantContinue}
+            >
+              <MyText style={styles.footerButtonsText}>Continue</MyText>
+            </TouchableOpacity>
+          )}
+        </View>
       </>
     </SafeAreaView>
   );

@@ -28,6 +28,10 @@ export default function ServiceCard(
 
   const cardWidth = (Dimensions.get("window").width - cardGap * 3) / 2;
 
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   return (
     <TouchableOpacity
       style={[
@@ -40,7 +44,7 @@ export default function ServiceCard(
       ]}
       onPress={onClickService}
     >
-      <MyText style={styles.textProperties}>{service.name}</MyText>
+      <MyText style={styles.textProperties}>{capitalizeFirstLetter(service.name)}</MyText>
     </TouchableOpacity>
   );
 }
