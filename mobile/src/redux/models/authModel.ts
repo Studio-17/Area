@@ -28,7 +28,7 @@ export type LoginRequest = {
 };
 
 export type LogInGoogleRequest = {
-  credentials: string | undefined;
+  token: string | undefined;
 };
 
 export type RegisterRequest = {

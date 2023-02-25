@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -13,9 +13,16 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // Redux
-import { loginUser } from "../redux/slices/authSlice";
+import { loginUser, loginUserGoogle } from "../redux/slices/authSlice";
 import { LoginRequest } from "../redux/models/authModel";
-import { RootState, useAppDispatch, useAppSelector } from "../redux/store/store";
+import {
+  RootState,
+  useAppDispatch,
+  useAppSelector,
+} from "../redux/store/store";
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
+import axios from "axios";
 
 // Navigation
 import InputField from "../components/InputField";
@@ -23,6 +30,8 @@ import CustomButton from "../components/CustomButton";
 
 // Components
 import MyText from "../components/MyText";
+
+WebBrowser.maybeCompleteAuthSession();
 
 export default function LoginScreen({ navigation }: any) {
   const { loading, error, user } = useAppSelector(
@@ -33,11 +42,22 @@ export default function LoginScreen({ navigation }: any) {
     dispatch(loginUser(dataToSend));
   };
 
-  // console.log('error: ', error);
-  // console.log('loading: ', loading);
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId:
+      "760928825534-9f7c3d69o48jl3nrj4mnlnar1qbe91d3.apps.googleusercontent.com",
+  });
 
-  const [ email, setEmail ] = useState<string>("");
-  const [ password, setPassword ] = useState<string>("");
+  React.useEffect(() => {
+    if (response?.type === "success") {
+      const { authentication } = response;
+      console.log(authentication);
+      // dispatch(loginUserGoogle({ token: authentication?.accessToken }));
+      console.log("Yo");
+    }
+  }, [response]);
+
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const onSubmit = () => {
     const dataToSend: LoginRequest = {
@@ -66,23 +86,27 @@ export default function LoginScreen({ navigation }: any) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ paddingHorizontal: 25 }}>
-        <View style={{ alignItems: 'center' }}>
-          <Image source={require('../assets/images/reaccoon.png')} style={styles.reaccoonPNG} />
+        <View style={{ alignItems: "center" }}>
+          <Image
+            source={require("../assets/images/reaccoon.png")}
+            style={styles.reaccoonPNG}
+          />
         </View>
 
         <MyText
           style={{
             fontSize: 28,
             // fontWeight: 'bold',
-            color: '#A37C5B',
+            color: "#A37C5B",
             marginBottom: 30,
-            textAlign: 'center',
-          }}>
+            textAlign: "center",
+          }}
+        >
           Connect to your account
         </MyText>
 
         <InputField
-          label={'Email Address'}
+          label={"Email Address"}
           icon={
             <MaterialCommunityIcons
               name="at"
@@ -96,7 +120,7 @@ export default function LoginScreen({ navigation }: any) {
         />
 
         <InputField
-          label={'Password'}
+          label={"Password"}
           icon={
             <MaterialCommunityIcons
               name="lock-outline"
@@ -113,29 +137,38 @@ export default function LoginScreen({ navigation }: any) {
 
         <CustomButton label="Login" onPress={onSubmit} />
 
-        <MyText style={styles.otherLoginMethod}>
-          Or, login with ...
-        </MyText>
+        <MyText style={styles.otherLoginMethod}>Or, login with ...</MyText>
 
         <View
           style={{
-            flexDirection: 'row',
-            justifyContent: 'space-around',
+            flexDirection: "row",
+            justifyContent: "space-around",
             marginBottom: 30,
-          }}>
-          <TouchableOpacity style={styles.socialmediaBtn}>
-            <Image source={require('../assets/images/social/google.png')} style={{ width: 30, height: 30 }} />
+          }}
+        >
+          <TouchableOpacity
+            style={styles.socialmediaBtn}
+            disabled={!request}
+            onPress={() => {
+              promptAsync();
+            }}
+          >
+            <Image
+              source={require("../assets/images/social/google.png")}
+              style={{ width: 30, height: 30 }}
+            />
           </TouchableOpacity>
           <TouchableOpacity style={styles.socialmediaBtn}>
-            <Image source={require('../assets/images/social/twitter.png')} style={{ width: 30, height: 30 }} />
+            <Image
+              source={require("../assets/images/social/twitter.png")}
+              style={{ width: 30, height: 30 }}
+            />
           </TouchableOpacity>
         </View>
 
         <View style={styles.dontHaveAccount}>
           <MyText style={{ color: "#666" }}>Don't have an account ? </MyText>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Register')}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
             <MyText style={styles.registerTextBtn}>Register</MyText>
           </TouchableOpacity>
         </View>
@@ -152,29 +185,29 @@ const styles = StyleSheet.create({
   },
   reaccoonPNG: {
     width: 300,
-    height: 300
+    height: 300,
   },
   socialmediaBtn: {
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderWidth: 2,
     borderRadius: 10,
     paddingHorizontal: 30,
     paddingVertical: 10,
   },
   dontHaveAccount: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 30
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 30,
   },
   registerTextBtn: {
-    color: '#0165F5',
+    color: "#0165F5",
     // fontWeight: '700'
   },
   otherLoginMethod: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     marginBottom: 30,
     color: "#666",
-    textAlign: 'center'
-  }
+    textAlign: "center",
+  },
 });
