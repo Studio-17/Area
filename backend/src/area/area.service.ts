@@ -2,8 +2,8 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AreaEntity } from './entity/area.entity';
-import { CreateAreaDto } from './dto/create-area-dto';
-import { UpdateAreaDto } from './dto/update-area-dto';
+import { CreateAreaDto } from './dto/create-area.dto';
+import { UpdateAreaDto } from './dto/update-area.dto';
 import { NotFoundException } from '../utils/exceptions/not-found.exception';
 import { MyActionService } from 'src/myAction/myAction.service';
 
@@ -79,10 +79,50 @@ export class AreaService {
   }
 
   async update(areaId: string, updateAreaDto: UpdateAreaDto, userId: string): Promise<AreaEntity> {
-    await this.areaRepository.update({ uuid: areaId, userId: userId }, updateAreaDto).catch((e) => {
-      console.error(e);
-      throw NotFoundException('area');
-    });
+    console.log(updateAreaDto);
+    const area: AreaEntity = await this.areaRepository.findOneBy({ uuid: areaId });
+
+    await this.areaRepository
+      .update(
+        { uuid: areaId, userId: userId },
+        { name: updateAreaDto.name ? updateAreaDto.name : area.name },
+      )
+      .catch((e) => {
+        console.error(e);
+        throw NotFoundException('area');
+      });
+    console.log('aaa');
+
+    await this.myActionService.removeByAreaId(areaId, userId);
+    console.log('000');
+    const action = await this.myActionService.addAction(
+      areaId,
+      {
+        actionId: updateAreaDto.action.id,
+        linkedFromId: null,
+        hour: updateAreaDto.hour || '*',
+        minute: updateAreaDto.minute || '*',
+        second: updateAreaDto.second || '*',
+        params: updateAreaDto.action.params,
+      },
+      userId,
+    );
+    console.log('111');
+
+    for (const myAction of updateAreaDto.reactions) {
+      await this.myActionService.addAction(
+        areaId,
+        {
+          actionId: myAction.id,
+          linkedFromId: action.uuid,
+          hour: updateAreaDto.hour || '*',
+          minute: updateAreaDto.minute || '*',
+          second: updateAreaDto.second || '*',
+          params: myAction.params ? myAction.params : null,
+        },
+        userId,
+      );
+    }
     return this.findOne(areaId, userId);
   }
 
