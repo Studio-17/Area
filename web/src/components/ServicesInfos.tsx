@@ -1,4 +1,4 @@
-import { Alert, CircularProgress, Snackbar } from "@mui/material";
+import { Alert, CircularProgress, IconButton, Snackbar } from "@mui/material";
 import { useEffect, useState } from "react";
 import { theme } from "../constants/theme";
 import { Action } from "../models/actionModels";
@@ -11,6 +11,7 @@ import "../styles/ServicesInfos.css";
 import BigRoundedButtonOutlined from "./Buttons/BigRoundedButtonOutlined";
 import { GetParamsDto, PostParamsDto } from "../models/paramsModel";
 import ActionParamsForm from "./ActionParamsForm/ActionParamsForm";
+import ReplayIcon from "@mui/icons-material/Replay";
 
 const API_ENDPOINT = process.env.REACT_APP_API_URL;
 
@@ -122,6 +123,11 @@ const ServicesInfos = ({
                   />
                 )}
               </div>
+              {!serviceInfo?.isConnected && (
+                <IconButton onClick={() => refetchServiceInfos()}>
+                  <ReplayIcon color="primary" />
+                </IconButton>
+              )}
             </div>
             <div className="subtext">Choose one ...</div>
             <div className="list-of-cards-container">

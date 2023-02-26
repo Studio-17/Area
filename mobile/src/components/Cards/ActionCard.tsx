@@ -7,6 +7,21 @@ import {
 // Components
 import MyText from "../MyText";
 
+import { Action } from "../../redux/models/actionModels";
+import { GetParamsDto } from "../../redux/models/paramsModel";
+
+// interface Props {
+//   actionContent?: string;
+//   reactionContent?: string;
+//   uuidOfAction?: string;
+//   onClick: (
+//     actionContent?: string,
+//     reactionContent?: string,
+//     uuidAction?: string,
+//   ) => any | undefined;
+//   logo?: any;
+// }
+
 interface Props {
   actionContent?: string;
   reactionContent?: string;
@@ -14,23 +29,30 @@ interface Props {
   onClick: (
     actionContent?: string,
     reactionContent?: string,
-    uuidAction?: string,
-  ) => any | undefined;
-  logo?: any;
+    uuidOfAction?: string,
+    params?: GetParamsDto[] | null,
+    action?: Action
+  ) => void;
+  params: GetParamsDto[] | null;
+  action?: Action;
 }
 
 export default function ActionCard({
-  onClick,
   actionContent,
   reactionContent,
+  onClick,
   uuidOfAction,
+  params,
+  action,
 }: Props) {
   const onClickOnCards = () => {
     onClick(
       actionContent && actionContent,
       reactionContent && reactionContent,
-      uuidOfAction && uuidOfAction
-    );
+      uuidOfAction && uuidOfAction,
+      params,
+      action
+    )
   };
 
   return (

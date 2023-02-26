@@ -41,28 +41,26 @@ export default function CreateAreaScreen({
   const [title, setTitle] = useState<string>(getTitle);
 
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
-  const [hours, setHours] = useState("0");
-  const [minutes, setMinutes] = useState("0");
-  const [seconds, setSeconds] = useState("0");
+  const [hours, setHours] = useState("00");
+  const [minutes, setMinutes] = useState("00");
+  const [seconds, setSeconds] = useState("00");
   const [color, setColorSelected] = useState("#db643a");
 
   const onClickOnSaveButton = () => {
     const reactions: any = [];
     item.blocksState
       .filter((value: any, index: number) => index !== 0)
-      .map((block: any) => reactions.push({ id: block.uuid }));
+      .map((block: any) => reactions.push({ id: block.uuid, params: block.params }));
     const areaToSend = {
-      action: {
-        id: item.blocksState[0].uuid,
-        params: [{ name: "filename", content: "areafile" }],
-      },
+      action: { id: item.blocksState[0].uuid, params: item.blocksState[0].params },
       reactions: reactions,
       name: title,
-      hour: hours.toString(),
-      minute: minutes.toString(),
-      second: seconds.toString(),
+      hour: (hours.toString() === "00") ? "*" : hours.toString(),
+      minute: (minutes.toString() === "00") ? "*" : minutes.toString(),
+      second: (seconds.toString() === "00") ? "*" : seconds.toString(),
     };
     addArea(areaToSend);
+    console.log(areaToSend);
     item.setBlockState([]);
     item.setthensInstance([]);
     navigation.navigate("NewArea");
@@ -80,11 +78,10 @@ export default function CreateAreaScreen({
   const handleConfirm = (time: any) => {
     const dt = new Date(time);
     const x = dt.toLocaleTimeString();
-    console.log(x);
     const finalTime = x.split(":", 2);
     setHours(finalTime[0]);
     setMinutes(finalTime[1]);
-
+    setSeconds("0");
     hideTimePicker();
   };
 

@@ -3,6 +3,7 @@ import axios from "axios";
 import { LogInGoogleRequest, LoginRequest, RegisterRequest } from "../models/authModel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "../store/store";
+import { REACT_NATIVE_APP_API_URL } from "@env";
 
 const API_ENDPOINT = "http://localhost:8080/api/reaccoon";
 
