@@ -22,15 +22,11 @@ import { GetParamsDto, PostParamsDto } from "../redux/models/paramsModel";
 import MyText from "../components/MyText";
 
 export default function NewAreaScreen({ navigation }: { navigation: any }) {
-  const { data: services, isError, isLoading, refetch } = useServicesQuery();
+  const { data: services, isError, isLoading } = useServicesQuery();
 
   const [blocksState, setBlockState] = useState<any>([]);
   const [thensInstance, setthensInstance] = useState<any>([]);
   const [indexBlock, setIndexBlock] = useState<number | undefined>(undefined);
-
-  useEffect(() => {
-    refetch();
-  }, []);
 
   const onClickOnAreasCards = (
     serviceSelected?: Service | undefined,
