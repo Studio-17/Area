@@ -41,10 +41,10 @@ export class CronService {
 
     try {
       const credential = await this.credentialsService.findById(userId, service);
-      const conditionChecked = await actionHandling(credential.accessToken, [
-        { name: 'userId', content: userId },
-        ...params,
-      ]);
+      const argToSend = params
+        ? [{ name: 'userId', content: userId }, ...params]
+        : [{ name: 'userId', content: userId }];
+      const conditionChecked = await actionHandling(credential.accessToken, argToSend);
       if (conditionChecked) {
         await this.handleCronReaction(userId, actionLink);
       }
