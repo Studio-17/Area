@@ -9,12 +9,7 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import * as WebBrowser from "expo-web-browser";
-
-// WebBrowser.maybeCompleteAuthSession();
-
 // Redux
-import axios from "axios";
 import {
   useActionsQuery,
   useServiceQuery,
@@ -22,14 +17,10 @@ import {
 import { Service } from "../redux/models/serviceModels";
 import { Action } from "../redux/models/actionModels";
 import { GetParamsDto, PostParamsDto } from "../redux/models/paramsModel";
-import { REACT_NATIVE_APP_API_URL } from "@env";
-
-const API_ENDPOINT = REACT_NATIVE_APP_API_URL;
 
 // Components
 import ActionCard from "../components/Cards/ActionCard";
 import FormModal from "../components/Modals/FormModal";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import MyText from "../components/MyText";
 
 export default function ActionsListScreen({ navigation, route }: any) {
@@ -44,9 +35,6 @@ export default function ActionsListScreen({ navigation, route }: any) {
     params?: PostParamsDto[] | null
   ) => void = item.onClickOnAreasCards;
 
-  const [isServiceConnected, setIsServiceConnected] = useState<boolean>(false);
-  const [shouldPrintActionParamsForm, setShouldPrintActionParamsForm] =
-    useState<boolean>(false);
   const [openFormModal, setOpenFormModal] = useState<boolean>(false);
 
   const [currentActionParams, setCurrentActionParams] = useState<
@@ -67,27 +55,8 @@ export default function ActionsListScreen({ navigation, route }: any) {
   } = useServiceQuery(service.name);
 
   useEffect(() => {
-    serviceInfo && setIsServiceConnected(serviceInfo?.isConnected);
-  }, [actions, serviceInfo, isFetchingServiceInfo]);
-
-  const handleOauthConnection = async () => {
-    const token = await AsyncStorage.getItem("userToken");
-    console.log(`${API_ENDPOINT}/service/connect/${serviceInfo?.name}`);
-    axios
-      .get(`${API_ENDPOINT}/service/connect/${serviceInfo?.name}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => {
-        console.log(res.data.url);
-        WebBrowser.openBrowserAsync(res.data.url);
-      });
-    //   var myWindow = window.open(res.data.url, "");
-    //   if (myWindow)
-    //     myWindow.onunload = function () {
-    //       refetchServiceInfos();
-    //     };
-    // });
-  };
+    refetchServiceInfos();
+  }, []);
 
   const onSubmitActionParamsForm = (
     actionContent?: string,
@@ -95,9 +64,14 @@ export default function ActionsListScreen({ navigation, route }: any) {
     uuidOfAction?: string,
     params?: PostParamsDto[]
   ) => {
-    setShouldPrintActionParamsForm(false);
     setCurrentActionParams(null);
-    onClickOnAreasCards(service, actionContent, reactionContent, uuidOfAction, params);
+    onClickOnAreasCards(
+      service,
+      actionContent,
+      reactionContent,
+      uuidOfAction,
+      params
+    );
   };
 
   const handleCloseActionsListScreen = () => {
@@ -111,16 +85,11 @@ export default function ActionsListScreen({ navigation, route }: any) {
     params?: GetParamsDto[] | null,
     action?: Action
   ) => {
-    if (params) {
-      setCurrentActionParams(params);
+    if (params || !serviceInfo?.isConnected) {
+      setCurrentActionParams(params!);
       setCurrentAction(action);
       setOpenFormModal(true);
     } else {
-      // onClickOnActionCards(
-      //   actionContent && actionContent,
-      //   reactionContent && reactionContent,
-      //   uuidOfAction && uuidOfAction
-      // );
       onClickOnAreasCards(
         service,
         actionContent,
@@ -129,13 +98,7 @@ export default function ActionsListScreen({ navigation, route }: any) {
         params
       );
       navigation.navigate("NewArea");
-      // console.log("no params");
     }
-    // if (!serviceInfo?.isConnected) {
-    //   setOpenFormModal(true);
-    // } else {
-    // onClickOnAreasCards(service, actionContent, reactionContent, uuidOfAction);
-    // }
   };
 
   return (
@@ -175,6 +138,8 @@ export default function ActionsListScreen({ navigation, route }: any) {
         params={currentActionParams}
         onSubmitForm={onSubmitActionParamsForm}
         navigation={navigation}
+        serviceInfo={serviceInfo}
+        refetchServiceInfos={() => refetchServiceInfos()}
       />
     </SafeAreaView>
   );

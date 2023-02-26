@@ -41,9 +41,9 @@ export default function CreateAreaScreen({
   const [title, setTitle] = useState<string>(getTitle);
 
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
-  const [hours, setHours] = useState("*");
-  const [minutes, setMinutes] = useState("*");
-  const [seconds, setSeconds] = useState("*");
+  const [hours, setHours] = useState("00");
+  const [minutes, setMinutes] = useState("00");
+  const [seconds, setSeconds] = useState("00");
   const [color, setColorSelected] = useState("#db643a");
 
   const onClickOnSaveButton = () => {
@@ -55,11 +55,12 @@ export default function CreateAreaScreen({
       action: { id: item.blocksState[0].uuid, params: item.blocksState[0].params },
       reactions: reactions,
       name: title,
-      hour: hours.toString(),
-      minute: minutes.toString(),
-      second: seconds.toString(),
+      hour: (hours.toString() === "00") ? "*" : hours.toString(),
+      minute: (minutes.toString() === "00") ? "*" : minutes.toString(),
+      second: (seconds.toString() === "00") ? "*" : seconds.toString(),
     };
     addArea(areaToSend);
+    console.log(areaToSend);
     item.setBlockState([]);
     item.setthensInstance([]);
     navigation.navigate("NewArea");
@@ -80,7 +81,7 @@ export default function CreateAreaScreen({
     const finalTime = x.split(":", 2);
     setHours(finalTime[0]);
     setMinutes(finalTime[1]);
-
+    setSeconds("0");
     hideTimePicker();
   };
 

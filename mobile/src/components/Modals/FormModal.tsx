@@ -11,13 +11,22 @@ import {
 } from "react-native";
 
 // Redux
-import { Service } from "../../redux/models/serviceModels";
+import { Service, ServiceInfo } from "../../redux/models/serviceModels";
+
+import * as WebBrowser from "expo-web-browser";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import { REACT_NATIVE_APP_API_URL } from "@env";
+
+const API_ENDPOINT = REACT_NATIVE_APP_API_URL;
 
 import MyText from "../MyText";
-import CustomButton from "../CustomButton";
 import InputField from "../InputField";
 
 import { Action } from "../../redux/models/actionModels";
+
+import axios from "axios";
 
 // Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -31,6 +40,8 @@ interface Props {
   action: Action;
   params: GetParamsDto[] | null;
   navigation: any;
+  serviceInfo: ServiceInfo | undefined;
+  refetchServiceInfos: any;
 }
 
 export default function FormModal({
@@ -40,8 +51,32 @@ export default function FormModal({
   action,
   params,
   navigation,
+  serviceInfo,
+  refetchServiceInfos,
 }: Props) {
   const [paramsState, setParamsState] = useState<PostParamsDto[]>([]);
+
+  const handleOauthConnection = async () => {
+    const token = await AsyncStorage.getItem("userToken");
+    const res =  await axios
+      .get(`${API_ENDPOINT}/service/connect/${serviceInfo?.name}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    const webBrowserResult = await WebBrowser.openBrowserAsync(res.data.url);
+    if (webBrowserResult.type === "cancel") {
+      const refetch = await refetchServiceInfos();
+      if (refetch.data?.isConnected && !params) {
+        setOpenFormModal(false);
+        navigation.navigate("NewArea");
+        onSubmitForm(
+          action.type === "action" && action.name,
+          action.type === "reaction" && action.name,
+          action.uuid,
+          paramsState
+        );
+      }
+    }
+  };
 
   useEffect(() => {
     const paramsStateTmp = params
@@ -59,18 +94,9 @@ export default function FormModal({
       action.uuid,
       paramsState
     );
+    setOpenFormModal(false);
     navigation.navigate("NewArea");
   };
-
-  // const onSubmit = (e: React.SyntheticEvent) => {
-  //   e.preventDefault();
-  //   onSubmitForm(
-  //     action.type === "action" && action.name,
-  //     action.type === "reaction" && action.name,
-  //     action.uuid,
-  //     paramsState
-  //   );
-  // };
 
   const onChangeTextField = (name: string, content: string) => {
     const paramsStateTmp = paramsState.map((elem) => {
@@ -96,41 +122,49 @@ export default function FormModal({
         </View>
         <ScrollView>
           <View style={styles.contentConainter}>
-            {/* <MyText>{params}</MyText> */}
-            {/* <View
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginBottom: 20,
-            }}
-          >
-            <MyText>
-              {service?.name}
-            </MyText>
-          </View>
-          <CustomButton label="Connect" onPress={onClickToConnect} /> */}
-            {params?.map((param: GetParamsDto, index: number) => {
-              return (
-                <View key={index}>
-                <MyText>{param.name}</MyText>
-                <InputField
-                  label={"Email Address"}
-                  key={param.uuid}
-                  icon={
-                    <MaterialCommunityIcons
-                      name="at"
-                      size={20}
-                      color="#666"
-                      style={{ marginRight: 5 }}
-                    />
-                  }
-                  inputTextValue={(value: string) => onChangeTextField(param.name, value)}
-                />
+            {!serviceInfo?.isConnected ? (
+              <>
+                <View
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: 20,
+                  }}
+                >
+                  <MyText>{serviceInfo?.name}</MyText>
                 </View>
-              );
-            })}
-            <Button title="Submit" onPress={onSubmit} />
+                {/* <CustomButton label="Connect" onPress={onClickToConnect} /> */}
+                <Button title="Connect" onPress={handleOauthConnection} />
+                {/* <Button title="Refetch" onPress={refetchServiceInfos} /> */}
+              </>
+            ) : (
+              <View>
+                {params?.map((param: GetParamsDto, index: number) => {
+                  return (
+                    <View key={index}>
+                      <MyText>{param.description}</MyText>
+                      <InputField
+                        label={param.name}
+                        key={param.uuid}
+                        icon={
+                          <MaterialCommunityIcons
+                            name="at"
+                            size={20}
+                            color="#666"
+                            style={{ marginRight: 5 }}
+                          />
+                        }
+                        inputTextValue={(value: string) =>
+                          onChangeTextField(param.name, value)
+                        }
+                      />
+                    </View>
+                  );
+                })}
+                <Button title="Submit" onPress={onSubmit} />
+              </View>
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>

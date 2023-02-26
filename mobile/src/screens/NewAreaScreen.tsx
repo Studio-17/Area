@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -16,17 +16,21 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 // Redux
 import { useServicesQuery } from "../redux/services/servicesApi";
 import { Service } from "../redux/models/serviceModels";
-import { PostParamsDto } from "../redux/models/paramsModel";
+import { GetParamsDto, PostParamsDto } from "../redux/models/paramsModel";
 
 // Components
 import MyText from "../components/MyText";
 
 export default function NewAreaScreen({ navigation }: { navigation: any }) {
-  const { data: services, isError, isLoading } = useServicesQuery();
+  const { data: services, isError, isLoading, refetch } = useServicesQuery();
 
   const [blocksState, setBlockState] = useState<any>([]);
   const [thensInstance, setthensInstance] = useState<any>([]);
   const [indexBlock, setIndexBlock] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const onClickOnAreasCards = (
     serviceSelected?: Service | undefined,
@@ -57,38 +61,38 @@ export default function NewAreaScreen({ navigation }: { navigation: any }) {
       ]);
   };
 
-  const onClickOnModifyAreasCards = (
-    serviceSelected?: Service | undefined,
-    actionContent?: string,
-    reactionContent?: string,
-    uuidOfAction?: string,
-    params?: PostParamsDto[]
-  ) => {
-    let blockToBeModified = {};
-    if (actionContent !== undefined && reactionContent === undefined) {
-      blockToBeModified = {
-        name: actionContent,
-        service: serviceSelected?.name,
-        uuid: uuidOfAction,
-        params: params ? params : null,
-      };
-    } else if (actionContent === undefined && reactionContent !== undefined) {
-      blockToBeModified = {
-        name: reactionContent,
-        service: serviceSelected?.name,
-        uuid: uuidOfAction,
-        params: params ? params : null,
-      };
-    }
-    const nouveauTableau = blocksState.map((block: {}, i: number) =>
-      i === indexBlock ? blockToBeModified : block
-    );
+  // const onClickOnModifyAreasCards = (
+  //   serviceSelected?: Service | undefined,
+  //   actionContent?: string,
+  //   reactionContent?: string,
+  //   uuidOfAction?: string,
+  //   params?: GetParamsDto[]
+  // ) => {
+  //   let blockToBeModified = {};
+  //   if (actionContent !== undefined && reactionContent === undefined) {
+  //     blockToBeModified = {
+  //       name: actionContent,
+  //       service: serviceSelected?.name,
+  //       uuid: uuidOfAction,
+  //       params: params ? params : null,
+  //     };
+  //   } else if (actionContent === undefined && reactionContent !== undefined) {
+  //     blockToBeModified = {
+  //       name: reactionContent,
+  //       service: serviceSelected?.name,
+  //       uuid: uuidOfAction,
+  //       params: params ? params : null,
+  //     };
+  //   }
+  //   const nouveauTableau = blocksState.map((block: {}, i: number) =>
+  //     i === indexBlock ? blockToBeModified : block
+  //   );
 
-    actionContent && setBlockState(nouveauTableau);
-    reactionContent && setBlockState(nouveauTableau);
+  //   actionContent && setBlockState(nouveauTableau);
+  //   reactionContent && setBlockState(nouveauTableau);
 
-    setIndexBlock(undefined);
-  };
+  //   setIndexBlock(undefined);
+  // };
 
   const onClickOpenServiceNavigator = (
     index: number,
@@ -160,14 +164,14 @@ export default function NewAreaScreen({ navigation }: { navigation: any }) {
     Alert.alert("Modify the reaction", "", [
       {
         text: "Modify",
-        onPress: () => {
-          onClickOpenServiceNavigator(
-            index + 1,
-            "reaction",
-            "modify",
-            onClickOnModifyAreasCards
-          );
-        },
+        // onPress: () => {
+        //   onClickOpenServiceNavigator(
+        //     index + 1,
+        //     "reaction",
+        //     "modify",
+        //     onClickOnModifyAreasCards
+        //   );
+        // },
       },
       {
         text: "Delete",
@@ -200,14 +204,14 @@ export default function NewAreaScreen({ navigation }: { navigation: any }) {
             {blocksState[0] ? (
               <TouchableOpacity
                 style={styles.cardPropertiesServiceSelected}
-                onPress={() =>
-                  onClickOpenServiceNavigator(
-                    0,
-                    "action",
-                    "new",
-                    onClickOnModifyAreasCards
-                  )
-                }
+                // onPress={() =>
+                //   onClickOpenServiceNavigator(
+                //     0,
+                //     "action",
+                //     "modify",
+                //     onClickOnModifyAreasCards
+                //   )
+                // }
               >
                 <MyText style={styles.cardTitle}>IF</MyText>
                 <MyText>{blocksState[0].name}</MyText>
