@@ -12,7 +12,7 @@ export class MyActionController {
   constructor(private readonly myActionService: MyActionService) {}
 
   async onModuleInit(): Promise<void> {
-    this.myActionService.generateAllCrons();
+    await this.myActionService.generateAllCrons();
   }
 
   @Post('action/')

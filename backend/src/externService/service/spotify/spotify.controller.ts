@@ -1,12 +1,12 @@
-import { Body, Controller, Get, HttpStatus, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { SpotifyService } from './spotify.service';
 import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authentication.guard';
 import { CredentialsGuard } from './guard/credentials.guard';
 import { SearchDto } from './dto/search.dto';
 import { SpotifyObjectDto } from './dto/spotify-object.dto';
 import { TrackDto } from './dto/track.dto';
-import { CreatePlaylistDto } from './dto/create-playlist.dto';
 import { AddTrackPlaylistDto } from './dto/add-track-playlist.dto';
+import { ReactionDto } from 'src/cron/dto/reaction.dto';
 
 @Controller('actions/spotify')
 export class SpotifyController {
@@ -17,7 +17,6 @@ export class SpotifyController {
   public async getAuthenticatedUserInformation(@Req() request, @Res() response) {
     try {
       const userTopArtists = await this.spotifyService.getAuthenticatedUserInformation(
-        request.user.id,
         request.credentials.accessToken,
       );
 
@@ -40,7 +39,6 @@ export class SpotifyController {
   public async getAuthenticatedUserTopArtists(@Req() request, @Res() response) {
     try {
       const userTopArtists = await this.spotifyService.getAuthenticatedUserTopArtists(
-        request.user.id,
         request.credentials.accessToken,
       );
 
@@ -63,7 +61,6 @@ export class SpotifyController {
   public async getAuthenticatedUserTopTracks(@Req() request, @Res() response) {
     try {
       const userTopTracks = await this.spotifyService.getAuthenticatedUserTopTracks(
-        request.user.id,
         request.credentials.accessToken,
       );
 
@@ -86,7 +83,6 @@ export class SpotifyController {
   public async searchAny(@Req() request, @Res() response, @Body() searchDto: SearchDto) {
     try {
       const searchResult = await this.spotifyService.searchAny(
-        request.user.id,
         request.credentials.accessToken,
         searchDto,
       );
@@ -110,7 +106,6 @@ export class SpotifyController {
   public async getCurrentPlayingTrack(@Req() request, @Res() response) {
     try {
       const searchResult = await this.spotifyService.getAuthenticatedUserCurrentlyPlayingTrack(
-        request.user.id,
         request.credentials.accessToken,
       );
 
@@ -133,7 +128,6 @@ export class SpotifyController {
   public async playPauseCurrentPlayingTrack(@Req() request, @Res() response) {
     try {
       const searchResult = await this.spotifyService.playCurrentTrack(
-        request.user.id,
         request.credentials.accessToken,
       );
 
@@ -156,7 +150,6 @@ export class SpotifyController {
   public async pauseCurrentPlayingTrack(@Req() request, @Res() response) {
     try {
       const searchResult = await this.spotifyService.pauseCurrentTrack(
-        request.user.id,
         request.credentials.accessToken,
       );
 
@@ -179,7 +172,6 @@ export class SpotifyController {
   public async playNextTrack(@Req() request, @Res() response) {
     try {
       const nextTrack = await this.spotifyService.playNextAudioTrack(
-        request.user.id,
         request.credentials.accessToken,
       );
 
@@ -203,7 +195,6 @@ export class SpotifyController {
   public async playPreviousTrack(@Req() request, @Res() response) {
     try {
       const previousTrack = await this.spotifyService.playPreviousAudioTrack(
-        request.user.id,
         request.credentials.accessToken,
       );
 
@@ -227,7 +218,6 @@ export class SpotifyController {
   public async followPlaylist(@Req() request, @Res() response, @Body() playlist: SpotifyObjectDto) {
     try {
       const searchResult = await this.spotifyService.followPlaylist(
-        request.user.id,
         request.credentials.accessToken,
         playlist.id,
       );
@@ -255,7 +245,6 @@ export class SpotifyController {
   ) {
     try {
       const searchResult = await this.spotifyService.unfollowPlaylist(
-        request.user.id,
         request.credentials.accessToken,
         playlist.id,
       );
@@ -279,7 +268,6 @@ export class SpotifyController {
   public async getPlaylists(@Req() request, @Res() response, @Body() playlist: SpotifyObjectDto) {
     try {
       const searchResult = await this.spotifyService.getPlaylist(
-        request.user.id,
         request.credentials.accessToken,
         playlist.id,
       );
@@ -303,7 +291,6 @@ export class SpotifyController {
   public async getAlbums(@Req() request, @Res() response, @Body() album: SpotifyObjectDto) {
     try {
       const searchResult = await this.spotifyService.getAlbums(
-        request.user.id,
         request.credentials.accessToken,
         album.id,
       );
@@ -327,7 +314,6 @@ export class SpotifyController {
   public async getArtists(@Req() request, @Res() response, @Body() artist: SpotifyObjectDto) {
     try {
       const searchResult = await this.spotifyService.getArtist(
-        request.user.id,
         request.credentials.accessToken,
         artist.id,
       );
@@ -351,7 +337,6 @@ export class SpotifyController {
   public async getTracks(@Req() request, @Res() response, @Body() track: TrackDto) {
     try {
       const searchResult = await this.spotifyService.getTrack(
-        request.user.id,
         request.credentials.accessToken,
         track.id,
       );
@@ -375,7 +360,6 @@ export class SpotifyController {
   public async addTrackToQueue(@Req() request, @Res() response, @Body() track: TrackDto) {
     try {
       const searchResult = await this.spotifyService.addTrackToQueue(
-        request.user.id,
         request.credentials.accessToken,
         track.uri,
       );
@@ -394,18 +378,18 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/create-playlist')
+  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
+  @Post('/create-playlist')
   public async createPlaylist(
-    @Req() request,
+    // @Req() request,
     @Res() response,
-    @Body() playlist: CreatePlaylistDto,
+    @Body() body: ReactionDto,
   ) {
     try {
       const searchResult = await this.spotifyService.createPlaylist(
-        request.user.id,
-        request.credentials.accessToken,
-        playlist,
+        // request.credentials.accessToken,
+        body.accessToken,
+        body.params,
       );
 
       return response.status(HttpStatus.OK).json({
@@ -431,7 +415,6 @@ export class SpotifyController {
   ) {
     try {
       const tracksToAdd = await this.spotifyService.addTrackToPlaylist(
-        request.user.id,
         request.credentials.accessToken,
         trackAndPlaylist,
       );

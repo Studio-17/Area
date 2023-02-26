@@ -26,6 +26,7 @@ export class CronService {
   async handleCronAddition(
     userId: string,
     actionLink: string,
+    service: ServiceList,
     actionHandling: (string, params: { name: string; content: string }[]) => boolean,
     params: { name: string; content: string }[],
   ) {
@@ -39,11 +40,11 @@ export class CronService {
     });
 
     try {
-      const credential = await this.credentialsService.findById(userId, ServiceList.GOOGLE);
-      const conditionChecked = await actionHandling(credential.accessToken, [
-        { name: 'userId', content: userId },
-        ...params,
-      ]);
+      const credential = await this.credentialsService.findById(userId, service);
+      const argToSend = params
+        ? [{ name: 'userId', content: userId }, ...params]
+        : [{ name: 'userId', content: userId }];
+      const conditionChecked = await actionHandling(credential.accessToken, argToSend);
       if (conditionChecked) {
         await this.handleCronReaction(userId, actionLink);
       }
@@ -64,6 +65,7 @@ export class CronService {
         this,
         body.userId,
         body.link,
+        body.service,
         availableActions.get(body.link),
         body.params,
       ),
