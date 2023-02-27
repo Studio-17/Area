@@ -147,6 +147,22 @@ export class AppController {
                 name: 'Create a playlist',
                 description: 'It create a new playlist on Spotify.',
               },
+              {
+                name: 'Pause the playing track',
+                description: 'It pause the playing track on Spotify.',
+              },
+              {
+                name: 'Resume the playing track',
+                description: 'It resume the playing track on Spotify.',
+              },
+              {
+                name: 'Play next track',
+                description: 'It plays the next track on Spotify.',
+              },
+              {
+                name: 'Play previous track',
+                description: 'It plays the previous track on Spotify.',
+              },
             ],
           },
           {
