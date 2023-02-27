@@ -123,13 +123,10 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/play-resume-current-track')
-  public async playPauseCurrentPlayingTrack(@Req() request, @Res() response) {
+  @Post('/play-resume-current-track')
+  public async playPauseCurrentPlayingTrack(@Res() response, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.playCurrentTrack(
-        request.credentials.accessToken,
-      );
+      const searchResult = await this.spotifyService.playCurrentTrack(body.accessToken);
 
       return response.status(HttpStatus.OK).json({
         message: 'Set current track play resume for the authenticated user using Spotify service',
@@ -145,13 +142,10 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/pause-current-track')
-  public async pauseCurrentPlayingTrack(@Req() request, @Res() response) {
+  @Post('/pause-current-track')
+  public async pauseCurrentPlayingTrack(@Res() response, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.pauseCurrentTrack(
-        request.credentials.accessToken,
-      );
+      const searchResult = await this.spotifyService.pauseCurrentTrack(body.accessToken);
 
       return response.status(HttpStatus.OK).json({
         message: 'Set current track pause for the authenticated user using Spotify service',
@@ -167,13 +161,10 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/play-next-track')
-  public async playNextTrack(@Req() request, @Res() response) {
+  @Post('/play-next-track')
+  public async playNextTrack(@Res() response, @Body() body: ReactionDto) {
     try {
-      const nextTrack = await this.spotifyService.playNextAudioTrack(
-        request.credentials.accessToken,
-      );
+      const nextTrack = await this.spotifyService.playNextAudioTrack(body.accessToken);
 
       return response.status(HttpStatus.OK).json({
         message:
@@ -190,13 +181,10 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/play-previous-track')
-  public async playPreviousTrack(@Req() request, @Res() response) {
+  @Post('/play-previous-track')
+  public async playPreviousTrack(@Res() response, @Body() body: ReactionDto) {
     try {
-      const previousTrack = await this.spotifyService.playPreviousAudioTrack(
-        request.credentials.accessToken,
-      );
+      const previousTrack = await this.spotifyService.playPreviousAudioTrack(body.accessToken);
 
       return response.status(HttpStatus.OK).json({
         message:
@@ -215,12 +203,9 @@ export class SpotifyController {
 
   @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/follow-playlist')
-  public async followPlaylist(@Req() request, @Res() response, @Body() playlist: SpotifyObjectDto) {
+  public async followPlaylist(@Res() response, @Body() playlist: SpotifyObjectDto, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.followPlaylist(
-        request.credentials.accessToken,
-        playlist.id,
-      );
+      const searchResult = await this.spotifyService.followPlaylist(body.accessToken, playlist.id);
 
       return response.status(HttpStatus.OK).json({
         message: 'Followed playlist for the authenticated user using Spotify service',
@@ -239,13 +224,13 @@ export class SpotifyController {
   @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/unfollow-playlist')
   public async unfollowPlaylist(
-    @Req() request,
     @Res() response,
     @Body() playlist: SpotifyObjectDto,
+    @Body() body: ReactionDto,
   ) {
     try {
       const searchResult = await this.spotifyService.unfollowPlaylist(
-        request.credentials.accessToken,
+        body.accessToken,
         playlist.id,
       );
 
@@ -265,12 +250,9 @@ export class SpotifyController {
 
   @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/get-playlists')
-  public async getPlaylists(@Req() request, @Res() response, @Body() playlist: SpotifyObjectDto) {
+  public async getPlaylists(@Res() response, @Body() playlist: SpotifyObjectDto, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.getPlaylist(
-        request.credentials.accessToken,
-        playlist.id,
-      );
+      const searchResult = await this.spotifyService.getPlaylist(body.accessToken, playlist.id);
 
       return response.status(HttpStatus.OK).json({
         message: 'Got playlist for the authenticated user using Spotify service',
@@ -288,12 +270,9 @@ export class SpotifyController {
 
   @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/get-albums')
-  public async getAlbums(@Req() request, @Res() response, @Body() album: SpotifyObjectDto) {
+  public async getAlbums(@Res() response, @Body() album: SpotifyObjectDto, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.getAlbums(
-        request.credentials.accessToken,
-        album.id,
-      );
+      const searchResult = await this.spotifyService.getAlbums(body.accessToken, album.id);
 
       return response.status(HttpStatus.OK).json({
         message: 'Got album for the authenticated user using Spotify service',
@@ -311,12 +290,9 @@ export class SpotifyController {
 
   @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/get-artists')
-  public async getArtists(@Req() request, @Res() response, @Body() artist: SpotifyObjectDto) {
+  public async getArtists(@Res() response, @Body() artist: SpotifyObjectDto, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.getArtist(
-        request.credentials.accessToken,
-        artist.id,
-      );
+      const searchResult = await this.spotifyService.getArtist(body.accessToken, artist.id);
 
       return response.status(HttpStatus.OK).json({
         message: 'Got artist for the authenticated user using Spotify service',
@@ -334,12 +310,9 @@ export class SpotifyController {
 
   @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/get-tracks')
-  public async getTracks(@Req() request, @Res() response, @Body() track: TrackDto) {
+  public async getTracks(@Res() response, @Body() track: TrackDto, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.getTrack(
-        request.credentials.accessToken,
-        track.id,
-      );
+      const searchResult = await this.spotifyService.getTrack(body.accessToken, track.id);
 
       return response.status(HttpStatus.OK).json({
         message: 'Got track for the authenticated user using Spotify service',
@@ -355,14 +328,10 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/add-track-to-queue')
-  public async addTrackToQueue(@Req() request, @Res() response, @Body() track: TrackDto) {
+  @Post('/add-track-to-queue')
+  public async addTrackToQueue(@Res() response, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.addTrackToQueue(
-        request.credentials.accessToken,
-        track.uri,
-      );
+      const searchResult = await this.spotifyService.addTrackToQueue(body.accessToken, body.params);
 
       return response.status(HttpStatus.OK).json({
         message: 'Got track for the authenticated user using Spotify service',
@@ -380,14 +349,10 @@ export class SpotifyController {
 
   // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Post('/create-playlist')
-  public async createPlaylist(
-    // @Req() request,
-    @Res() response,
-    @Body() body: ReactionDto,
-  ) {
+  public async createPlaylist(@Res() response, @Body() body: ReactionDto) {
     try {
       const searchResult = await this.spotifyService.createPlaylist(
-        // request.credentials.accessToken,
+        // body.accessToken,
         body.accessToken,
         body.params,
       );
@@ -409,13 +374,13 @@ export class SpotifyController {
   @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/add-track-to-playlist')
   public async addTrackToPlaylist(
-    @Req() request,
     @Res() response,
     @Body() trackAndPlaylist: AddTrackPlaylistDto,
+    @Body() body: ReactionDto,
   ) {
     try {
       const tracksToAdd = await this.spotifyService.addTrackToPlaylist(
-        request.credentials.accessToken,
+        body.accessToken,
         trackAndPlaylist,
       );
 

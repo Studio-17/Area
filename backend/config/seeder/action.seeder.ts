@@ -113,6 +113,58 @@ export class ActionSeederService {
         description: 'This reaction add a new playlist on Spotify.',
         link: 'spotify/create-playlist/',
       },
+      {
+        uuid: 'df56e414-32b5-40fa-852c-61eaacfa7e3c',
+        service: ServiceList.SPOTIFY,
+        type: ActionType.REACTION,
+        name: 'Resume the current playing track',
+        description: 'This reaction resume the current playing track running on Spotify.',
+        link: 'spotify/play-resume-current-track/',
+      },
+      {
+        uuid: 'df56e414-32b5-40fa-852c-61eaacfa7e3d',
+        service: ServiceList.SPOTIFY,
+        type: ActionType.REACTION,
+        name: 'Pause the current playing track',
+        description: 'This reaction pause the current playing track running on Spotify.',
+        link: 'spotify/pause-current-track/',
+      },
+      {
+        uuid: 'df56e414-32b5-40fa-852c-61eaacfa7e4c',
+        service: ServiceList.SPOTIFY,
+        type: ActionType.REACTION,
+        name: 'Play the next track',
+        description: 'This reaction play the next track on Spotify.',
+        link: 'spotify/play-next-track/',
+      },
+      {
+        uuid: 'df56e414-32b5-40fa-852c-61eaacfa7e4d',
+        service: ServiceList.SPOTIFY,
+        type: ActionType.REACTION,
+        name: 'Pause the current playing track',
+        description: 'This reaction play the previous on Spotify.',
+        link: 'spotify/play-previous-track/',
+      },
+      {
+        uuid: 'df56e414-32b5-40fa-852c-61eaacfa7e5c',
+        service: ServiceList.SPOTIFY,
+        type: ActionType.REACTION,
+        name: 'Add a track to the queue',
+        params: [
+          {
+            name: 'track',
+            type: 'string',
+            description: 'name of the track to add on queue.',
+          },
+          {
+            name: 'artist',
+            type: 'string',
+            description: 'name of the artist of the track to add on queue (optional).',
+          },
+        ],
+        description: 'This reaction add a track to the playing queue on Spotify.',
+        link: 'spotify/add-track-to-queue/',
+      },
       // ----- TWITCH TEMPLATES -----
     ];
 

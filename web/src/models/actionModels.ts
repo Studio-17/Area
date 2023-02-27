@@ -6,4 +6,8 @@ export type Action = {
   description: string;
   type: "action" | "reaction";
   params: GetParamsDto[] | null;
+  service?: string;
+  second?: string;
+  minute?: string;
+  hour?: string;
 };
