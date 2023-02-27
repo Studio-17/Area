@@ -130,14 +130,22 @@ export class AppController {
             name: 'spotify',
             actions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'A new track is playing',
+                description: 'It check the current playing track on Spotify.',
+              },
+              {
+                name: 'The top artist has changed',
+                description: 'It check the current top artist on Spotify.',
+              },
+              {
+                name: 'The top track has changed',
+                description: 'It check the current top track on Spotify.',
               },
             ],
             reactions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'Create a playlist',
+                description: 'It create a new playlist on Spotify.',
               },
             ],
           },
