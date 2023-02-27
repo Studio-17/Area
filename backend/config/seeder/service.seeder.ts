@@ -15,51 +15,61 @@ export class ServiceSeederService {
       {
         name: ServiceList.DEEZER,
         description: 'Deezer service description',
+        color: '#F3F3F3',
         type: ServiceType.EXTERNAL,
       },
       {
         name: ServiceList.DISCORD,
         description: 'Discord service description',
+        color: '#5765F2',
         type: ServiceType.EXTERNAL,
       },
       {
         name: ServiceList.DROPBOX,
         description: 'Dropbox service description',
+        color: '#0179DB',
         type: ServiceType.EXTERNAL,
       },
       {
         name: ServiceList.GITHUB,
         description: 'GitHub service description',
+        color: '#F7FAFB',
         type: ServiceType.EXTERNAL,
       },
       {
         name: ServiceList.GOOGLE,
         description: 'Google service description',
+        color: '#27B346',
         type: ServiceType.EXTERNAL,
       },
       {
         name: ServiceList.MIRO,
         description: 'Miro service description',
+        color: '#FFD12A',
         type: ServiceType.EXTERNAL,
       },
       {
         name: ServiceList.NOTION,
         description: 'Notion service description',
+        color: '#F7FAFB',
         type: ServiceType.EXTERNAL,
       },
       {
         name: ServiceList.SPOTIFY,
         description: 'Spotify service description',
+        color: '#1ECD5C',
         type: ServiceType.EXTERNAL,
       },
       {
         name: ServiceList.TWITCH,
         description: 'Twitch service description',
+        color: '#8A44F3',
         type: ServiceType.EXTERNAL,
       },
       {
         name: ServiceList.TYPEFORM,
         description: 'Typeform service description',
+        color: '#F7FAFB',
         type: ServiceType.EXTERNAL,
       },
     ];
