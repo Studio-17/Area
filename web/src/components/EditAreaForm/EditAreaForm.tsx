@@ -1,6 +1,12 @@
 import { theme } from "../../constants/theme";
 import AddIcon from "@mui/icons-material/Add";
-import { Alert, CircularProgress, Fab, Snackbar } from "@mui/material";
+import {
+  Alert,
+  CircularProgress,
+  Fab,
+  Snackbar,
+  TextField,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import ServicesModal from "../../components/Modals/ServicesModal";
 import ServicesInfos from "../../components/ServicesInfos";
@@ -26,10 +32,15 @@ const EditAreaForm = () => {
   const [typeSelected, setTypeSelected] = useState<"action" | "reaction">(
     "action"
   );
+  const [nameInputValue, setNameInputValue] = useState<string>("");
 
   const { data: services, isError, isLoading } = useServicesQuery();
   const { data: area } = useAreaQuery(areaId!);
   const [editArea, status] = useEditAreaMutation();
+
+  useEffect(() => {
+    area && setNameInputValue(area?.area.name);
+  }, [area]);
 
   useEffect(() => {
     if (area) {
@@ -107,7 +118,7 @@ const EditAreaForm = () => {
     const areaToUpdate: updateAreaDto = {
       action: { id: blocksState[0].uuid, params: blocksState[0].params },
       reactions: reactionsTmp,
-      name: area?.area.name,
+      name: nameInputValue,
       hour: area?.action.hour,
       minute: area?.action.minute,
       second: area?.action.second,
@@ -125,7 +136,23 @@ const EditAreaForm = () => {
             className="new-area-main-container"
             style={{ backgroundColor: theme.palette.background }}
           >
-            <div className="main-text">Edit : {area?.area.name}</div>
+            <div
+              className="name-container"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <div className="main-text" style={{ margin: "0px 1vw 0px 0px" }}>
+                Edit :{" "}
+              </div>
+              <TextField
+                id="name"
+                onChange={(e) => setNameInputValue(e.target.value)}
+                value={nameInputValue}
+              />
+            </div>
             <div className="if-then-container">
               <div
                 className="if-container"
