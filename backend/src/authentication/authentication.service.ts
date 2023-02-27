@@ -136,7 +136,7 @@ export class AuthenticationService {
   public async googleConnect(token: string): Promise<any | { status: number; message: string }> {
     const ticket = await client.verifyIdToken({
       idToken: token,
-      audience: process.env.GOOGLE_ACCOUNT_CLIENT_ID,
+      audience: process.env.GOOGLE_CLIENT_ID,
     });
     const payload = ticket.getPayload();
     const isExistingUser: boolean = await this.usersService.existByEmail(payload.email);

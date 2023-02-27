@@ -15,6 +15,7 @@ import Area from "./pages/Area";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import UserProfile from "./pages/UserProfile";
+import EditAreaForm from "./components/EditAreaForm/EditAreaForm";
 
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -91,6 +92,15 @@ const router = createBrowserRouter([
       <>
         <HeaderApp />
         <UserProfile />
+      </>
+    ),
+  },
+  {
+    path: "/edit-area/:areaId",
+    element: (
+      <>
+        <HeaderApp />
+        <EditAreaForm />
       </>
     ),
   },

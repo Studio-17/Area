@@ -64,18 +64,18 @@ export class AreaService {
   }
 
   async findOne(areaId: string, userId: string): Promise<any> {
-    const res = await this.areaRepository
+    const area = await this.areaRepository
       .findOneByOrFail({ uuid: areaId, userId: userId })
       .catch((e) => {
         console.error(e);
         throw NotFoundException('area');
       });
-    if (!res) {
+    if (!area) {
       throw NotFoundException('area');
     }
     const myAction = await this.myActionService.findAction(areaId);
     const myReactions = await this.myActionService.findReaction(areaId, myAction.myActionId);
-    return { res, action: myAction, reactions: myReactions };
+    return { area, action: myAction, reactions: myReactions };
   }
 
   async update(areaId: string, updateAreaDto: UpdateAreaDto, userId: string): Promise<AreaEntity> {
