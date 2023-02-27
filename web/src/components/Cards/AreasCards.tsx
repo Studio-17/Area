@@ -2,7 +2,9 @@ import { Card, CardActionArea, CardContent, IconButton } from "@mui/material";
 import { theme } from "../../constants/theme";
 import { Area } from "../../models/areaModels";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import "../../styles/AreasCards.css";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   area: Area | undefined;
@@ -13,7 +15,7 @@ interface Props {
 }
 
 const AreasCards = ({ area, onClickOnCard, onClickDeleteArea }: Props) => {
-  console.log("area cards", area);
+  const navigate = useNavigate();
   return (
     <Card
       sx={{ width: 350, height: 250, borderRadius: 2, position: "relative" }}
@@ -24,6 +26,13 @@ const AreasCards = ({ area, onClickOnCard, onClickDeleteArea }: Props) => {
         size="large"
       >
         <DeleteIcon fontSize="medium" />
+      </IconButton>
+      <IconButton
+        style={{ position: "absolute", bottom: 0, right: 40 }}
+        onClick={() => navigate(`/edit-area/${area?.area.uuid}`)}
+        size="large"
+      >
+        <EditIcon fontSize="medium" />
       </IconButton>
       <CardActionArea
         sx={{ height: "82%" }}

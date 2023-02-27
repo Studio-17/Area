@@ -14,7 +14,16 @@ export type createAreaDto = {
   action: { id: string; params: PostParamsDto[] | null };
   reactions: [{ id: string; params: PostParamsDto[] | null }];
   name?: string;
-  hours?: string;
-  minutes?: string;
-  seconds?: string;
+  hour?: string;
+  minute?: string;
+  second?: string;
+};
+
+export type updateAreaDto = {
+  action: { id: string; params: PostParamsDto[] | null };
+  reactions: [{ id: string; params: PostParamsDto[] | null }];
+  name?: string;
+  hour?: string;
+  minute?: string;
+  second?: string;
 };

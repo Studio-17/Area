@@ -35,7 +35,7 @@ export class MyActionService {
     if (myActions.length) {
       const action = await this.actionService.findOne(myActions[0].actionId);
       resultAction = {
-        actionId: action.uuid,
+        uuid: action.uuid,
         name: action.name,
         service: action.service,
         myActionId: myActions[0].uuid,
@@ -57,9 +57,9 @@ export class MyActionService {
     for (let i = 0; i < myActions.length; i++) {
       const action = await this.actionService.findOne(myActions[i].actionId);
       reactions.push({
-        actionId: action.uuid,
+        uuid: action.uuid,
         name: action.name,
-        serviceId: action.service,
+        service: action.service,
         myActionId: myActions[i].uuid,
         params: myActions[i].params,
       });

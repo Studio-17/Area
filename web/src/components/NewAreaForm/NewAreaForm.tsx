@@ -26,8 +26,6 @@ const NewAreaForm = ({ blocksState }: Props) => {
       minute: { value: number };
       second: { value: number };
     };
-    console.log(target.hour.value.toString());
-    console.log(typeof target.hour.value.toString());
     const areaToSend = {
       action: { id: blocksState[0].uuid, params: blocksState[0].params },
       reactions: reactions,
