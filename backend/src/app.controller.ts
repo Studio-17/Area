@@ -163,6 +163,10 @@ export class AppController {
                 name: 'Play previous track',
                 description: 'It plays the previous track on Spotify.',
               },
+              {
+                name: 'Add track to queue',
+                description: 'It add track on queue on Spotify.',
+              },
             ],
           },
           {
