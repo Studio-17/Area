@@ -14,7 +14,7 @@ import { CredentialsService } from '../../../credentials/credentials.service';
 import { HttpService } from '@nestjs/axios';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
-import {ServiceList} from "../../../service/entity/service.entity";
+import { ServiceList } from '../../../service/entity/service.entity';
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -31,7 +31,7 @@ export class DiscordOAuth2Controller {
   public async discord(@Req() request, @Res() response) {
     const clientID = process.env.DISCORD_CLIENT_ID;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/discord/redirect`;
-    const scope = 'email identify';
+    const scope = 'email identify guilds guilds.members.read';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
     if (!token['id']) {
@@ -68,7 +68,7 @@ export class DiscordOAuth2Controller {
         clientSecret: clientSECRET,
 
         code: code,
-        scope: 'identify email',
+        scope: 'email identify guilds guilds.members.read',
         grantType: 'authorization_code',
 
         redirectUri: callbackURL,
@@ -78,27 +78,9 @@ export class DiscordOAuth2Controller {
       });
 
     const accessToken = discordData.access_token;
+    console.log('access token:', accessToken);
 
     if (accessToken) {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const axios = require('axios');
-
-      const config = {
-        method: 'get',
-        url: `https://discord.com/api/v10/users/@me`,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      };
-
-      const userEmail = await axios(config)
-        .then(function (response) {
-          return response.data;
-        })
-        .catch(function (error) {
-          throw new HttpException(error, HttpStatus.BAD_REQUEST);
-        });
-
       const userCredentials = {
         userId: id,
         service: ServiceList.DISCORD,
