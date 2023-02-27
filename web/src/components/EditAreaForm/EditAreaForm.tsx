@@ -4,25 +4,21 @@ import { Alert, CircularProgress, Fab, Snackbar } from "@mui/material";
 import { useEffect, useState } from "react";
 import ServicesModal from "../../components/Modals/ServicesModal";
 import ServicesInfos from "../../components/ServicesInfos";
-import BigRoundedButtonOutlined from "../../components/Buttons/BigRoundedButtonOutlined";
 import "../../styles/NewArea.css";
 import BigRoundedButton from "../../components/Buttons/BigRoundedButton";
 import {
-  useAddAreaMutation,
   useAreaQuery,
   useEditAreaMutation,
   useServicesQuery,
 } from "../../services/servicesApi";
 import { Service } from "../../models/serviceModels";
-import { useNavigate, useParams } from "react-router-dom";
-import NewAreaForm from "../../components/NewAreaForm/NewAreaForm";
+import { useParams } from "react-router-dom";
 import { PostParamsDto } from "../../models/paramsModel";
 import { Action } from "../../models/actionModels";
 import { updateAreaDto } from "../../models/areaModels";
 
 const EditAreaForm = () => {
   const { areaId } = useParams();
-  const navigate = useNavigate();
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [blockNumberSelected, setBlockNumberSelected] = useState<number>(0);
   const [serviceSelected, setServiceSelected] = useState<Service | null>(null);
