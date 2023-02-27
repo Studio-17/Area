@@ -114,7 +114,7 @@ export default function CreateAreaScreen({
             editable
             multiline
             numberOfLines={4}
-            maxLength={140}
+            maxLength={50}
             onChangeText={(text) => setTitle(text)}
             value={title}
             style={styles.textTitleInput}
@@ -142,17 +142,18 @@ export default function CreateAreaScreen({
         </MyText>
         <View style={styles.colorContainer}>
           <View style={styles.colorInput}>
-              <TextInput
-                maxLength={7}
-                onChangeText={(textColor) => setColorSelected(textColor)}
-                value={color}
-                placeholder="#"
-                style={styles.textTitleInput}
-              />
+            <TextInput
+              maxLength={7}
+              onChangeText={(textColor) => setColorSelected(textColor)}
+              value={color}
+              placeholder="#"
+              style={styles.textTitleInput}
+            />
           </View>
           <View style={[styles.colorResult, { backgroundColor: color }]} />
         </View>
-        {title ? (
+        {color.length === 7 ? null : (<MyText style={[{ color: "red" }]}>Please add an existant hexacode color</MyText>)}
+        {title && color.length === 7  ? (
           <TouchableOpacity
             style={styles.finishButton}
             onPress={() => onClickOnSaveButton()}
@@ -193,7 +194,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderColor: "#A37C5B",
     borderWidth: 3,
-    marginBottom: 20,
     width: "80%",
   },
   colorResult: {
@@ -201,7 +201,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderColor: "#A37C5B",
     borderWidth: 3,
-    marginBottom: 20,
     width: "15%",
   },
   timeContainer: {
@@ -234,6 +233,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     borderColor: "#A37C5B",
+    backgroundColor: "#FFFFFF",
     borderWidth: 3,
     marginBottom: 20,
   },

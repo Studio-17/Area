@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Pressable,
-  StyleSheet
+  StyleSheet,
 } from "react-native";
 
 // Components
@@ -34,8 +34,8 @@ interface Props {
     action?: Action
   ) => void;
   params: GetParamsDto[] | null;
-  action?: Action;
-  color?: string;
+  action: Action;
+  color: string;
 }
 
 export default function ActionCard({

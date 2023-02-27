@@ -6,6 +6,7 @@ import {
   StatusBar,
   Pressable,
   ScrollView,
+  Image,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -22,6 +23,7 @@ import { GetParamsDto, PostParamsDto } from "../redux/models/paramsModel";
 import ActionCard from "../components/Cards/ActionCard";
 import FormModal from "../components/Modals/FormModal";
 import MyText from "../components/MyText";
+import { images } from "../redux/models/serviceModels";
 
 export default function ActionsListScreen({ navigation, route }: any) {
   const { item } = route.params;
@@ -101,6 +103,10 @@ export default function ActionsListScreen({ navigation, route }: any) {
     }
   };
 
+  if (isLoading || isFetching || isFetchingServiceInfo) {
+    return <MyText>Loading...</MyText>;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.modalContainer}>
@@ -111,7 +117,11 @@ export default function ActionsListScreen({ navigation, route }: any) {
         <View style={{ flex: 1 }} />
       </View>
       <ScrollView>
-        <View style={{ padding: 10 }}>
+        <View style={{ display: "flex", padding: 20 }}>
+          <View style={styles.descriptionContainer}>
+            <Image source={images[service.name]} style={styles.logo} />
+            <MyText style={styles.textContentStyle}>{service.description}</MyText>
+          </View>
           {actions
             ?.filter((action: Action) => action.type === typeOfAction)
             .map((element: Action, index: number) => (
@@ -127,7 +137,7 @@ export default function ActionsListScreen({ navigation, route }: any) {
                 key={index}
                 params={element.params}
                 action={element}
-                color={(service.color ? service.color : "grey")}
+                color={service.color ? service.color : "grey"}
               />
             ))}
         </View>
@@ -164,6 +174,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: "70%",
   },
+  textContentStyle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "black",
+    textAlign: "center",
+    width: "70%",
+  },
   textModal: {
     fontSize: 25,
     fontWeight: "bold",
@@ -176,5 +193,17 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight: "bold",
     textAlign: "center",
+  },
+  descriptionContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  logo: {
+    width: 50,
+    height: 50,
+    marginBottom: 10,
   },
 });
