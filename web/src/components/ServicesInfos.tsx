@@ -47,6 +47,7 @@ const ServicesInfos = ({
 
   useEffect(() => {
     serviceInfo && setIsServiceConnected(serviceInfo?.isConnected);
+    console.log(actions);
   }, [actions, serviceInfo, isFetchingServiceInfo]);
 
   const handleOauthConnection = async () => {
