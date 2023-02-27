@@ -150,7 +150,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -174,7 +174,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -198,7 +198,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -222,7 +222,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -246,7 +246,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
