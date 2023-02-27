@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class ForkRepositoryDto {
   @IsString()
@@ -15,7 +15,7 @@ export class ForkRepositoryDto {
 
   @IsString()
   @IsNotEmpty()
-  name!: string;
+  new_name!: string;
 
   @IsString()
   @IsNotEmpty()

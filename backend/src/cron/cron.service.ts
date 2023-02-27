@@ -50,6 +50,8 @@ export class CronService {
         await this.handleCronReaction(userId, actionLink);
       }
     } catch (error: any) {
+      console.log('CRON');
+      console.log(error.response);
       console.log('error: maybe not connected');
       return;
     }
@@ -88,6 +90,7 @@ export class CronService {
         if (!newAccessToken) {
           return;
         }
+        console.log('reaction', reaction)
         await firstValueFrom(
           this.httpService
             .post<any>(
@@ -100,7 +103,8 @@ export class CronService {
             )
             .pipe(
               catchError((error: AxiosError) => {
-                // console.log(error);
+                console.log('HANDLE CRON REACTION Service Error');
+                console.log(error.response);
                 throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
               }),
             ),

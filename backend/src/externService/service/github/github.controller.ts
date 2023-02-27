@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Req, Res, UseGuards } from '@nestjs/common';
+import {Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
 import { GithubService } from '../github/github.service';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authentication.guard';
@@ -34,7 +34,7 @@ export class GithubController {
   //   }
   // }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
+  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/check-pull-request')
   public async checkNewPullRequest(
     @Req() request,
@@ -137,30 +137,32 @@ export class GithubController {
   //   }
   // }
 
-  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  // @Get('/fork-repository')
-  // public async forkRepository(
-  //   @Req() request,
-  //   @Res() response,
-  //   @Body() forkRepositoryDto: ForkRepositoryDto,
-  // ) {
-  //   try {
-  //     const userRepositories = await this.githubService.forkRepository(
-  //       request.credentials.accessToken,
-  //       forkRepositoryDto,
-  //     );
-  //
-  //     return response.status(HttpStatus.OK).json({
-  //       message: 'Got repositories list for the authenticated user using GitHub service',
-  //       data: userRepositories,
-  //       status: 200,
-  //     });
-  //   } catch (error) {
-  //     return response.status(HttpStatus.BAD_REQUEST).json({
-  //       message: 'Error fetching repositories from GitHub services',
-  //       error: error,
-  //       status: 400,
-  //     });
-  //   }
-  // }
+  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
+  @Post('/fork-repository')
+  public async forkRepository(
+    @Req() request,
+    @Res() response,
+    @Body() forkRepositoryDto: ForkRepositoryDto,
+  ) {
+    console.log('before');
+    try {
+      console.log('in');
+      const userRepositories = await this.githubService.forkRepository(
+        request.credentials.accessToken,
+        forkRepositoryDto,
+      );
+
+      return response.status(HttpStatus.OK).json({
+        message: 'Got repositories list for the authenticated user using GitHub service',
+        data: userRepositories,
+        status: 200,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error fetching repositories from GitHub services',
+        error: error,
+        status: 400,
+      });
+    }
+  }
 }

@@ -25,38 +25,42 @@ export class GithubService {
     private readonly githubCronService: GithubCronService,
   ) {}
 
-  // public async forkRepository(
-  //   accessToken: string,
-  //   forkRepositoryDto: ForkRepositoryDto,
-  // ): Promise<ForkedRepository> {
-  //   const forkedRepository = await firstValueFrom(
-  //     // Beware of the params in the route, they may be invalid
-  //     this.httpService
-  //       .post(
-  //         `https://api.github.com/repos/${forkRepositoryDto.owner}/${forkRepositoryDto.repo}/forks`,
-  //         {
-  //           data: forkRepositoryDto,
-  //           headers: {
-  //             Accept: 'application/vnd.github+json',
-  //             Authorization: `Bearer ${accessToken}`,
-  //             'X-GitHub-Api-Version': '2022-11-28',
-  //           },
-  //         },
-  //       )
-  //       .pipe(
-  //         map((value) => {
-  //           return plainToInstance(ForkedRepository, value.data);
-  //         }),
-  //       )
-  //       .pipe(
-  //         catchError((error: AxiosError) => {
-  //           throw new HttpException(error, HttpStatus.BAD_REQUEST);
-  //         }),
-  //       ),
-  //   );
-  //
-  //   return forkedRepository;
-  // }
+  public async forkRepository(
+    accessToken: string,
+    forkRepositoryDto: ForkRepositoryDto,
+  ): Promise<ForkedRepository> {
+    console.log('request service');
+    const forkedRepository = await firstValueFrom(
+      // Beware of the params in the route, they may be invalid
+      this.httpService
+        .post(
+          `https://api.github.com/repos/${forkRepositoryDto.owner}/${forkRepositoryDto.repo}/forks`,
+          {
+            data: forkRepositoryDto,
+            headers: {
+              Accept: 'application/vnd.github+json',
+              Authorization: `Bearer ${accessToken}`,
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          },
+        )
+        .pipe(
+          map((value) => {
+            return plainToInstance(ForkedRepository, value.data);
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            console.log('PIPE');
+            console.log(JSON.stringify(error));
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+
+    console.log('forkedRepository :', forkedRepository);
+    return forkedRepository;
+  }
 
   // public async getAuthenticatedUserRepositories(accessToken: string): Promise<RepositoriesList> {
   //   const repositories = await firstValueFrom(

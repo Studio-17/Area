@@ -42,6 +42,25 @@ export class ActionSeederService {
           'This action allow you to catch events when a new issue is posted on a repository.',
         link: 'github/check-issue/',
       },
+      {
+        uuid: 'd7e3bd41-2dd2-4aec-ad77-5579eb42fcbd',
+        service: ServiceList.GITHUB,
+        type: ActionType.REACTION,
+        name: 'Fork Github Repository',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+          { name: 'organization', type: 'string', description: 'Owner of the new repository.' },
+          { name: 'new_name', type: 'string', description: 'New name of the forked repository.' },
+          {
+            name: 'default_branch_only',
+            type: 'boolean',
+            description: 'Clone only default branch (boolean).',
+          },
+        ],
+        description: 'This action allow you to fork an existing repository.',
+        link: 'github/fork-repository/',
+      },
       // ----- GOOGLE TEMPLATES -----
       {
         uuid: '6503b807-eec8-4d26-817e-45cbe3881ef3',
