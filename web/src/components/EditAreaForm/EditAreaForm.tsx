@@ -208,13 +208,6 @@ const EditAreaForm = () => {
                     </div>
                   </>
                 ))}
-              {/* <div className="more-thens-button">
-                <BigRoundedButtonOutlined
-                  label="Add thens"
-                  color="primary"
-                  onClick={onClickAddthens}
-                />
-              </div> */}
             </div>
             <div className="save-button-container">
               <BigRoundedButton
