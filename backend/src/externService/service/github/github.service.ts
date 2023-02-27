@@ -9,8 +9,6 @@ import { CreateRepositoryDto } from './dto/repository/create-repository.dto';
 import { RepositoryCreated } from './interface/repository-create.interface';
 import { ForkRepositoryDto } from './dto/repository/fork-repository.dto';
 import { ForkedRepository } from './interface/fork-repository.interface';
-import { GithubPullRequestEntity } from './entity/github-pull-request.entity';
-import { GithubIssueEntity } from './entity/github-issue.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ActionDto } from '../../../cron/dto/action.dto';
@@ -138,9 +136,10 @@ export class GithubService {
           }),
         ),
     );
-    console.log('pullRequest: ', pullRequest);
-
-    return pullRequest;
+    if (pullRequest.length) {
+      return pullRequest[0].id;
+    }
+    return '0';
   }
 
   public async getIssue(accessToken: string, githubIssueDto: GithubIssueDto) {
@@ -165,8 +164,9 @@ export class GithubService {
         ),
     );
 
-    console.log('issue: ', issue);
-
-    return issue;
+    if (issue.length) {
+      return issue[0].id;
+    }
+    return '0';
   }
 }

@@ -106,6 +106,7 @@ export class GithubCronService {
 
       return records;
     } catch (error) {
+      console.error(error);
       return undefined;
     }
   }
@@ -124,6 +125,7 @@ export class GithubCronService {
 
       return records;
     } catch (error) {
+      console.error(error);
       return undefined;
     }
   }
@@ -134,13 +136,16 @@ export class GithubCronService {
     if (!record) {
       try {
         return {
-          new: true,
+          new: false,
           data: await this.githubRecordRepository.save(githubRecordDto),
         };
       } catch (err) {
         throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       }
-    } else if (record.id.toString() !== githubRecordDto.id.toString()) {
+    } else if (
+      githubRecordDto.id.toString() !== '0' &&
+      record.id.toString() !== githubRecordDto.id.toString()
+    ) {
       try {
         const newRecord = await this.githubRecordRepository.update(
           {
@@ -171,7 +176,7 @@ export class GithubCronService {
     if (!record) {
       try {
         return {
-          new: true,
+          new: false,
           data: await this.githubRecordRepository.save(githubRecordDto),
         };
       } catch (err) {

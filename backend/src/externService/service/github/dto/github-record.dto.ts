@@ -11,6 +11,10 @@ export class GithubRecordDto {
 
   @IsString()
   @IsNotEmpty()
+  category: string;
+
+  @IsString()
+  @IsNotEmpty()
   @IsNumberString()
   id!: string;
 }

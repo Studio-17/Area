@@ -33,6 +33,7 @@ export class CronService {
     if (!actionHandling) {
       return;
     }
+
     this.userService.existByUserId(userId).then((exist) => {
       if (!exist) {
         return;
@@ -49,6 +50,7 @@ export class CronService {
         await this.handleCronReaction(userId, actionLink);
       }
     } catch (error: any) {
+      console.log('error: maybe not connected');
       return;
     }
   }

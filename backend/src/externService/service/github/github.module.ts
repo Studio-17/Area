@@ -8,8 +8,6 @@ import { HttpModule } from '@nestjs/axios';
 import { UserModule } from 'src/user/user.module';
 import { CredentialsMiddleware } from './middleware/credentials.middleware';
 import { JwtService } from '@nestjs/jwt';
-import { GithubPullRequestEntity } from './entity/github-pull-request.entity';
-import { GithubIssueEntity } from './entity/github-issue.entity';
 import { CronModule } from 'src/cron/cron.module';
 import { GithubCronService } from './github.cron.service';
 import { GithubRecordEntity } from './entity/github-record.entity';
@@ -20,7 +18,7 @@ import { GithubRecordEntity } from './entity/github-record.entity';
       timeout: 5000,
       maxRedirects: 5,
     }),
-    TypeOrmModule.forFeature([GithubPullRequestEntity, GithubIssueEntity, GithubRecordEntity]),
+    TypeOrmModule.forFeature([GithubRecordEntity]),
     ScheduleModule.forRoot(),
     CredentialsModule,
     UserModule,

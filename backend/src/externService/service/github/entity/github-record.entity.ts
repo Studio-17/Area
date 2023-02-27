@@ -11,6 +11,7 @@ export class GithubRecordEntity {
   @PrimaryGeneratedColumn()
   uuid: string;
 
+  @Column()
   category: string;
 
   @Column()
