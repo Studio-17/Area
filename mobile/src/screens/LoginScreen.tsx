@@ -22,7 +22,6 @@ import {
 } from "../redux/store/store";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
-import axios from "axios";
 
 // Navigation
 import InputField from "../components/InputField";
@@ -30,6 +29,10 @@ import CustomButton from "../components/CustomButton";
 
 // Components
 import MyText from "../components/MyText";
+
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs(['You are not currently signed in to Expo on your development machine']);
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -52,7 +55,6 @@ export default function LoginScreen({ navigation }: any) {
       const { authentication } = response;
       console.log(authentication);
       // dispatch(loginUserGoogle({ token: authentication?.accessToken }));
-      console.log("Yo");
     }
   }, [response]);
 

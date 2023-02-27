@@ -4,6 +4,7 @@ USER node
 
 # default to port 19006 for node, and 19001 and 19002 (tests) for debug
 ARG PORT=19006
+
 ENV PORT $PORT
 EXPOSE $PORT 19001 19002
 
@@ -19,6 +20,7 @@ COPY --chown=node:node . /home/node/app
 
 RUN npm i --unsafe-perm -g npm@latest expo-cli@latest
 RUN npm install
+RUN npx expo login -u manulop -p Reaccoon
 
 ENTRYPOINT [ "npm" ]
 CMD [ "run", "web" ]

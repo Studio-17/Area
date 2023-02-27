@@ -10,6 +10,7 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Service } from "../redux/models/serviceModels";
 import { LogBox } from "react-native";
+import { images } from "../redux/models/serviceModels";
 
 import ServiceCard from "../components/Cards/ServiceCard";
 
@@ -46,7 +47,7 @@ export default function ServicesScreen({ navigation, route }: Props) {
     <SafeAreaView style={styles.container}>
       <View style={styles.modalContainer}>
         <Pressable style={styles.button} onPress={handleClose}>
-          <MaterialCommunityIcons name="close" color={"black"} size={50} />
+          <MaterialCommunityIcons name="arrow-left" color={"black"} size={50} />
         </Pressable>
         <MyText style={styles.textHeaderStyle}>Choose a service</MyText>
         <View style={{ flex: 1 }} />
@@ -72,6 +73,7 @@ export default function ServicesScreen({ navigation, route }: Props) {
               cardGap={20}
               index={index}
               key={index}
+              logo={images[service.name]}
             />
           ))}
         </View>
