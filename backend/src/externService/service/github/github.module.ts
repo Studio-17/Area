@@ -12,6 +12,7 @@ import { GithubPullRequestEntity } from './entity/github-pull-request.entity';
 import { GithubIssueEntity } from './entity/github-issue.entity';
 import { CronModule } from 'src/cron/cron.module';
 import { GithubCronService } from './github.cron.service';
+import { GithubRecordEntity } from './entity/github-record.entity';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { GithubCronService } from './github.cron.service';
       timeout: 5000,
       maxRedirects: 5,
     }),
-    TypeOrmModule.forFeature([GithubPullRequestEntity, GithubIssueEntity]),
+    TypeOrmModule.forFeature([GithubPullRequestEntity, GithubIssueEntity, GithubRecordEntity]),
     ScheduleModule.forRoot(),
     CredentialsModule,
     UserModule,

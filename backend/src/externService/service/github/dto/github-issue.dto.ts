@@ -3,14 +3,14 @@ import { IsEmail, IsNotEmpty, IsNumberString, IsString } from 'class-validator';
 export class GithubIssueDto {
   @IsString()
   @IsNotEmpty()
-  repositoryOwner: string;
+  owner!: string;
 
   @IsString()
   @IsNotEmpty()
-  repositoryName: string;
+  repo!: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @IsNumberString()
-  issueId: string;
+  // @IsString()
+  // @IsNotEmpty()
+  // @IsNumberString()
+  // issueId: string;
 }

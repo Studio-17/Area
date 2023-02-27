@@ -12,10 +12,10 @@ export class GithubPullRequestEntity {
   uuid: string;
 
   @Column()
-  repositoryOwner: string;
+  owner: string;
 
   @Column()
-  repositoryName: string;
+  repo: string;
 
   @Column()
   pullRequestId: string;

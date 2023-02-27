@@ -3,14 +3,14 @@ import { IsEmail, IsNotEmpty, IsNumberString, IsString } from 'class-validator';
 export class GithubPullRequestDto {
   @IsString()
   @IsNotEmpty()
-  repositoryOwner!: string;
+  owner!: string;
 
   @IsString()
   @IsNotEmpty()
-  repositoryName!: string;
+  repo!: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @IsNumberString()
-  pullRequestId!: string;
+  // @IsString()
+  // @IsNotEmpty()
+  // @IsNumberString()
+  // pullRequestId!: string;
 }

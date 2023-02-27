@@ -5,43 +5,46 @@ import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authe
 import { CredentialsGuard } from './guard/credentials.guard';
 import { CreateRepositoryDto } from './dto/repository/create-repository.dto';
 import { ForkRepositoryDto } from './dto/repository/fork-repository.dto';
+import { ActionDto } from '../../../cron/dto/action.dto';
+import { GithubCronService } from './github.cron.service';
+import { GithubIssueDto } from './dto/github-issue.dto';
+import { GithubPullRequestDto } from './dto/github-pull-request.dto';
 
 @Controller('actions/github')
 export class GithubController {
   constructor(private readonly githubService: GithubService) {}
 
-  @Get('/get-repository')
-  @UseGuards(AuthGuard('jwt'))
-  public async pullRepository(@Req() request, @Res() response) {
-    try {
-      const gmailRecord = await this.githubService;
+  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
+  // @Get('/get-repository')
+  // public async pullRepository(@Req() request, @Res() response) {
+  //   try {
+  //     const gmailRecord = await this.githubService;
+  //
+  //     return response.status(HttpStatus.OK).json({
+  //       message: 'Got last email from Google services',
+  //       content: gmailRecord,
+  //       status: 200,
+  //     });
+  //   } catch (error) {
+  //     return response.status(HttpStatus.BAD_REQUEST).json({
+  //       message: 'Error fetching emails from Google Apis',
+  //       error: error,
+  //       status: 400,
+  //     });
+  //   }
+  // }
 
-      return response.status(HttpStatus.OK).json({
-        message: 'Got last email from Google services',
-        content: gmailRecord,
-        status: 200,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error fetching emails from Google Apis',
-        error: error,
-        status: 400,
-      });
-    }
-  }
-
+  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/check-pull-request')
   public async checkNewPullRequest(
     @Req() request,
     @Res() response,
-    @Body()
-    body: { accessToken: string; email: string; repositoryName: string; repositoryOwner: string },
+    @Body() githubPullRequestDto: GithubPullRequestDto,
   ) {
     try {
-      const pullRequestResult = await this.githubService.updateLastPullRequest(
-        body.accessToken,
-        [{name: 'repo', content: body.repositoryName},
-        { name: 'owner', content: body.repositoryOwner }],
+      const pullRequestResult = await this.githubService.getPullRequest(
+        request.credentials.accessToken,
+        githubPullRequestDto,
       );
 
       return response.status(HttpStatus.OK).json({
@@ -58,18 +61,17 @@ export class GithubController {
     }
   }
 
+  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/check-issue')
   public async checkNewIssue(
     @Req() request,
     @Res() response,
-    @Body()
-    @Body()
-    body: { accessToken: string; params: { name: string; content: string }[] },
+    @Body() githubIssueDto: GithubIssueDto,
   ) {
     try {
-      const pullRequestResult = await this.githubService.updateLastIssue(
-        body.accessToken,
-        body.params,
+      const pullRequestResult = await this.githubService.getIssue(
+        request.credentials.accessToken,
+        githubIssueDto,
       );
 
       return response.status(HttpStatus.OK).json({
@@ -86,82 +88,79 @@ export class GithubController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/get-repository')
-  public async getAuthenticatedUserRepositories(@Req() request, @Res() response) {
-    try {
-      const userRepositories = await this.githubService.getAuthenticatedUserRepositories(
-        request.user.id,
-        request.credentials.accessToken,
-      );
+  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
+  // @Get('/get-repository')
+  // public async getAuthenticatedUserRepositories(@Req() request, @Res() response) {
+  //   try {
+  //     const userRepositories = await this.githubService.getAuthenticatedUserRepositories(
+  //       request.credentials.accessToken,
+  //     );
+  //
+  //     return response.status(HttpStatus.OK).json({
+  //       message: 'Got repositories list for the authenticated user using GitHub service',
+  //       data: userRepositories,
+  //       status: 200,
+  //     });
+  //   } catch (error) {
+  //     return response.status(HttpStatus.BAD_REQUEST).json({
+  //       message: 'Error fetching repositories from GitHub services',
+  //       error: error,
+  //       status: 400,
+  //     });
+  //   }
+  // }
 
-      return response.status(HttpStatus.OK).json({
-        message: 'Got repositories list for the authenticated user using GitHub service',
-        data: userRepositories,
-        status: 200,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error fetching repositories from GitHub services',
-        error: error,
-        status: 400,
-      });
-    }
-  }
+  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
+  // @Get('/create-repository')
+  // public async createAuthenticatedUserRepository(
+  //   @Req() request,
+  //   @Res() response,
+  //   @Body() createRepositoryDto: CreateRepositoryDto,
+  // ) {
+  //   try {
+  //     const userRepositories = await this.githubService.createAuthenticatedUserRepositories(
+  //       request.credentials.accessToken,
+  //       createRepositoryDto,
+  //     );
+  //
+  //     return response.status(HttpStatus.OK).json({
+  //       message: 'Got repositories list for the authenticated user using GitHub service',
+  //       data: userRepositories,
+  //       status: 200,
+  //     });
+  //   } catch (error) {
+  //     return response.status(HttpStatus.BAD_REQUEST).json({
+  //       message: 'Error fetching repositories from GitHub services',
+  //       error: error,
+  //       status: 400,
+  //     });
+  //   }
+  // }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/create-repository')
-  public async createAuthenticatedUserRepository(
-    @Req() request,
-    @Res() response,
-    @Body() createRepositoryDto: CreateRepositoryDto,
-  ) {
-    try {
-      const userRepositories = await this.githubService.createAuthenticatedUserRepositories(
-        request.user.id,
-        request.credentials.accessToken,
-        createRepositoryDto,
-      );
-
-      return response.status(HttpStatus.OK).json({
-        message: 'Got repositories list for the authenticated user using GitHub service',
-        data: userRepositories,
-        status: 200,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error fetching repositories from GitHub services',
-        error: error,
-        status: 400,
-      });
-    }
-  }
-
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/fork-repository')
-  public async forkRepository(
-    @Req() request,
-    @Res() response,
-    @Body() forkRepositoryDto: ForkRepositoryDto,
-  ) {
-    try {
-      const userRepositories = await this.githubService.forkRepository(
-        request.user.id,
-        request.credentials.accessToken,
-        forkRepositoryDto,
-      );
-
-      return response.status(HttpStatus.OK).json({
-        message: 'Got repositories list for the authenticated user using GitHub service',
-        data: userRepositories,
-        status: 200,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error fetching repositories from GitHub services',
-        error: error,
-        status: 400,
-      });
-    }
-  }
+  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
+  // @Get('/fork-repository')
+  // public async forkRepository(
+  //   @Req() request,
+  //   @Res() response,
+  //   @Body() forkRepositoryDto: ForkRepositoryDto,
+  // ) {
+  //   try {
+  //     const userRepositories = await this.githubService.forkRepository(
+  //       request.credentials.accessToken,
+  //       forkRepositoryDto,
+  //     );
+  //
+  //     return response.status(HttpStatus.OK).json({
+  //       message: 'Got repositories list for the authenticated user using GitHub service',
+  //       data: userRepositories,
+  //       status: 200,
+  //     });
+  //   } catch (error) {
+  //     return response.status(HttpStatus.BAD_REQUEST).json({
+  //       message: 'Error fetching repositories from GitHub services',
+  //       error: error,
+  //       status: 400,
+  //     });
+  //   }
+  // }
 }

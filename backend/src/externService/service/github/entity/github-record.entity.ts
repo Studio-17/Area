@@ -6,10 +6,12 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'github-issue' })
-export class GithubIssueEntity {
+@Entity({ name: 'github-record' })
+export class GithubRecordEntity {
   @PrimaryGeneratedColumn()
   uuid: string;
+
+  category: string;
 
   @Column()
   owner: string;
@@ -18,7 +20,7 @@ export class GithubIssueEntity {
   repo: string;
 
   @Column()
-  issueId: string;
+  id: string;
 
   @CreateDateColumn({
     type: 'timestamp',
