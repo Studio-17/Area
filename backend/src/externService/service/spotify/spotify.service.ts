@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConsoleLogger, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom, lastValueFrom } from 'rxjs';
 import { AxiosError } from 'axios/index';
@@ -374,10 +374,26 @@ export class SpotifyService {
     return track;
   }
 
-  public async addTrackToQueue(accessToken: string, uri: string): Promise<any> {
+  public async addTrackToQueue(
+    accessToken: string,
+    params: { name: string; content: string }[],
+  ): Promise<any> {
+    let artist = '';
+    try {
+      artist = 'artist:' + params.find((param) => param.name === 'artist').content;
+    } catch (error) {}
+    let track = '';
+    try {
+      track = 'track:' + params.find((param) => param.name === 'track').content;
+    } catch (error) {}
+    if (artist === '' && track === '') {
+      track = 'track:' + 'after the after';
+      artist = 'artist:' + 'teeers';
+    }
+    const res = await this.searchAny(accessToken, { q: artist + ' ' + track, type: 'track' });
     const queue = await firstValueFrom(
       this.httpService
-        .post(`https://api.spotify.com/v1/me/player/queue?uri=${uri}`, null, {
+        .post(`https://api.spotify.com/v1/me/player/queue?uri=${res.tracks.items[0].uri}`, null, {
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${accessToken}`,
@@ -390,7 +406,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );

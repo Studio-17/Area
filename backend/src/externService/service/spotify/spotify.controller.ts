@@ -328,11 +328,10 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/add-track-to-queue')
-  public async addTrackToQueue(@Res() response, @Body() track: TrackDto, @Body() body: ReactionDto) {
+  @Post('/add-track-to-queue')
+  public async addTrackToQueue(@Res() response, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.addTrackToQueue(body.accessToken, track.uri);
+      const searchResult = await this.spotifyService.addTrackToQueue(body.accessToken, body.params);
 
       return response.status(HttpStatus.OK).json({
         message: 'Got track for the authenticated user using Spotify service',

@@ -142,8 +142,28 @@ export class ActionSeederService {
         service: ServiceList.SPOTIFY,
         type: ActionType.REACTION,
         name: 'Pause the current playing track',
-        description: 'This reaction playe the previous on Spotify.',
+        description: 'This reaction play the previous on Spotify.',
         link: 'spotify/play-previous-track/',
+      },
+      {
+        uuid: 'df56e414-32b5-40fa-852c-61eaacfa7e5c',
+        service: ServiceList.SPOTIFY,
+        type: ActionType.REACTION,
+        name: 'Add a track to the queue',
+        params: [
+          {
+            name: 'track',
+            type: 'string',
+            description: 'name of the track to add on queue.',
+          },
+          {
+            name: 'artist',
+            type: 'string',
+            description: 'name of the artist of the track to add on queue (optional).',
+          },
+        ],
+        description: 'This reaction add a track to the playing queue on Spotify.',
+        link: 'spotify/add-track-to-queue/',
       },
       // ----- TWITCH TEMPLATES -----
     ];
