@@ -107,7 +107,7 @@ export default function FormModal({
 
   return (
     <Modal animationType="slide" visible={openFormModal}>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { backgroundColor: (serviceInfo?.color ? serviceInfo.color : "#FFF7FA") }]}>
         <View style={styles.headerContainer}>
           <Pressable
             style={styles.button}
@@ -116,7 +116,7 @@ export default function FormModal({
             <MaterialCommunityIcons name="close" color={"black"} size={50} />
           </Pressable>
           <MyText style={styles.textHeaderStyle}>
-            Fill in the trigger fields
+          {!serviceInfo?.isConnected ? ("Connect Service") : ("Fill in the trigger fields")}
           </MyText>
           <View style={{ flex: 1 }} />
         </View>
@@ -132,11 +132,9 @@ export default function FormModal({
                     marginBottom: 20,
                   }}
                 >
-                  <MyText>{serviceInfo?.name}</MyText>
+                  <MyText>Log in to {serviceInfo?.name} to continue</MyText>
                 </View>
-                {/* <CustomButton label="Connect" onPress={onClickToConnect} /> */}
                 <Button title="Connect" onPress={handleOauthConnection} />
-                {/* <Button title="Refetch" onPress={refetchServiceInfos} /> */}
               </>
             ) : (
               <View>
@@ -176,7 +174,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight || 0,
-    backgroundColor: "#FFF7FA",
+    // backgroundColor: "#FFF7FA",
   },
   headerContainer: {
     display: "flex",
@@ -200,7 +198,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   textHeaderStyle: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: "bold",
     color: "black",
     textAlign: "center",

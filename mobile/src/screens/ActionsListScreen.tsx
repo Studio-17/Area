@@ -127,6 +127,7 @@ export default function ActionsListScreen({ navigation, route }: any) {
                 key={index}
                 params={element.params}
                 action={element}
+                color={(service.color ? service.color : "grey")}
               />
             ))}
         </View>

@@ -42,11 +42,28 @@ export default function ServicesScreen({ navigation, route }: Props) {
     navigation.navigate("NewArea");
   };
 
+  interface Images {
+    [key: string]: any;
+  }
+
+  const images: Images = {
+    deezer: require("../assets/services/deezer.png"),
+    discord: require("../assets/services/discord.png"),
+    dropbox: require("../assets/services/dropbox.png"),
+    github: require("../assets/services/github.png"),
+    google: require("../assets/services/google.png"),
+    miro: require("../assets/services/miro.png"),
+    notion: require("../assets/services/notion.png"),
+    spotify: require("../assets/services/spotify.png"),
+    twitch: require("../assets/services/twitch.png"),
+    typeform: require("../assets/services/typeform.png"),
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.modalContainer}>
         <Pressable style={styles.button} onPress={handleClose}>
-          <MaterialCommunityIcons name="close" color={"black"} size={50} />
+          <MaterialCommunityIcons name="arrow-left" color={"black"} size={50} />
         </Pressable>
         <MyText style={styles.textHeaderStyle}>Choose a service</MyText>
         <View style={{ flex: 1 }} />
@@ -72,6 +89,7 @@ export default function ServicesScreen({ navigation, route }: Props) {
               cardGap={20}
               index={index}
               key={index}
+              logo={images[service.name]}
             />
           ))}
         </View>

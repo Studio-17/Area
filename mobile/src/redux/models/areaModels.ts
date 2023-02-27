@@ -6,6 +6,7 @@ export type Area = {
   area: {
     uuid: string;
     name: string;
+    color: string;
   };
 };
 

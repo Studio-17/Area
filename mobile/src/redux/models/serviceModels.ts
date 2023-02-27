@@ -1,6 +1,7 @@
 export type Service = {
   name: string;
   description: string;
+  color: string;
 };
 
 export type ServiceInfo = {
@@ -8,6 +9,7 @@ export type ServiceInfo = {
   type: "external" | "internal";
   isConnected: boolean;
   description: string;
+  color: string;
 };
 
 // export type AddServiceDto = {

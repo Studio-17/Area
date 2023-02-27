@@ -50,14 +50,20 @@ export default function CreateAreaScreen({
     const reactions: any = [];
     item.blocksState
       .filter((value: any, index: number) => index !== 0)
-      .map((block: any) => reactions.push({ id: block.uuid, params: block.params }));
+      .map((block: any) =>
+        reactions.push({ id: block.uuid, params: block.params })
+      );
     const areaToSend = {
-      action: { id: item.blocksState[0].uuid, params: item.blocksState[0].params },
+      action: {
+        id: item.blocksState[0].uuid,
+        params: item.blocksState[0].params,
+      },
       reactions: reactions,
       name: title,
-      hour: (hours.toString() === "00") ? "*" : hours.toString(),
-      minute: (minutes.toString() === "00") ? "*" : minutes.toString(),
-      second: (seconds.toString() === "00") ? "*" : seconds.toString(),
+      hour: hours.toString() === "00" ? "*" : hours.toString(),
+      minute: minutes.toString() === "00" ? "*" : minutes.toString(),
+      second: seconds.toString() === "00" ? "*" : seconds.toString(),
+      color: color,
     };
     addArea(areaToSend);
     console.log(areaToSend);
@@ -102,7 +108,7 @@ export default function CreateAreaScreen({
         <View style={{ flex: 1 }} />
       </SafeAreaView>
       <ScrollView style={styles.contentContainer}>
-        <MyText style={[styles.textStyle, { color: "#A37C5B" }]}>Title</MyText>
+        <MyText style={[styles.textStyle, { color: "#A37C5B" }]}>Title:</MyText>
         <View style={styles.titleInput}>
           <TextInput
             editable
@@ -131,6 +137,21 @@ export default function CreateAreaScreen({
           onConfirm={handleConfirm}
           onCancel={hideTimePicker}
         />
+        <MyText style={[styles.textStyle, { color: "#A37C5B" }]}>
+          Area Color:
+        </MyText>
+        <View style={styles.colorContainer}>
+          <View style={styles.colorInput}>
+              <TextInput
+                maxLength={7}
+                onChangeText={(textColor) => setColorSelected(textColor)}
+                value={color}
+                placeholder="#"
+                style={styles.textTitleInput}
+              />
+          </View>
+          <View style={[styles.colorResult, { backgroundColor: color }]} />
+        </View>
         {title ? (
           <TouchableOpacity
             style={styles.finishButton}
@@ -161,6 +182,27 @@ const styles = StyleSheet.create({
     borderColor: "#A37C5B",
     borderWidth: 3,
     marginBottom: 20,
+  },
+  colorContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  colorInput: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 15,
+    borderColor: "#A37C5B",
+    borderWidth: 3,
+    marginBottom: 20,
+    width: "80%",
+  },
+  colorResult: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 15,
+    borderColor: "#A37C5B",
+    borderWidth: 3,
+    marginBottom: 20,
+    width: "15%",
   },
   timeContainer: {
     backgroundColor: "#FFFFFF",
@@ -193,6 +235,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderColor: "#A37C5B",
     borderWidth: 3,
+    marginBottom: 20,
   },
   finishButton: {
     marginTop: 20,
@@ -217,8 +260,5 @@ const styles = StyleSheet.create({
     width: 320,
     height: 260,
     display: "flex",
-  },
-  colorContainer: {
-    alignItems: 'center',
   },
 });

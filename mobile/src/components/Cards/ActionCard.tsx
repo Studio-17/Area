@@ -35,6 +35,7 @@ interface Props {
   ) => void;
   params: GetParamsDto[] | null;
   action?: Action;
+  color?: string;
 }
 
 export default function ActionCard({
@@ -44,6 +45,7 @@ export default function ActionCard({
   uuidOfAction,
   params,
   action,
+  color,
 }: Props) {
   const onClickOnCards = () => {
     onClick(
@@ -56,7 +58,7 @@ export default function ActionCard({
   };
 
   return (
-    <Pressable style={[styles.actionCard, { backgroundColor: "grey" }]} onPress={onClickOnCards}>
+    <Pressable style={[styles.actionCard, { backgroundColor: color }]} onPress={onClickOnCards}>
         {actionContent && (
           <MyText style={styles.cardTitle}>{actionContent}</MyText>
         )}
