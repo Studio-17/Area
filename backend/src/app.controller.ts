@@ -171,6 +171,14 @@ export class AppController {
                 name: 'Add track to playlist',
                 description: 'It add track in a playlist Spotify.',
               },
+              {
+                name: 'Unfollow or delete a playlist',
+                description: 'It unfollow or delete a playlist Spotify.',
+              },
+              {
+                name: 'Follow a playlist',
+                description: 'It follow a playlist Spotify.',
+              },
             ],
           },
           {

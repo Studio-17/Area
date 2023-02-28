@@ -71,11 +71,13 @@ export class CronService {
         body.params,
       ),
     );
+    console.log('cron has been added');
     this.schedulerRegistry.addCronJob(body.name, job);
     job.start();
   }
 
   async handleCronReaction(userId: string, actionLink: string) {
+    console.log('cron is triggered');
     const action = await this.actionService.findByLink(actionLink);
     const relatedActions = await this.myActionService.findByActionAndUserId(action.uuid, userId);
 
@@ -87,6 +89,7 @@ export class CronService {
         if (!newAccessToken) {
           return;
         }
+        console.log('calling reaction:', reaction.link);
         await firstValueFrom(
           this.httpService
             .post<any>(
