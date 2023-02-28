@@ -1,10 +1,11 @@
-import { ConsoleLogger, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom, lastValueFrom } from 'rxjs';
 import { AxiosError } from 'axios/index';
 import { map } from 'rxjs';
 import { SearchDto } from './dto/search.dto';
-import { AddTrackPlaylistDto } from './dto/add-track-playlist.dto';
+import { Params } from 'src/cron/cron.type';
+import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 
 @Injectable()
 export class SpotifyService {
@@ -26,7 +27,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -50,7 +51,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -74,7 +75,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -98,7 +99,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -270,7 +271,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -294,7 +295,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -318,7 +319,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -342,7 +343,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -366,7 +367,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -374,23 +375,17 @@ export class SpotifyService {
     return track;
   }
 
-  public async addTrackToQueue(
-    accessToken: string,
-    params: { name: string; content: string }[],
-  ): Promise<any> {
-    let artist = '';
-    try {
-      artist = 'artist:' + params.find((param) => param.name === 'artist').content;
-    } catch (error) {}
-    let track = '';
-    try {
-      track = 'track:' + params.find((param) => param.name === 'track').content;
-    } catch (error) {}
+  public async addTrackToQueue(accessToken: string, params: Params): Promise<any> {
+    let artist = getElemContentInParams(params, 'artist', '');
+    let track = getElemContentInParams(params, 'track', '');
     if (artist === '' && track === '') {
-      track = 'track:' + 'after the after';
-      artist = 'artist:' + 'teeers';
+      track = 'after the after';
+      artist = 'teeers';
     }
-    const res = await this.searchAny(accessToken, { q: artist + ' ' + track, type: 'track' });
+    const res = await this.searchAny(accessToken, {
+      q: 'artist:' + artist + ' track:' + track,
+      type: 'track',
+    });
     const queue = await firstValueFrom(
       this.httpService
         .post(`https://api.spotify.com/v1/me/player/queue?uri=${res.tracks.items[0].uri}`, null, {
@@ -414,19 +409,10 @@ export class SpotifyService {
     return queue;
   }
 
-  public async createPlaylist(
-    accessToken: string,
-    params: { name: string; content: string }[],
-  ): Promise<any> {
+  public async createPlaylist(accessToken: string, params: Params): Promise<any> {
     const userId = (await this.getAuthenticatedUserInformation(accessToken)).id;
-    let name = 'new Playlist';
-    try {
-      name = params.find((param) => param.name === 'name').content;
-    } catch (error) {}
-    let isPublic = false;
-    try {
-      isPublic = params.find((param) => param.name === 'public').content === 'true' ? true : false;
-    } catch (error) {}
+    const name = getElemContentInParams(params, 'name', 'new Playlist');
+    const isPublic = getElemContentInParams(params, 'public', 'false') === 'true' ? true : false;
 
     const playlistCreated = await lastValueFrom(
       this.httpService
@@ -458,37 +444,51 @@ export class SpotifyService {
     return playlistCreated;
   }
 
-  public async addTrackToPlaylist(
-    accessToken: string,
-    trackList: AddTrackPlaylistDto,
-  ): Promise<any> {
-    const playlistUpdated = await firstValueFrom(
-      this.httpService
-        .post(
-          `https://api.spotify.com/v1/playlists/${trackList.userId}/tracks`,
-          {
-            uris: [trackList.uri],
-            position: '0',
-          },
-          {
-            headers: {
-              Accept: 'application/json',
-              Authorization: `Bearer ${accessToken}`,
-            },
-          },
-        )
-        .pipe(
-          map((value) => {
-            return value.data;
-          }),
-        )
-        .pipe(
-          catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
-          }),
-        ),
-    );
+  public async addTrackToPlaylist(accessToken: string, params: Params): Promise<any> {
+    const user = await this.getAuthenticatedUserInformation(accessToken);
+    let track = getElemContentInParams(params, 'track', '');
+    let artist = getElemContentInParams(params, 'artist', '');
+    const playlistName = getElemContentInParams(params, 'playlist', 'tinktok');
 
-    return playlistUpdated;
+    if (artist === '' && track === '') {
+      track = 'after the after';
+      artist = 'teeers';
+    }
+
+    const trackRes = await this.searchAny(accessToken, {
+      q: 'artirst:' + artist + ' track:' + track,
+      type: 'track',
+    });
+
+    // const playlistRes = // get the user playlists
+    // const playlistUpdated = await firstValueFrom(
+    //   this.httpService
+    //     .post(
+    //       `https://api.spotify.com/v1/playlists/${user.id}/tracks`,
+    //       {
+    //         uris: [trackRes.tracks.items[0].uri],
+    //         position: '0',
+    //       },
+    //       {
+    //         headers: {
+    //           Accept: 'application/json',
+    //           Authorization: `Bearer ${accessToken}`,
+    //         },
+    //       },
+    //     )
+    //     .pipe(
+    //       map((value) => {
+    //         return value.data;
+    //       }),
+    //     )
+    //     .pipe(
+    //       catchError((error: AxiosError) => {
+    //         throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
+    //       }),
+    //     ),
+    // );
+
+    // return playlistUpdated;
+    return '';
   }
 }

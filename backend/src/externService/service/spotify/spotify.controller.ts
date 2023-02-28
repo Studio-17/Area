@@ -5,7 +5,6 @@ import { CredentialsGuard } from './guard/credentials.guard';
 import { SearchDto } from './dto/search.dto';
 import { SpotifyObjectDto } from './dto/spotify-object.dto';
 import { TrackDto } from './dto/track.dto';
-import { AddTrackPlaylistDto } from './dto/add-track-playlist.dto';
 import { ReactionDto } from 'src/cron/dto/reaction.dto';
 
 @Controller('actions/spotify')
@@ -347,15 +346,10 @@ export class SpotifyController {
     }
   }
 
-  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Post('/create-playlist')
   public async createPlaylist(@Res() response, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.createPlaylist(
-        // body.accessToken,
-        body.accessToken,
-        body.params,
-      );
+      const searchResult = await this.spotifyService.createPlaylist(body.accessToken, body.params);
 
       return response.status(HttpStatus.OK).json({
         message: 'Created playlist for the authenticated user using Spotify service',
@@ -371,17 +365,13 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/add-track-to-playlist')
-  public async addTrackToPlaylist(
-    @Res() response,
-    @Body() trackAndPlaylist: AddTrackPlaylistDto,
-    @Body() body: ReactionDto,
-  ) {
+  @Post('/add-track-to-playlist')
+  public async addTrackToPlaylist(@Res() response, @Body() body: ReactionDto) {
     try {
       const tracksToAdd = await this.spotifyService.addTrackToPlaylist(
         body.accessToken,
-        trackAndPlaylist,
+        body.params,
+        // trackAndPlaylist,
       );
 
       return response.status(HttpStatus.OK).json({
