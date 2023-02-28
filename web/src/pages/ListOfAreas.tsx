@@ -8,6 +8,7 @@ import "../styles/ListOfAreas.css";
 import { useAreasQuery, useDeleteAreaMutation } from "../services/servicesApi";
 import { Area } from "../models/areaModels";
 import ConfirmActionModal from "../components/Modals/ConfirmActionModal";
+import { motion } from "framer-motion";
 
 const ListOfAreas = () => {
   const navigate = useNavigate();
@@ -36,6 +37,16 @@ const ListOfAreas = () => {
     setConfirmDeleteModal(false);
   };
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 10,
+      },
+    },
+  };
+
   if (isLoading || isFetching) return <CircularProgress />;
   return (
     <div
@@ -52,7 +63,12 @@ const ListOfAreas = () => {
         refuseText="Non"
       />
       <div className="main-text">Your current Coonies ...</div>
-      <div className="list-of-areas">
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="list-of-areas"
+      >
         {areas?.length !== 0 ? (
           <>
             {areas?.map((area: Area, index: number) => (
@@ -67,7 +83,7 @@ const ListOfAreas = () => {
         ) : (
           <div className="no-data-container">No coonies yet ...</div>
         )}
-      </div>
+      </motion.div>
       <Fab
         style={{
           position: "fixed",

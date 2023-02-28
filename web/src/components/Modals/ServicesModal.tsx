@@ -36,7 +36,18 @@ const style = {
   gridGap: "1vw",
 };
 
-const logos = [deezerLogo, discordLogo, dropBoxLogo, githubLogo, googleLogo, miroLogo, notionLogo, spotifyLogo, twitchLogo, typeformLogo];
+const logos = [
+  deezerLogo,
+  discordLogo,
+  dropBoxLogo,
+  githubLogo,
+  googleLogo,
+  miroLogo,
+  notionLogo,
+  spotifyLogo,
+  twitchLogo,
+  typeformLogo,
+];
 
 const ServicesModal = ({
   open,
@@ -48,7 +59,22 @@ const ServicesModal = ({
     <Modal open={open} onClose={onClose}>
       <Fade in={open}>
         <div className="modal-main-container">
-          <Box sx={style}>
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "auto",
+              height: "auto",
+              backgroundColor: "white",
+              border: "2px solid #000",
+              padding: "2vw",
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gridGap: "1vw",
+            }}
+          >
             {services?.map((service, index) => (
               <ServicesCards
                 onClose={onClose}
@@ -58,7 +84,7 @@ const ServicesModal = ({
                 key={index}
               />
             ))}
-          </Box>
+          </div>
         </div>
       </Fade>
     </Modal>
