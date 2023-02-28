@@ -35,6 +35,9 @@ export class ServiceEntity {
   @Column({ type: 'enum', enum: ServiceType })
   type!: ServiceType;
 
+  @Column()
+  color: string;
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP()',

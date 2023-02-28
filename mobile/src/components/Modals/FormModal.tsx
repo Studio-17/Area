@@ -6,12 +6,13 @@ import {
   View,
   Pressable,
   StatusBar,
-  TextInput,
   Button,
+  Image,
+  TouchableOpacity,
 } from "react-native";
 
 // Redux
-import { Service, ServiceInfo } from "../../redux/models/serviceModels";
+import { ServiceInfo } from "../../redux/models/serviceModels";
 
 import * as WebBrowser from "expo-web-browser";
 
@@ -32,6 +33,7 @@ import axios from "axios";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { GetParamsDto, PostParamsDto } from "../../redux/models/paramsModel";
 import { ScrollView } from "react-native-gesture-handler";
+import { images } from "../../redux/models/serviceModels";
 
 interface Props {
   openFormModal?: boolean;
@@ -58,10 +60,12 @@ export default function FormModal({
 
   const handleOauthConnection = async () => {
     const token = await AsyncStorage.getItem("userToken");
-    const res =  await axios
-      .get(`${API_ENDPOINT}/service/connect/${serviceInfo?.name}`, {
+    const res = await axios.get(
+      `${API_ENDPOINT}/service/connect/${serviceInfo?.name}`,
+      {
         headers: { Authorization: `Bearer ${token}` },
-      })
+      }
+    );
     const webBrowserResult = await WebBrowser.openBrowserAsync(res.data.url);
     if (webBrowserResult.type === "cancel") {
       const refetch = await refetchServiceInfos();
@@ -105,9 +109,20 @@ export default function FormModal({
     setParamsState(paramsStateTmp);
   };
 
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   return (
     <Modal animationType="slide" visible={openFormModal}>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView
+        style={[
+          styles.container,
+          {
+            backgroundColor: serviceInfo?.color ? serviceInfo.color : "#FFF7FA",
+          },
+        ]}
+      >
         <View style={styles.headerContainer}>
           <Pressable
             style={styles.button}
@@ -116,7 +131,9 @@ export default function FormModal({
             <MaterialCommunityIcons name="close" color={"black"} size={50} />
           </Pressable>
           <MyText style={styles.textHeaderStyle}>
-            Fill in the trigger fields
+            {!serviceInfo?.isConnected
+              ? "Connect Service"
+              : "Fill in the trigger fields"}
           </MyText>
           <View style={{ flex: 1 }} />
         </View>
@@ -132,11 +149,34 @@ export default function FormModal({
                     marginBottom: 20,
                   }}
                 >
-                  <MyText>{serviceInfo?.name}</MyText>
+                  <Image
+                    source={
+                      images[serviceInfo?.name ? serviceInfo.name : "loading"]
+                    }
+                    style={styles.logo}
+                  />
+                  <MyText style={[styles.textStyle, { fontSize: 25 }]}>
+                    Log in to {capitalizeFirstLetter(serviceInfo?.name ? serviceInfo.name : "loading")} to continue
+                  </MyText>
                 </View>
-                {/* <CustomButton label="Connect" onPress={onClickToConnect} /> */}
-                <Button title="Connect" onPress={handleOauthConnection} />
-                {/* <Button title="Refetch" onPress={refetchServiceInfos} /> */}
+                {/* <Button title="Connect" onPress={handleOauthConnection} /> */}
+                <TouchableOpacity
+                  style={{
+                    padding: 10,
+                    borderRadius: 15,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    borderColor: "black",
+                    borderWidth: 3,
+                  }}
+                  onPress={handleOauthConnection}
+                >
+                  <MyText style={{ color: "black", fontSize: 20 }}>
+                    Connect
+                  </MyText>
+                </TouchableOpacity>
               </>
             ) : (
               <View>
@@ -176,7 +216,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight || 0,
-    backgroundColor: "#FFF7FA",
+    // backgroundColor: "#FFF7FA",
   },
   headerContainer: {
     display: "flex",
@@ -200,10 +240,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   textHeaderStyle: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: "bold",
     color: "black",
     textAlign: "center",
     width: "70%",
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 10,
   },
 });

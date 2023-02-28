@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "app",
+    "name": "Reaccoon",
     "scheme": "app",
     "slug": "app",
     "version": "1.0.0",
@@ -25,10 +25,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/images/reaccoon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.manulop.app"
     },
     "web": {
       "favicon": "./src/assets/images/reaccoon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f45ea523-0435-4497-90f5-51fdddb447b8"
+      }
     }
   }
 }

@@ -1,28 +1,30 @@
 import { theme } from "../../constants/theme";
 import AddIcon from "@mui/icons-material/Add";
-import { Alert, CircularProgress, Fab, Snackbar } from "@mui/material";
+import {
+  Alert,
+  CircularProgress,
+  Fab,
+  Snackbar,
+  TextField,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import ServicesModal from "../../components/Modals/ServicesModal";
 import ServicesInfos from "../../components/ServicesInfos";
-import BigRoundedButtonOutlined from "../../components/Buttons/BigRoundedButtonOutlined";
 import "../../styles/NewArea.css";
 import BigRoundedButton from "../../components/Buttons/BigRoundedButton";
 import {
-  useAddAreaMutation,
   useAreaQuery,
   useEditAreaMutation,
   useServicesQuery,
 } from "../../services/servicesApi";
 import { Service } from "../../models/serviceModels";
-import { useNavigate, useParams } from "react-router-dom";
-import NewAreaForm from "../../components/NewAreaForm/NewAreaForm";
+import { useParams } from "react-router-dom";
 import { PostParamsDto } from "../../models/paramsModel";
 import { Action } from "../../models/actionModels";
 import { updateAreaDto } from "../../models/areaModels";
 
 const EditAreaForm = () => {
   const { areaId } = useParams();
-  const navigate = useNavigate();
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [blockNumberSelected, setBlockNumberSelected] = useState<number>(0);
   const [serviceSelected, setServiceSelected] = useState<Service | null>(null);
@@ -30,10 +32,15 @@ const EditAreaForm = () => {
   const [typeSelected, setTypeSelected] = useState<"action" | "reaction">(
     "action"
   );
+  const [nameInputValue, setNameInputValue] = useState<string>("");
 
   const { data: services, isError, isLoading } = useServicesQuery();
   const { data: area } = useAreaQuery(areaId!);
   const [editArea, status] = useEditAreaMutation();
+
+  useEffect(() => {
+    area && setNameInputValue(area?.area.name);
+  }, [area]);
 
   useEffect(() => {
     if (area) {
@@ -111,7 +118,7 @@ const EditAreaForm = () => {
     const areaToUpdate: updateAreaDto = {
       action: { id: blocksState[0].uuid, params: blocksState[0].params },
       reactions: reactionsTmp,
-      name: area?.area.name,
+      name: nameInputValue,
       hour: area?.action.hour,
       minute: area?.action.minute,
       second: area?.action.second,
@@ -129,7 +136,23 @@ const EditAreaForm = () => {
             className="new-area-main-container"
             style={{ backgroundColor: theme.palette.background }}
           >
-            <div className="main-text">Edit : {area?.area.name}</div>
+            <div
+              className="name-container"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <div className="main-text" style={{ margin: "0px 1vw 0px 0px" }}>
+                Edit :{" "}
+              </div>
+              <TextField
+                id="name"
+                onChange={(e) => setNameInputValue(e.target.value)}
+                value={nameInputValue}
+              />
+            </div>
             <div className="if-then-container">
               <div
                 className="if-container"
@@ -212,13 +235,6 @@ const EditAreaForm = () => {
                     </div>
                   </>
                 ))}
-              {/* <div className="more-thens-button">
-                <BigRoundedButtonOutlined
-                  label="Add thens"
-                  color="primary"
-                  onClick={onClickAddthens}
-                />
-              </div> */}
             </div>
             <div className="save-button-container">
               <BigRoundedButton

@@ -2,7 +2,7 @@
     display: flex;
     /* align-items: center; */
     font-family: 'Titan One', cursive !important;
-    padding: 0px 9vw;
+    padding: 0px 9vw 4vw 9vw;
     flex-direction: column;
     height: 77vh;
 }
@@ -28,6 +28,6 @@
 
 .list-of-cards-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-gap: 3vw;
 }

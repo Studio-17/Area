@@ -6,6 +6,7 @@ import { GetParamsDto } from "../../models/paramsModel";
 import { PostParamsDto } from "../../models/paramsModel";
 
 import "../../styles/RegisterForm.css";
+import "../../styles/ActionParamsForm.css";
 
 interface Props {
   params: GetParamsDto[] | null;
@@ -55,17 +56,32 @@ const ActionParamsForm = ({ params, onSubmitForm, action }: Props) => {
         <Box component="form" onSubmit={onSubmit}>
           {params?.map((param: GetParamsDto, index: number) => {
             return (
-              <TextField
-                key={param.uuid}
-                margin="normal"
-                fullWidth
-                id={param.name}
-                label={param.name}
-                name={param.name}
-                autoComplete={param.description}
-                onChange={(e) => onChangeTextField(param.name, e.target.value)}
-                required
-              />
+              <div
+                className="form-text-container"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <div className="form-text" style={{ fontFamily: "" }}>
+                  {param.description}
+                </div>
+                <TextField
+                  key={param.uuid}
+                  margin="normal"
+                  fullWidth
+                  id={param.name}
+                  label={param.name}
+                  name={param.name}
+                  autoComplete={param.description}
+                  onChange={(e) =>
+                    onChangeTextField(param.name, e.target.value)
+                  }
+                  required
+                />
+              </div>
             );
           })}
           <div className="form-buttons-container">
