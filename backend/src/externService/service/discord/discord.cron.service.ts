@@ -14,18 +14,18 @@ export class DiscordCronService {
   ) {}
 
   checkNewScheduledEvents(accessToken: string, params: Params) {
-    try {
-      const userInfo = this.discordService.getAuthenticatedUserInformation(accessToken);
-      console.log(userInfo);
+    // try {
+    //   const userInfo = this.discordService.getAuthenticatedUserInformation(accessToken);
+    //   console.log(userInfo);
 
-      // this.discordService.getGuildScheduledEvents()
-      // this.discordService.getGuildScheduledEventsById()
-    } catch (error) {
-      throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
-    }
+    //   // this.discordService.getGuildScheduledEvents()
+    //   // this.discordService.getGuildScheduledEventsById()
+    // } catch (error) {
+    //   throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    // }
   }
 
   availableActions = new Map([
-    ['discord/get/guild/scheduled-events', this.checkNewScheduledEvents.bind(this)],
+    ['discord/get/guild/scheduled-events/', this.checkNewScheduledEvents.bind(this)],
   ]);
 }
