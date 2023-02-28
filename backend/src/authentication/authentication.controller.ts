@@ -54,4 +54,22 @@ export class AuthenticationController {
       });
     }
   }
+
+  @Get('/login/mobile/google')
+  public async loginWithMobileGoogle(
+    @Req() request,
+    @Res() response,
+    @Query() query: { token: string },
+  ) {
+    try {
+      const user = await this.authenticationService.googleConnectMobile(query.token);
+
+      return response.status(HttpStatus.OK).json(user);
+    } catch (err) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error: User not logged in (using google)!',
+        status: 400,
+      });
+    }
+  }
 }
