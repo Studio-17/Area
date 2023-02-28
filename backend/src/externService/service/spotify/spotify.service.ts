@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConsoleLogger, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom, lastValueFrom } from 'rxjs';
 import { AxiosError } from 'axios/index';
@@ -6,6 +6,7 @@ import { map } from 'rxjs';
 import { SearchDto } from './dto/search.dto';
 import { Params } from 'src/cron/cron.type';
 import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
+import { throws } from 'assert';
 
 @Injectable()
 export class SpotifyService {
@@ -470,10 +471,10 @@ export class SpotifyService {
   }
 
   public async addTrackToPlaylist(accessToken: string, params: Params): Promise<any> {
-    const user = await this.getAuthenticatedUserInformation(accessToken);
+    const userId = (await this.getAuthenticatedUserInformation(accessToken)).id;
     let track = getElemContentInParams(params, 'track', '');
     let artist = getElemContentInParams(params, 'artist', '');
-    const playlistName = getElemContentInParams(params, 'playlist', 'tinktok');
+    const playlistName = getElemContentInParams(params, 'playlist', '');
 
     if (artist === '' && track === '') {
       track = 'after the after';
@@ -481,39 +482,49 @@ export class SpotifyService {
     }
 
     const trackRes = await this.searchAny(accessToken, {
-      q: 'artirst:' + artist + ' track:' + track,
+      q: 'artirst: ' + artist + ' track: ' + track,
       type: 'track',
     });
 
-    // const playlistRes = // get the user playlists
-    // const playlistUpdated = await firstValueFrom(
-    //   this.httpService
-    //     .post(
-    //       `https://api.spotify.com/v1/playlists/${user.id}/tracks`,
-    //       {
-    //         uris: [trackRes.tracks.items[0].uri],
-    //         position: '0',
-    //       },
-    //       {
-    //         headers: {
-    //           Accept: 'application/json',
-    //           Authorization: `Bearer ${accessToken}`,
-    //         },
-    //       },
-    //     )
-    //     .pipe(
-    //       map((value) => {
-    //         return value.data;
-    //       }),
-    //     )
-    //     .pipe(
-    //       catchError((error: AxiosError) => {
-    //         throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
-    //       }),
-    //     ),
-    // );
+    if (trackRes.tracks.items.length === 0) {
+      throw new HttpException(() => 'No track found', HttpStatus.BAD_REQUEST);
+    }
 
-    // return playlistUpdated;
-    return '';
+    const playlistRes = await this.getUserPlaylist(accessToken, userId);
+    let result = playlistRes.items.find(
+      (playlist: any) => playlist.name.toLowerCase() == playlistName.toLowerCase(),
+    );
+    if (!result) {
+      result = playlistRes.items[0];
+    }
+
+    const playlistUpdated = await firstValueFrom(
+      this.httpService
+        .post(
+          `https://api.spotify.com/v1/playlists/${result.id}/tracks`,
+          {
+            uris: [trackRes.tracks.items[0].uri],
+            position: '0',
+          },
+          {
+            headers: {
+              Accept: 'application/json',
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        )
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+
+    return playlistUpdated;
   }
 }

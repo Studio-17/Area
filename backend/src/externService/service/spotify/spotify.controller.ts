@@ -371,7 +371,6 @@ export class SpotifyController {
       const tracksToAdd = await this.spotifyService.addTrackToPlaylist(
         body.accessToken,
         body.params,
-        // trackAndPlaylist,
       );
 
       return response.status(HttpStatus.OK).json({
