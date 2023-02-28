@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import axios from 'axios';
 import { GmailRecordDto } from './dto/gmail/gmail.dto';
 import { ServiceList } from '../../../service/entity/service.entity';
+import { Params } from 'src/cron/cron.type';
+import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 
 @Injectable()
 export class GoogleService {
@@ -62,10 +64,7 @@ export class GoogleService {
     }
   }
 
-  public async updateLastEmailReceived(
-    accessToken: string,
-    params: { name: string; content: string }[],
-  ) {
+  public async updateLastEmailReceived(accessToken: string, params: Params) {
     const config = {
       method: 'get',
       url: `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=1`,
@@ -93,17 +92,18 @@ export class GoogleService {
         return (await this.findOrUpdateLastEmailReceived(record)).new;
       }
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+      throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
   }
 
-  public async createGoogleDocOnDrive(accessToken: string, filename: string): Promise<string> {
+  public async createGoogleDocOnDrive(accessToken: string, params: Params): Promise<string> {
+    const filename = getElemContentInParams(params, 'filename', 'Untitled');
+
     const config = {
       method: 'post',
       url: 'https://www.googleapis.com/drive/v3/files',
       headers: {
         Accept: 'application/json',
-        // TODO - Update accessToken by the good one
         Authorization: `Bearer ${accessToken}`,
         ContentType: 'application/json',
       },
@@ -118,7 +118,7 @@ export class GoogleService {
       })
       .catch(function (error) {
         console.log(JSON.stringify(error));
-        throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+        throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
       });
 
     return fileId;
@@ -139,7 +139,7 @@ export class GoogleService {
         return apiResponse;
       })
       .catch(function (error) {
-        throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+        throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
       });
 
     return credentials;
@@ -159,7 +159,7 @@ export class GoogleService {
         return apiResponse;
       })
       .catch(function (error) {
-        return new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+        return new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
       });
   }
 }

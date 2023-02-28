@@ -2,21 +2,16 @@ import { Controller, Get, HttpStatus, Req, Res, Body, Post } from '@nestjs/commo
 import { ReactionDto } from 'src/cron/dto/reaction.dto';
 import { GoogleService } from './google.service';
 
-// @UseGuards(JwtAuthenticationGuard)
 @Controller('actions/google')
 export class GoogleController {
   constructor(private readonly googleService: GoogleService) {}
 
   @Get('/check-mail')
-  public async checkIfMailReceived(
-    @Req() request,
-    @Res() response,
-    @Body() body: { accessToken: string; email: string },
-  ) {
+  public async checkIfMailReceived(@Res() response, @Body() body: ReactionDto) {
     try {
       const gmailRecord = await this.googleService.updateLastEmailReceived(
         body.accessToken,
-        [{ name: 'userId', content: body.email }],
+        body.params,
       );
 
       console.log(gmailRecord);
@@ -36,16 +31,9 @@ export class GoogleController {
   }
 
   @Post('/publish-doc')
-  public async createGoogleDoc(@Req() request, @Res() response, @Body() body: ReactionDto) {
-    let filename: string;
-    if (!body.params || body.params.length === 0) {
-      filename = 'Untitled';
-    } else {
-      filename = body.params[0].content;
-    }
-
+  public async createGoogleDoc(@Res() response, @Body() body: ReactionDto) {
     try {
-      const fileId = await this.googleService.createGoogleDocOnDrive(body.accessToken, filename);
+      const fileId = await this.googleService.createGoogleDocOnDrive(body.accessToken, body.params);
 
       return response.status(HttpStatus.OK).json({
         message: 'Successfully created document on personal drive',
