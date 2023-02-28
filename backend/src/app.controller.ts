@@ -165,7 +165,11 @@ export class AppController {
               },
               {
                 name: 'Add track to queue',
-                description: 'It add track on queue on Spotify.',
+                description: 'It add track in queue on Spotify.',
+              },
+              {
+                name: 'Add track to playlist',
+                description: 'It add track in a playlist Spotify.',
               },
             ],
           },

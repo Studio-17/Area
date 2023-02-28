@@ -83,7 +83,7 @@ export class ActionSeederService {
         type: ActionType.ACTION,
         name: 'The top artist has changed',
         description: 'This action check the current top artist on Spotify.',
-        link: 'spotify/get-top-artists',
+        link: 'spotify/get-top-artists/',
       },
       {
         uuid: 'df56e414-32b5-40fa-852c-60eaacfa7e2c',
@@ -141,7 +141,7 @@ export class ActionSeederService {
         uuid: 'df56e414-32b5-40fa-852c-61eaacfa7e4d',
         service: ServiceList.SPOTIFY,
         type: ActionType.REACTION,
-        name: 'Pause the current playing track',
+        name: 'Play the previous track',
         description: 'This reaction play the previous on Spotify.',
         link: 'spotify/play-previous-track/',
       },
@@ -164,6 +164,31 @@ export class ActionSeederService {
         ],
         description: 'This reaction add a track to the playing queue on Spotify.',
         link: 'spotify/add-track-to-queue/',
+      },
+      {
+        uuid: 'df56e414-32b5-40fa-852c-61eaacfa7a4d',
+        service: ServiceList.SPOTIFY,
+        type: ActionType.REACTION,
+        name: 'Add a track to a playlist',
+        params: [
+          {
+            name: 'playlist',
+            type: 'string',
+            description: 'name of the playlist where you want to add the track.',
+          },
+          {
+            name: 'track',
+            type: 'string',
+            description: 'name of the track to add on the playlist.',
+          },
+          {
+            name: 'artist',
+            type: 'string',
+            description: 'name of the artist of the track to add on the playlist (optional).',
+          },
+        ],
+        description: 'This reaction add a track in a playlist on Spotify.',
+        link: 'spotify/add-track-to-playlist/',
       },
       // ----- TWITCH TEMPLATES -----
     ];

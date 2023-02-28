@@ -10,6 +10,7 @@ import { UserService } from 'src/user/user.service';
 import { ServiceList } from '../service/entity/service.entity';
 import { CreateCronDto } from './dto/add-cron.dto';
 import { CronJob } from 'cron';
+import { Params } from './cron.type';
 
 @Injectable()
 export class CronService {
@@ -27,8 +28,8 @@ export class CronService {
     userId: string,
     actionLink: string,
     service: ServiceList,
-    actionHandling: (string, params: { name: string; content: string }[]) => boolean,
-    params: { name: string; content: string }[],
+    actionHandling: (accessToken: string, params: Params) => boolean,
+    params: Params,
   ) {
     if (!actionHandling) {
       return;
