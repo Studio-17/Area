@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString, IsOptional, IsArray } from 'class-validator';
+import { Params } from '../cron.type';
 
 export class ReactionDto {
   @IsString()
@@ -7,5 +8,5 @@ export class ReactionDto {
 
   @IsArray()
   @IsOptional()
-  params?: { name: string; content: string }[];
+  params?: Params;
 }
