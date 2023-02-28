@@ -302,6 +302,31 @@ export class SpotifyService {
     return playlist;
   }
 
+  public async getUserPlaylist(accessToken: string, userId: string): Promise<any> {
+    const userPlaylist = await firstValueFrom(
+      this.httpService
+        .get(`https://api.spotify.com/v1/users/${userId}/playlists`, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+
+    return userPlaylist;
+  }
+
+
   public async getAlbums(accessToken: string, albumId: string): Promise<any> {
     const album = await firstValueFrom(
       this.httpService
