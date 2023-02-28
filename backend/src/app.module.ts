@@ -29,6 +29,7 @@ import { TypeformOAuth2Module } from './externService/oauth2/typeform/typeform-o
 import { CronModule } from './cron/cron.module';
 import { DiscordModule } from './externService/service/discord/discord.module';
 import { TwitchModule } from './externService/service/twitch/twitch.module';
+import { DeezerModule } from './externService/service/deezer/deezer.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { TwitchModule } from './externService/service/twitch/twitch.module';
     ActionModule,
     MyActionModule,
 
+    DeezerModule,
     DiscordModule,
     GoogleModule,
     GithubModule,

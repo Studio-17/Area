@@ -109,6 +109,8 @@ export class SpotifyCronService {
 
   availableActions = new Map([
     ['spotify/get-current-playing-track/', this.checkCurrentlyPlayingTrack.bind(this)],
+    ['spotify/get-top-artists/', this.checkTopArtists.bind(this)],
+    ['spotify/get-top-tracks/', this.checkTopTracks.bind(this)],
   ]);
   // ['google/check-mail/', this.googleService.updateLastEmailReceived.bind(this.googleService)],
 }

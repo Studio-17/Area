@@ -10,6 +10,7 @@ import { UserService } from 'src/user/user.service';
 import { ServiceList } from '../service/entity/service.entity';
 import { CreateCronDto } from './dto/add-cron.dto';
 import { CronJob } from 'cron';
+import { Params } from './cron.type';
 
 @Injectable()
 export class CronService {
@@ -27,8 +28,8 @@ export class CronService {
     userId: string,
     actionLink: string,
     service: ServiceList,
-    actionHandling: (string, params: { name: string; content: string }[]) => boolean,
-    params: { name: string; content: string }[],
+    actionHandling: (accessToken: string, params: Params) => boolean,
+    params: Params,
   ) {
     if (!actionHandling) {
       return;
@@ -70,11 +71,13 @@ export class CronService {
         body.params,
       ),
     );
+    console.log('cron has been added');
     this.schedulerRegistry.addCronJob(body.name, job);
     job.start();
   }
 
   async handleCronReaction(userId: string, actionLink: string) {
+    console.log('cron is triggered');
     const action = await this.actionService.findByLink(actionLink);
     const relatedActions = await this.myActionService.findByActionAndUserId(action.uuid, userId);
 
@@ -86,6 +89,7 @@ export class CronService {
         if (!newAccessToken) {
           return;
         }
+        console.log('calling reaction:', reaction.link);
         await firstValueFrom(
           this.httpService
             .post<any>(

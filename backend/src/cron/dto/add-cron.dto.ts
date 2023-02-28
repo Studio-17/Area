@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsString, IsOptional, IsArray, IsUUID } from 'class-validator';
 import { ServiceList } from 'src/service/entity/service.entity';
+import { Params } from '../cron.type';
 
 export class CreateCronDto {
   @IsString()
@@ -31,5 +32,5 @@ export class CreateCronDto {
 
   @IsArray()
   @IsOptional()
-  params?: [{ name: string; content: string }];
+  params?: Params;
 }
