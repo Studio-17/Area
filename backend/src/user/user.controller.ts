@@ -22,10 +22,10 @@ export class UserController {
   constructor(private readonly usersService: UserService) {}
 
   // COMMENTED BECAUSE OF SECURITY : USER DATS ISN'T ACCESSIBLE FROM OTHER USERS
-  // @Get()
-  // public async findAllUser(): Promise<UserEntity[]> {
-  //   return this.usersService.findAll();
-  // }
+  @Get()
+  public async findAllUser(): Promise<UserEntity[]> {
+    return this.usersService.findAll();
+  }
 
   // COMMENTED BECAUSE OF SECURITY : USER DATS ISN'T ACCESSIBLE FROM OTHER USERS
   // @Get('/:id')
