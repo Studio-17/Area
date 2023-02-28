@@ -16,7 +16,7 @@ import { catchError, firstValueFrom } from 'rxjs';
 import axios, { AxiosError } from 'axios';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
-import {ServiceList} from "../../../service/entity/service.entity";
+import { ServiceList } from '../../../service/entity/service.entity';
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -33,7 +33,8 @@ export class TwitchOAuth2Controller {
   public async twitch(@Req() request, @Res() response) {
     const clientID = process.env.TWITCH_CLIENT_ID;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/twitch/redirect`;
-    const scope = 'user:read:email user:read:follows user:read:subscriptions chat:read';
+    const scope =
+      'user:read:email user:read:follows user:read:subscriptions chat:read analytics:read:games';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
     if (!token['id']) {
