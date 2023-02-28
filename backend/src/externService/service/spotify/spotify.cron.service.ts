@@ -1,5 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Params } from 'src/cron/cron.type';
+import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 import { NotFoundException } from 'src/utils/exceptions/not-found.exception';
 import { Repository } from 'typeorm';
 import { SpotifyRecord } from './entity/spotifyRecord.entity';
@@ -58,47 +60,44 @@ export class SpotifyCronService {
     return { new: false, mail: record };
   }
 
-  async checkTopArtists(accessToken: string, params: { name: string; content: string }[]) {
+  async checkTopArtists(accessToken: string, params: Params) {
     try {
       const currentlyPlayingTrack =
         await this.spotifyService.getAuthenticatedUserCurrentlyPlayingTrack(accessToken);
 
       const record = new SpotifyRecord();
-      record.userId = params.find((param) => param.name === 'userId').content;
+      record.userId = getElemContentInParams(params, 'userId', 'undefined');
       record.category = 'currentlyPlayingTrack';
       record.content = currentlyPlayingTrack;
       return (await this.findOrUpdateLastRecord(record)).new;
     } catch (error) {
-      console.log('error');
+      throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
   }
 
-  async checkTopTracks(accessToken: string, params: { name: string; content: string }[]) {
+  async checkTopTracks(accessToken: string, params: Params) {
     try {
       const currentlyPlayingTrack = await this.spotifyService.getAuthenticatedUserTopTracks(
         accessToken,
       );
 
       const record = new SpotifyRecord();
-      record.userId = params.find((param) => param.name === 'userId').content;
+      record.userId = getElemContentInParams(params, 'userId', 'undefined');
       record.category = 'currentlyPlayingTrack';
       record.content = currentlyPlayingTrack;
       return (await this.findOrUpdateLastRecord(record)).new;
     } catch (error) {
-      console.log('error');
+      throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
   }
 
-  async checkCurrentlyPlayingTrack(
-    accessToken: string,
-    params: { name: string; content: string }[],
-  ) {
+  async checkCurrentlyPlayingTrack(accessToken: string, params: Params) {
     try {
       const currentlyPlayingTrack =
         await this.spotifyService.getAuthenticatedUserCurrentlyPlayingTrack(accessToken);
 
       const record = new SpotifyRecord();
-      record.userId = params.find((param) => param.name === 'userId').content;
+      record.userId = getElemContentInParams(params, 'userId', 'undefined');
       record.category = 'currentlyPlayingTrack';
       record.content = currentlyPlayingTrack;
       return (await this.findOrUpdateLastRecord(record)).new;
