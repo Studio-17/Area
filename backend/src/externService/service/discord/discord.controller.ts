@@ -47,26 +47,6 @@ export class DiscordController {
     }
   }
 
-  @Post('/authorize/bot/guild')
-  public async authorizeBotForGuild(@Res() response, @Body() body: ReactionDto) {
-    try {
-      const guildId = getElemContentInParams(body.params, 'guildId', '');
-      const user = await this.discordService.authorizeBotForGuild(guildId);
-
-      return response.status(HttpStatus.OK).json({
-        message: `Authorized bot for guild from Discord services`,
-        content: user,
-        status: 200,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: `Error authorizing bot for guild from Discord Apis`,
-        error: error,
-        status: 400,
-      });
-    }
-  }
-
   @Post('/get/guild/information')
   public async getGuildInformation(@Res() response, @Body() body: ReactionDto) {
     try {

@@ -68,13 +68,6 @@ export class DiscordService {
     return guilds;
   }
 
-  public async authorizeBotForGuild(guildChannelId: string): Promise<string> {
-    const botID = process.env.DISCORD_CLIENT_BOT;
-    const botPermissions = process.env.DISCORD_CLIENT_BOT_PERMISSIONS;
-
-    return `https://discord.com/oauth2/authorize?client_id=${botID}&scope=bot&permissions=${botPermissions}&guild_id=${guildChannelId}`;
-  }
-
   public async getGuildInformation(guildID: string): Promise<any> {
     const guildInformation = await firstValueFrom(
       this.httpService

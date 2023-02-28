@@ -86,7 +86,7 @@ export class GoogleService {
 
       if (emailId) {
         const record = new GmailRecordDto();
-        record.email = params.find((param) => param.name === 'userId').content;
+        record.email = getElemContentInParams(params, 'userId', '');
         record.lastEmailId = emailId;
 
         return (await this.findOrUpdateLastEmailReceived(record)).new;

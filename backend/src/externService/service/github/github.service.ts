@@ -17,6 +17,8 @@ import { GithubIssueDto } from './dto/github-issue.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import axios from 'axios';
+import { Params } from 'src/cron/cron.type';
+import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 
 @Injectable()
 export class GithubService {
@@ -243,18 +245,10 @@ export class GithubService {
     }
   }
 
-  public async updateLastPullRequest(
-    accessToken: string,
-    params: { name: string; content: string }[],
-  ) {
-    let owner = '';
-    try {
-      owner = params.find((param) => param.name === 'owner').content;
-    } catch (error) {}
-    let repo = '';
-    try {
-      repo = params.find((param) => param.name === 'repo').content;
-    } catch (error) {}
+  public async updateLastPullRequest(accessToken: string, params: Params) {
+    // let owner = '';
+    const owner = getElemContentInParams(params, 'owner', '');
+    const repo = getElemContentInParams(params, 'repo', '');
     const config = {
       method: 'get',
       url: `https://api.github.com/repos/${owner}/${repo}/pulls`,
@@ -290,15 +284,9 @@ export class GithubService {
     }
   }
 
-  public async updateLastIssue(accessToken: string, params: { name: string; content: string }[]) {
-    let owner = params.find((param) => param.name === 'owner').content;
-    if (!owner) {
-      owner = '';
-    }
-    let repo = params.find((param) => param.name === 'repo').content;
-    if (!repo) {
-      repo = '';
-    }
+  public async updateLastIssue(accessToken: string, params: Params) {
+    const owner = getElemContentInParams(params, 'owner', '');
+    const repo = getElemContentInParams(params, 'repo', '');
     const config = {
       method: 'get',
       url: `https://api.github.com/repos/${owner}/${repo}/issues`,

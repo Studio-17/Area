@@ -5,6 +5,7 @@ import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authe
 import { CredentialsGuard } from './guard/credentials.guard';
 import { CreateRepositoryDto } from './dto/repository/create-repository.dto';
 import { ForkRepositoryDto } from './dto/repository/fork-repository.dto';
+import { ReactionDto } from 'src/cron/dto/reaction.dto';
 
 @Controller('actions/github')
 export class GithubController {
@@ -59,13 +60,7 @@ export class GithubController {
   }
 
   @Get('/check-issue')
-  public async checkNewIssue(
-    @Req() request,
-    @Res() response,
-    @Body()
-    @Body()
-    body: { accessToken: string; params: { name: string; content: string }[] },
-  ) {
+  public async checkNewIssue(@Res() response, @Body() body: ReactionDto) {
     try {
       const pullRequestResult = await this.githubService.updateLastIssue(
         body.accessToken,
