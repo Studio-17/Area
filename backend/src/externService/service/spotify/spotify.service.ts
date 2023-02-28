@@ -231,10 +231,19 @@ export class SpotifyService {
     return previousTrack;
   }
 
-  public async followPlaylist(accessToken: string, playlistId: string): Promise<any> {
+  public async followPlaylist(accessToken: string, params: Params): Promise<any> {
+    const playlistName = getElemContentInParams(params, 'playlist', '');
+    const res = await this.searchAny(accessToken, {
+      q: playlistName,
+      type: 'playlist',
+    });
+    if (!res.playlists.items) {
+      throw new HttpException('Playlist not found', HttpStatus.BAD_REQUEST);
+    }
+
     const followedPlaylist = await firstValueFrom(
       this.httpService
-        .put(`https://api.spotify.com/v1/playlists/${playlistId}/followers`, null, {
+        .put(`https://api.spotify.com/v1/playlists/${res.playlists.items[0].id}/followers`, null, {
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${accessToken}`,

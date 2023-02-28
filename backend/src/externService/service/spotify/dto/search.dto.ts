@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsNumberString, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class SearchDto {
   @IsString()
