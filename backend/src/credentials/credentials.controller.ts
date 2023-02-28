@@ -24,6 +24,11 @@ export class CredentialsController {
   constructor(private readonly credentialsService: CredentialsService) {}
 
   @Get()
+  public async findAllCredentials(): Promise<CredentialsInterface[]> {
+    return this.credentialsService.findAll();
+  }
+
+  @Get()
   public async findOneCredentials(
     @Param('userId') userId: string,
     @Param('service') service: ServiceList,
