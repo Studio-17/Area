@@ -36,7 +36,10 @@ export class GithubService {
         .post(
           `https://api.github.com/repos/${forkRepositoryDto.owner}/${forkRepositoryDto.repo}/forks`,
           {
-            data: forkRepositoryDto,
+            name: forkRepositoryDto.name,
+            default_branch_only: forkRepositoryDto.default_branch_only,
+          },
+          {
             headers: {
               Accept: 'application/vnd.github+json',
               Authorization: `Bearer ${accessToken}`,
@@ -46,7 +49,7 @@ export class GithubService {
         )
         .pipe(
           map((value) => {
-            return plainToInstance(ForkedRepository, value.data);
+            return value.data;
           }),
         )
         .pipe(

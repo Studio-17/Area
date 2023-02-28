@@ -51,7 +51,7 @@ export class ActionSeederService {
           { name: 'owner', type: 'string', description: 'Name of the owner.' },
           { name: 'repo', type: 'string', description: 'Name of the repository.' },
           { name: 'organization', type: 'string', description: 'Owner of the new repository.' },
-          { name: 'new_name', type: 'string', description: 'New name of the forked repository.' },
+          { name: 'name', type: 'string', description: 'New name of the forked repository.' },
           {
             name: 'default_branch_only',
             type: 'boolean',

@@ -91,7 +91,7 @@ export class AreaService {
         console.error(e);
         throw NotFoundException('area');
       });
-    console.log('aaa');
+    console.log('update area');
 
     await this.myActionService.removeByAreaId(areaId, userId);
     console.log('000');

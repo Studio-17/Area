@@ -47,16 +47,9 @@ export class GithubCronService {
       console.log('error 2:', error);
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
-    let organization = '';
+    let name = '';
     try {
-      organization = params.find((param) => param.name === 'organization').content;
-    } catch (error) {
-      console.log('error 3:', error);
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
-    }
-    let new_name = '';
-    try {
-      new_name = params.find((param) => param.name === 'new_name').content;
+      name = params.find((param) => param.name === 'new_name').content;
     } catch (error) {
       console.log('error 4:', error);
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
@@ -75,10 +68,8 @@ export class GithubCronService {
       owner,
       'repo: ',
       repo,
-      'organization: ',
-      organization,
-      'new_name: ',
-      new_name,
+      'name: ',
+      name,
       'default_branch_only: ',
       default_branch_only,
     );
@@ -87,8 +78,7 @@ export class GithubCronService {
       return this.githubService.forkRepository(accessToken, {
         owner: owner,
         repo: repo,
-        organization: organization,
-        new_name: new_name,
+        name: name,
         default_branch_only: default_branch_only,
       });
     } catch (error) {
@@ -269,7 +259,7 @@ export class GithubCronService {
       });
 
       if (!records) {
-        console.log('aaa');
+        console.log('no issues found');
         return undefined;
       }
 

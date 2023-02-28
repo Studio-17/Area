@@ -11,11 +11,7 @@ export class ForkRepositoryDto {
 
   @IsString()
   @IsNotEmpty()
-  organization!: string;
-
-  @IsString()
-  @IsNotEmpty()
-  new_name!: string;
+  name!: string;
 
   @IsString()
   @IsNotEmpty()

@@ -61,7 +61,7 @@ export class GithubController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
+  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/check-issue')
   public async checkNewIssue(
     @Req() request,
@@ -137,7 +137,7 @@ export class GithubController {
   //   }
   // }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
+  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Post('/fork-repository')
   public async forkRepository(
     @Req() request,

@@ -91,6 +91,9 @@ export class CronService {
           return;
         }
         console.log('reaction', reaction)
+        console.log('newAccessToken', newAccessToken)
+        console.log('linked', linked)
+        console.log(`http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/actions/` + reaction.link)
         await firstValueFrom(
           this.httpService
             .post<any>(
@@ -104,7 +107,8 @@ export class CronService {
             .pipe(
               catchError((error: AxiosError) => {
                 console.log('HANDLE CRON REACTION Service Error');
-                console.log(error.response);
+                console.log('ERROR -----', error);
+                console.log('ERROR RESPONSE -----', error.response);
                 throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
               }),
             ),
