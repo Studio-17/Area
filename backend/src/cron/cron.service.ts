@@ -45,7 +45,7 @@ export class CronService {
       const argToSend = params
         ? [{ name: 'userId', content: userId }, ...params]
         : [{ name: 'userId', content: userId }];
-      const conditionChecked = await actionHandling(credential.accessToken, argToSend);
+      const conditionChecked = actionHandling(credential.accessToken, argToSend);
       if (conditionChecked) {
         await this.handleCronReaction(userId, actionLink);
       }
@@ -59,7 +59,6 @@ export class CronService {
       console.log('No such function');
       return;
     }
-
     const job = new CronJob(
       body.second + ` ` + body.minute + ` ` + body.hour + ` * * *`,
       this.handleCronAddition.bind(
@@ -77,7 +76,6 @@ export class CronService {
   }
 
   async handleCronReaction(userId: string, actionLink: string) {
-    console.log('cron is triggered');
     const action = await this.actionService.findByLink(actionLink);
     const relatedActions = await this.myActionService.findByActionAndUserId(action.uuid, userId);
 
