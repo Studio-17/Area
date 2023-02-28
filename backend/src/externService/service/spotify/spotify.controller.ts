@@ -220,17 +220,12 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/unfollow-playlist')
-  public async unfollowPlaylist(
-    @Res() response,
-    @Body() playlist: SpotifyObjectDto,
-    @Body() body: ReactionDto,
-  ) {
+  @Post('/unfollow-playlist')
+  public async unfollowPlaylist(@Res() response, @Body() body: ReactionDto) {
     try {
       const searchResult = await this.spotifyService.unfollowPlaylist(
         body.accessToken,
-        playlist.id,
+        body.params,
       );
 
       return response.status(HttpStatus.OK).json({

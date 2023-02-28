@@ -190,6 +190,21 @@ export class ActionSeederService {
         description: 'This reaction add a track in a playlist on Spotify.',
         link: 'spotify/add-track-to-playlist/',
       },
+      {
+        uuid: 'df56e414-32b5-40fa-852c-61e1acfa7a4d',
+        service: ServiceList.SPOTIFY,
+        type: ActionType.REACTION,
+        name: 'Unfollow or Delete a playlist',
+        params: [
+          {
+            name: 'playlist',
+            type: 'string',
+            description: 'name of the playlist you want to unfollow.',
+          },
+        ],
+        description: 'This reaction unfollow or delete a playlist on Spotify.',
+        link: 'spotify/unfollow-playlist/',
+      },
       // ----- TWITCH TEMPLATES -----
     ];
 

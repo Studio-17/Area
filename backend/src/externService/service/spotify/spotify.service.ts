@@ -1,4 +1,4 @@
-import { ConsoleLogger, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom, lastValueFrom } from 'rxjs';
 import { AxiosError } from 'axios/index';
@@ -6,7 +6,6 @@ import { map } from 'rxjs';
 import { SearchDto } from './dto/search.dto';
 import { Params } from 'src/cron/cron.type';
 import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
-import { throws } from 'assert';
 
 @Injectable()
 export class SpotifyService {
@@ -256,10 +255,19 @@ export class SpotifyService {
     return followedPlaylist;
   }
 
-  public async unfollowPlaylist(accessToken: string, playlistId: string): Promise<any> {
+  public async unfollowPlaylist(accessToken: string, params: Params): Promise<any> {
+    const userId = (await this.getAuthenticatedUserInformation(accessToken)).id;
+    const playlistName = getElemContentInParams(params, 'playlist', '');
+    const playlistRes = await this.getUserPlaylist(accessToken, userId);
+    const result = playlistRes.items.find(
+      (playlist: any) => playlist.name.toLowerCase() == playlistName.toLowerCase(),
+    );
+    if (!result) {
+      throw new HttpException('Playlist not found', HttpStatus.NOT_FOUND);
+    }
     const unfollowedPlaylist = await firstValueFrom(
       this.httpService
-        .delete(`https://api.spotify.com/v1/playlists/${playlistId}/followers`, {
+        .delete(`https://api.spotify.com/v1/playlists/${result.id}/followers`, {
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${accessToken}`,
@@ -327,7 +335,6 @@ export class SpotifyService {
 
     return userPlaylist;
   }
-
 
   public async getAlbums(accessToken: string, albumId: string): Promise<any> {
     const album = await firstValueFrom(
