@@ -8,6 +8,7 @@ export class GoogleController {
 
   @Get('/check-mail')
   public async checkIfMailReceived(@Res() response, @Body() body: ReactionDto) {
+    console.log('in /check-mail');
     try {
       const gmailRecord = await this.googleService.updateLastEmailReceived(
         body.accessToken,
