@@ -15,6 +15,8 @@ import {
   ScheduledEventObject,
   ScheduledEventResponseObject,
 } from './interface/scheduled-events.interface';
+import { CreateMessageDto } from './dto/create-message.dto';
+import { MessageCreatedObject } from './interface/message-created.interface';
 
 @Injectable()
 export class DiscordService {
@@ -35,7 +37,7 @@ export class DiscordService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -58,7 +60,7 @@ export class DiscordService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -73,8 +75,8 @@ export class DiscordService {
     return `https://discord.com/oauth2/authorize?client_id=${botID}&scope=bot&permissions=${botPermissions}&guild_id=${guildChannelId}`;
   }
 
-  public async getGuildChannel(botToken: string, guildID: string): Promise<any> {
-    const guildChannels = await firstValueFrom(
+  public async getGuildInformation(botToken: string, guildID: string): Promise<any> {
+    const guildInformation = await firstValueFrom(
       this.httpService
         .get(`https://discord.com/api/guilds/${guildID}`, {
           headers: {
@@ -88,12 +90,12 @@ export class DiscordService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
 
-    return guildChannels;
+    return guildInformation;
   }
 
   public async getGuildChannels(botToken: string, guildID: string): Promise<any> {
@@ -111,7 +113,7 @@ export class DiscordService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -134,7 +136,7 @@ export class DiscordService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -157,7 +159,7 @@ export class DiscordService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -184,7 +186,7 @@ export class DiscordService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -207,7 +209,7 @@ export class DiscordService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -235,7 +237,7 @@ export class DiscordService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -245,19 +247,16 @@ export class DiscordService {
 
   public async getGuildScheduledEventsById(
     botToken: string,
-    guildChannelID: string,
+    guildID: string,
     scheduledEventId: string,
   ): Promise<any> {
     const message = await firstValueFrom(
       this.httpService
-        .get(
-          `https://discord.com/api/guilds/${guildChannelID}/scheduled-events/${scheduledEventId}`,
-          {
-            headers: {
-              Authorization: `Bot ${botToken}`,
-            },
+        .get(`https://discord.com/api/guilds/${guildID}/scheduled-events/${scheduledEventId}`, {
+          headers: {
+            Authorization: `Bot ${botToken}`,
           },
-        )
+        })
         .pipe(
           map((value) => {
             return plainToInstance(ScheduledEventObject, value.data);
@@ -265,7 +264,35 @@ export class DiscordService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+
+    return message;
+  }
+
+  public async postGuildChannelMessage(
+    botToken: string,
+    guildChannelID: string,
+    createMessage: CreateMessageDto,
+  ): Promise<any> {
+    const message = await firstValueFrom(
+      this.httpService
+        .post(`https://discord.com/api/channels/${guildChannelID}/message`, {
+          data: createMessage,
+          headers: {
+            Authorization: `Bot ${botToken}`,
+          },
+        })
+        .pipe(
+          map((value) => {
+            return plainToInstance(MessageCreatedObject, value.data);
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );

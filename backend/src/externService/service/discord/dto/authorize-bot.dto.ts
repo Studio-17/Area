@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateMessageDto {
+export class AuthorizeBotDto {
   @IsString()
   @IsNotEmpty()
-  content!: string;
+  guild_id!: string;
 }
