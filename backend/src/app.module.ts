@@ -27,6 +27,8 @@ import { DeezerOAuth2Module } from './externService/oauth2/deezer/deezer-oauth2.
 import { DropboxOAuth2Module } from './externService/oauth2/dropbox/dropbox-oauth2.module';
 import { TypeformOAuth2Module } from './externService/oauth2/typeform/typeform-oauth2.module';
 import { CronModule } from './cron/cron.module';
+import { DiscordModule } from './externService/service/discord/discord.module';
+import { TwitchModule } from './externService/service/twitch/twitch.module';
 
 @Module({
   imports: [
@@ -51,15 +53,17 @@ import { CronModule } from './cron/cron.module';
     AuthenticationModule,
     UserModule,
     CredentialsModule,
-    GoogleModule,
-    GithubModule,
     AreaModule,
     ServiceModule,
     ActionModule,
     MyActionModule,
-    GithubModule,
+
+    DiscordModule,
     GoogleModule,
+    GithubModule,
     SpotifyModule,
+    TwitchModule,
+
     DeezerOAuth2Module,
     DiscordOAuth2Module,
     DropboxOAuth2Module,
