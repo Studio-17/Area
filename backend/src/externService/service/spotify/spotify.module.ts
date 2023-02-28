@@ -4,7 +4,6 @@ import { SpotifyController } from './spotify.controller';
 import { CredentialsModule } from 'src/credentials/credentials.module';
 import { HttpModule } from '@nestjs/axios';
 import { UserModule } from 'src/user/user.module';
-import { JwtService } from '@nestjs/jwt';
 import { SpotifyCronService } from './spotify.cron.service';
 import { SpotifyRecord } from './entity/spotifyRecord.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -16,7 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     CredentialsModule,
     UserModule,
   ],
-  providers: [SpotifyService, SpotifyCronService, JwtService],
+  providers: [SpotifyService, SpotifyCronService],
   controllers: [SpotifyController],
   exports: [SpotifyService, SpotifyCronService],
 })

@@ -1,3 +1,4 @@
+import { Params } from 'src/cron/cron.type';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -24,7 +25,7 @@ export class MyActionEntity {
   linkedFromId!: string;
 
   @Column({ type: 'json', nullable: true })
-  params: { name: string; content: string }[];
+  params: Params;
 
   @Column({ nullable: true })
   second: string;
