@@ -15,6 +15,15 @@ export class ActionSeederService {
     // There are static UUIDs to avoid to seeders several times the same action
     const actions = [
       // ----- DISCORD TEMPLATES -----
+      {
+        uuid: 'df51e414-32b5-40fa-852c-60eaacfb7e2c',
+        service: ServiceList.DISCORD,
+        type: ActionType.ACTION,
+        name: 'A new scheduled event has been created',
+        description:
+          'This action check if a new scheculed event has been created in a Discord server.',
+        link: 'discord/get/guild/scheduled-events/',
+      },
       // ----- GITHUB TEMPLATES -----
       {
         uuid: '0e423200-9d5a-4f7c-8949-3d9bbad368df',
