@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Res, UseGuards } from '@nestjs/common';
 import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authentication.guard';
 import { DeezerService } from './deezer.service';
 import { CredentialsGuard } from './guard/credentials.guard';
@@ -16,7 +16,7 @@ export class DeezerController {
   @Post('/create-playlist')
   public async createPlaylist(@Res() response, @Body() body: ReactionDto) {
     try {
-      const result = await this.dezzerService.createPlaylist(body.accessToken, body.params);
+      const result = await this.dezzerService.createPlaylist(body);
       return response.status(HttpStatus.OK).json({
         message: 'Created playlist for the authenticated user using Deezer service',
         data: result,

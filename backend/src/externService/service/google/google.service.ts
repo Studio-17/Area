@@ -5,10 +5,10 @@ import { Repository } from 'typeorm';
 import axios from 'axios';
 import { GmailRecordDto } from './dto/gmail/gmail.dto';
 import { ServiceList } from '../../../service/entity/service.entity';
-import { Params } from 'src/cron/type/param.type';
 import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 import { ActionResult } from 'src/cron/interfaces/actionResult.interface';
 import { ActionParam } from 'src/cron/interfaces/actionParam.interface';
+import { ReactionDto } from 'src/cron/dto/reaction.dto';
 
 @Injectable()
 export class GoogleService {
@@ -33,12 +33,13 @@ export class GoogleService {
     }
   }
 
-  public async findOrUpdateLastEmailReceived(gmailRecord: GmailRecordDto) {
+  public async findOrUpdateLastEmailReceived(gmailRecord: GmailRecordDto): Promise<boolean> {
     const record = await this.findByEmail(gmailRecord.email);
 
     if (!record) {
       try {
-        return { new: false, mail: await this.gmailRecordRepository.save(gmailRecord) };
+        await this.gmailRecordRepository.save(gmailRecord);
+        return false;
       } catch (err) {
         throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       }
@@ -56,16 +57,17 @@ export class GoogleService {
             throw new NotFoundException(`Record does not exist`);
           }
 
-          return { new: true, mail: await this.findByEmail(gmailRecord.email) };
+          return true;
         } catch (err) {
           throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
         }
       } else {
-        return { new: false, mail: record };
+        return false;
       }
     }
   }
 
+  // TODO: add a fuction to get the content of the mail to return it
   public async updateLastEmailReceived(actionParam: ActionParam): Promise<ActionResult> {
     const config = {
       method: 'get',
@@ -92,7 +94,7 @@ export class GoogleService {
         record.lastEmailId = emailId;
 
         return {
-          isTriggered: (await this.findOrUpdateLastEmailReceived(record)).new,
+          isTriggered: await this.findOrUpdateLastEmailReceived(record),
           returnValues: [],
         };
       }
@@ -101,15 +103,15 @@ export class GoogleService {
     }
   }
 
-  public async createGoogleDocOnDrive(accessToken: string, params: Params): Promise<string> {
-    const filename = getElemContentInParams(params, 'filename', 'Untitled');
-
+  public async createGoogleDocOnDrive(body: ReactionDto): Promise<string> {
+    const filename = getElemContentInParams(body.params, 'filename', 'Untitled', body.returnValues);
+    console.log('filename', filename);
     const config = {
       method: 'post',
       url: 'https://www.googleapis.com/drive/v3/files',
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${body.accessToken}`,
         ContentType: 'application/json',
       },
       data: {

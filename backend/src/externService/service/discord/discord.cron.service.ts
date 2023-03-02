@@ -77,7 +77,17 @@ export class DiscordCronService {
       record.userId = userId;
       record.category = 'lastScheduledEvents';
       record.content = events.at(-1).id.toString();
-      return { isTriggered: (await this.findOrUpdateLastRecord(record)).new, returnValues: [] };
+      return {
+        isTriggered: (await this.findOrUpdateLastRecord(record)).new,
+        returnValues: [
+          { name: 'eventId', content: events[0].id },
+          { name: 'eventName', content: events[0].name },
+          { name: 'eventDescription', content: events[0].description },
+          { name: 'startTime', content: events[0].scheculed_start_time },
+          { name: 'serverId', content: events[0].guild_id },
+          { name: 'serverName', content: guild.name },
+        ],
+      };
     } catch (error) {
       throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
@@ -100,12 +110,29 @@ export class DiscordCronService {
               channel.name.toLowerCase() === channelName.toLowerCase() && channel.last_message_id,
           ),
         );
+      const message = await this.discordService.getGuildChannelMessagesById(
+        channel.id,
+        channel.last_message_id,
+      );
       const record = new DiscordRecord();
       record.userId = userId;
       record.category = 'lastMessage';
       record.content = channel.last_message_id;
-      return { isTriggered: (await this.findOrUpdateLastRecord(record)).new, returnValues: [] };
+      return {
+        isTriggered: (await this.findOrUpdateLastRecord(record)).new,
+        returnValues: [
+          { name: 'serverId', content: guild.id },
+          { name: 'serverName', content: guild.name },
+          { name: 'channelId', content: channel.id },
+          { name: 'channelName', content: channel.name },
+          { name: 'messageId', content: channel.last_message_id },
+          { name: 'messageContent', content: message.content },
+          { name: 'messageAuthorId', content: message.author.id },
+          { name: 'messageAuthor', content: message.author.username },
+        ],
+      };
     } catch (error) {
+      console.log('error');
       throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
   }

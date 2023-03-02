@@ -67,9 +67,8 @@ export class TwitchCronService {
     const userId = getElemContentInParams(actionParam.params, 'userId', 'undefined');
     const channels = await this.twitchService.getAuthenticatedUserChannelsFollowed(
       actionParam.accessToken,
-      [{ name: 'userId', content: user.data[0].id }],
+      user.data[0].id,
     );
-    // console.log(channels.data[0]);
     const pastReccord = await this.findByUserId(userId, 'numberOfFollowedChannels');
     const record = new TwitchRecord();
     record.userId = userId;
@@ -77,7 +76,13 @@ export class TwitchCronService {
     record.content = channels.total.toString();
     const res = (await this.findOrUpdateLastRecord(record)).new;
     if (res && +pastReccord.content < +channels.total) {
-      return { isTriggered: true, returnValues: [] };
+      return {
+        isTriggered: true,
+        returnValues: [
+          { name: 'broadcasterId', content: channels.data[0].broadcaster_id },
+          { name: 'broadcasterName', content: channels.data[0].broadcaster_name },
+        ],
+      };
     }
     return { isTriggered: false };
   }
@@ -87,7 +92,7 @@ export class TwitchCronService {
     const userId = getElemContentInParams(actionParam.params, 'userId', 'undefined');
     const channels = await this.twitchService.getAuthenticatedUserChannelsFollowed(
       actionParam.accessToken,
-      [{ name: 'userId', content: user.data[0].id }],
+      user.data[0].id,
     );
     const pastReccord = await this.findByUserId(userId, 'numberOfFollowedChannels');
     const record = new TwitchRecord();
@@ -96,7 +101,7 @@ export class TwitchCronService {
     record.content = channels.total.toString();
     const res = (await this.findOrUpdateLastRecord(record)).new;
     if (res && +pastReccord.content > +channels.total) {
-      return { isTriggered: true, returnValues: [] };
+      return { isTriggered: true };
     }
     return { isTriggered: false };
   }
@@ -106,23 +111,35 @@ export class TwitchCronService {
     const userId = getElemContentInParams(actionParam.params, 'userId', 'undefined');
     const channels = await this.twitchService.getAuthenticatedUserChannelsFollowed(
       actionParam.accessToken,
-      [{ name: 'userId', content: user.data[0].id }],
+      user.data[0].id,
     );
     const channelName = getElemContentInParams(actionParam.params, 'channel', 'undefined');
+    console.log(channelName);
     const channel = channels.data.find(
       (channel: any) => channel.broadcaster_name.toLowerCase() === channelName.toLowerCase(),
     );
+    console.log(channel);
     if (!channel) {
       throw new HttpException('Channel not found', HttpStatus.NOT_FOUND);
     }
-    const res = await this.twitchService.getStream(actionParam.accessToken, channel.broadcaster_id); //, [{ name: 'userId', content: channel.broadcaster_id }]);
+    const res = await this.twitchService.getStream(actionParam.accessToken, channel.broadcaster_id);
+    console.log(res);
     const record = new TwitchRecord();
     record.userId = userId;
     record.category = 'channelOnStream';
     record.content = res.data.length ? 'true' : 'false';
     const result = (await this.findOrUpdateLastRecord(record)).new;
     if (res.data.length && result) {
-      return { isTriggered: true, returnValues: [] };
+      return {
+        isTriggered: true,
+        returnValues: [
+          { name: 'gameName', content: channel.data[0].game_name },
+          { name: 'title', content: channel.data[0].title },
+          { name: 'broadcasterName', content: channel.data[0].user_name },
+          { name: 'viewerCount', content: channel.data[0].viewer_count },
+          { name: 'startedAt', content: channel.data[0].started_at },
+        ],
+      };
     }
     return { isTriggered: false };
   }

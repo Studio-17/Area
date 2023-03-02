@@ -72,7 +72,7 @@ export class SpotifyCronService {
       const record = new SpotifyRecord();
       record.userId = getElemContentInParams(actionParam.params, 'userId', 'undefined');
       record.category = 'currentlyPlayingTrack';
-      record.content = currentlyPlayingTrack;
+      record.content = currentlyPlayingTrack.item.id;
       return { isTriggered: (await this.findOrUpdateLastRecord(record)).new, returnValues: [] };
     } catch (error) {
       throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
@@ -105,8 +105,16 @@ export class SpotifyCronService {
       const record = new SpotifyRecord();
       record.userId = getElemContentInParams(actionParam.params, 'userId', 'undefined');
       record.category = 'currentlyPlayingTrack';
-      record.content = currentlyPlayingTrack;
-      return { isTriggered: (await this.findOrUpdateLastRecord(record)).new, returnValues: [] };
+      record.content = currentlyPlayingTrack.item.id;
+      return {
+        isTriggered: (await this.findOrUpdateLastRecord(record)).new,
+        returnValues: [
+          { name: 'trackUrl', content: currentlyPlayingTrack.item.external_urls.spotify },
+          { name: 'trackName', content: currentlyPlayingTrack.item.name },
+          { name: 'trackId', content: currentlyPlayingTrack.item.id },
+          { name: 'artistName', content: currentlyPlayingTrack.item.artists[0].name },
+        ],
+      };
     } catch (error) {
       throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }

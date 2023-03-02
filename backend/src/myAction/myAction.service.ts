@@ -102,9 +102,10 @@ export class MyActionService {
   }
 
   availableActions = new Map<string, Map<string, ActionFunction>>([
-    // MIRO
+    // MIRONon assigné
     // NOTION
     [ServiceList.TWITCH, this.twitchCronService.availableActions],
+    // return value not set up for google
     [ServiceList.GOOGLE, this.googleCronService.availableActions],
     [ServiceList.GITHUB, this.githubCronService.availableActions],
     [ServiceList.SPOTIFY, this.spotifyCronService.availableActions],

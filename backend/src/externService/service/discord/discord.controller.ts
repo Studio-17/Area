@@ -50,7 +50,7 @@ export class DiscordController {
   @Post('/get/guild/information')
   public async getGuildInformation(@Res() response, @Body() body: ReactionDto) {
     try {
-      const guildId = getElemContentInParams(body.params, 'guildId', '');
+      const guildId = getElemContentInParams(body.params, 'guildId', '', body.returnValues);
       const user = await this.discordService.getGuildInformation(guildId);
 
       return response.status(HttpStatus.OK).json({
@@ -70,7 +70,7 @@ export class DiscordController {
   @Post('/get/guild/channels')
   public async getGuildChannels(@Res() response, @Body() body: ReactionDto) {
     try {
-      const guildId = getElemContentInParams(body.params, 'guildId', '');
+      const guildId = getElemContentInParams(body.params, 'guildId', '', body.returnValues);
       const user = await this.discordService.getGuildChannels(guildId);
 
       return response.status(HttpStatus.OK).json({
@@ -90,7 +90,7 @@ export class DiscordController {
   @Post('/get/guild/invites')
   public async getGuildInvites(@Res() response, @Body() body: ReactionDto) {
     try {
-      const guildId = getElemContentInParams(body.params, 'guildId', '');
+      const guildId = getElemContentInParams(body.params, 'guildId', '', body.returnValues);
       const user = await this.discordService.getGuildInvites(guildId);
 
       return response.status(HttpStatus.OK).json({
@@ -111,7 +111,12 @@ export class DiscordController {
   @Post('/get/guild/channel/message')
   public async getGuildChannelMessages(@Res() response, @Body() body: ReactionDto) {
     try {
-      const guildChannelId = getElemContentInParams(body.params, 'guildChannelId', '');
+      const guildChannelId = getElemContentInParams(
+        body.params,
+        'guildChannelId',
+        '',
+        body.returnValues,
+      );
       const user = await this.discordService.getGuildChannelMessages(guildChannelId);
 
       return response.status(HttpStatus.OK).json({
@@ -131,11 +136,17 @@ export class DiscordController {
   @Post('/get/guild/channel/message/byId')
   public async getGuildChannelMessagesById(@Res() response, @Body() body: ReactionDto) {
     try {
-      const guildChannelId = getElemContentInParams(body.params, 'guildChannelId', '');
+      const guildChannelId = getElemContentInParams(
+        body.params,
+        'guildChannelId',
+        '',
+        body.returnValues,
+      );
       const guildChannelMessageId = getElemContentInParams(
         body.params,
         'guildChannelMessageId',
         '',
+        body.returnValues,
       );
 
       const user = await this.discordService.getGuildChannelMessagesById(
@@ -161,7 +172,7 @@ export class DiscordController {
   @Post('/get/guild/scheduled-events')
   public async getGuildScheduledEvents(@Res() response, @Body() body: ReactionDto) {
     try {
-      const guildId = getElemContentInParams(body.params, 'guildId', '');
+      const guildId = getElemContentInParams(body.params, 'guildId', '', body.returnValues);
       const user = await this.discordService.getGuildScheduledEvents(guildId);
 
       return response.status(HttpStatus.OK).json({
@@ -210,8 +221,13 @@ export class DiscordController {
   @Post('/get/guild/scheduled-events/byId')
   public async getGuildScheduledEventsById(@Res() response, @Body() body: ReactionDto) {
     try {
-      const guildId = getElemContentInParams(body.params, 'guildId', '');
-      const scheduledEventId = getElemContentInParams(body.params, 'scheduledEventId', '');
+      const guildId = getElemContentInParams(body.params, 'guildId', '', body.returnValues);
+      const scheduledEventId = getElemContentInParams(
+        body.params,
+        'scheduledEventId',
+        '',
+        body.returnValues,
+      );
 
       const user = await this.discordService.getGuildScheduledEventsById(guildId, scheduledEventId);
 

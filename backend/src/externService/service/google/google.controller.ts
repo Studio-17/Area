@@ -34,7 +34,7 @@ export class GoogleController {
   @Post('/publish-doc')
   public async createGoogleDoc(@Res() response, @Body() body: ReactionDto) {
     try {
-      const fileId = await this.googleService.createGoogleDocOnDrive(body.accessToken, body.params);
+      const fileId = await this.googleService.createGoogleDocOnDrive(body);
 
       return response.status(HttpStatus.OK).json({
         message: 'Successfully created document on personal drive',

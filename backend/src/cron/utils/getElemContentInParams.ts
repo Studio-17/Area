@@ -11,12 +11,10 @@ export function getElemContentInParams(
   try {
     const param: Param = params.find((param) => param.name === name);
     if (param.isActionResult && returnValues.length) {
-      console.log('isActionResult');
-      result = returnValues.find((returnValue) => returnValue.name === name).content;
+      result = returnValues.find((returnValue) => returnValue.name === param.content).content;
     } else {
       result = param.content;
     }
-    // result = params.find((param) => param.name === name).content;
   } catch (error) {}
   return result;
 }
