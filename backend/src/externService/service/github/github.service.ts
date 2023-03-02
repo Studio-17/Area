@@ -29,7 +29,6 @@ export class GithubService {
     accessToken: string,
     forkRepositoryDto: ForkRepositoryDto,
   ): Promise<ForkedRepository> {
-    console.log('request service');
     const forkedRepository = await firstValueFrom(
       // Beware of the params in the route, they may be invalid
       this.httpService
@@ -54,14 +53,11 @@ export class GithubService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            console.log('PIPE');
-            console.log(JSON.stringify(error));
             throw new HttpException(error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
 
-    console.log('forkedRepository :', forkedRepository);
     return forkedRepository;
   }
 

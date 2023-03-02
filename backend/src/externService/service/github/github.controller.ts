@@ -1,4 +1,4 @@
-import {Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { GithubService } from '../github/github.service';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authentication.guard';
@@ -9,6 +9,8 @@ import { ActionDto } from '../../../cron/dto/action.dto';
 import { GithubCronService } from './github.cron.service';
 import { GithubIssueDto } from './dto/github-issue.dto';
 import { GithubPullRequestDto } from './dto/github-pull-request.dto';
+import { ReactionDto } from '../../../cron/dto/reaction.dto';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 @Controller('actions/github')
 export class GithubController {
@@ -139,18 +141,16 @@ export class GithubController {
 
   // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Post('/fork-repository')
-  public async forkRepository(
-    @Req() request,
-    @Res() response,
-    @Body() forkRepositoryDto: ForkRepositoryDto,
-  ) {
-    console.log('before');
+  public async forkRepository(@Req() request, @Res() response, @Body() reactionDto: ReactionDto) {
     try {
-      console.log('in');
-      const userRepositories = await this.githubService.forkRepository(
-        request.credentials.accessToken,
-        forkRepositoryDto,
-      );
+      const userRepositories = await this.githubService.forkRepository(reactionDto.accessToken, {
+        owner: reactionDto.params.find((param) => param.name === 'owner').content,
+        repo: reactionDto.params.find((param) => param.name === 'repo').content,
+        name: reactionDto.params.find((param) => param.name === 'name').content,
+        default_branch_only:
+          reactionDto.params.find((param) => param.name === 'default_branch_only').content ===
+          'true',
+      });
 
       return response.status(HttpStatus.OK).json({
         message: 'Got repositories list for the authenticated user using GitHub service',
@@ -158,6 +158,7 @@ export class GithubController {
         status: 200,
       });
     } catch (error) {
+      console.error(error);
       return response.status(HttpStatus.BAD_REQUEST).json({
         message: 'Error fetching repositories from GitHub services',
         error: error,

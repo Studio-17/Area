@@ -32,26 +32,25 @@ export class GithubCronService {
 
   // --- FORK ---
   public async forkRepository(accessToken: string, params: { name: string; content: string }[]) {
-    console.log('forkRepository');
     let owner = '';
     try {
       owner = params.find((param) => param.name === 'owner').content;
     } catch (error) {
-      console.log('error 1:', error);
+      console.error(error);
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
     let repo = '';
     try {
       repo = params.find((param) => param.name === 'repo').content;
     } catch (error) {
-      console.log('error 2:', error);
+      console.error(error);
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
     let name = '';
     try {
       name = params.find((param) => param.name === 'new_name').content;
     } catch (error) {
-      console.log('error 4:', error);
+      console.error(error);
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
     let default_branch_only: boolean;
@@ -59,20 +58,9 @@ export class GithubCronService {
       default_branch_only =
         params.find((param) => param.name === 'default_branch_only').content === 'true';
     } catch (error) {
-      console.log('error 5:', error);
+      console.error(error);
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
-
-    console.log(
-      'owner:',
-      owner,
-      'repo: ',
-      repo,
-      'name: ',
-      name,
-      'default_branch_only: ',
-      default_branch_only,
-    );
 
     try {
       return this.githubService.forkRepository(accessToken, {
@@ -82,7 +70,6 @@ export class GithubCronService {
         default_branch_only: default_branch_only,
       });
     } catch (error) {
-      console.log('error 000:', error);
       console.error(error);
       throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
@@ -94,12 +81,14 @@ export class GithubCronService {
     try {
       owner = params.find((param) => param.name === 'owner').content;
     } catch (error) {
+      console.error(error);
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
     let repo = '';
     try {
       repo = params.find((param) => param.name === 'repo').content;
     } catch (error) {
+      console.error(error);
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
 
@@ -150,6 +139,7 @@ export class GithubCronService {
           data: await this.githubRecordRepository.save(githubRecordDto),
         };
       } catch (err) {
+        console.error(err);
         throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       }
     } else if (
@@ -173,6 +163,7 @@ export class GithubCronService {
           data: await this.findPullRequest(githubRecordDto),
         };
       } catch (err) {
+        console.error(err);
         throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       }
     } else {
@@ -243,6 +234,7 @@ export class GithubCronService {
           data: await this.findIssue(githubRecordDto),
         };
       } catch (err) {
+        console.error(err);
         throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       }
     } else {
@@ -259,7 +251,6 @@ export class GithubCronService {
       });
 
       if (!records) {
-        console.log('no issues found');
         return undefined;
       }
 
