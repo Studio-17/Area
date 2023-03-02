@@ -222,6 +222,14 @@ export class ActionSeederService {
         link: 'spotify/follow-playlist/',
       },
       // ----- TWITCH TEMPLATES -----
+      {
+        uuid: '65011817-eec8-4d26-817e-45cbe3881ef3',
+        service: ServiceList.TWITCH,
+        type: ActionType.ACTION,
+        name: 'A new channel is followed',
+        description: 'This action check if a new channel has been followed.',
+        link: 'twitch/new-followed-channel/',
+      },
     ];
 
     for (const action of actions) {

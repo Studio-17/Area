@@ -10,6 +10,7 @@ import { MyActionService } from './myAction.service';
 import { GithubModule } from '../externService/service/github/github.module';
 import { SpotifyModule } from 'src/externService/service/spotify/spotify.module';
 import { CronModule } from 'src/cron/cron.module';
+import { TwitchModule } from 'src/externService/service/twitch/twitch.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CronModule } from 'src/cron/cron.module';
     forwardRef(() => GoogleModule),
     forwardRef(() => GithubModule),
     forwardRef(() => SpotifyModule),
+    forwardRef(() => TwitchModule),
   ],
   providers: [MyActionService],
   controllers: [MyActionController],

@@ -1,7 +1,5 @@
-import { Body, Controller, Post, HttpStatus, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, HttpStatus, Req, Res } from '@nestjs/common';
 import { TwitchService } from './twitch.service';
-import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authentication.guard';
-import { CredentialsGuard } from './guard/credentials.guard';
 import { ReactionDto } from '../../../cron/dto/reaction.dto';
 
 @Controller('actions/twitch')

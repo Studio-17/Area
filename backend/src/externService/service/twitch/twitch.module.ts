@@ -7,9 +7,15 @@ import { UserModule } from 'src/user/user.module';
 import { JwtService } from '@nestjs/jwt';
 import { TwitchCronService } from './twitch.cron.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TwitchRecord } from './entity/twitchRecord.entity';
 
 @Module({
-  imports: [HttpModule.register({}), CredentialsModule, UserModule],
+  imports: [
+    TypeOrmModule.forFeature([TwitchRecord]),
+    HttpModule.register({}),
+    CredentialsModule,
+    UserModule,
+  ],
   providers: [TwitchService, TwitchCronService, JwtService],
   controllers: [TwitchController],
   exports: [TwitchService, TwitchCronService],

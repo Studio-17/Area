@@ -1,6 +1,6 @@
-import { ConsoleLogger, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { catchError, firstValueFrom, lastValueFrom } from 'rxjs';
+import { catchError, lastValueFrom } from 'rxjs';
 import { AxiosError } from 'axios/index';
 import { map } from 'rxjs';
 import { plainToInstance } from 'class-transformer';

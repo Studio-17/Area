@@ -185,8 +185,8 @@ export class AppController {
             name: 'twitch',
             actions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'A new channel is followed',
+                description: 'It check if a new channel is followed.',
               },
             ],
             reactions: [
