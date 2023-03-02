@@ -20,7 +20,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // import { REACT_NATIVE_APP_API_URL } from "@env";
 
-const API_ENDPOINT = "http://10.0.2.2:8080/api/reaccoon";
+const API_ENDPOINT = "http://localhost:8080/api/reaccoon";
 
 import MyText from "../MyText";
 import InputField from "../InputField";
