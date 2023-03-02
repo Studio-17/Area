@@ -192,6 +192,10 @@ export class AppController {
                 name: 'A channel is unfollowed',
                 description: 'It check if a channel is unfollowed.',
               },
+              {
+                name: 'A followed channel is on live',
+                description: 'It check if a specific followed channel is on live.',
+              },
             ],
             reactions: [
               {

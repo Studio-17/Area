@@ -238,6 +238,21 @@ export class ActionSeederService {
         description: 'This action check if a channel has been unfollowed.',
         link: 'twitch/unfollowed-channel/',
       },
+      {
+        uuid: '65011817-eea2-a111-817e-45cbe3881ef3',
+        service: ServiceList.TWITCH,
+        type: ActionType.ACTION,
+        name: 'A followed channel is on live',
+        params: [
+          {
+            name: 'channel',
+            type: 'string',
+            description: 'name of the followed channel you want to listen.',
+          },
+        ],
+        description: 'This action check if a specific followed channel is on live.',
+        link: 'twitch/channel-on-stream/',
+      },
     ];
 
     for (const action of actions) {

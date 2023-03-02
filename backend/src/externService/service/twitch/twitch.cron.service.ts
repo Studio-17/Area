@@ -61,7 +61,7 @@ export class TwitchCronService {
   }
 
   async FollowedANewChannel(accessToken: string, params: Params): Promise<boolean> {
-    const user = await this.twitchService.getAuthenticatedUserInformation(accessToken, params);
+    const user = await this.twitchService.getAuthenticatedUserInformation(accessToken);
     const userId = getElemContentInParams(params, 'userId', 'undefined');
     const channels = await this.twitchService.getAuthenticatedUserChannelsFollowed(accessToken, [
       { name: 'userId', content: user.data[0].id },
@@ -79,7 +79,7 @@ export class TwitchCronService {
   }
 
   async UnfollowedAChannel(accessToken: string, params: Params): Promise<boolean> {
-    const user = await this.twitchService.getAuthenticatedUserInformation(accessToken, params);
+    const user = await this.twitchService.getAuthenticatedUserInformation(accessToken);
     const userId = getElemContentInParams(params, 'userId', 'undefined');
     const channels = await this.twitchService.getAuthenticatedUserChannelsFollowed(accessToken, [
       { name: 'userId', content: user.data[0].id },
@@ -96,8 +96,34 @@ export class TwitchCronService {
     return false;
   }
 
+  async AFollowedChannelIsOnStream(accessToken: string, params: Params): Promise<boolean> {
+    const user = await this.twitchService.getAuthenticatedUserInformation(accessToken);
+    const userId = getElemContentInParams(params, 'userId', 'undefined');
+    const channels = await this.twitchService.getAuthenticatedUserChannelsFollowed(accessToken, [
+      { name: 'userId', content: user.data[0].id },
+    ]);
+    const channelName = getElemContentInParams(params, 'channel', 'undefined');
+    const channel = channels.data.find(
+      (channel) => channel.broadcaster_name.toLowerCase() === channelName.toLowerCase(),
+    );
+    if (!channel) {
+      throw new HttpException('Channel not found', HttpStatus.NOT_FOUND);
+    }
+    const res = await this.twitchService.getStream(accessToken, channel.broadcaster_id); //, [{ name: 'userId', content: channel.broadcaster_id }]);
+    const record = new TwitchRecord();
+    record.userId = userId;
+    record.category = 'channelOnStream';
+    record.content = res.data.length ? 'true' : 'false';
+    const result = (await this.findOrUpdateLastRecord(record)).new;
+    if (res.data.length && result) {
+      return true;
+    }
+    return false;
+  }
+
   public availableActions = new Map([
     ['twitch/new-followed-channel/', this.FollowedANewChannel.bind(this)],
     ['twitch/unfollowed-channel/', this.UnfollowedAChannel.bind(this)],
+    ['twitch/channel-on-stream/', this.AFollowedChannelIsOnStream.bind(this)],
   ]);
 }
