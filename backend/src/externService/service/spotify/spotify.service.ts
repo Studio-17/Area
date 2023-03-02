@@ -4,7 +4,7 @@ import { catchError, firstValueFrom, lastValueFrom } from 'rxjs';
 import { AxiosError } from 'axios/index';
 import { map } from 'rxjs';
 import { SearchDto } from './dto/search.dto';
-import { Params } from 'src/cron/cron.type';
+import { Params } from 'src/cron/type/param.type';
 import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 
 @Injectable()

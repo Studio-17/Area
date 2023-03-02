@@ -1,8 +1,8 @@
 import { HttpService } from '@nestjs/axios';
-import { ConsoleLogger, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { catchError, lastValueFrom, map } from 'rxjs';
-import { Params } from 'src/cron/cron.type';
+import { Params } from 'src/cron/type/param.type';
 import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 
 @Injectable()

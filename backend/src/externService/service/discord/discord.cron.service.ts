@@ -3,9 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DiscordRecord } from './entity/discordRecord.entity';
 import { DiscordService } from './discord.service';
-import { Params } from 'src/cron/cron.type';
 import { NotFoundException } from 'src/utils/exceptions/not-found.exception';
 import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
+import { ActionResult } from 'src/cron/interfaces/actionResult.interface';
+import { ActionParam } from 'src/cron/interfaces/actionParam.interface';
+import { ActionFunction } from 'src/cron/interfaces/actionFunction.interface';
 
 @Injectable()
 export class DiscordCronService {
@@ -60,35 +62,35 @@ export class DiscordCronService {
     return { new: false, mail: record };
   }
 
-  private async checkNewScheduledEvents(accessToken: string, params: Params): Promise<boolean> {
-    const userId = getElemContentInParams(params, 'userId', 'undefined');
-    const server = getElemContentInParams(params, 'server', 'undefined');
+  private async checkNewScheduledEvents(actionParam: ActionParam): Promise<ActionResult> {
+    const userId = getElemContentInParams(actionParam.params, 'userId', 'undefined');
+    const server = getElemContentInParams(actionParam.params, 'server', 'undefined');
     try {
       const guild = await this.discordService
-        .getAuthenticatedUserGuilds(accessToken)
+        .getAuthenticatedUserGuilds(actionParam.accessToken)
         .then((guilds) => guilds.find((guild: any) => guild.name === server));
       const events = await this.discordService.getGuildScheduledEvents(guild.id);
       if (!events.length) {
-        return false;
+        return { isTriggered: false };
       }
       const record = new DiscordRecord();
       record.userId = userId;
       record.category = 'lastScheduledEvents';
       record.content = events.at(-1).id.toString();
-      return (await this.findOrUpdateLastRecord(record)).new;
+      return { isTriggered: (await this.findOrUpdateLastRecord(record)).new, returnValues: [] };
     } catch (error) {
       throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
   }
 
-  private async checkNewMessageinChannel(accessToken: string, params: Params): Promise<boolean> {
-    const userId = getElemContentInParams(params, 'userId', 'undefined');
-    const server = getElemContentInParams(params, 'server', 'undefined');
-    const channelName = getElemContentInParams(params, 'channel', 'général');
+  private async checkNewMessageinChannel(actionParam: ActionParam): Promise<ActionResult> {
+    const userId = getElemContentInParams(actionParam.params, 'userId', 'undefined');
+    const server = getElemContentInParams(actionParam.params, 'server', 'undefined');
+    const channelName = getElemContentInParams(actionParam.params, 'channel', 'général');
 
     try {
       const guild = await this.discordService
-        .getAuthenticatedUserGuilds(accessToken)
+        .getAuthenticatedUserGuilds(actionParam.accessToken)
         .then((guilds) => guilds.find((guild: any) => guild.name === server));
       const channel = await this.discordService
         .getGuildChannels(guild.id)
@@ -102,13 +104,13 @@ export class DiscordCronService {
       record.userId = userId;
       record.category = 'lastMessage';
       record.content = channel.last_message_id;
-      return (await this.findOrUpdateLastRecord(record)).new;
+      return { isTriggered: (await this.findOrUpdateLastRecord(record)).new, returnValues: [] };
     } catch (error) {
       throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
   }
 
-  availableActions = new Map([
+  availableActions = new Map<string, ActionFunction>([
     ['discord/get/guild/scheduled-events/', this.checkNewScheduledEvents.bind(this)],
     ['discord/get/guild/channel/new-message/', this.checkNewMessageinChannel.bind(this)],
   ]);

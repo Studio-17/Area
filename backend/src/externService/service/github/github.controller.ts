@@ -39,11 +39,13 @@ export class GithubController {
     body: { accessToken: string; email: string; repositoryName: string; repositoryOwner: string },
   ) {
     try {
-      const pullRequestResult = await this.githubService.updateLastPullRequest(
-        body.accessToken,
-        [{name: 'repo', content: body.repositoryName},
-        { name: 'owner', content: body.repositoryOwner }],
-      );
+      const pullRequestResult = await this.githubService.updateLastPullRequest({
+        accessToken: body.accessToken,
+        params: [
+          { name: 'repo', content: body.repositoryName, isActionResult: false },
+          { name: 'owner', content: body.repositoryOwner, isActionResult: false },
+        ],
+      });
 
       return response.status(HttpStatus.OK).json({
         message: 'Got last pull request from Github API',
@@ -62,10 +64,10 @@ export class GithubController {
   @Get('/check-issue')
   public async checkNewIssue(@Res() response, @Body() body: ReactionDto) {
     try {
-      const pullRequestResult = await this.githubService.updateLastIssue(
-        body.accessToken,
-        body.params,
-      );
+      const pullRequestResult = await this.githubService.updateLastIssue({
+        accessToken: body.accessToken,
+        params: body.params,
+      });
 
       return response.status(HttpStatus.OK).json({
         message: 'Got last issue from Github API',

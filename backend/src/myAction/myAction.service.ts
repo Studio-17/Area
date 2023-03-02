@@ -13,10 +13,11 @@ import { ServiceList } from 'src/service/entity/service.entity';
 import { GithubCronService } from 'src/externService/service/github/github.cron.service';
 import { GoogleCronService } from 'src/externService/service/google/google.cron.service';
 import { CronService } from 'src/cron/cron.service';
-import { Params } from 'src/cron/cron.type';
+import { Params } from 'src/cron/type/param.type';
 import { DiscordCronService } from 'src/externService/service/discord/discord.cron.service';
 import { TwitchCronService } from 'src/externService/service/twitch/twitch.cron.service';
 import { TimerCronService } from 'src/externService/service/timer/timer.cron.service';
+import { ActionFunction } from 'src/cron/interfaces/actionFunction.interface';
 
 @Injectable()
 export class MyActionService {
@@ -100,7 +101,7 @@ export class MyActionService {
     return await this.myActionRepository.findBy({ linkedFromId: actionId });
   }
 
-  availableActions = new Map([
+  availableActions = new Map<string, Map<string, ActionFunction>>([
     // MIRO
     // NOTION
     [ServiceList.TWITCH, this.twitchCronService.availableActions],

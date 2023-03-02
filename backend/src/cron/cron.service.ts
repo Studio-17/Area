@@ -10,8 +10,11 @@ import { UserService } from 'src/user/user.service';
 import { ServiceList, ServiceType } from '../service/entity/service.entity';
 import { CreateCronDto } from './dto/add-cron.dto';
 import { CronJob } from 'cron';
-import { Params } from './cron.type';
+import { Params } from './type/param.type';
 import { ServiceService } from 'src/service/service.service';
+import { ActionResult } from './interfaces/actionResult.interface';
+import { ActionParam } from './interfaces/actionParam.interface';
+import { ReturnValues } from './type/returnValue.type';
 
 @Injectable()
 export class CronService {
@@ -30,7 +33,7 @@ export class CronService {
     userId: string,
     actionLink: string,
     service: ServiceList,
-    actionHandling: (accessToken: string, params: Params) => boolean,
+    actionHandling: (actionParam: ActionParam) => ActionResult,
     params: Params,
   ) {
     if (!actionHandling) {
@@ -48,18 +51,21 @@ export class CronService {
         credential = (await this.credentialsService.findById(userId, service)).accessToken;
       }
       const argToSend = params
-        ? [{ name: 'userId', content: userId }, ...params]
-        : [{ name: 'userId', content: userId }];
-      const conditionChecked = await actionHandling(credential, argToSend);
-      if (conditionChecked) {
-        await this.handleCronReaction(userId, actionLink);
+        ? [{ name: 'userId', content: userId, isActionResult: false }, ...params]
+        : [{ name: 'userId', content: userId, isActionResult: false }];
+      const conditionChecked = await actionHandling({ accessToken: credential, params: argToSend });
+      if (conditionChecked.isTriggered) {
+        await this.handleCronReaction(userId, actionLink, conditionChecked.returnValues);
       }
     } catch (error: any) {
       return;
     }
   }
 
-  addCron(body: CreateCronDto, availableActions: Map<string, any>) {
+  addCron(
+    body: CreateCronDto,
+    availableActions: Map<string, (actionParam: ActionParam) => Promise<ActionResult>>,
+  ) {
     if (!availableActions.has(body.link)) {
       console.log('No such function');
       return;
@@ -80,7 +86,7 @@ export class CronService {
     job.start();
   }
 
-  async handleCronReaction(userId: string, actionLink: string) {
+  async handleCronReaction(userId: string, actionLink: string, returnValues: ReturnValues) {
     const action = await this.actionService.findByLink(actionLink);
     const relatedActions = await this.myActionService.findByActionAndUserId(action.uuid, userId);
 
@@ -101,6 +107,7 @@ export class CronService {
               {
                 accessToken: newAccessToken.accessToken,
                 params: linked.params,
+                returnValues: returnValues,
               },
             )
             .pipe(

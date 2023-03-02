@@ -1,6 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Params } from 'src/cron/cron.type';
+import { ActionFunction } from 'src/cron/interfaces/actionFunction.interface';
+import { ActionParam } from 'src/cron/interfaces/actionParam.interface';
+import { ActionResult } from 'src/cron/interfaces/actionResult.interface';
 import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 import { NotFoundException } from 'src/utils/exceptions/not-found.exception';
 import { Repository } from 'typeorm';
@@ -60,12 +62,14 @@ export class TwitchCronService {
     return { new: false, mail: record };
   }
 
-  async FollowedANewChannel(accessToken: string, params: Params): Promise<boolean> {
-    const user = await this.twitchService.getAuthenticatedUserInformation(accessToken);
-    const userId = getElemContentInParams(params, 'userId', 'undefined');
-    const channels = await this.twitchService.getAuthenticatedUserChannelsFollowed(accessToken, [
-      { name: 'userId', content: user.data[0].id },
-    ]);
+  async FollowedANewChannel(actionParam: ActionParam): Promise<ActionResult> {
+    const user = await this.twitchService.getAuthenticatedUserInformation(actionParam.accessToken);
+    const userId = getElemContentInParams(actionParam.params, 'userId', 'undefined');
+    const channels = await this.twitchService.getAuthenticatedUserChannelsFollowed(
+      actionParam.accessToken,
+      [{ name: 'userId', content: user.data[0].id }],
+    );
+    // console.log(channels.data[0]);
     const pastReccord = await this.findByUserId(userId, 'numberOfFollowedChannels');
     const record = new TwitchRecord();
     record.userId = userId;
@@ -73,17 +77,18 @@ export class TwitchCronService {
     record.content = channels.total.toString();
     const res = (await this.findOrUpdateLastRecord(record)).new;
     if (res && +pastReccord.content < +channels.total) {
-      return true;
+      return { isTriggered: true, returnValues: [] };
     }
-    return false;
+    return { isTriggered: false };
   }
 
-  async UnfollowedAChannel(accessToken: string, params: Params): Promise<boolean> {
-    const user = await this.twitchService.getAuthenticatedUserInformation(accessToken);
-    const userId = getElemContentInParams(params, 'userId', 'undefined');
-    const channels = await this.twitchService.getAuthenticatedUserChannelsFollowed(accessToken, [
-      { name: 'userId', content: user.data[0].id },
-    ]);
+  async UnfollowedAChannel(actionParam: ActionParam): Promise<ActionResult> {
+    const user = await this.twitchService.getAuthenticatedUserInformation(actionParam.accessToken);
+    const userId = getElemContentInParams(actionParam.params, 'userId', 'undefined');
+    const channels = await this.twitchService.getAuthenticatedUserChannelsFollowed(
+      actionParam.accessToken,
+      [{ name: 'userId', content: user.data[0].id }],
+    );
     const pastReccord = await this.findByUserId(userId, 'numberOfFollowedChannels');
     const record = new TwitchRecord();
     record.userId = userId;
@@ -91,37 +96,38 @@ export class TwitchCronService {
     record.content = channels.total.toString();
     const res = (await this.findOrUpdateLastRecord(record)).new;
     if (res && +pastReccord.content > +channels.total) {
-      return true;
+      return { isTriggered: true, returnValues: [] };
     }
-    return false;
+    return { isTriggered: false };
   }
 
-  async AFollowedChannelIsOnStream(accessToken: string, params: Params): Promise<boolean> {
-    const user = await this.twitchService.getAuthenticatedUserInformation(accessToken);
-    const userId = getElemContentInParams(params, 'userId', 'undefined');
-    const channels = await this.twitchService.getAuthenticatedUserChannelsFollowed(accessToken, [
-      { name: 'userId', content: user.data[0].id },
-    ]);
-    const channelName = getElemContentInParams(params, 'channel', 'undefined');
+  async AFollowedChannelIsOnStream(actionParam: ActionParam): Promise<ActionResult> {
+    const user = await this.twitchService.getAuthenticatedUserInformation(actionParam.accessToken);
+    const userId = getElemContentInParams(actionParam.params, 'userId', 'undefined');
+    const channels = await this.twitchService.getAuthenticatedUserChannelsFollowed(
+      actionParam.accessToken,
+      [{ name: 'userId', content: user.data[0].id }],
+    );
+    const channelName = getElemContentInParams(actionParam.params, 'channel', 'undefined');
     const channel = channels.data.find(
-      (channel) => channel.broadcaster_name.toLowerCase() === channelName.toLowerCase(),
+      (channel: any) => channel.broadcaster_name.toLowerCase() === channelName.toLowerCase(),
     );
     if (!channel) {
       throw new HttpException('Channel not found', HttpStatus.NOT_FOUND);
     }
-    const res = await this.twitchService.getStream(accessToken, channel.broadcaster_id); //, [{ name: 'userId', content: channel.broadcaster_id }]);
+    const res = await this.twitchService.getStream(actionParam.accessToken, channel.broadcaster_id); //, [{ name: 'userId', content: channel.broadcaster_id }]);
     const record = new TwitchRecord();
     record.userId = userId;
     record.category = 'channelOnStream';
     record.content = res.data.length ? 'true' : 'false';
     const result = (await this.findOrUpdateLastRecord(record)).new;
     if (res.data.length && result) {
-      return true;
+      return { isTriggered: true, returnValues: [] };
     }
-    return false;
+    return { isTriggered: false };
   }
 
-  public availableActions = new Map([
+  public availableActions = new Map<string, ActionFunction>([
     ['twitch/new-followed-channel/', this.FollowedANewChannel.bind(this)],
     ['twitch/unfollowed-channel/', this.UnfollowedAChannel.bind(this)],
     ['twitch/channel-on-stream/', this.AFollowedChannelIsOnStream.bind(this)],

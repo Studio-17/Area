@@ -1,6 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Params } from 'src/cron/cron.type';
+import { ActionFunction } from 'src/cron/interfaces/actionFunction.interface';
+import { ActionParam } from 'src/cron/interfaces/actionParam.interface';
+import { ActionResult } from 'src/cron/interfaces/actionResult.interface';
 import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 import { NotFoundException } from 'src/utils/exceptions/not-found.exception';
 import { Repository } from 'typeorm';
@@ -60,53 +62,57 @@ export class SpotifyCronService {
     return { new: false, mail: record };
   }
 
-  async checkTopArtists(accessToken: string, params: Params) {
+  async checkTopArtists(actionParam: ActionParam): Promise<ActionResult> {
     try {
       const currentlyPlayingTrack =
-        await this.spotifyService.getAuthenticatedUserCurrentlyPlayingTrack(accessToken);
+        await this.spotifyService.getAuthenticatedUserCurrentlyPlayingTrack(
+          actionParam.accessToken,
+        );
 
       const record = new SpotifyRecord();
-      record.userId = getElemContentInParams(params, 'userId', 'undefined');
+      record.userId = getElemContentInParams(actionParam.params, 'userId', 'undefined');
       record.category = 'currentlyPlayingTrack';
       record.content = currentlyPlayingTrack;
-      return (await this.findOrUpdateLastRecord(record)).new;
+      return { isTriggered: (await this.findOrUpdateLastRecord(record)).new, returnValues: [] };
     } catch (error) {
       throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
   }
 
-  async checkTopTracks(accessToken: string, params: Params) {
+  async checkTopTracks(actionParam: ActionParam): Promise<ActionResult> {
     try {
       const currentlyPlayingTrack = await this.spotifyService.getAuthenticatedUserTopTracks(
-        accessToken,
+        actionParam.accessToken,
       );
 
       const record = new SpotifyRecord();
-      record.userId = getElemContentInParams(params, 'userId', 'undefined');
+      record.userId = getElemContentInParams(actionParam.params, 'userId', 'undefined');
       record.category = 'currentlyPlayingTrack';
       record.content = currentlyPlayingTrack;
-      return (await this.findOrUpdateLastRecord(record)).new;
+      return { isTriggered: (await this.findOrUpdateLastRecord(record)).new, returnValues: [] };
     } catch (error) {
       throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
   }
 
-  async checkCurrentlyPlayingTrack(accessToken: string, params: Params) {
+  async checkCurrentlyPlayingTrack(actionParam: ActionParam): Promise<ActionResult> {
     try {
       const currentlyPlayingTrack =
-        await this.spotifyService.getAuthenticatedUserCurrentlyPlayingTrack(accessToken);
+        await this.spotifyService.getAuthenticatedUserCurrentlyPlayingTrack(
+          actionParam.accessToken,
+        );
 
       const record = new SpotifyRecord();
-      record.userId = getElemContentInParams(params, 'userId', 'undefined');
+      record.userId = getElemContentInParams(actionParam.params, 'userId', 'undefined');
       record.category = 'currentlyPlayingTrack';
       record.content = currentlyPlayingTrack;
-      return (await this.findOrUpdateLastRecord(record)).new;
+      return { isTriggered: (await this.findOrUpdateLastRecord(record)).new, returnValues: [] };
     } catch (error) {
       throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
   }
 
-  availableActions = new Map([
+  availableActions = new Map<string, ActionFunction>([
     ['spotify/get-current-playing-track/', this.checkCurrentlyPlayingTrack.bind(this)],
     ['spotify/get-top-artists/', this.checkTopArtists.bind(this)],
     ['spotify/get-top-tracks/', this.checkTopTracks.bind(this)],

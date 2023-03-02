@@ -5,8 +5,10 @@ import { Repository } from 'typeorm';
 import axios from 'axios';
 import { GmailRecordDto } from './dto/gmail/gmail.dto';
 import { ServiceList } from '../../../service/entity/service.entity';
-import { Params } from 'src/cron/cron.type';
+import { Params } from 'src/cron/type/param.type';
 import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
+import { ActionResult } from 'src/cron/interfaces/actionResult.interface';
+import { ActionParam } from 'src/cron/interfaces/actionParam.interface';
 
 @Injectable()
 export class GoogleService {
@@ -64,12 +66,12 @@ export class GoogleService {
     }
   }
 
-  public async updateLastEmailReceived(accessToken: string, params: Params) {
+  public async updateLastEmailReceived(actionParam: ActionParam): Promise<ActionResult> {
     const config = {
       method: 'get',
       url: `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=1`,
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${actionParam.accessToken}`,
       },
     };
     try {
@@ -86,10 +88,13 @@ export class GoogleService {
 
       if (emailId) {
         const record = new GmailRecordDto();
-        record.email = getElemContentInParams(params, 'userId', '');
+        record.email = getElemContentInParams(actionParam.params, 'userId', '');
         record.lastEmailId = emailId;
 
-        return (await this.findOrUpdateLastEmailReceived(record)).new;
+        return {
+          isTriggered: (await this.findOrUpdateLastEmailReceived(record)).new,
+          returnValues: [],
+        };
       }
     } catch (error) {
       throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });

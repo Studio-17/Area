@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Req, Res, Body, Post } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Res, Body, Post } from '@nestjs/common';
 import { ReactionDto } from 'src/cron/dto/reaction.dto';
 import { GoogleService } from './google.service';
 
@@ -10,10 +10,10 @@ export class GoogleController {
   public async checkIfMailReceived(@Res() response, @Body() body: ReactionDto) {
     console.log('in /check-mail');
     try {
-      const gmailRecord = await this.googleService.updateLastEmailReceived(
-        body.accessToken,
-        body.params,
-      );
+      const gmailRecord = await this.googleService.updateLastEmailReceived({
+        accessToken: body.accessToken,
+        params: body.params,
+      });
 
       console.log(gmailRecord);
 
