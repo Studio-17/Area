@@ -7,10 +7,11 @@ import { ActionService } from 'src/action/action.service';
 import { CredentialsService } from 'src/credentials/credentials.service';
 import { MyActionService } from 'src/myAction/myAction.service';
 import { UserService } from 'src/user/user.service';
-import { ServiceList } from '../service/entity/service.entity';
+import { ServiceList, ServiceType } from '../service/entity/service.entity';
 import { CreateCronDto } from './dto/add-cron.dto';
 import { CronJob } from 'cron';
 import { Params } from './cron.type';
+import { ServiceService } from 'src/service/service.service';
 
 @Injectable()
 export class CronService {
@@ -22,6 +23,7 @@ export class CronService {
     private readonly httpService: HttpService,
     private readonly userService: UserService,
     private schedulerRegistry: SchedulerRegistry,
+    private readonly serviceService: ServiceService,
   ) {}
 
   async handleCronAddition(
@@ -41,11 +43,14 @@ export class CronService {
     });
 
     try {
-      const credential = await this.credentialsService.findById(userId, service);
+      let credential = '';
+      if (await this.serviceService.isType(service, ServiceType.EXTERNAL)) {
+        credential = (await this.credentialsService.findById(userId, service)).accessToken;
+      }
       const argToSend = params
         ? [{ name: 'userId', content: userId }, ...params]
         : [{ name: 'userId', content: userId }];
-      const conditionChecked = await actionHandling(credential.accessToken, argToSend);
+      const conditionChecked = await actionHandling(credential, argToSend);
       if (conditionChecked) {
         await this.handleCronReaction(userId, actionLink);
       }

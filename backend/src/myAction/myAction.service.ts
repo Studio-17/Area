@@ -14,6 +14,7 @@ import { GithubCronService } from 'src/externService/service/github/github.cron.
 import { GoogleCronService } from 'src/externService/service/google/google.cron.service';
 import { CronService } from 'src/cron/cron.service';
 import { TwitchCronService } from 'src/externService/service/twitch/twitch.cron.service';
+import { TimerCronService } from 'src/externService/service/timer/timer.cron.service';
 
 @Injectable()
 export class MyActionService {
@@ -28,6 +29,7 @@ export class MyActionService {
     private readonly githubCronService: GithubCronService,
     private readonly spotifyCronService: SpotifyCronService,
     private readonly twitchCronService: TwitchCronService,
+    private readonly timerCronService: TimerCronService,
     private readonly cronService: CronService,
   ) {}
 
@@ -97,16 +99,13 @@ export class MyActionService {
 
   availableActions = new Map([
     // DISCORD
-    // GITHUB
-    // GOOGLE
     // MIRO
     // NOTION
-    // SPOTIFY
-    // TWITCH:
     [ServiceList.TWITCH, this.twitchCronService.availableActions],
     [ServiceList.GOOGLE, this.googleCronService.availableActions],
     [ServiceList.GITHUB, this.githubCronService.availableActions],
     [ServiceList.SPOTIFY, this.spotifyCronService.availableActions],
+    [ServiceList.TIMER, this.timerCronService.availableActions],
   ]);
 
   async addCron(
