@@ -222,6 +222,37 @@ export class ActionSeederService {
         link: 'spotify/follow-playlist/',
       },
       // ----- TWITCH TEMPLATES -----
+      {
+        uuid: '65011817-eec8-4d26-817e-45cbe3881ef3',
+        service: ServiceList.TWITCH,
+        type: ActionType.ACTION,
+        name: 'A new channel is followed',
+        description: 'This action check if a new channel has been followed.',
+        link: 'twitch/new-followed-channel/',
+      },
+      {
+        uuid: '65011817-eea2-4d26-817e-45cbe3881ef3',
+        service: ServiceList.TWITCH,
+        type: ActionType.ACTION,
+        name: 'A is unfollowed',
+        description: 'This action check if a channel has been unfollowed.',
+        link: 'twitch/unfollowed-channel/',
+      },
+      {
+        uuid: '65011817-eea2-a111-817e-45cbe3881ef3',
+        service: ServiceList.TWITCH,
+        type: ActionType.ACTION,
+        name: 'A followed channel is on live',
+        params: [
+          {
+            name: 'channel',
+            type: 'string',
+            description: 'name of the followed channel you want to listen.',
+          },
+        ],
+        description: 'This action check if a specific followed channel is on live.',
+        link: 'twitch/channel-on-stream/',
+      },
     ];
 
     for (const action of actions) {
