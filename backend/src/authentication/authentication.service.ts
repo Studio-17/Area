@@ -205,8 +205,8 @@ export class AuthenticationService {
 
       const userCreated = await this.usersService.create({
         email: userInfos.email,
-        firstName: userInfos.given_name,
-        lastName: userInfos.family_name,
+        firstName: userInfos.name,
+        lastName: userInfos.given_name,
         password: '',
         jwt: jwt.token,
       });
