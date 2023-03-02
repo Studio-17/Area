@@ -13,6 +13,8 @@ import { ServiceList } from 'src/service/entity/service.entity';
 import { GithubCronService } from 'src/externService/service/github/github.cron.service';
 import { GoogleCronService } from 'src/externService/service/google/google.cron.service';
 import { CronService } from 'src/cron/cron.service';
+import { Params } from 'src/cron/cron.type';
+import { DiscordCronService } from 'src/externService/service/discord/discord.cron.service';
 import { TwitchCronService } from 'src/externService/service/twitch/twitch.cron.service';
 import { TimerCronService } from 'src/externService/service/timer/timer.cron.service';
 
@@ -28,6 +30,7 @@ export class MyActionService {
     private readonly googleCronService: GoogleCronService,
     private readonly githubCronService: GithubCronService,
     private readonly spotifyCronService: SpotifyCronService,
+    private readonly discordCronService: DiscordCronService,
     private readonly twitchCronService: TwitchCronService,
     private readonly timerCronService: TimerCronService,
     private readonly cronService: CronService,
@@ -98,23 +101,17 @@ export class MyActionService {
   }
 
   availableActions = new Map([
-    // DISCORD
     // MIRO
     // NOTION
     [ServiceList.TWITCH, this.twitchCronService.availableActions],
     [ServiceList.GOOGLE, this.googleCronService.availableActions],
     [ServiceList.GITHUB, this.githubCronService.availableActions],
     [ServiceList.SPOTIFY, this.spotifyCronService.availableActions],
+    [ServiceList.DISCORD, this.discordCronService.availableActions],
     [ServiceList.TIMER, this.timerCronService.availableActions],
   ]);
 
-  async addCron(
-    actionId: string,
-    timer: any,
-    myActionId: string,
-    userId: string,
-    params: { name: string; content: string }[],
-  ) {
+  async addCron(actionId: string, timer: any, myActionId: string, userId: string, params: Params) {
     const action = await this.actionService.findOne(actionId);
 
     if (action.type === 'action') {
