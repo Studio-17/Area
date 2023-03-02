@@ -40,8 +40,9 @@ export class AppController {
             name: 'discord',
             actions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'A new event is scheduled in a Server',
+                description:
+                  'This action check if a new scheduled event is created in a Discord Server.',
               },
             ],
             reactions: [

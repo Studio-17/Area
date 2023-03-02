@@ -20,6 +20,7 @@ export class ActionSeederService {
         service: ServiceList.DISCORD,
         type: ActionType.ACTION,
         name: 'A new scheduled event has been created',
+        params: [{ name: 'server', type: 'string', description: 'Name of the server.' }],
         description:
           'This action check if a new scheculed event has been created in a Discord server.',
         link: 'discord/get/guild/scheduled-events/',
