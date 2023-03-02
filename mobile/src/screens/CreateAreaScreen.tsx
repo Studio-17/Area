@@ -31,20 +31,12 @@ export default function CreateAreaScreen({
   const { item } = route.params;
   const [addArea, error] = useAddAreaMutation();
 
-  const getTitle = () => {
-    let title = "If " + item.blocksState[0].name;
-    item.blocksState.slice(1).map((block: any) => {
-      title += " Then " + block.name;
-    });
-    return title;
-  };
-  const [title, setTitle] = useState<string>(getTitle);
-
+  const [title, setTitle] = useState<string>(item.title);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
-  const [hours, setHours] = useState("00");
-  const [minutes, setMinutes] = useState("00");
-  const [seconds, setSeconds] = useState("00");
-  const [color, setColorSelected] = useState("#db643a");
+  const [hours, setHours] = useState(item.hours);
+  const [minutes, setMinutes] = useState(item.minutes);
+  const [seconds, setSeconds] = useState(item.seconds);
+  const [color, setColorSelected] = useState(item.color);
 
   const onClickOnSaveButton = () => {
     const reactions: any = [];

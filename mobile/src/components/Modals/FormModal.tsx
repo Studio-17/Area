@@ -44,6 +44,7 @@ interface Props {
   navigation: any;
   serviceInfo: ServiceInfo | undefined;
   refetchServiceInfos: any;
+  indexBlock?: number;
 }
 
 export default function FormModal({
@@ -55,6 +56,7 @@ export default function FormModal({
   navigation,
   serviceInfo,
   refetchServiceInfos,
+  indexBlock,
 }: Props) {
   const [paramsState, setParamsState] = useState<PostParamsDto[]>([]);
 
@@ -71,14 +73,7 @@ export default function FormModal({
     if (webBrowserResult.type === "cancel") {
       const refetch = await refetchServiceInfos();
       if (refetch.data?.isConnected && !params) {
-        setOpenFormModal(false);
-        navigation.navigate("NewArea");
-        onSubmitForm(
-          action.type === "action" && action.name,
-          action.type === "reaction" && action.name,
-          action.uuid,
-          paramsState
-        );
+        onSubmit();
       }
     }
   };
@@ -94,10 +89,11 @@ export default function FormModal({
 
   const onSubmit = () => {
     onSubmitForm(
-      action.type === "action" && action.name,
-      action.type === "reaction" && action.name,
+      action.type === "action" ? action.name : undefined,
+      action.type === "reaction" ? action.name : undefined,
       action.uuid,
-      paramsState
+      paramsState,
+      indexBlock
     );
     setOpenFormModal(false);
     navigation.navigate("NewArea");
