@@ -26,7 +26,6 @@ export default function NewAreaScreen({ navigation }: { navigation: any }) {
 
   const [blocksState, setBlockState] = useState<any>([]);
   const [thensInstance, setthensInstance] = useState<any>([]);
-  const [indexBlock, setIndexBlock] = useState<number | undefined>(undefined);
 
   const onClickOnAreasCards = (
     serviceSelected?: Service | undefined,
@@ -57,48 +56,45 @@ export default function NewAreaScreen({ navigation }: { navigation: any }) {
       ]);
   };
 
-  // const onClickOnModifyAreasCards = (
-  //   serviceSelected?: Service | undefined,
-  //   actionContent?: string,
-  //   reactionContent?: string,
-  //   uuidOfAction?: string,
-  //   params?: GetParamsDto[]
-  // ) => {
-  //   let blockToBeModified = {};
-  //   if (actionContent !== undefined && reactionContent === undefined) {
-  //     blockToBeModified = {
-  //       name: actionContent,
-  //       service: serviceSelected?.name,
-  //       uuid: uuidOfAction,
-  //       params: params ? params : null,
-  //     };
-  //   } else if (actionContent === undefined && reactionContent !== undefined) {
-  //     blockToBeModified = {
-  //       name: reactionContent,
-  //       service: serviceSelected?.name,
-  //       uuid: uuidOfAction,
-  //       params: params ? params : null,
-  //     };
-  //   }
-  //   const nouveauTableau = blocksState.map((block: {}, i: number) =>
-  //     i === indexBlock ? blockToBeModified : block
-  //   );
-
-  //   actionContent && setBlockState(nouveauTableau);
-  //   reactionContent && setBlockState(nouveauTableau);
-
-  //   setIndexBlock(undefined);
-  // };
+  const onClickOnModifyAreasCards = (
+    serviceSelected?: Service | undefined,
+    actionContent?: string,
+    reactionContent?: string,
+    uuidOfAction?: string,
+    params?: PostParamsDto[] | null,
+    indexBlock?: number
+  ) => {
+    let blockToBeModified = {};
+    if (actionContent !== undefined && reactionContent === undefined) {
+      blockToBeModified = {
+        name: actionContent,
+        service: serviceSelected?.name,
+        uuid: uuidOfAction,
+        params: params ? params : null,
+      };
+    } else if (actionContent === undefined && reactionContent !== undefined) {
+      blockToBeModified = {
+        name: reactionContent,
+        service: serviceSelected?.name,
+        uuid: uuidOfAction,
+        params: params ? params : null,
+      };
+    }
+    const nouveauTableau = blocksState.map((block: {}, i: number) =>
+      i === indexBlock ? blockToBeModified : block
+    );
+    actionContent && setBlockState(nouveauTableau);
+    reactionContent && setBlockState(nouveauTableau);
+  };
 
   const onClickOpenServiceNavigator = (
-    index: number,
+    indexBlock: number,
     typeOfAction: "action" | "reaction",
     typeOfRequest: "new" | "modify",
     onClickOnAreasCards: () => void
   ) => {
-    setIndexBlock(index);
     navigation.navigate("Services", {
-      item: { services, typeOfAction, typeOfRequest, onClickOnAreasCards },
+      item: { services, typeOfAction, typeOfRequest, indexBlock, onClickOnAreasCards },
     });
   };
 
@@ -160,14 +156,14 @@ export default function NewAreaScreen({ navigation }: { navigation: any }) {
     Alert.alert("Modify the reaction", "", [
       {
         text: "Modify",
-        // onPress: () => {
-        //   onClickOpenServiceNavigator(
-        //     index + 1,
-        //     "reaction",
-        //     "modify",
-        //     onClickOnModifyAreasCards
-        //   );
-        // },
+        onPress: () => {
+          onClickOpenServiceNavigator(
+            index + 1,
+            "reaction",
+            "modify",
+            onClickOnModifyAreasCards
+          );
+        },
       },
       {
         text: "Delete",
@@ -200,14 +196,14 @@ export default function NewAreaScreen({ navigation }: { navigation: any }) {
             {blocksState[0] ? (
               <TouchableOpacity
                 style={styles.cardPropertiesServiceSelected}
-                // onPress={() =>
-                //   onClickOpenServiceNavigator(
-                //     0,
-                //     "action",
-                //     "modify",
-                //     onClickOnModifyAreasCards
-                //   )
-                // }
+                onPress={() =>
+                  onClickOpenServiceNavigator(
+                    0,
+                    "action",
+                    "modify",
+                    onClickOnModifyAreasCards
+                  )
+                }
               >
                 <MyText style={styles.cardTitle}>IF</MyText>
                 <MyText>{blocksState[0].name}</MyText>

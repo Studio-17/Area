@@ -31,13 +31,16 @@ export default function ServicesScreen({ navigation, route }: Props) {
   const { item } = route.params;
   const services: Service[] | null = item.services;
   const typeOfAction: "action" | "reaction" = item.typeOfAction;
-  const onClickOnAreasCards: (
-    serviceSelected?: Service | undefined,
-    actionContent?: string,
-    responseContent?: string,
-    uuidOfAction?: string,
-    params?: PostParamsDto[] | null
-  ) => void = item.onClickOnAreasCards;
+  const typeOfRequest: "new" | "modify" = item.typeOfRequest;
+  const indexBlock: number = item.indexBlock;
+  // const onClickOnAreasCards: (
+  //   serviceSelected?: Service | undefined,
+  //   actionContent?: string,
+  //   responseContent?: string,
+  //   uuidOfAction?: string,
+  //   params?: PostParamsDto[] | null
+  // ) => void = item.onClickOnAreasCards;
+  const onClickOnAreasCards: () => void = item.onClickOnAreasCards;
 
   const handleClose = () => {
     navigation.navigate("NewArea");
@@ -67,7 +70,7 @@ export default function ServicesScreen({ navigation, route }: Props) {
               service={service}
               onClickService={() => {
                 navigation.navigate("ActionsList", {
-                  item: { service, typeOfAction, onClickOnAreasCards },
+                  item: { service, typeOfAction, typeOfRequest, indexBlock, onClickOnAreasCards },
                 });
               }}
               cardGap={20}

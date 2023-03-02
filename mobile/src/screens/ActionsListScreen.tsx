@@ -29,13 +29,16 @@ export default function ActionsListScreen({ navigation, route }: any) {
   const { item } = route.params;
   const service: Service = item.service;
   const typeOfAction: "action" | "reaction" = item.typeOfAction;
-  const onClickOnAreasCards: (
-    serviceSelected?: Service | undefined,
-    actionContent?: string,
-    responseContent?: string,
-    uuidOfAction?: string,
-    params?: PostParamsDto[] | null
-  ) => void = item.onClickOnAreasCards;
+  const typeOfRequest: "new" | "modify" = item.typeOfRequest;
+  const indexBlock: number = item.indexBlock;
+  // const onClickOnAreasCards: (
+  //   serviceSelected?: Service | undefined,
+  //   actionContent?: string,
+  //   responseContent?: string,
+  //   uuidOfAction?: string,
+  //   params?: PostParamsDto[] | null
+  // ) => void = item.onClickOnAreasCards;
+  const onClickOnAreasCards: any = item.onClickOnAreasCards;
 
   const [openFormModal, setOpenFormModal] = useState<boolean>(false);
 
@@ -87,20 +90,33 @@ export default function ActionsListScreen({ navigation, route }: any) {
     params?: GetParamsDto[] | null,
     action?: Action
   ) => {
-    if (params || !serviceInfo?.isConnected) {
-      setCurrentActionParams(params!);
-      setCurrentAction(action);
-      setOpenFormModal(true);
-    } else {
-      onClickOnAreasCards(
-        service,
-        actionContent,
-        reactionContent,
-        uuidOfAction,
-        params
-      );
+    // console.log("actionContent: ", actionContent);
+    // console.log("reactionContent: ", reactionContent);
+    // if (params || !serviceInfo?.isConnected) {
+    //   setCurrentActionParams(params!);
+    //   setCurrentAction(action);
+    //   setOpenFormModal(true);
+    // } else {
+      if (typeOfRequest === "modify") {
+        onClickOnAreasCards(
+          service,
+          actionContent,
+          reactionContent,
+          uuidOfAction,
+          params,
+          indexBlock
+        );
+      } else {
+        onClickOnAreasCards(
+          service,
+          actionContent,
+          reactionContent,
+          uuidOfAction,
+          params
+        );
+      }
       navigation.navigate("NewArea");
-    }
+    // }
   };
 
   if (isLoading || isFetching || isFetchingServiceInfo) {
