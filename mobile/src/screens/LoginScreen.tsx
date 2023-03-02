@@ -15,7 +15,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // Redux
 import { loginUser, loginUserGoogle } from "../redux/slices/authSlice";
-import { LoginRequest } from "../redux/models/authModel";
+import { LoginRequest, LogInGoogleRequest } from "../redux/models/authModel";
 import {
   RootState,
   useAppDispatch,
@@ -41,22 +41,26 @@ export default function LoginScreen({ navigation }: any) {
   );
   const dispatch = useAppDispatch();
   const dispatchLoginUser = async (dataToSend: LoginRequest) => {
-    // console.log("dataToSend: ", dataToSend)
     dispatch(loginUser(dataToSend));
   };
+  const dispatchLoginUserGoogle = async (dataToSend: LogInGoogleRequest) => {
+    dispatch(loginUserGoogle(dataToSend));
+  };
 
-  // const [request, response, promptAsync] = Google.useAuthRequest({
-  //   expoClientId:
-  //     "760928825534-9f7c3d69o48jl3nrj4mnlnar1qbe91d3.apps.googleusercontent.com",
-  // });
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId:
+      "760928825534-9f7c3d69o48jl3nrj4mnlnar1qbe91d3.apps.googleusercontent.com",
+  });
 
-  // React.useEffect(() => {
-  //   if (response?.type === "success") {
-  //     const { authentication } = response;
-  //     console.log(authentication);
-  //     // dispatch(loginUserGoogle({ token: authentication?.accessToken }));
-  //   }
-  // }, [response]);
+  React.useEffect(() => {
+    if (response?.type === "success") {
+      const { authentication } = response;
+      const dataToSend: LogInGoogleRequest = {
+        token: authentication?.accessToken,
+      };
+      dispatchLoginUserGoogle(dataToSend);
+    }
+  }, [response]);
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -150,10 +154,10 @@ export default function LoginScreen({ navigation }: any) {
         >
           <TouchableOpacity
             style={styles.socialmediaBtn}
-            // disabled={!request}
-            // onPress={() => {
-            //   promptAsync();
-            // }}
+            disabled={!request}
+            onPress={() => {
+              promptAsync();
+            }}
           >
             <Image
               source={require("../assets/images/social/google.png")}

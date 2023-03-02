@@ -1,12 +1,15 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { LogInGoogleRequest, LoginRequest, RegisterRequest } from "../models/authModel";
+import {
+  LogInGoogleRequest,
+  LoginRequest,
+  RegisterRequest,
+} from "../models/authModel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "../store/store";
 // import { REACT_NATIVE_APP_API_URL } from "@env";
 
 const API_ENDPOINT = "http://localhost:8080/api/reaccoon";
-// console.log("REACT_NATIVE_APP_API_URL: ", process.env.REACT_NATIVE_APP_API_URL);
 // const API_ENDPOINT = process.env.REACT_NATIVE_APP_API_URL;
 
 let userToken = null;
@@ -25,6 +28,7 @@ export interface AuthState {
   loading: null | boolean;
   error: null | any;
   success: null | any;
+  isError: boolean;
 }
 
 const initialState = {
@@ -33,27 +37,27 @@ const initialState = {
   loading: false,
   error: null,
   success: null,
+  isError: false,
 } as {
   user: null | any;
   token: null | string;
   loading: null | boolean;
   error: null | any;
   success: null | any;
+  isError: boolean;
 };
 
 export const loginUserGoogle = createAsyncThunk(
   "auth/loginGoogle",
   async ({ token }: LogInGoogleRequest, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get(
-        `${API_ENDPOINT}/authentication/login/google`,
-        {
+      const { data } = await axios
+        .get(`${API_ENDPOINT}/authentication/login/mobile/google`, {
           params: { token: token },
           headers: { "Content-Type": "application/json" },
-        }
-      );
-      console.log("loginUserGoogle: thunk: ", data);
-      localStorage.setItem("userToken", data.accessToken);
+        })
+        .then((res) => res);
+      await AsyncStorage.setItem("userToken", data.accessToken);
       return data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
@@ -106,7 +110,6 @@ export const loginUser = createAsyncThunk(
           "Content-Type": "application/json",
         },
       };
-      // console.log(API_ENDPOINT);
       const { data } = await axios.post(
         `${API_ENDPOINT}/authentication/login`,
         { email: email, password: password },
@@ -141,6 +144,8 @@ const slice = createSlice({
       state.user = null;
       state.token = null;
       state.error = null;
+      state.success = null;
+      state.isError = false;
     },
   },
   extraReducers: (builder) => {
@@ -151,14 +156,17 @@ const slice = createSlice({
       .addCase(registerUser.fulfilled, (state: AuthState, { payload }: any) => {
         state.loading = false;
         state.success = true;
+        state.isError = false;
       })
       .addCase(registerUser.rejected, (state: AuthState, { payload }: any) => {
         state.loading = false;
         state.error = payload;
+        state.isError = true;
       })
       .addCase(loginUser.pending, (state: AuthState) => {
         state.loading = true;
         state.error = null;
+        state.isError = false;
       })
       .addCase(loginUser.fulfilled, (state: AuthState, { payload }) => {
         state.loading = false;
@@ -168,7 +176,26 @@ const slice = createSlice({
       .addCase(loginUser.rejected, (state: AuthState, { payload }) => {
         state.loading = false;
         state.error = payload;
-      });
+        state.isError = true;
+      })
+      .addCase(loginUserGoogle.pending, (state: AuthState) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginUserGoogle.fulfilled, (state: AuthState, { payload }) => {
+        state.loading = false;
+        state.user = payload.user;
+        state.token = payload.accessToken;
+        state.isError = false;
+      })
+      .addCase(
+        loginUserGoogle.rejected,
+        (state: AuthState, { payload }: any) => {
+          state.loading = false;
+          state.error = payload;
+          state.isError = true;
+        }
+      );
   },
 });
 
