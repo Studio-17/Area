@@ -95,6 +95,9 @@ export class DiscordService {
     const guildChannels = await lastValueFrom(
       this.httpService
         .get(`https://discord.com/api/guilds/${guildID}/channels`, {
+          params: {
+            type: 0,
+          },
           headers: {
             Authorization: `Bot ${process.env.DISCORD_CLIENT_BOT}`,
           },
@@ -106,6 +109,7 @@ export class DiscordService {
         )
         .pipe(
           catchError((error: AxiosError) => {
+            console.log(error);
             throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
@@ -138,20 +142,23 @@ export class DiscordService {
   }
 
   public async getGuildChannelMessages(guildChannelID: string): Promise<any> {
+    console.log(`https://discord.com/api/channels/${guildChannelID}/messages`);
     const channelMessages = await lastValueFrom(
       this.httpService
-        .get(`https://discord.com/api/guilds/${guildChannelID}/messages`, {
+        .get(`https://discord.com/api/channels/${guildChannelID}/messages`, {
           headers: {
             Authorization: `Bot ${process.env.DISCORD_CLIENT_BOT}`,
           },
         })
         .pipe(
           map((value) => {
+            // console.log(value);
             return plainToInstance(ChannelMessages, value.data);
           }),
         )
         .pipe(
           catchError((error: AxiosError) => {
+            console.log(error);
             throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),

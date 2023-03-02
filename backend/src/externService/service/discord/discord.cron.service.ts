@@ -6,7 +6,6 @@ import { DiscordService } from './discord.service';
 import { Params } from 'src/cron/cron.type';
 import { NotFoundException } from 'src/utils/exceptions/not-found.exception';
 import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
-import { TwitchRecord } from '../twitch/entity/twitchRecord.entity';
 
 @Injectable()
 export class DiscordCronService {
@@ -65,28 +64,52 @@ export class DiscordCronService {
     const userId = getElemContentInParams(params, 'userId', 'undefined');
     const server = getElemContentInParams(params, 'server', 'undefined');
     try {
-      const guilds = await this.discordService.getAuthenticatedUserGuilds(accessToken);
-      const guild = guilds.find((guild: any) => guild.name === server);
+      const guild = await this.discordService
+        .getAuthenticatedUserGuilds(accessToken)
+        .then((guilds) => guilds.find((guild: any) => guild.name === server));
       const events = await this.discordService.getGuildScheduledEvents(guild.id);
       if (!events.length) {
         return false;
       }
-      const record = new TwitchRecord();
+      const record = new DiscordRecord();
       record.userId = userId;
       record.category = 'lastScheduledEvents';
       record.content = events.at(-1).id.toString();
-      const lastChanged = (await this.findOrUpdateLastRecord(record)).new;
-      if (lastChanged) {
-        return true;
-      }
+      return (await this.findOrUpdateLastRecord(record)).new;
     } catch (error) {
-      console.log('error');
       throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
-    return false;
+  }
+
+  private async checkNewMessageinChannel(accessToken: string, params: Params): Promise<boolean> {
+    const userId = getElemContentInParams(params, 'userId', 'undefined');
+    const server = getElemContentInParams(params, 'server', 'undefined');
+    const channelName = getElemContentInParams(params, 'channel', 'général');
+
+    try {
+      const guild = await this.discordService
+        .getAuthenticatedUserGuilds(accessToken)
+        .then((guilds) => guilds.find((guild: any) => guild.name === server));
+      const channel = await this.discordService
+        .getGuildChannels(guild.id)
+        .then((channels) =>
+          channels.find(
+            (channel: any) =>
+              channel.name.toLowerCase() === channelName.toLowerCase() && channel.last_message_id,
+          ),
+        );
+      const record = new DiscordRecord();
+      record.userId = userId;
+      record.category = 'lastMessage';
+      record.content = channel.last_message_id;
+      return (await this.findOrUpdateLastRecord(record)).new;
+    } catch (error) {
+      throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
   }
 
   availableActions = new Map([
     ['discord/get/guild/scheduled-events/', this.checkNewScheduledEvents.bind(this)],
+    ['discord/get/guild/channel/new-message/', this.checkNewMessageinChannel.bind(this)],
   ]);
 }
