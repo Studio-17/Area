@@ -82,6 +82,12 @@ export class ServiceSeederService {
         color: '#F7FAFB',
         type: ServiceType.EXTERNAL,
       },
+      {
+        name: ServiceList.TIMER,
+        description: 'Timer.',
+        color: '#F7FAFB',
+        type: ServiceType.INTERNAL,
+      },
     ];
 
     for (const service of services) {

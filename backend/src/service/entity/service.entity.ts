@@ -17,6 +17,7 @@ export enum ServiceList {
   TUMBLR = 'tumblr',
   TWITCH = 'twitch',
   TYPEFORM = 'typeform',
+  TIMER = 'timer',
 }
 
 export enum ServiceType {
