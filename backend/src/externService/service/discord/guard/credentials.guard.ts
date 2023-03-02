@@ -27,7 +27,7 @@ export class CredentialsGuard implements CanActivate {
     }
 
     const credential = await this.credentialsService
-      .findById(user.uuid, ServiceList.SPOTIFY)
+      .findById(user.uuid, ServiceList.DISCORD)
       .then((res) => res)
       .catch((error) => error);
 
