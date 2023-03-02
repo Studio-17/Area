@@ -18,9 +18,9 @@ import * as WebBrowser from "expo-web-browser";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { REACT_NATIVE_APP_API_URL } from "@env";
+// import { REACT_NATIVE_APP_API_URL } from "@env";
 
-const API_ENDPOINT = REACT_NATIVE_APP_API_URL;
+const API_ENDPOINT = "http://10.0.2.2:8080/api/reaccoon";
 
 import MyText from "../MyText";
 import InputField from "../InputField";
@@ -140,46 +140,46 @@ export default function FormModal({
         </View>
         <ScrollView>
           <View style={styles.contentConainter}>
-            {/*{!serviceInfo?.isConnected ? (*/}
-            {/*  <>*/}
-            {/*    <View*/}
-            {/*      style={{*/}
-            {/*        display: "flex",*/}
-            {/*        justifyContent: "center",*/}
-            {/*        alignItems: "center",*/}
-            {/*        marginBottom: 20,*/}
-            {/*      }}*/}
-            {/*    >*/}
-            {/*      <Image*/}
-            {/*        source={*/}
-            {/*          images[serviceInfo?.name ? serviceInfo.name : "loading"]*/}
-            {/*        }*/}
-            {/*        style={styles.logo}*/}
-            {/*      />*/}
-            {/*      <MyText style={[styles.textStyle, { fontSize: 25 }]}>*/}
-            {/*        Log in to {capitalizeFirstLetter(serviceInfo?.name ? serviceInfo.name : "loading")} to continue*/}
-            {/*      </MyText>*/}
-            {/*    </View>*/}
-            {/*    /!* <Button title="Connect" onPress={handleOauthConnection} /> *!/*/}
-            {/*    <TouchableOpacity*/}
-            {/*      style={{*/}
-            {/*        padding: 10,*/}
-            {/*        borderRadius: 15,*/}
-            {/*        display: "flex",*/}
-            {/*        justifyContent: "center",*/}
-            {/*        alignItems: "center",*/}
-            {/*        width: "100%",*/}
-            {/*        borderColor: "black",*/}
-            {/*        borderWidth: 3,*/}
-            {/*      }}*/}
-            {/*      onPress={handleOauthConnection}*/}
-            {/*    >*/}
-            {/*      <MyText style={{ color: "black", fontSize: 20 }}>*/}
-            {/*        Connect*/}
-            {/*      </MyText>*/}
-            {/*    </TouchableOpacity>*/}
-            {/*  </>*/}
-            {/*) : (*/}
+            {!serviceInfo?.isConnected ? (
+              <>
+                <View
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: 20,
+                  }}
+                >
+                  <Image
+                    source={
+                      images[serviceInfo?.name ? serviceInfo.name : "loading"]
+                    }
+                    style={styles.logo}
+                  />
+                  <MyText style={[styles.textStyle, { fontSize: 25 }]}>
+                    Log in to {capitalizeFirstLetter(serviceInfo?.name ? serviceInfo.name : "loading")} to continue
+                  </MyText>
+                </View>
+                {/* <Button title="Connect" onPress={handleOauthConnection} /> */}
+                <TouchableOpacity
+                  style={{
+                    padding: 10,
+                    borderRadius: 15,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    borderColor: "black",
+                    borderWidth: 3,
+                  }}
+                  onPress={handleOauthConnection}
+                >
+                  <MyText style={{ color: "black", fontSize: 20 }}>
+                    Connect
+                  </MyText>
+                </TouchableOpacity>
+              </>
+            ) : (
               <View>
                 {params?.map((param: GetParamsDto, index: number) => {
                   return (
@@ -205,7 +205,7 @@ export default function FormModal({
                 })}
                 <Button title="Submit" onPress={onSubmit} />
               </View>
-            {/*)}*/}
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>

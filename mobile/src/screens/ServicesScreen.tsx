@@ -33,13 +33,6 @@ export default function ServicesScreen({ navigation, route }: Props) {
   const typeOfAction: "action" | "reaction" = item.typeOfAction;
   const typeOfRequest: "new" | "modify" = item.typeOfRequest;
   const indexBlock: number = item.indexBlock;
-  // const onClickOnAreasCards: (
-  //   serviceSelected?: Service | undefined,
-  //   actionContent?: string,
-  //   responseContent?: string,
-  //   uuidOfAction?: string,
-  //   params?: PostParamsDto[] | null
-  // ) => void = item.onClickOnAreasCards;
   const onClickOnAreasCards: () => void = item.onClickOnAreasCards;
 
   const handleClose = () => {
