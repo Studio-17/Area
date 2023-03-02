@@ -262,6 +262,16 @@ export class ActionSeederService {
         description: 'This action check if a specific followed channel is on live.',
         link: 'twitch/channel-on-stream/',
       },
+      // ----- TIMER TEMPLATES -----
+      {
+        uuid: '11111111-eec8-4d26-817e-45cbe3881ef3',
+        service: ServiceList.TIMER,
+        type: ActionType.ACTION,
+        name: 'Timer is finished',
+        description:
+          'This action is triggered every time. You can manage the timer with the time of the area',
+        link: 'timer/timer-done/',
+      },
     ];
 
     for (const action of actions) {

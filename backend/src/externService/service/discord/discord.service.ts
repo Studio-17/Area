@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { catchError, firstValueFrom } from 'rxjs';
+import { catchError, lastValueFrom } from 'rxjs';
 import { AxiosError } from 'axios/index';
 import { plainToInstance } from 'class-transformer';
 import { map } from 'rxjs';
@@ -23,7 +23,7 @@ export class DiscordService {
   constructor(private readonly httpService: HttpService) {}
 
   public async getAuthenticatedUserInformation(accessToken: string): Promise<any> {
-    const repositories = await firstValueFrom(
+    const repositories = await lastValueFrom(
       this.httpService
         .get('https://discord.com/api/users/@me', {
           headers: {
@@ -46,7 +46,7 @@ export class DiscordService {
   }
 
   public async getAuthenticatedUserGuilds(accessToken: string): Promise<any> {
-    const guilds = await firstValueFrom(
+    const guilds = await lastValueFrom(
       this.httpService
         .get('https://discord.com/api/users/@me/guilds', {
           headers: {
@@ -69,7 +69,7 @@ export class DiscordService {
   }
 
   public async getGuildInformation(guildID: string): Promise<any> {
-    const guildInformation = await firstValueFrom(
+    const guildInformation = await lastValueFrom(
       this.httpService
         .get(`https://discord.com/api/guilds/${guildID}`, {
           headers: {
@@ -92,7 +92,7 @@ export class DiscordService {
   }
 
   public async getGuildChannels(guildID: string): Promise<any> {
-    const guildChannels = await firstValueFrom(
+    const guildChannels = await lastValueFrom(
       this.httpService
         .get(`https://discord.com/api/guilds/${guildID}/channels`, {
           headers: {
@@ -115,7 +115,7 @@ export class DiscordService {
   }
 
   public async getGuildInvites(guildID: string): Promise<any> {
-    const guildInvites = await firstValueFrom(
+    const guildInvites = await lastValueFrom(
       this.httpService
         .get(`https://discord.com/api/guilds/${guildID}/invites`, {
           headers: {
@@ -138,7 +138,7 @@ export class DiscordService {
   }
 
   public async getGuildChannelMessages(guildChannelID: string): Promise<any> {
-    const channelMessages = await firstValueFrom(
+    const channelMessages = await lastValueFrom(
       this.httpService
         .get(`https://discord.com/api/guilds/${guildChannelID}/messages`, {
           headers: {
@@ -164,7 +164,7 @@ export class DiscordService {
     guildChannelID: string,
     messageID: string,
   ): Promise<any> {
-    const message = await firstValueFrom(
+    const message = await lastValueFrom(
       this.httpService
         .get(`https://discord.com/api/guilds/${guildChannelID}/messages/${messageID}`, {
           headers: {
@@ -187,7 +187,7 @@ export class DiscordService {
   }
 
   public async getGuildScheduledEvents(guildChannelID: string): Promise<any> {
-    const message = await firstValueFrom(
+    const message = await lastValueFrom(
       this.httpService
         .get(`https://discord.com/api/guilds/${guildChannelID}/scheduled-events`, {
           headers: {
@@ -213,7 +213,7 @@ export class DiscordService {
     guildChannelID: string,
     scheduledEvent: CreateSchedulesEventDto,
   ): Promise<any> {
-    const message = await firstValueFrom(
+    const message = await lastValueFrom(
       this.httpService
         .post(`https://discord.com/api/guilds/${guildChannelID}/scheduled-events`, {
           data: scheduledEvent,
@@ -240,7 +240,7 @@ export class DiscordService {
     guildID: string,
     scheduledEventId: string,
   ): Promise<any> {
-    const message = await firstValueFrom(
+    const message = await lastValueFrom(
       this.httpService
         .get(`https://discord.com/api/guilds/${guildID}/scheduled-events/${scheduledEventId}`, {
           headers: {
@@ -266,7 +266,7 @@ export class DiscordService {
     guildChannelID: string,
     createMessage: CreateMessageDto,
   ): Promise<any> {
-    const message = await firstValueFrom(
+    const message = await lastValueFrom(
       this.httpService
         .post(`https://discord.com/api/channels/${guildChannelID}/message`, {
           data: createMessage,

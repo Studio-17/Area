@@ -219,6 +219,21 @@ export class AppController {
               },
             ],
           },
+          {
+            name: 'timer',
+            actions: [
+              {
+                name: 'Timer is done',
+                description: 'The reactions are executed when the timer is done.',
+              },
+            ],
+            reactions: [
+              {
+                name: undefined,
+                description: undefined,
+              },
+            ],
+          },
         ],
       },
     });

@@ -179,9 +179,22 @@ export default function NewAreaScreen({ navigation }: { navigation: any }) {
     ]);
   };
 
+  const getTitle = () => {
+    let title = "If " + blocksState[0].name;
+    blocksState.slice(1).map((block: any) => {
+      title += " Then " + block.name;
+    });
+    return title;
+  };
+
   const onClickContinue = () => {
+    const title = getTitle();
+    const hours = "00";
+    const minutes = "00";
+    const seconds = "00";
+    const color = "#db643a";
     navigation.navigate("FinishArea", {
-      item: { blocksState, setBlockState, setthensInstance },
+      item: { blocksState, setBlockState, setthensInstance, title, hours, minutes, seconds, color },
     });
   };
 

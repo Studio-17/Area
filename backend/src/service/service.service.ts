@@ -52,4 +52,11 @@ export class ServiceService {
       where: { name: serviceName },
     });
   }
+
+  async isType(serviceName: ServiceList, type: ServiceType): Promise<boolean> {
+    const service = await this.serviceRepository.findOneByOrFail({
+      name: serviceName,
+    });
+    return service.type === type;
+  }
 }

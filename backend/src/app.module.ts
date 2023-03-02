@@ -30,6 +30,7 @@ import { CronModule } from './cron/cron.module';
 import { DiscordModule } from './externService/service/discord/discord.module';
 import { TwitchModule } from './externService/service/twitch/twitch.module';
 import { DeezerModule } from './externService/service/deezer/deezer.module';
+import { TimerModule } from './externService/service/timer/timer.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { DeezerModule } from './externService/service/deezer/deezer.module';
     GithubModule,
     SpotifyModule,
     TwitchModule,
+    TimerModule,
 
     DeezerOAuth2Module,
     DiscordOAuth2Module,
