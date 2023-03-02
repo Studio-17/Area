@@ -73,7 +73,24 @@ export class TwitchCronService {
     record.content = channels.total.toString();
     const res = (await this.findOrUpdateLastRecord(record)).new;
     if (res && +pastReccord.content < +channels.total) {
-      console.log('this is true');
+      return true;
+    }
+    return false;
+  }
+
+  async UnfollowedAChannel(accessToken: string, params: Params): Promise<boolean> {
+    const user = await this.twitchService.getAuthenticatedUserInformation(accessToken, params);
+    const userId = getElemContentInParams(params, 'userId', 'undefined');
+    const channels = await this.twitchService.getAuthenticatedUserChannelsFollowed(accessToken, [
+      { name: 'userId', content: user.data[0].id },
+    ]);
+    const pastReccord = await this.findByUserId(userId, 'numberOfFollowedChannels');
+    const record = new TwitchRecord();
+    record.userId = userId;
+    record.category = 'numberOfFollowedChannels';
+    record.content = channels.total.toString();
+    const res = (await this.findOrUpdateLastRecord(record)).new;
+    if (res && +pastReccord.content > +channels.total) {
       return true;
     }
     return false;
@@ -81,5 +98,6 @@ export class TwitchCronService {
 
   public availableActions = new Map([
     ['twitch/new-followed-channel/', this.FollowedANewChannel.bind(this)],
+    ['twitch/unfollowed-channel/', this.UnfollowedAChannel.bind(this)],
   ]);
 }

@@ -188,6 +188,10 @@ export class AppController {
                 name: 'A new channel is followed',
                 description: 'It check if a new channel is followed.',
               },
+              {
+                name: 'A channel is unfollowed',
+                description: 'It check if a channel is unfollowed.',
+              },
             ],
             reactions: [
               {

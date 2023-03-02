@@ -230,6 +230,14 @@ export class ActionSeederService {
         description: 'This action check if a new channel has been followed.',
         link: 'twitch/new-followed-channel/',
       },
+      {
+        uuid: '65011817-eea2-4d26-817e-45cbe3881ef3',
+        service: ServiceList.TWITCH,
+        type: ActionType.ACTION,
+        name: 'A is unfollowed',
+        description: 'This action check if a channel has been unfollowed.',
+        link: 'twitch/unfollowed-channel/',
+      },
     ];
 
     for (const action of actions) {
