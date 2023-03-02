@@ -9,6 +9,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtAuthenticationGuard } from './guards/jwt-authentication.guard';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { JwtAuthenticationGuard } from './guards/jwt-authentication.guard';
       }),
       inject: [ConfigService],
     }),
+    HttpModule.register({}),
   ],
   providers: [AuthenticationService, UserService, JwtStrategy],
   controllers: [AuthenticationController],

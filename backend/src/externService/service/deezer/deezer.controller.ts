@@ -13,11 +13,10 @@ export class DeezerController {
     return 'Hello world';
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/create-playlist')
-  public async createPlaylist(@Req() request, @Res() response) {
+  @Post('/create-playlist')
+  public async createPlaylist(@Res() response, @Body() body: ReactionDto) {
     try {
-      const result = await this.dezzerService.createPlaylist(request.credentials.accessToken);
+      const result = await this.dezzerService.createPlaylist(body.accessToken, body.params);
       return response.status(HttpStatus.OK).json({
         message: 'Created playlist for the authenticated user using Deezer service',
         data: result,

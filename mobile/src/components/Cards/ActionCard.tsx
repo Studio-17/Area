@@ -8,7 +8,7 @@ import {
 import MyText from "../MyText";
 
 import { Action } from "../../redux/models/actionModels";
-import { GetParamsDto } from "../../redux/models/paramsModel";
+import {GetParamsDto, PostParamsDto} from "../../redux/models/paramsModel";
 
 // interface Props {
 //   actionContent?: string;
@@ -31,7 +31,7 @@ interface Props {
     reactionContent?: string,
     uuidOfAction?: string,
     params?: GetParamsDto[] | null,
-    action?: Action
+    action?: Action,
   ) => void;
   params: GetParamsDto[] | null;
   action: Action;
@@ -46,6 +46,7 @@ export default function ActionCard({
   params,
   action,
   color,
+
 }: Props) {
   const onClickOnCards = () => {
     onClick(
@@ -53,7 +54,7 @@ export default function ActionCard({
       reactionContent && reactionContent,
       uuidOfAction && uuidOfAction,
       params,
-      action
+      action,
     )
   };
 

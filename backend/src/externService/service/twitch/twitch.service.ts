@@ -1,6 +1,6 @@
-import { ConsoleLogger, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { catchError, firstValueFrom, lastValueFrom } from 'rxjs';
+import { catchError, lastValueFrom } from 'rxjs';
 import { AxiosError } from 'axios/index';
 import { map } from 'rxjs';
 import { plainToInstance } from 'class-transformer';
@@ -14,10 +14,7 @@ import { ChannelsFollowedObject } from './interface/channels-followed.interface'
 export class TwitchService {
   constructor(private readonly httpService: HttpService) {}
 
-  public async getAuthenticatedUserInformation(
-    accessToken: string,
-    params: { name: string; content: string }[],
-  ): Promise<any> {
+  public async getAuthenticatedUserInformation(accessToken: string): Promise<any> {
     const user = await lastValueFrom(
       this.httpService
         .get('https://api.twitch.tv/helix/users', {
@@ -73,23 +70,15 @@ export class TwitchService {
     return channels;
   }
 
-  public async getStream(
-    accessToken: string,
-    params: { name: string; content: string }[],
-  ): Promise<any> {
+  public async getStream(accessToken: string, channelId: string): Promise<any> {
     const streams = await lastValueFrom(
       this.httpService
-        .get(
-          `https://api.twitch.tv/helix/streams?user_id=${
-            params.find((param) => param.name === 'userId').content
-          }`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              'Client-Id': process.env.TWITCH_CLIENT_ID,
-            },
+        .get(`https://api.twitch.tv/helix/streams?user_id=${channelId}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Client-Id': process.env.TWITCH_CLIENT_ID,
           },
-        )
+        })
         .pipe(
           map((value) => {
             return plainToInstance(StreamDataObject, value.data);
@@ -138,10 +127,7 @@ export class TwitchService {
     return gamesAnalytics;
   }
 
-  public async getBroadcastPlaylist(
-    accessToken: string,
-    params: { name: string; content: string }[],
-  ): Promise<any> {
+  public async getBroadcastPlaylist(accessToken: string): Promise<any> {
     const playlist = await lastValueFrom(
       this.httpService
         .get(`https://api.twitch.tv/helix/soundtrack/playlists`, {

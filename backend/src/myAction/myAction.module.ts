@@ -11,6 +11,7 @@ import { GithubModule } from '../externService/service/github/github.module';
 import { SpotifyModule } from 'src/externService/service/spotify/spotify.module';
 import { CronModule } from 'src/cron/cron.module';
 import { DiscordModule } from 'src/externService/service/discord/discord.module';
+import { TwitchModule } from 'src/externService/service/twitch/twitch.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { DiscordModule } from 'src/externService/service/discord/discord.module'
     forwardRef(() => GithubModule),
     forwardRef(() => SpotifyModule),
     forwardRef(() => DiscordModule),
+    forwardRef(() => TwitchModule),
   ],
   providers: [MyActionService],
   controllers: [MyActionController],

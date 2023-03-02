@@ -15,6 +15,7 @@ import { GoogleCronService } from 'src/externService/service/google/google.cron.
 import { CronService } from 'src/cron/cron.service';
 import { Params } from 'src/cron/cron.type';
 import { DiscordCronService } from 'src/externService/service/discord/discord.cron.service';
+import { TwitchCronService } from 'src/externService/service/twitch/twitch.cron.service';
 
 @Injectable()
 export class MyActionService {
@@ -29,6 +30,7 @@ export class MyActionService {
     private readonly githubCronService: GithubCronService,
     private readonly spotifyCronService: SpotifyCronService,
     private readonly discordCronService: DiscordCronService,
+    private readonly twitchCronService: TwitchCronService,
     private readonly cronService: CronService,
   ) {}
 
@@ -104,6 +106,7 @@ export class MyActionService {
     // NOTION
     // SPOTIFY
     // TWITCH:
+    [ServiceList.TWITCH, this.twitchCronService.availableActions],
     [ServiceList.GOOGLE, this.googleCronService.availableActions],
     [ServiceList.GITHUB, this.githubCronService.availableActions],
     [ServiceList.SPOTIFY, this.spotifyCronService.availableActions],

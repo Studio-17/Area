@@ -1,8 +1,7 @@
-import { Body, Controller, Post, HttpStatus, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, HttpStatus, Req, Res } from '@nestjs/common';
 import { TwitchService } from './twitch.service';
-import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authentication.guard';
-import { CredentialsGuard } from './guard/credentials.guard';
 import { ReactionDto } from '../../../cron/dto/reaction.dto';
+import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 
 @Controller('actions/twitch')
 export class TwitchController {
@@ -17,7 +16,6 @@ export class TwitchController {
     try {
       const userInformation = await this.spotifyService.getAuthenticatedUserInformation(
         body.accessToken,
-        body.params,
       );
 
       return response.status(HttpStatus.OK).json({
@@ -67,7 +65,9 @@ export class TwitchController {
     @Body() body: ReactionDto,
   ) {
     try {
-      const userInformation = await this.spotifyService.getStream(body.accessToken, body.params);
+      const channelId = getElemContentInParams(body.params, 'channelId', 'undefined');
+
+      const userInformation = await this.spotifyService.getStream(body.accessToken, channelId);
 
       return response.status(HttpStatus.OK).json({
         message: 'Got streams for the authenticated user using Twitch service',
@@ -108,10 +108,7 @@ export class TwitchController {
   @Post('/get/playlist')
   public async getBroadcastPlaylist(@Req() request, @Res() response, @Body() body: ReactionDto) {
     try {
-      const userInformation = await this.spotifyService.getBroadcastPlaylist(
-        body.accessToken,
-        body.params,
-      );
+      const userInformation = await this.spotifyService.getBroadcastPlaylist(body.accessToken);
 
       return response.status(HttpStatus.OK).json({
         message: 'Got broadcast playlist using Twitch service',

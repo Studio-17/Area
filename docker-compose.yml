@@ -10,6 +10,8 @@ x-typeorm: &typeorm-env
 
 volumes:
   postgres_data: {}
+  front_data:
+    driver: local
 
 networks:
   authentication-network:
@@ -31,7 +33,9 @@ services:
     ports:
       - ${WEB_PORT}:${WEB_PORT}
     volumes:
+#      - ./web/node_modules:/home/node/app/node_modules
       - ./web:/home/node/app
+      - front_data:/home/node/app/front_data
     depends_on:
       - server
       # - client_mobile
@@ -56,7 +60,9 @@ services:
       - '19002:19002'
       - '19006:19006'
     volumes:
+#      - ./mobile/node_modules:/home/node/app/node_modules
       - ./mobile:/home/node/app
+      - front_data:/home/node/app/front_data
     depends_on:
       - server
     healthcheck:
