@@ -2,6 +2,8 @@ import { HttpService } from '@nestjs/axios';
 import { ConsoleLogger, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { catchError, lastValueFrom, map } from 'rxjs';
+import { Params } from 'src/cron/cron.type';
+import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 
 @Injectable()
 export class DeezerService {
@@ -12,8 +14,8 @@ export class DeezerService {
         .get('https://api.deezer.com/user/me', {
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${accessToken}`,
           },
+          params: { access_token: accessToken },
         })
         .pipe(
           map((value) => {
@@ -22,16 +24,65 @@ export class DeezerService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
     return user;
   }
 
-  public async createPlaylist(accessToken: string): Promise<any> {
-    console.log(accessToken);
-    const user = this.getAuthentificatedUserInformation(accessToken);
-    return user;
+  public async getPlaylists(accessToken: string): Promise<any> {
+    const playlists = await lastValueFrom(
+      this.httpService
+        .get(`https://api.deezer.com/user/me/playlists?access_token=${accessToken}`)
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+    return playlists;
+  }
+
+  public async getFavoriteArtists(accessToken: string): Promise<any> {
+    const playlists = await lastValueFrom(
+      this.httpService
+        .get(`https://api.deezer.com/user/me/artists?access_token=${accessToken}`)
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+    return playlists;
+  }
+
+  public async createPlaylist(accessToken: string, params: Params): Promise<any> {
+    const name = getElemContentInParams(params, 'name', 'New Reaccoon Playlist');
+    const playlistCreated = await lastValueFrom(
+      this.httpService
+        .post(`https://api.deezer.com/user/me/playlists?title=${name}&access_token=${accessToken}`)
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+    return playlistCreated;
   }
 }

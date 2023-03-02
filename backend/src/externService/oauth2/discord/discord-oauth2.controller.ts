@@ -50,6 +50,28 @@ export class DiscordOAuth2Controller {
     });
   }
 
+  @Get('/discord/guild')
+  @UseGuards(AuthGuard('jwt'))
+  public async discordGuild(@Req() request, @Res() response) {
+    const scope = 'email identify guilds guilds.members.read';
+    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
+
+    if (!token['id']) {
+      return response.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'Error unauthenticated (using jwt)',
+        data: token,
+        status: 401,
+      });
+    }
+
+    const redirectUrl = await this.connectionService.authorizeBotForGuild();
+
+    return response.status(HttpStatus.OK).json({
+      url: encodeURI(redirectUrl),
+      status: 200,
+    });
+  }
+
   @Get('/discord/redirect')
   public async discordRedirect(@Req() request, @Res() response, @Query() query) {
     const clientID = process.env.DISCORD_CLIENT_ID;
