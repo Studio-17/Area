@@ -18,9 +18,9 @@ import * as WebBrowser from "expo-web-browser";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { REACT_NATIVE_APP_API_URL } from "@env";
+// import { REACT_NATIVE_APP_API_URL } from "@env";
 
-const API_ENDPOINT = REACT_NATIVE_APP_API_URL;
+const API_ENDPOINT = "http://localhost:8080/api/reaccoon";
 
 import MyText from "../MyText";
 import InputField from "../InputField";
@@ -65,7 +65,8 @@ export default function FormModal({
       {
         headers: { Authorization: `Bearer ${token}` },
       }
-    );
+    )
+      .then((res) => res);
     const webBrowserResult = await WebBrowser.openBrowserAsync(res.data.url);
     if (webBrowserResult.type === "cancel") {
       const refetch = await refetchServiceInfos();
