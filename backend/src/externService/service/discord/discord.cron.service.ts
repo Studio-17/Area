@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConsoleLogger, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DiscordRecord } from './entity/discordRecord.entity';
@@ -13,16 +13,11 @@ export class DiscordCronService {
     private readonly discordRecordRepository: Repository<DiscordRecord>,
   ) {}
 
-  checkNewScheduledEvents(accessToken: string, params: Params) {
-    // try {
-    //   const userInfo = this.discordService.getAuthenticatedUserInformation(accessToken);
-    //   console.log(userInfo);
-
-    //   // this.discordService.getGuildScheduledEvents()
-    //   // this.discordService.getGuildScheduledEventsById()
-    // } catch (error) {
-    //   throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
-    // }
+  private async checkNewScheduledEvents(accessToken: string, params: Params) {
+    try {
+    } catch (error) {
+      throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
   }
 
   availableActions = new Map([
