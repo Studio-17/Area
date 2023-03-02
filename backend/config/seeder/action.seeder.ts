@@ -244,6 +244,24 @@ export class ActionSeederService {
         description: 'This reaction follow a playlist on Spotify.',
         link: 'spotify/follow-playlist/',
       },
+      // ----- DEEZER TEMPLATES -----
+
+      {
+        uuid: 'df56e414-32b5-40fa-852c-61e11cfa7a5d',
+        service: ServiceList.DEEZER,
+        type: ActionType.REACTION,
+        name: 'Create playlist',
+        params: [
+          {
+            name: 'playlist',
+            type: 'string',
+            description: 'name of the playlist you want to create',
+          },
+        ],
+        description: 'This reaction create a playlist on Deezer.',
+        link: 'deezer/create-playlist/',
+      },
+
       // ----- TWITCH TEMPLATES -----
       {
         uuid: '65011817-eec8-4d26-817e-45cbe3881ef3',
@@ -295,6 +313,7 @@ export class ActionSeederService {
       });
 
       if (!exists) {
+        console.log('saving');
         await this.actionRepository.save(action);
       }
     }
