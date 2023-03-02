@@ -60,16 +60,29 @@ export default function ActionsListScreen({ navigation, route }: any) {
     actionContent?: string,
     reactionContent?: string,
     uuidOfAction?: string,
-    params?: PostParamsDto[]
+    params?: PostParamsDto[],
+    indexBlock?: number
   ) => {
     setCurrentActionParams(null);
-    onClickOnAreasCards(
-      service,
-      actionContent,
-      reactionContent,
-      uuidOfAction,
-      params
-    );
+    if (typeOfRequest === "modify") {
+      onClickOnAreasCards(
+        service,
+        actionContent,
+        reactionContent,
+        uuidOfAction,
+        params,
+        indexBlock
+      );
+    } else {
+      onClickOnAreasCards(
+        service,
+        actionContent,
+        reactionContent,
+        uuidOfAction,
+        params,
+        indexBlock
+      );
+    }
   };
 
   const handleCloseActionsListScreen = () => {
@@ -103,7 +116,8 @@ export default function ActionsListScreen({ navigation, route }: any) {
           actionContent,
           reactionContent,
           uuidOfAction,
-          params
+          params,
+          indexBlock
         );
       }
       navigation.navigate("NewArea");
@@ -127,7 +141,9 @@ export default function ActionsListScreen({ navigation, route }: any) {
         <View style={{ display: "flex", padding: 20 }}>
           <View style={styles.descriptionContainer}>
             <Image source={images[service.name]} style={styles.logo} />
-            <MyText style={styles.textContentStyle}>{service.description}</MyText>
+            <MyText style={styles.textContentStyle}>
+              {service.description}
+            </MyText>
           </View>
           {actions
             ?.filter((action: Action) => action.type === typeOfAction)
@@ -158,6 +174,7 @@ export default function ActionsListScreen({ navigation, route }: any) {
         navigation={navigation}
         serviceInfo={serviceInfo}
         refetchServiceInfos={() => refetchServiceInfos()}
+        indexBlock={indexBlock}
       />
     </SafeAreaView>
   );
