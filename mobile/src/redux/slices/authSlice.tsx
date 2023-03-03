@@ -57,7 +57,8 @@ export const loginUserGoogle = createAsyncThunk(
           headers: { "Content-Type": "application/json" },
         })
         .then((res) => res);
-      await AsyncStorage.setItem("userToken", data.accessToken);
+        console.log(data);
+      await AsyncStorage.setItem("userToken", data.user.jwt);
       return data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {

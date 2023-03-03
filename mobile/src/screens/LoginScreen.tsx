@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Keyboard,
-  LogBox
+  LogBox,
 } from "react-native";
 
 // Icons
@@ -31,7 +31,9 @@ import CustomButton from "../components/CustomButton";
 // Components
 import MyText from "../components/MyText";
 
-LogBox.ignoreLogs(['You are not currently signed in to Expo on your development machine']);
+LogBox.ignoreLogs([
+  "You are not currently signed in to Expo on your development machine",
+]);
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -48,6 +50,8 @@ export default function LoginScreen({ navigation }: any) {
   };
 
   const [request, response, promptAsync] = Google.useAuthRequest({
+    selectAccount: true,
+    shouldAutoExchangeCode: false,
     expoClientId:
       "760928825534-9f7c3d69o48jl3nrj4mnlnar1qbe91d3.apps.googleusercontent.com",
   });
