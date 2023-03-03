@@ -87,7 +87,7 @@ export class ActionSeederService {
       // ----- GOOGLE TEMPLATES -----
       {
         uuid: '6503b807-eec8-4d26-817e-45cbe3881ef3',
-        service: ServiceList.GOOGLE,
+        service: ServiceList.GOOGLE_MAIL,
         type: ActionType.ACTION,
         name: 'Check Google Mail',
         returnValues: [
@@ -100,7 +100,7 @@ export class ActionSeederService {
       },
       {
         uuid: 'df56e414-32b5-40fa-852c-60eaacfb7ebc',
-        service: ServiceList.GOOGLE,
+        service: ServiceList.GOOGLE_SUITE,
         type: ActionType.REACTION,
         name: 'Create file on Google Drive',
         params: [

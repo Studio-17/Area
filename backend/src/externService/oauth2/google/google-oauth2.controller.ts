@@ -46,7 +46,8 @@ export class GoogleOAuth2Controller {
       });
     }
 
-    const state = `${token['email']}`;
+    const googleServiceName = 'google';
+    const state = `${token['email']}_${googleServiceName}`;
 
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
@@ -56,15 +57,15 @@ export class GoogleOAuth2Controller {
     });
   }
 
-  @Get('/google-analytics')
+  @Get('/google-keep')
   @UseGuards(AuthGuard('jwt'))
   public async googleAnalytics(@Req() request, @Res() response) {
     const clientID = process.env.GOOGLE_CLIENT_ID;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
-    const scope = 'email profile https://www.googleapis.com/auth/analytics';
+    const scope = 'email profile https://www.googleapis.com/auth/keep';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
-    if (!token['id']) {
+    if (!token['email']) {
       return response.status(HttpStatus.UNAUTHORIZED).json({
         message: 'Error unauthenticated (using jwt)',
         data: token,
@@ -72,35 +73,8 @@ export class GoogleOAuth2Controller {
       });
     }
 
-    const googleServiceName = 'google-analytics';
-    const state = `${token['id']}+${googleServiceName}`;
-
-    return response.status(HttpStatus.OK).json({
-      url: encodeURI(
-        `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${state}&redirect_uri=${callbackURL}&client_id=${clientID}`,
-      ),
-      status: 200,
-    });
-  }
-
-  @Get('/google-drive')
-  @UseGuards(AuthGuard('jwt'))
-  public async googleDrive(@Req() request, @Res() response) {
-    const clientID = process.env.GOOGLE_CLIENT_ID;
-    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
-    const scope = 'email profile https://www.googleapis.com/auth/drive';
-    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
-
-    if (!token['id']) {
-      return response.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'Error unauthenticated (using jwt)',
-        data: token,
-        status: 401,
-      });
-    }
-
-    const googleServiceName = 'google-drive';
-    const state = `${token['id']}+${googleServiceName}`;
+    const googleServiceName = 'google-keep';
+    const state = `${token['email']}_${googleServiceName}`;
 
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
@@ -119,7 +93,7 @@ export class GoogleOAuth2Controller {
       'email profile https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.calendarlist';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
-    if (!token['id']) {
+    if (!token['email']) {
       return response.status(HttpStatus.UNAUTHORIZED).json({
         message: 'Error unauthenticated (using jwt)',
         data: token,
@@ -128,7 +102,7 @@ export class GoogleOAuth2Controller {
     }
 
     const googleServiceName = 'google-event';
-    const state = `${token['id']}+${googleServiceName}`;
+    const state = `${token['email']}_${googleServiceName}`;
 
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
@@ -147,7 +121,7 @@ export class GoogleOAuth2Controller {
       'email profile https://www.googleapis.com/auth/forms.body https://www.googleapis.com/auth/forms.responses.readonly';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
-    if (!token['id']) {
+    if (!token['email']) {
       return response.status(HttpStatus.UNAUTHORIZED).json({
         message: 'Error unauthenticated (using jwt)',
         data: token,
@@ -156,7 +130,7 @@ export class GoogleOAuth2Controller {
     }
 
     const googleServiceName = 'google-forms';
-    const state = `${token['id']}+${googleServiceName}`;
+    const state = `${token['email']}_${googleServiceName}`;
 
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
@@ -166,15 +140,16 @@ export class GoogleOAuth2Controller {
     });
   }
 
-  @Get('/google-gmail')
+  @Get('/google-mail')
   @UseGuards(AuthGuard('jwt'))
   public async googleGmail(@Req() request, @Res() response) {
     const clientID = process.env.GOOGLE_CLIENT_ID;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
-    const scope = 'email profile https://www.googleapis.com/auth/gmail.readonly';
+    const scope =
+      'email profile https://mail.google.com/ https://www.googleapis.com/auth/gmail.modify  https://www.googleapis.com/auth/gmail.readonly';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
-    if (!token['id']) {
+    if (!token['email']) {
       return response.status(HttpStatus.UNAUTHORIZED).json({
         message: 'Error unauthenticated (using jwt)',
         data: token,
@@ -183,7 +158,7 @@ export class GoogleOAuth2Controller {
     }
 
     const googleServiceName = 'google-mail';
-    const state = `${token['id']}+${googleServiceName}`;
+    const state = `${token['email']}_${googleServiceName}`;
 
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
@@ -199,10 +174,10 @@ export class GoogleOAuth2Controller {
     const clientID = process.env.GOOGLE_CLIENT_ID;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
     const scope =
-      'email profile https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/presentations https://www.googleapis.com/auth/spreadsheets';
+      'email profile https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/presentations https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
-    if (!token['id']) {
+    if (!token['email']) {
       return response.status(HttpStatus.UNAUTHORIZED).json({
         message: 'Error unauthenticated (using jwt)',
         data: token,
@@ -211,35 +186,7 @@ export class GoogleOAuth2Controller {
     }
 
     const googleServiceName = 'google-suite';
-    const state = `${token['id']}+${googleServiceName}`;
-
-    return response.status(HttpStatus.OK).json({
-      url: encodeURI(
-        `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${state}&redirect_uri=${callbackURL}&client_id=${clientID}`,
-      ),
-      status: 200,
-    });
-  }
-
-  @Get('/google-youtube')
-  @UseGuards(AuthGuard('jwt'))
-  public async googleYoutube(@Req() request, @Res() response) {
-    const clientID = process.env.GOOGLE_CLIENT_ID;
-    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
-    const scope =
-      'email profile https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.readonly';
-    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
-
-    if (!token['id']) {
-      return response.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'Error unauthenticated (using jwt)',
-        data: token,
-        status: 401,
-      });
-    }
-
-    const googleServiceName = 'google-youtube';
-    const state = `${token['id']}+${googleServiceName}`;
+    const state = `${token['email']}_${googleServiceName}`;
 
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
@@ -254,7 +201,7 @@ export class GoogleOAuth2Controller {
     const clientID = process.env.GOOGLE_CLIENT_ID;
     const clientSECRET = process.env.GOOGLE_CLIENT_SECRET;
     const code = query.code;
-    const id = query.state;
+    const state = query.state;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
 
     const googleData = await firstValueFrom(
@@ -283,12 +230,24 @@ export class GoogleOAuth2Controller {
 
     const accessToken = googleData.data.access_token;
 
+    const ServiceNames = new Map<string, ServiceList>([
+      ['google', ServiceList.GOOGLE],
+      ['google-event', ServiceList.GOOGLE_EVENT],
+      ['google-forms', ServiceList.GOOGLE_FORMS],
+      ['google-mail', ServiceList.GOOGLE_MAIL],
+      ['google-keep', ServiceList.GOOGLE_KEEP],
+      ['google-suite', ServiceList.GOOGLE_SUITE],
+    ]);
+
+    const id = state.split('_')[0];
+    const service: ServiceList = ServiceNames.get(state.split('_')[1]);
+
     if (accessToken) {
       const user = await this.userService.findByEmail(id);
 
       const userCredentials = {
         userId: user.uuid,
-        service: ServiceList.GOOGLE,
+        service: service,
         accessToken: accessToken,
         refreshToken: null,
       };
