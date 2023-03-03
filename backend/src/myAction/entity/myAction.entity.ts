@@ -1,4 +1,4 @@
-import { Params } from 'src/cron/cron.type';
+import { Params } from 'src/cron/type/param.type';
 import {
   Entity,
   PrimaryGeneratedColumn,

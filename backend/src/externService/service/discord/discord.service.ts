@@ -173,7 +173,7 @@ export class DiscordService {
   ): Promise<any> {
     const message = await lastValueFrom(
       this.httpService
-        .get(`https://discord.com/api/guilds/${guildChannelID}/messages/${messageID}`, {
+        .get(`https://discord.com/api/channels/${guildChannelID}/messages/${messageID}`, {
           headers: {
             Authorization: `Bot ${process.env.DISCORD_CLIENT_BOT}`,
           },

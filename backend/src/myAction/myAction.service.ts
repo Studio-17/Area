@@ -13,10 +13,11 @@ import { ServiceList } from 'src/service/entity/service.entity';
 import { GithubCronService } from 'src/externService/service/github/github.cron.service';
 import { GoogleCronService } from 'src/externService/service/google/google.cron.service';
 import { CronService } from 'src/cron/cron.service';
-import { Params } from 'src/cron/cron.type';
+import { Params } from 'src/cron/type/param.type';
 import { DiscordCronService } from 'src/externService/service/discord/discord.cron.service';
 import { TwitchCronService } from 'src/externService/service/twitch/twitch.cron.service';
 import { TimerCronService } from 'src/externService/service/timer/timer.cron.service';
+import { ActionFunction } from 'src/cron/interfaces/actionFunction.interface';
 
 @Injectable()
 export class MyActionService {
@@ -100,10 +101,11 @@ export class MyActionService {
     return await this.myActionRepository.findBy({ linkedFromId: actionId });
   }
 
-  availableActions = new Map([
-    // MIRO
+  availableActions = new Map<string, Map<string, ActionFunction>>([
+    // MIRONon assigné
     // NOTION
     [ServiceList.TWITCH, this.twitchCronService.availableActions],
+    // return value not set up for google
     [ServiceList.GOOGLE, this.googleCronService.availableActions],
     [ServiceList.GITHUB, this.githubCronService.availableActions],
     [ServiceList.SPOTIFY, this.spotifyCronService.availableActions],
@@ -118,6 +120,7 @@ export class MyActionService {
       this.cronService.addCron(
         {
           name: action.name + '-' + myActionId,
+          myActionId: myActionId,
           userId: userId,
           link: action.link,
           service: action.service,
@@ -165,6 +168,7 @@ export class MyActionService {
       try {
         const cronJob = await this.schedulerRegistry.getCronJob(action.name + '-' + myAction.uuid);
         cronJob.stop();
+        this.cronService.removeRecord(myAction.uuid);
       } catch (error) {}
     }
   }

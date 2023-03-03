@@ -17,8 +17,9 @@ import { GithubIssueDto } from './dto/github-issue.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import axios from 'axios';
-import { Params } from 'src/cron/cron.type';
 import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
+import { ActionResult } from 'src/cron/interfaces/actionResult.interface';
+import { ActionParam } from 'src/cron/interfaces/actionParam.interface';
 
 @Injectable()
 export class GithubService {
@@ -245,16 +246,16 @@ export class GithubService {
     }
   }
 
-  public async updateLastPullRequest(accessToken: string, params: Params) {
+  public async updateLastPullRequest(actionParam: ActionParam): Promise<ActionResult> {
     // let owner = '';
-    const owner = getElemContentInParams(params, 'owner', '');
-    const repo = getElemContentInParams(params, 'repo', '');
+    const owner = getElemContentInParams(actionParam.params, 'owner', '');
+    const repo = getElemContentInParams(actionParam.params, 'repo', '');
     const config = {
       method: 'get',
       url: `https://api.github.com/repos/${owner}/${repo}/pulls`,
       headers: {
         Accept: 'application/vnd.github+json',
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${actionParam.accessToken}`,
         'X-GitHub-Api-Version': '2022-11-28',
       },
     };
@@ -277,22 +278,25 @@ export class GithubService {
         record.repositoryOwner = owner;
         record.pullRequestId = pullRequestId;
 
-        return await this.findOrUpdateLastPullRequest(record);
+        return {
+          isTriggered: (await this.findOrUpdateLastPullRequest(record)).new,
+          returnValues: [],
+        };
       }
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
   }
 
-  public async updateLastIssue(accessToken: string, params: Params) {
-    const owner = getElemContentInParams(params, 'owner', '');
-    const repo = getElemContentInParams(params, 'repo', '');
+  public async updateLastIssue(actionParam: ActionParam): Promise<ActionResult> {
+    const owner = getElemContentInParams(actionParam.params, 'owner', '');
+    const repo = getElemContentInParams(actionParam.params, 'repo', '');
     const config = {
       method: 'get',
       url: `https://api.github.com/repos/${owner}/${repo}/issues`,
       headers: {
         Accept: 'application/vnd.github+json',
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${actionParam.accessToken}`,
         'X-GitHub-Api-Version': '2022-11-28',
       },
     };
@@ -315,7 +319,7 @@ export class GithubService {
         record.repositoryOwner = owner;
         record.issueId = issueId;
 
-        return await this.findOrUpdateLastIssue(record);
+        return { isTriggered: (await this.findOrUpdateLastIssue(record)).new, returnValues: [] };
       }
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
