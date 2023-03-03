@@ -10,13 +10,14 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { GithubOAuth2Service } from './github-oauth2.service';
-import { CredentialsService } from '../../../credentials/credentials.service';
+import { CredentialsService } from 'src/credentials/credentials.service';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom, map } from 'rxjs';
 import axios, { AxiosError } from 'axios';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
-import { ServiceList } from '../../../service/entity/service.entity';
+import { ServiceList } from 'src/service/entity/service.entity';
+import { UserService } from 'src/user/user.service';
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -24,6 +25,7 @@ export class GithubOAuth2Controller {
   constructor(
     private readonly connectionService: GithubOAuth2Service,
     private readonly credentialsService: CredentialsService,
+    private readonly userService: UserService,
     private readonly httpService: HttpService,
     private readonly jwtService: JwtService,
   ) {}
@@ -36,7 +38,7 @@ export class GithubOAuth2Controller {
     const scope = 'repo user user:email';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
-    if (!token['id']) {
+    if (!token['email']) {
       return response.status(HttpStatus.UNAUTHORIZED).json({
         message: 'Error unauthenticated (using jwt)',
         data: token,
@@ -46,7 +48,7 @@ export class GithubOAuth2Controller {
 
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
-        `https://github.com/login/oauth/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&allow_signup=false&state=${token['id']}`,
+        `https://github.com/login/oauth/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&allow_signup=false&state=${token['email']}`,
       ),
       status: 200,
     });
@@ -101,8 +103,10 @@ export class GithubOAuth2Controller {
           throw new HttpException(error, HttpStatus.BAD_REQUEST);
         });
 
+      const user = await this.userService.findByEmail(id);
+
       const userCredentials = {
-        userId: id,
+        userId: user.uuid,
         service: ServiceList.GITHUB,
         accessToken: accessToken,
         refreshToken: null,
