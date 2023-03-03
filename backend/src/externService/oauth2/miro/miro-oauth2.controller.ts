@@ -9,15 +9,16 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authentication.guard';
+import { JwtAuthenticationGuard } from 'src/authentication/guards/jwt-authentication.guard';
 import { MiroOAuth2Service } from './miro-oauth2.service';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
-import { CredentialsService } from '../../../credentials/credentials.service';
+import { CredentialsService } from 'src/credentials/credentials.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
-import {ServiceList} from "../../../service/entity/service.entity";
+import { ServiceList } from 'src/service/entity/service.entity';
+import { UserService } from 'src/user/user.service';
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -25,6 +26,7 @@ export class MiroOAuth2Controller {
   constructor(
     private readonly connectionService: MiroOAuth2Service,
     private readonly credentialsService: CredentialsService,
+    private readonly userService: UserService,
     private readonly httpService: HttpService,
     private readonly jwtService: JwtService,
   ) {}
@@ -36,7 +38,7 @@ export class MiroOAuth2Controller {
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/miro/redirect`;
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
-    if (!token['id']) {
+    if (!token['email']) {
       return response.status(HttpStatus.UNAUTHORIZED).json({
         message: 'Error unauthenticated (using jwt)',
         data: token,
@@ -45,7 +47,7 @@ export class MiroOAuth2Controller {
     }
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
-        `https://miro.com/oauth/authorize?response_type=code&client_id=${clientID}&redirect_uri=${callbackURL}&state=${token['id']}`,
+        `https://miro.com/oauth/authorize?response_type=code&client_id=${clientID}&redirect_uri=${callbackURL}&state=${token['email']}`,
       ),
       status: 200,
     });
@@ -74,11 +76,13 @@ export class MiroOAuth2Controller {
     const accessToken = miroData.data.access_token;
 
     if (accessToken) {
+      const user = await this.userService.findByEmail(id);
+
       const userCredentials = {
-        userId: id,
-        service: ServiceList.MIRO,
-        accessToken: miroData.data.access_token,
-        refreshToken: miroData.data.refresh_token,
+        userId: user.uuid,
+        service: ServiceList.GITHUB,
+        accessToken: accessToken,
+        refreshToken: null,
       };
 
       await this.credentialsService.createCredentialsUser(userCredentials);

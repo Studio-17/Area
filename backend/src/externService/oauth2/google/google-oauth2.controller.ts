@@ -1,22 +1,23 @@
 import {
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
+  Query,
+  Req,
   Res,
   UseGuards,
-  HttpStatus,
-  Req,
-  Query,
-  HttpException,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { GoogleOAuth2Service } from './google-oauth2.service';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
-import { CredentialsService } from '../../../credentials/credentials.service';
+import { CredentialsService } from 'src/credentials/credentials.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
-import { ServiceList } from '../../../service/entity/service.entity';
+import { ServiceList } from 'src/service/entity/service.entity';
+import { UserService } from 'src/user/user.service';
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -24,6 +25,7 @@ export class GoogleOAuth2Controller {
   constructor(
     private readonly connectionService: GoogleOAuth2Service,
     private readonly credentialsService: CredentialsService,
+    private readonly userService: UserService,
     private readonly httpService: HttpService,
     private readonly jwtService: JwtService,
   ) {}
@@ -37,7 +39,7 @@ export class GoogleOAuth2Controller {
       'email profile https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/gmail.readonly';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
-    if (!token['id']) {
+    if (!token['email']) {
       return response.status(HttpStatus.UNAUTHORIZED).json({
         message: 'Error unauthenticated (using jwt)',
         data: token,
@@ -46,7 +48,7 @@ export class GoogleOAuth2Controller {
     }
 
     const googleServiceName = 'google';
-    const state = token['id'];
+    const state = `${token['email']}`;
 
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
@@ -254,7 +256,7 @@ export class GoogleOAuth2Controller {
     const clientID = process.env.GOOGLE_CLIENT_ID;
     const clientSECRET = process.env.GOOGLE_CLIENT_SECRET;
     const code = query.code;
-    const id = query.state;
+    const state = query.state;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
 
     const googleData = await firstValueFrom(
@@ -284,11 +286,13 @@ export class GoogleOAuth2Controller {
     const accessToken = googleData.data.access_token;
 
     if (accessToken) {
+      const user = await this.userService.findByEmail(id);
+
       const userCredentials = {
-        userId: id,
-        service: ServiceList.GOOGLE,
-        accessToken: googleData.data.access_token,
-        refreshToken: googleData.data.refresh_token,
+        userId: user.uuid,
+        service: ServiceList.GITHUB,
+        accessToken: accessToken,
+        refreshToken: null,
       };
 
       await this.credentialsService.createCredentialsUser(userCredentials);
