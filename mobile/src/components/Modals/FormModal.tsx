@@ -67,7 +67,7 @@ export default function FormModal({
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => res);
-    const webBrowserResult = await WebBrowser.openBrowserAsync(res.data.url);
+    const webBrowserResult = await WebBrowser.openAuthSessionAsync(res.data.url, `${API_ENDPOINT}/service/connect/${serviceInfo?.name}/redirect`);
     if (webBrowserResult.type === "cancel") {
       const refetch = await refetchServiceInfos();
       if (refetch.data?.isConnected && !params) {
