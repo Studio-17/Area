@@ -27,6 +27,7 @@ export class GithubCronService {
     // ACTIONS
     ['github/check-pull-request/', this.checkPullRequest.bind(this)],
     ['github/check-issue/', this.checkIssue.bind(this)],
+    ['github/check-contributor/', this.checkIssue.bind(this)],
     ['github/check-fork/', this.checkFork.bind(this)],
     ['github/check-star/', this.checkStar.bind(this)],
     ['github/check-review-comment/', this.checkReviewComment.bind(this)],
@@ -286,7 +287,7 @@ export class GithubCronService {
     }
 
     try {
-      const issue = await this.githubService.getStar(accessToken, {
+      const star = await this.githubService.getStar(accessToken, {
         owner: owner,
         repo: repo,
       });
@@ -295,7 +296,7 @@ export class GithubCronService {
       record.owner = owner;
       record.repo = repo;
       record.category = 'star';
-      record.id = issue;
+      record.id = star;
       return (await this.findOrUpdateLastStar(record)).new;
     } catch (error) {
       console.error(error);
@@ -316,15 +317,15 @@ export class GithubCronService {
         throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       }
     } else if (
-      githubRecordDto.id.toString() !== '0' &&
-      record.id.toString() < githubRecordDto.id.toString()
+        githubRecordDto.id.toString() !== '0' &&
+        record.id.toString() < githubRecordDto.id.toString()
     ) {
       try {
         const newRecord = await this.githubRecordRepository.update(
-          {
-            id: record.id,
-          },
-          { ...githubRecordDto },
+            {
+              id: record.id,
+            },
+            { ...githubRecordDto },
         );
 
         if (!newRecord) {
@@ -350,6 +351,99 @@ export class GithubCronService {
         owner: githubRecordDto.owner,
         repo: githubRecordDto.repo,
         category: 'star',
+      });
+
+      if (!records) {
+        return undefined;
+      }
+
+      return records;
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
+
+  // --- CONTRIBUTOR ---
+  public async checkContributor(accessToken: string, params: { name: string; content: string }[]) {
+    let owner = '';
+    try {
+      owner = params.find((param) => param.name === 'owner').content;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+    let repo = '';
+    try {
+      repo = params.find((param) => param.name === 'repo').content;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+
+    try {
+      const contributor = await this.githubService.getContributor(accessToken, {
+        owner: owner,
+        repo: repo,
+      });
+
+      const record = new GithubRecordEntity();
+      record.owner = owner;
+      record.repo = repo;
+      record.category = 'contributor';
+      record.id = contributor;
+      return (await this.findOrUpdateLastContributor(record)).new;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+  }
+
+  public async findOrUpdateLastContributor(githubRecordDto: GithubRecordDto) {
+    const record = await this.findContributor(githubRecordDto);
+
+    if (!record) {
+      try {
+        return {
+          new: false,
+          data: await this.githubRecordRepository.save(githubRecordDto),
+        };
+      } catch (err) {
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
+      }
+    } else if (
+        githubRecordDto.id.toString() !== '0' &&
+        record.id.toString() < githubRecordDto.id.toString()
+    ) {
+      try {
+        const newRecord = await this.githubRecordRepository.update(
+            {
+              id: record.id,
+            },
+            { ...githubRecordDto },
+        );
+
+        if (!newRecord) {
+          throw new NotFoundException(`Record does not exist`);
+        }
+
+        return {
+          new: true,
+          data: await this.findContributor(githubRecordDto),
+        };
+      } catch (err) {
+        console.error(err);
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
+      }
+    } else {
+      return { new: false, data: record };
+    }
+  }
+
+  public async findContributor(githubRecordDto: GithubRecordDto): Promise<GithubRecordEntity> {
+    try {
+      const records = await this.githubRecordRepository.findOneBy({
+        owner: githubRecordDto.owner,
+        repo: githubRecordDto.repo,
+        category: 'contributor',
       });
 
       if (!records) {

@@ -63,8 +63,22 @@ export class ActionSeederService {
           { name: 'owner', type: 'string', description: 'Name of the owner.' },
           { name: 'repo', type: 'string', description: 'Name of the repository.' },
         ],
-        description: 'This action allow you to catch events when a repository get a new review comment.',
+        description:
+          'This action allow you to catch events when a repository get a new review comment.',
         link: 'github/check-review-comment/',
+      },
+      {
+        uuid: '3c3b5e09-2c45-415e-86cd-e1850689127b',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github Contributor',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
+        description:
+          'This action allow you to catch events when a repository get a new contributor.',
+        link: 'github/check-contributor/',
       },
       {
         uuid: 'd1c52fb8-f2a7-4e0a-b705-3412ae5d37a6',
