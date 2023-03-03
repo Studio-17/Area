@@ -49,6 +49,10 @@ export class AppController {
                 description:
                   'This action check if a new message has been sent in a Discord Server channel.',
               },
+              {
+                name: 'Send a message in a channel',
+                description: 'This reaction send a message in a Discord Server channel.',
+              },
             ],
             reactions: [
               {
