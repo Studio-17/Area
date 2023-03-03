@@ -168,6 +168,7 @@ export class MyActionService {
       try {
         const cronJob = await this.schedulerRegistry.getCronJob(action.name + '-' + myAction.uuid);
         cronJob.stop();
+        this.cronService.removeRecord(myAction.uuid);
       } catch (error) {}
     }
   }
