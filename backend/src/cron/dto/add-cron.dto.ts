@@ -7,6 +7,10 @@ export class CreateCronDto {
   @IsNotEmpty()
   name!: string;
 
+  @IsUUID()
+  @IsNotEmpty()
+  myActionId!: string;
+
   @IsString()
   @IsNotEmpty()
   link!: string;

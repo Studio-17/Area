@@ -15,6 +15,10 @@ import { ServiceService } from 'src/service/service.service';
 import { ActionResult } from './interfaces/actionResult.interface';
 import { ActionParam } from './interfaces/actionParam.interface';
 import { ReturnValues } from './type/returnValue.type';
+import { ActionRecord } from './entity/actionRecord.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { NotFoundException } from 'src/utils/exceptions/not-found.exception';
 
 @Injectable()
 export class CronService {
@@ -27,10 +31,56 @@ export class CronService {
     private readonly userService: UserService,
     private schedulerRegistry: SchedulerRegistry,
     private readonly serviceService: ServiceService,
+    @InjectRepository(ActionRecord)
+    private readonly actionRecordRepository: Repository<ActionRecord>,
   ) {}
+
+  public async findByActionId(myActionId: string, category: string): Promise<ActionRecord> {
+    try {
+      return await this.actionRecordRepository.findOneBy({
+        myActionId: myActionId,
+        category: category,
+      });
+    } catch (error) {
+      return undefined;
+    }
+  }
+
+  public async findOrUpdateLastRecord(actionRecord: ActionRecord): Promise<boolean> {
+    const record = await this.findByActionId(actionRecord.myActionId, actionRecord.category);
+    if (!record) {
+      try {
+        await this.actionRecordRepository.save(actionRecord);
+        return false;
+      } catch (err) {
+        throw new HttpException(() => err.message, HttpStatus.BAD_REQUEST, { cause: err });
+      }
+    }
+    if (record.content !== actionRecord.content) {
+      try {
+        const newRecord = await this.actionRecordRepository.update(
+          {
+            myActionId: actionRecord.myActionId,
+            category: record.category,
+            content: record.content,
+          },
+          { ...actionRecord },
+        );
+
+        if (!newRecord) {
+          throw NotFoundException(`Record does not exist`);
+        }
+        return true;
+      } catch (err) {
+        throw new HttpException(() => err.message, HttpStatus.BAD_REQUEST, { cause: err });
+      }
+    }
+    return false;
+  }
 
   async handleCronAddition(
     userId: string,
+    myActionId: string,
     actionLink: string,
     service: ServiceList,
     actionHandling: (actionParam: ActionParam) => ActionResult,
@@ -53,7 +103,11 @@ export class CronService {
       const argToSend = params
         ? [{ name: 'userId', content: userId, isActionResult: false }, ...params]
         : [{ name: 'userId', content: userId, isActionResult: false }];
-      const conditionChecked = await actionHandling({ accessToken: credential, params: argToSend });
+      const conditionChecked = await actionHandling({
+        accessToken: credential,
+        params: argToSend,
+        myActionId: myActionId,
+      });
       if (conditionChecked.isTriggered) {
         await this.handleCronReaction(userId, actionLink, conditionChecked.returnValues);
       }
@@ -75,6 +129,7 @@ export class CronService {
       this.handleCronAddition.bind(
         this,
         body.userId,
+        body.myActionId,
         body.link,
         body.service,
         availableActions.get(body.link),

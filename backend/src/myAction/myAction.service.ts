@@ -120,6 +120,7 @@ export class MyActionService {
       this.cronService.addCron(
         {
           name: action.name + '-' + myActionId,
+          myActionId: myActionId,
           userId: userId,
           link: action.link,
           service: action.service,

@@ -6,30 +6,30 @@ import { GoogleService } from './google.service';
 export class GoogleController {
   constructor(private readonly googleService: GoogleService) {}
 
-  @Get('/check-mail')
-  public async checkIfMailReceived(@Res() response, @Body() body: ReactionDto) {
-    console.log('in /check-mail');
-    try {
-      const gmailRecord = await this.googleService.updateLastEmailReceived({
-        accessToken: body.accessToken,
-        params: body.params,
-      });
+  // @Get('/check-mail')
+  // public async checkIfMailReceived(@Res() response, @Body() body: ReactionDto) {
+  //   console.log('in /check-mail');
+  //   try {
+  //     const gmailRecord = await this.googleService.updateLastEmailReceived({
+  //       accessToken: body.accessToken,
+  //       params: body.params,
+  //     });
 
-      console.log(gmailRecord);
+  //     console.log(gmailRecord);
 
-      return response.status(HttpStatus.OK).json({
-        message: 'Got last email from Google services',
-        content: gmailRecord,
-        status: 200,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error fetching emails from Google Apis',
-        error: error,
-        status: 400,
-      });
-    }
-  }
+  //     return response.status(HttpStatus.OK).json({
+  //       message: 'Got last email from Google services',
+  //       content: gmailRecord,
+  //       status: 200,
+  //     });
+  //   } catch (error) {
+  //     return response.status(HttpStatus.BAD_REQUEST).json({
+  //       message: 'Error fetching emails from Google Apis',
+  //       error: error,
+  //       status: 400,
+  //     });
+  //   }
+  // }
 
   @Post('/publish-doc')
   public async createGoogleDoc(@Res() response, @Body() body: ReactionDto) {

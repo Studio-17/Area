@@ -1,13 +1,10 @@
-import { Body, Controller, Get, HttpStatus, Post, Res, UseGuards } from '@nestjs/common';
-import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authentication.guard';
+import { Body, Controller, Get, HttpStatus, Post, Res } from '@nestjs/common';
 import { DeezerService } from './deezer.service';
-import { CredentialsGuard } from './guard/credentials.guard';
 import { ReactionDto } from 'src/cron/dto/reaction.dto';
 
 @Controller('actions/deezer')
 export class DeezerController {
   constructor(private readonly dezzerService: DeezerService) {}
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/ping')
   public async ping() {
     return 'Hello world';

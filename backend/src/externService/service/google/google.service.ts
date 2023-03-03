@@ -1,71 +1,16 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { GmailRecord } from './entity/gmail/gmail.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { GmailRecordDto } from './dto/gmail/gmail.dto';
 import { ServiceList } from '../../../service/entity/service.entity';
 import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 import { ActionResult } from 'src/cron/interfaces/actionResult.interface';
 import { ActionParam } from 'src/cron/interfaces/actionParam.interface';
 import { ReactionDto } from 'src/cron/dto/reaction.dto';
+import { ActionRecord } from 'src/cron/entity/actionRecord.entity';
+import { CronService } from 'src/cron/cron.service';
 
 @Injectable()
 export class GoogleService {
-  constructor(
-    @InjectRepository(GmailRecord)
-    private readonly gmailRecordRepository: Repository<GmailRecord>,
-  ) {}
-
-  public async findByEmail(email: string): Promise<GmailRecord> {
-    try {
-      const records = await this.gmailRecordRepository.findOneBy({
-        email: email,
-      });
-
-      if (!records) {
-        return undefined;
-      }
-
-      return records;
-    } catch (error) {
-      return undefined;
-    }
-  }
-
-  public async findOrUpdateLastEmailReceived(gmailRecord: GmailRecordDto): Promise<boolean> {
-    const record = await this.findByEmail(gmailRecord.email);
-
-    if (!record) {
-      try {
-        await this.gmailRecordRepository.save(gmailRecord);
-        return false;
-      } catch (err) {
-        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
-      }
-    } else {
-      if (record.lastEmailId !== gmailRecord.lastEmailId) {
-        try {
-          const newrecord = await this.gmailRecordRepository.update(
-            {
-              lastEmailId: record.lastEmailId,
-            },
-            { ...gmailRecord },
-          );
-
-          if (!newrecord) {
-            throw new NotFoundException(`Record does not exist`);
-          }
-
-          return true;
-        } catch (err) {
-          throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
-        }
-      } else {
-        return false;
-      }
-    }
-  }
+  constructor(private readonly cronService: CronService) {}
 
   // TODO: add a fuction to get the content of the mail to return it
   public async updateLastEmailReceived(actionParam: ActionParam): Promise<ActionResult> {
@@ -89,12 +34,13 @@ export class GoogleService {
       console.log('emailId (to be updated):', emailId);
 
       if (emailId) {
-        const record = new GmailRecordDto();
-        record.email = getElemContentInParams(actionParam.params, 'userId', '');
-        record.lastEmailId = emailId;
+        const record = new ActionRecord();
+        record.myActionId = actionParam.myActionId;
+        record.category = 'lastMail';
+        record.content = emailId;
 
         return {
-          isTriggered: await this.findOrUpdateLastEmailReceived(record),
+          isTriggered: await this.cronService.findOrUpdateLastRecord(record),
           returnValues: [],
         };
       }

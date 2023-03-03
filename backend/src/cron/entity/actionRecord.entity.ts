@@ -6,16 +6,19 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'gmail-record' })
-export class GmailRecord {
-  @PrimaryGeneratedColumn()
+@Entity({ name: 'action-record' })
+export class ActionRecord {
+  @PrimaryGeneratedColumn('uuid')
   uuid: string;
 
-  @Column()
-  email: string;
+  @Column('uuid')
+  myActionId: string;
 
   @Column()
-  lastEmailId: string;
+  category: string;
+
+  @Column()
+  content: string;
 
   @CreateDateColumn({
     type: 'timestamp',
