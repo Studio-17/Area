@@ -17,6 +17,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ServiceList } from 'src/service/entity/service.entity';
 import { catchError, firstValueFrom, map } from 'rxjs';
 import { AxiosError } from 'axios/index';
+import { UserService } from 'src/user/user.service';
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -24,6 +25,7 @@ export class DropboxOauth2Controller {
   constructor(
     private readonly connectionService: DropboxOauth2Service,
     private readonly credentialsService: CredentialsService,
+    private readonly userService: UserService,
     private readonly httpService: HttpService,
     private readonly jwtService: JwtService,
   ) {}
@@ -37,7 +39,7 @@ export class DropboxOauth2Controller {
       'basic_access,email,manage_library,manage_community,delete_library,listening_history';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
-    if (!token['id']) {
+    if (!token['email']) {
       return response.status(HttpStatus.UNAUTHORIZED).json({
         message: 'Error unauthenticated (using jwt)',
         data: token,
@@ -47,7 +49,7 @@ export class DropboxOauth2Controller {
 
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
-        `https://www.dropbox.com/oauth2/authorize?client_id=${clientID}&token_access_type=offline&response_type=code&state=${token['id']}&redirect_uri=${callbackURL}`,
+        `https://www.dropbox.com/oauth2/authorize?client_id=${clientID}&token_access_type=offline&response_type=code&state=${token['email']}&redirect_uri=${callbackURL}`,
       ),
       status: 200,
     });
@@ -93,11 +95,13 @@ export class DropboxOauth2Controller {
     const accessToken = dropboxData.access_token;
 
     if (accessToken) {
+      const user = await this.userService.findByEmail(id);
+
       const userCredentials = {
-        userId: id,
-        service: ServiceList.DROPBOX,
-        accessToken: dropboxData.access_token,
-        refreshToken: dropboxData.refresh_token,
+        userId: user.uuid,
+        service: ServiceList.GITHUB,
+        accessToken: accessToken,
+        refreshToken: null,
       };
 
       await this.credentialsService.createCredentialsUser(userCredentials);
