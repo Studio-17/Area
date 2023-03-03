@@ -2,20 +2,13 @@ import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nest
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios/index';
-import { RepositoriesList } from './interface/repositories-list.interface';
-import { plainToInstance } from 'class-transformer';
 import { map } from 'rxjs';
-import { CreateRepositoryDto } from './dto/repository/create-repository.dto';
-import { RepositoryCreated } from './interface/repository-create.interface';
 import { ForkRepositoryDto } from './dto/repository/fork-repository.dto';
 import { ForkedRepository } from './interface/fork-repository.interface';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { ActionDto } from '../../../cron/dto/action.dto';
-import axios from 'axios';
 import { GithubCronService } from './github.cron.service';
 import { GithubIssueDto } from './dto/github-issue.dto';
 import { GithubPullRequestDto } from './dto/github-pull-request.dto';
+import { GithubForkDto } from './dto/github-fork.dto';
 
 @Injectable()
 export class GithubService {
@@ -30,7 +23,6 @@ export class GithubService {
     forkRepositoryDto: ForkRepositoryDto,
   ): Promise<ForkedRepository> {
     const forkedRepository = await firstValueFrom(
-      // Beware of the params in the route, they may be invalid
       this.httpService
         .post(
           `https://api.github.com/repos/${forkRepositoryDto.owner}/${forkRepositoryDto.repo}/forks`,
@@ -59,6 +51,34 @@ export class GithubService {
     );
 
     return forkedRepository;
+  }
+
+  public async getFork(accessToken: string, githubForkDto: GithubForkDto) {
+    const forkedRepository = await firstValueFrom(
+      this.httpService
+        .get(`https://api.github.com/repos/${githubForkDto.owner}/${githubForkDto.repo}/forks`, {
+          headers: {
+            Accept: 'application/vnd.github+json',
+            Authorization: `Bearer ${accessToken}`,
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+        })
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+
+    if (forkedRepository.length) {
+      return forkedRepository[0].id;
+    }
+    return '0';
   }
 
   // public async getAuthenticatedUserRepositories(accessToken: string): Promise<RepositoriesList> {

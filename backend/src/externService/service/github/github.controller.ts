@@ -11,6 +11,7 @@ import { GithubIssueDto } from './dto/github-issue.dto';
 import { GithubPullRequestDto } from './dto/github-pull-request.dto';
 import { ReactionDto } from '../../../cron/dto/reaction.dto';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { GithubForkDto } from './dto/github-fork.dto';
 
 @Controller('actions/github')
 export class GithubController {
@@ -84,6 +85,28 @@ export class GithubController {
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         message: 'Error fetching issue from Github API',
+        error: error,
+        status: 400,
+      });
+    }
+  }
+
+  @Get('/check-fork')
+  public async checkFork(@Req() request, @Res() response, @Body() githubForkDto: GithubForkDto) {
+    try {
+      const forkResult = await this.githubService.getFork(
+        request.credentials.accessToken,
+        githubForkDto,
+      );
+
+      return response.status(HttpStatus.OK).json({
+        message: 'Got last fork from Github API',
+        content: forkResult,
+        status: 200,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error fetching fork from Github API',
         error: error,
         status: 400,
       });

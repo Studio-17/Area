@@ -43,6 +43,19 @@ export class ActionSeederService {
         link: 'github/check-issue/',
       },
       {
+        uuid: 'd1c52fb8-f2a7-4e0a-b705-3412ae5d37a6',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github Fork',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
+        description:
+          'This action allow you to catch events when a new fork is detected on a repository.',
+        link: 'github/check-fork/',
+      },
+      {
         uuid: 'd7e3bd41-2dd2-4aec-ad77-5579eb42fcbd',
         service: ServiceList.GITHUB,
         type: ActionType.REACTION,
@@ -50,7 +63,6 @@ export class ActionSeederService {
         params: [
           { name: 'owner', type: 'string', description: 'Name of the owner.' },
           { name: 'repo', type: 'string', description: 'Name of the repository.' },
-          { name: 'organization', type: 'string', description: 'Owner of the new repository.' },
           { name: 'name', type: 'string', description: 'New name of the forked repository.' },
           {
             name: 'default_branch_only',
