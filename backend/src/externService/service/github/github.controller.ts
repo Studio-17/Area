@@ -12,6 +12,7 @@ import { GithubPullRequestDto } from './dto/github-pull-request.dto';
 import { ReactionDto } from '../../../cron/dto/reaction.dto';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { GithubForkDto } from './dto/github-fork.dto';
+import { GithubStarDto } from './dto/github-star.dto';
 
 @Controller('actions/github')
 export class GithubController {
@@ -44,16 +45,10 @@ export class GithubController {
   // GET ALL COMMENTS
   // GET ALL REPOSITORIES
   // GET ALL REPOSITORIES OF A USER
-  // CHECK STAR REPOSITORY
+  // CHECK STAR USER REPOSITORY
   // LIST ISSUES ASSIGNED TO A USER
   // GET ALL MILESTONES
   // GET ALL LABELS
-
-
-
-
-
-
 
   // --- REACTIONS ---
   // UPDATE A BRANCH
@@ -117,6 +112,28 @@ export class GithubController {
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         message: 'Error fetching issue from Github API',
+        error: error,
+        status: 400,
+      });
+    }
+  }
+
+  @Get('/check-star')
+  public async checkNewStar(@Req() request, @Res() response, @Body() githubStarDto: GithubStarDto) {
+    try {
+      const starResult = await this.githubService.getStar(
+        request.credentials.accessToken,
+        githubStarDto,
+      );
+
+      return response.status(HttpStatus.OK).json({
+        message: 'Got last star from Github API',
+        content: starResult,
+        status: 200,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error fetching star from Github API',
         error: error,
         status: 400,
       });
