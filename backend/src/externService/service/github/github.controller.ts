@@ -15,6 +15,7 @@ import { GithubForkDto } from './dto/github-fork.dto';
 import { GithubStarDto } from './dto/github-star.dto';
 import { GithubReviewCommentDto } from './dto/github-review-comment.dto';
 import { GithubContributorDto } from './dto/github-contributor.dto';
+import { GithubTeamDto } from './dto/github-team.dto';
 
 @Controller('actions/github')
 export class GithubController {
@@ -174,19 +175,41 @@ export class GithubController {
     @Body() githubContributorDto: GithubContributorDto,
   ) {
     try {
-      const starResult = await this.githubService.getContributor(
+      const contributorResult = await this.githubService.getContributor(
         request.credentials.accessToken,
         githubContributorDto,
       );
 
       return response.status(HttpStatus.OK).json({
         message: 'Got last contributor from Github API',
-        content: starResult,
+        content: contributorResult,
         status: 200,
       });
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         message: 'Error fetching contributor from Github API',
+        error: error,
+        status: 400,
+      });
+    }
+  }
+
+  @Get('/check-team')
+  public async checkNewTeam(@Req() request, @Res() response, @Body() githubTeamDto: GithubTeamDto) {
+    try {
+      const teamResult = await this.githubService.getTeam(
+        request.credentials.accessToken,
+        githubTeamDto,
+      );
+
+      return response.status(HttpStatus.OK).json({
+        message: 'Got last team from Github API',
+        content: teamResult,
+        status: 200,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error fetching team from Github API',
         error: error,
         status: 400,
       });

@@ -11,7 +11,8 @@ import { GithubPullRequestDto } from './dto/github-pull-request.dto';
 import { GithubForkDto } from './dto/github-fork.dto';
 import { GithubStarDto } from './dto/github-star.dto';
 import { GithubReviewCommentDto } from './dto/github-review-comment.dto';
-import {GithubContributorDto} from "./dto/github-contributor.dto";
+import { GithubContributorDto } from './dto/github-contributor.dto';
+import { GithubTeamDto } from './dto/github-team.dto';
 
 @Injectable()
 export class GithubService {
@@ -196,67 +197,95 @@ export class GithubService {
     return '0';
   }
 
-    public async getStar(accessToken: string, githubStarDto: GithubStarDto) {
-        const star = await firstValueFrom(
-            this.httpService
-                .get(
-                    `https://api.github.com/repos/${githubStarDto.owner}/${githubStarDto.repo}/stargazers`,
-                    {
-                        headers: {
-                            Accept: 'application/vnd.github+json',
-                            Authorization: `Bearer ${accessToken}`,
-                            'X-GitHub-Api-Version': '2022-11-28',
-                        },
-                    },
-                )
-                .pipe(
-                    map((value) => {
-                        return value.data;
-                    }),
-                )
-                .pipe(
-                    catchError((error: AxiosError) => {
-                        throw new HttpException(error, HttpStatus.BAD_REQUEST);
-                    }),
-                ),
-        );
+  public async getStar(accessToken: string, githubStarDto: GithubStarDto) {
+    const star = await firstValueFrom(
+      this.httpService
+        .get(
+          `https://api.github.com/repos/${githubStarDto.owner}/${githubStarDto.repo}/stargazers`,
+          {
+            headers: {
+              Accept: 'application/vnd.github+json',
+              Authorization: `Bearer ${accessToken}`,
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          },
+        )
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
 
-        if (star.length) {
-            return star[0].id;
-        }
-        return '0';
+    if (star.length) {
+      return star[0].id;
     }
+    return '0';
+  }
 
-    public async getContributor(accessToken: string, githubContributorDto: GithubContributorDto) {
-        const contributor = await firstValueFrom(
-            this.httpService
-                .get(
-                    `https://api.github.com/repos/${githubContributorDto.owner}/${githubContributorDto.repo}/contributors`,
-                    {
-                        headers: {
-                            Accept: 'application/vnd.github+json',
-                            Authorization: `Bearer ${accessToken}`,
-                            'X-GitHub-Api-Version': '2022-11-28',
-                        },
-                    },
-                )
-                .pipe(
-                    map((value) => {
-                        return value.data;
-                    }),
-                )
-                .pipe(
-                    catchError((error: AxiosError) => {
-                        throw new HttpException(error, HttpStatus.BAD_REQUEST);
-                    }),
-                ),
-        );
+  public async getTeam(accessToken: string, githubTeamDto: GithubTeamDto) {
+    const team = await firstValueFrom(
+      this.httpService
+        .get(`https://api.github.com/repos/${githubTeamDto.owner}/${githubTeamDto.repo}/teams`, {
+          headers: {
+            Accept: 'application/vnd.github+json',
+            Authorization: `Bearer ${accessToken}`,
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+        })
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
 
-        if (contributor.length) {
-            return contributor[0].id;
-        }
-        return '0';
+    if (team.length) {
+      return team[0].id;
     }
+    return '0';
+  }
+
+  public async getContributor(accessToken: string, githubContributorDto: GithubContributorDto) {
+    const contributor = await firstValueFrom(
+      this.httpService
+        .get(
+          `https://api.github.com/repos/${githubContributorDto.owner}/${githubContributorDto.repo}/contributors`,
+          {
+            headers: {
+              Accept: 'application/vnd.github+json',
+              Authorization: `Bearer ${accessToken}`,
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          },
+        )
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+
+    if (contributor.length) {
+      return contributor[0].id;
+    }
+    return '0';
+  }
 
   public async getReviewComment(
     accessToken: string,

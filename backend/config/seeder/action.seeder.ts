@@ -81,6 +81,18 @@ export class ActionSeederService {
         link: 'github/check-contributor/',
       },
       {
+        uuid: 'ee2242c8-2cf2-4a99-bbba-963ba9aadfcc',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github Team',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
+        description: 'This action allow you to catch events when a repository get a new team.',
+        link: 'github/check-team/',
+      },
+      {
         uuid: 'd1c52fb8-f2a7-4e0a-b705-3412ae5d37a6',
         service: ServiceList.GITHUB,
         type: ActionType.ACTION,

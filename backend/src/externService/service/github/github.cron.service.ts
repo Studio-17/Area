@@ -27,6 +27,7 @@ export class GithubCronService {
     // ACTIONS
     ['github/check-pull-request/', this.checkPullRequest.bind(this)],
     ['github/check-issue/', this.checkIssue.bind(this)],
+    ['github/check-team/', this.checkTeam.bind(this)],
     ['github/check-contributor/', this.checkIssue.bind(this)],
     ['github/check-fork/', this.checkFork.bind(this)],
     ['github/check-star/', this.checkStar.bind(this)],
@@ -317,15 +318,15 @@ export class GithubCronService {
         throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       }
     } else if (
-        githubRecordDto.id.toString() !== '0' &&
-        record.id.toString() < githubRecordDto.id.toString()
+      githubRecordDto.id.toString() !== '0' &&
+      record.id.toString() < githubRecordDto.id.toString()
     ) {
       try {
         const newRecord = await this.githubRecordRepository.update(
-            {
-              id: record.id,
-            },
-            { ...githubRecordDto },
+          {
+            id: record.id,
+          },
+          { ...githubRecordDto },
         );
 
         if (!newRecord) {
@@ -351,6 +352,99 @@ export class GithubCronService {
         owner: githubRecordDto.owner,
         repo: githubRecordDto.repo,
         category: 'star',
+      });
+
+      if (!records) {
+        return undefined;
+      }
+
+      return records;
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
+
+  // --- TEAM ---
+  public async checkTeam(accessToken: string, params: { name: string; content: string }[]) {
+    let owner = '';
+    try {
+      owner = params.find((param) => param.name === 'owner').content;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+    let repo = '';
+    try {
+      repo = params.find((param) => param.name === 'repo').content;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+
+    try {
+      const team = await this.githubService.getTeam(accessToken, {
+        owner: owner,
+        repo: repo,
+      });
+
+      const record = new GithubRecordEntity();
+      record.owner = owner;
+      record.repo = repo;
+      record.category = 'team';
+      record.id = team;
+      return (await this.findOrUpdateLastTeam(record)).new;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+  }
+
+  public async findOrUpdateLastTeam(githubRecordDto: GithubRecordDto) {
+    const record = await this.findTeam(githubRecordDto);
+
+    if (!record) {
+      try {
+        return {
+          new: false,
+          data: await this.githubRecordRepository.save(githubRecordDto),
+        };
+      } catch (err) {
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
+      }
+    } else if (
+      githubRecordDto.id.toString() !== '0' &&
+      record.id.toString() < githubRecordDto.id.toString()
+    ) {
+      try {
+        const newRecord = await this.githubRecordRepository.update(
+          {
+            id: record.id,
+          },
+          { ...githubRecordDto },
+        );
+
+        if (!newRecord) {
+          throw new NotFoundException(`Record does not exist`);
+        }
+
+        return {
+          new: true,
+          data: await this.findTeam(githubRecordDto),
+        };
+      } catch (err) {
+        console.error(err);
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
+      }
+    } else {
+      return { new: false, data: record };
+    }
+  }
+
+  public async findTeam(githubRecordDto: GithubRecordDto): Promise<GithubRecordEntity> {
+    try {
+      const records = await this.githubRecordRepository.findOneBy({
+        owner: githubRecordDto.owner,
+        repo: githubRecordDto.repo,
+        category: 'team',
       });
 
       if (!records) {
@@ -410,15 +504,15 @@ export class GithubCronService {
         throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
       }
     } else if (
-        githubRecordDto.id.toString() !== '0' &&
-        record.id.toString() < githubRecordDto.id.toString()
+      githubRecordDto.id.toString() !== '0' &&
+      record.id.toString() < githubRecordDto.id.toString()
     ) {
       try {
         const newRecord = await this.githubRecordRepository.update(
-            {
-              id: record.id,
-            },
-            { ...githubRecordDto },
+          {
+            id: record.id,
+          },
+          { ...githubRecordDto },
         );
 
         if (!newRecord) {
