@@ -16,6 +16,7 @@ import { GithubStarDto } from './dto/github-star.dto';
 import { GithubReviewCommentDto } from './dto/github-review-comment.dto';
 import { GithubContributorDto } from './dto/github-contributor.dto';
 import { GithubTeamDto } from './dto/github-team.dto';
+import { GithubInvitationDto } from './dto/github-invitation.dto';
 
 @Controller('actions/github')
 export class GithubController {
@@ -43,8 +44,6 @@ export class GithubController {
 
   // TODO - LIST
   // --- ACTIONS ---
-  // GET A COLLABORATOR
-  // GET AN INVITATION
   // GET ALL REPOSITORIES
   // GET ALL REPOSITORIES OF A USER
   // CHECK STAR USER REPOSITORY
@@ -210,6 +209,32 @@ export class GithubController {
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         message: 'Error fetching team from Github API',
+        error: error,
+        status: 400,
+      });
+    }
+  }
+
+  @Get('/check-invitation')
+  public async checkNewInvitation(
+    @Req() request,
+    @Res() response,
+    @Body() githubInvitationDto: GithubInvitationDto,
+  ) {
+    try {
+      const invitationResult = await this.githubService.getInvitation(
+        request.credentials.accessToken,
+        githubInvitationDto,
+      );
+
+      return response.status(HttpStatus.OK).json({
+        message: 'Got last invitation from Github API',
+        content: invitationResult,
+        status: 200,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error fetching invitation from Github API',
         error: error,
         status: 400,
       });

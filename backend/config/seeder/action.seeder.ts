@@ -93,6 +93,19 @@ export class ActionSeederService {
         link: 'github/check-team/',
       },
       {
+        uuid: '5d1e8fb8-4913-483b-880e-3819888daced',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github Invitation',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
+        description:
+          'This action allow you to catch events when a repository get a new invitation.',
+        link: 'github/check-invitation/',
+      },
+      {
         uuid: 'd1c52fb8-f2a7-4e0a-b705-3412ae5d37a6',
         service: ServiceList.GITHUB,
         type: ActionType.ACTION,

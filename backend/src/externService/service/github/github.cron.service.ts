@@ -31,6 +31,7 @@ export class GithubCronService {
     ['github/check-contributor/', this.checkIssue.bind(this)],
     ['github/check-fork/', this.checkFork.bind(this)],
     ['github/check-star/', this.checkStar.bind(this)],
+    ['github/check-invitation/', this.checkInvitation.bind(this)],
     ['github/check-review-comment/', this.checkReviewComment.bind(this)],
 
     // REACTIONS
@@ -445,6 +446,99 @@ export class GithubCronService {
         owner: githubRecordDto.owner,
         repo: githubRecordDto.repo,
         category: 'team',
+      });
+
+      if (!records) {
+        return undefined;
+      }
+
+      return records;
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
+
+  // --- INVITATION ---
+  public async checkInvitation(accessToken: string, params: { name: string; content: string }[]) {
+    let owner = '';
+    try {
+      owner = params.find((param) => param.name === 'owner').content;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+    let repo = '';
+    try {
+      repo = params.find((param) => param.name === 'repo').content;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+
+    try {
+      const invitation = await this.githubService.getInvitation(accessToken, {
+        owner: owner,
+        repo: repo,
+      });
+
+      const record = new GithubRecordEntity();
+      record.owner = owner;
+      record.repo = repo;
+      record.category = 'invitation';
+      record.id = invitation;
+      return (await this.findOrUpdateLastInvitation(record)).new;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+  }
+
+  public async findOrUpdateLastInvitation(githubRecordDto: GithubRecordDto) {
+    const record = await this.findInvitation(githubRecordDto);
+
+    if (!record) {
+      try {
+        return {
+          new: false,
+          data: await this.githubRecordRepository.save(githubRecordDto),
+        };
+      } catch (err) {
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
+      }
+    } else if (
+      githubRecordDto.id.toString() !== '0' &&
+      record.id.toString() < githubRecordDto.id.toString()
+    ) {
+      try {
+        const newRecord = await this.githubRecordRepository.update(
+          {
+            id: record.id,
+          },
+          { ...githubRecordDto },
+        );
+
+        if (!newRecord) {
+          throw new NotFoundException(`Record does not exist`);
+        }
+
+        return {
+          new: true,
+          data: await this.findInvitation(githubRecordDto),
+        };
+      } catch (err) {
+        console.error(err);
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
+      }
+    } else {
+      return { new: false, data: record };
+    }
+  }
+
+  public async findInvitation(githubRecordDto: GithubRecordDto): Promise<GithubRecordEntity> {
+    try {
+      const records = await this.githubRecordRepository.findOneBy({
+        owner: githubRecordDto.owner,
+        repo: githubRecordDto.repo,
+        category: 'invitation',
       });
 
       if (!records) {

@@ -13,6 +13,7 @@ import { GithubStarDto } from './dto/github-star.dto';
 import { GithubReviewCommentDto } from './dto/github-review-comment.dto';
 import { GithubContributorDto } from './dto/github-contributor.dto';
 import { GithubTeamDto } from './dto/github-team.dto';
+import { GithubInvitationDto } from './dto/github-invitation.dto';
 
 @Injectable()
 export class GithubService {
@@ -252,6 +253,37 @@ export class GithubService {
 
     if (team.length) {
       return team[0].id;
+    }
+    return '0';
+  }
+
+  public async getInvitation(accessToken: string, githubInvitationDto: GithubInvitationDto) {
+    const invitation = await firstValueFrom(
+      this.httpService
+        .get(
+          `https://api.github.com/repos/${githubInvitationDto.owner}/${githubInvitationDto.repo}/invitations`,
+          {
+            headers: {
+              Accept: 'application/vnd.github+json',
+              Authorization: `Bearer ${accessToken}`,
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          },
+        )
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+
+    if (invitation.length) {
+      return invitation[0].id;
     }
     return '0';
   }
