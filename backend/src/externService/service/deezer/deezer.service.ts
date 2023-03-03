@@ -1,8 +1,8 @@
 import { HttpService } from '@nestjs/axios';
-import { ConsoleLogger, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { catchError, lastValueFrom, map } from 'rxjs';
-import { Params } from 'src/cron/cron.type';
+import { ReactionDto } from 'src/cron/dto/reaction.dto';
 import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 
 @Injectable()
@@ -67,11 +67,18 @@ export class DeezerService {
     return playlists;
   }
 
-  public async createPlaylist(accessToken: string, params: Params): Promise<any> {
-    const name = getElemContentInParams(params, 'name', 'New Reaccoon Playlist');
+  public async createPlaylist(body: ReactionDto): Promise<any> {
+    const name = getElemContentInParams(
+      body.params,
+      'name',
+      'New Reaccoon Playlist',
+      body.returnValues,
+    );
     const playlistCreated = await lastValueFrom(
       this.httpService
-        .post(`https://api.deezer.com/user/me/playlists?title=${name}&access_token=${accessToken}`)
+        .post(
+          `https://api.deezer.com/user/me/playlists?title=${name}&access_token=${body.accessToken}`,
+        )
         .pipe(
           map((value) => {
             return value.data;

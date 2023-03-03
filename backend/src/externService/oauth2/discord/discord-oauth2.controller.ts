@@ -15,6 +15,7 @@ import { HttpService } from '@nestjs/axios';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { ServiceList } from '../../../service/entity/service.entity';
+import { UserService } from 'src/user/user.service';
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -22,6 +23,7 @@ export class DiscordOAuth2Controller {
   constructor(
     private readonly connectionService: DiscordOAuth2Service,
     private readonly credentialsService: CredentialsService,
+    private readonly userService: UserService,
     private readonly httpService: HttpService,
     private readonly jwtService: JwtService,
   ) {}
@@ -34,7 +36,7 @@ export class DiscordOAuth2Controller {
     const scope = 'email identify guilds guilds.members.read';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
-    if (!token['id']) {
+    if (!token['email']) {
       return response.status(HttpStatus.UNAUTHORIZED).json({
         message: 'Error unauthenticated (using jwt)',
         data: token,
@@ -44,7 +46,7 @@ export class DiscordOAuth2Controller {
 
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
-        `https://discord.com/api/oauth2/authorize?client_id=${clientID}&redirect_uri=${callbackURL}&response_type=code&scope=${scope}&state=${token['id']}`,
+        `https://discord.com/api/oauth2/authorize?client_id=${clientID}&redirect_uri=${callbackURL}&response_type=code&scope=${scope}&state=${token['email']}`,
       ),
       status: 200,
     });
@@ -103,11 +105,13 @@ export class DiscordOAuth2Controller {
     console.log('access token:', accessToken);
 
     if (accessToken) {
+      const user = await this.userService.findByEmail(id);
+
       const userCredentials = {
-        userId: id,
+        userId: user.uuid,
         service: ServiceList.DISCORD,
         accessToken: accessToken,
-        refreshToken: discordData.refresh_token,
+        refreshToken: null,
       };
 
       await this.credentialsService.createCredentialsUser(userCredentials);

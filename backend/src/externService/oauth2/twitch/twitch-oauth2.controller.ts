@@ -10,13 +10,14 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { TwitchOAuth2Service } from './twitch-oauth2.service';
-import { CredentialsService } from '../../../credentials/credentials.service';
+import { CredentialsService } from 'src/credentials/credentials.service';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import axios, { AxiosError } from 'axios';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
-import { ServiceList } from '../../../service/entity/service.entity';
+import { ServiceList } from 'src/service/entity/service.entity';
+import { UserService } from 'src/user/user.service';
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -24,6 +25,7 @@ export class TwitchOAuth2Controller {
   constructor(
     private readonly connectionService: TwitchOAuth2Service,
     private readonly credentialsService: CredentialsService,
+    private readonly userService: UserService,
     private readonly httpService: HttpService,
     private readonly jwtService: JwtService,
   ) {}
@@ -37,7 +39,7 @@ export class TwitchOAuth2Controller {
       'user:read:email user:read:follows user:read:subscriptions chat:read analytics:read:games';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
-    if (!token['id']) {
+    if (!token['email']) {
       return response.status(HttpStatus.UNAUTHORIZED).json({
         message: 'Error unauthenticated (using jwt)',
         data: token,
@@ -46,7 +48,7 @@ export class TwitchOAuth2Controller {
     }
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
-        `https://id.twitch.tv/oauth2/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&response_type=code&state=${token['id']}`,
+        `https://id.twitch.tv/oauth2/authorize?scope=${scope}&redirect_uri=${callbackURL}&client_id=${clientID}&response_type=code&state=${token['email']}`,
       ),
       status: 200,
     });
@@ -89,31 +91,13 @@ export class TwitchOAuth2Controller {
     const accessToken = twitchData.data.access_token;
 
     if (accessToken) {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const axios = require('axios');
-
-      const config = {
-        method: 'get',
-        url: `https://api.twitch.tv/helix/users`,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Client-Id': `${clientID}`,
-        },
-      };
-
-      const user = await axios(config)
-        .then(function (response) {
-          return response.data;
-        })
-        .catch(function (error) {
-          throw new HttpException(error, HttpStatus.BAD_REQUEST);
-        });
+      const user = await this.userService.findByEmail(id);
 
       const userCredentials = {
-        userId: id,
+        userId: user.uuid,
         service: ServiceList.TWITCH,
         accessToken: accessToken,
-        refreshToken: twitchData.data.refresh_token,
+        refreshToken: null,
       };
 
       await this.credentialsService.createCredentialsUser(userCredentials);

@@ -40,21 +40,16 @@ export class TwitchService {
 
   public async getAuthenticatedUserChannelsFollowed(
     accessToken: string,
-    params: { name: string; content: string }[],
+    userId: string,
   ): Promise<any> {
     const channels = await lastValueFrom(
       this.httpService
-        .get(
-          `https://api.twitch.tv/helix/channels/followed?user_id=${
-            params.find((param) => param.name === 'userId').content
-          }`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              'Client-Id': process.env.TWITCH_CLIENT_ID,
-            },
+        .get(`https://api.twitch.tv/helix/channels/followed?user_id=${userId}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Client-Id': process.env.TWITCH_CLIENT_ID,
           },
-        )
+        })
         .pipe(
           map((value) => {
             return plainToInstance(ChannelsFollowedObject, value.data);

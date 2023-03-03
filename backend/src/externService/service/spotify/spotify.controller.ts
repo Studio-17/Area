@@ -150,7 +150,7 @@ export class SpotifyController {
   @Post('/follow-playlist')
   public async followPlaylist(@Res() response, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.followPlaylist(body.accessToken, body.params);
+      const searchResult = await this.spotifyService.followPlaylist(body);
 
       return response.status(HttpStatus.OK).json({
         message: 'Followed playlist for the authenticated user using Spotify service',
@@ -169,10 +169,7 @@ export class SpotifyController {
   @Post('/unfollow-playlist')
   public async unfollowPlaylist(@Res() response, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.unfollowPlaylist(
-        body.accessToken,
-        body.params,
-      );
+      const searchResult = await this.spotifyService.unfollowPlaylist(body);
 
       return response.status(HttpStatus.OK).json({
         message: 'Unfollowed playlist for the authenticated user using Spotify service',
@@ -191,7 +188,7 @@ export class SpotifyController {
   @Post('/add-track-to-queue')
   public async addTrackToQueue(@Res() response, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.addTrackToQueue(body.accessToken, body.params);
+      const searchResult = await this.spotifyService.addTrackToQueue(body);
 
       return response.status(HttpStatus.OK).json({
         message: 'Got track for the authenticated user using Spotify service',
@@ -210,7 +207,7 @@ export class SpotifyController {
   @Post('/create-playlist')
   public async createPlaylist(@Res() response, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.createPlaylist(body.accessToken, body.params);
+      const searchResult = await this.spotifyService.createPlaylist(body);
 
       return response.status(HttpStatus.OK).json({
         message: 'Created playlist for the authenticated user using Spotify service',
@@ -229,10 +226,7 @@ export class SpotifyController {
   @Post('/add-track-to-playlist')
   public async addTrackToPlaylist(@Res() response, @Body() body: ReactionDto) {
     try {
-      const tracksToAdd = await this.spotifyService.addTrackToPlaylist(
-        body.accessToken,
-        body.params,
-      );
+      const tracksToAdd = await this.spotifyService.addTrackToPlaylist(body);
 
       return response.status(HttpStatus.OK).json({
         message: 'Added track to the playlist for the authenticated user using Spotify service',

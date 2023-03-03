@@ -62,12 +62,10 @@ export default function FormModal({
 
   const handleOauthConnection = async () => {
     const token = await AsyncStorage.getItem("userToken");
-    const res = await axios.get(
-      `${API_ENDPOINT}/service/connect/${serviceInfo?.name}`,
-      {
+    const res = await axios
+      .get(`${API_ENDPOINT}/service/connect/${serviceInfo?.name}`, {
         headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+      })
       .then((res) => res);
     const webBrowserResult = await WebBrowser.openBrowserAsync(res.data.url);
     if (webBrowserResult.type === "cancel") {
@@ -76,6 +74,12 @@ export default function FormModal({
         onSubmit();
       }
     }
+  };
+
+  const connectBotToDiscord = async () => {
+    await WebBrowser.openBrowserAsync(
+      "https://discord.com/oauth2/authorize?client_id=1073274269133455460&scope=bot&permissions=1503507196976"
+    );
   };
 
   useEffect(() => {
@@ -153,10 +157,13 @@ export default function FormModal({
                     style={styles.logo}
                   />
                   <MyText style={[styles.textStyle, { fontSize: 25 }]}>
-                    Log in to {capitalizeFirstLetter(serviceInfo?.name ? serviceInfo.name : "loading")} to continue
+                    Log in to{" "}
+                    {capitalizeFirstLetter(
+                      serviceInfo?.name ? serviceInfo.name : "loading"
+                    )}{" "}
+                    to continue
                   </MyText>
                 </View>
-                {/* <Button title="Connect" onPress={handleOauthConnection} /> */}
                 <TouchableOpacity
                   style={{
                     padding: 10,
@@ -177,6 +184,21 @@ export default function FormModal({
               </>
             ) : (
               <View>
+                {serviceInfo?.name === "discord" && (
+                  <TouchableOpacity
+                    style={[styles.buttonContainer, { marginBottom: 20 }]}
+                    onPress={connectBotToDiscord}
+                  >
+                    <MyText
+                      style={[
+                        styles.textStyle,
+                        { fontSize: 17 },
+                      ]}
+                    >
+                      Connect the Bot
+                    </MyText>
+                  </TouchableOpacity>
+                )}
                 {params?.map((param: GetParamsDto, index: number) => {
                   return (
                     <View key={index}>
@@ -199,7 +221,19 @@ export default function FormModal({
                     </View>
                   );
                 })}
-                <Button title="Submit" onPress={onSubmit} />
+                <TouchableOpacity
+                  style={styles.buttonContainer}
+                  onPress={onSubmit}
+                >
+                  <MyText
+                    style={[
+                      styles.textStyle,
+                      { fontSize: 20 },
+                    ]}
+                  >
+                    Submit
+                  </MyText>
+                </TouchableOpacity>
               </View>
             )}
           </View>
@@ -213,7 +247,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight || 0,
-    // backgroundColor: "#FFF7FA",
   },
   headerContainer: {
     display: "flex",
@@ -247,5 +280,17 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     marginBottom: 10,
+  },
+  buttonContainer: {
+    padding: 10,
+    borderRadius: 15,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    borderColor: "black",
+    borderWidth: 3,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

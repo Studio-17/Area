@@ -4,8 +4,8 @@ import { catchError, firstValueFrom, lastValueFrom } from 'rxjs';
 import { AxiosError } from 'axios/index';
 import { map } from 'rxjs';
 import { SearchDto } from './dto/search.dto';
-import { Params } from 'src/cron/cron.type';
 import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
+import { ReactionDto } from 'src/cron/dto/reaction.dto';
 
 @Injectable()
 export class SpotifyService {
@@ -127,12 +127,7 @@ export class SpotifyService {
           }),
         ),
     );
-    if (currentPlayingTrack) {
-      if (currentPlayingTrack.item) {
-        return currentPlayingTrack.item.id;
-      }
-    }
-    return '';
+    return currentPlayingTrack;
   }
 
   public async playCurrentTrack(accessToken: string): Promise<any> {
@@ -231,9 +226,9 @@ export class SpotifyService {
     return previousTrack;
   }
 
-  public async followPlaylist(accessToken: string, params: Params): Promise<any> {
-    const playlistName = getElemContentInParams(params, 'playlist', '');
-    const res = await this.searchAny(accessToken, {
+  public async followPlaylist(body: ReactionDto): Promise<any> {
+    const playlistName = getElemContentInParams(body.params, 'playlist', '', body.returnValues);
+    const res = await this.searchAny(body.accessToken, {
       q: playlistName,
       type: 'playlist',
     });
@@ -246,7 +241,7 @@ export class SpotifyService {
         .put(`https://api.spotify.com/v1/playlists/${res.playlists.items[0].id}/followers`, null, {
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${body.accessToken}`,
           },
         })
         .pipe(
@@ -264,10 +259,10 @@ export class SpotifyService {
     return followedPlaylist;
   }
 
-  public async unfollowPlaylist(accessToken: string, params: Params): Promise<any> {
-    const userId = (await this.getAuthenticatedUserInformation(accessToken)).id;
-    const playlistName = getElemContentInParams(params, 'playlist', '');
-    const playlistRes = await this.getUserPlaylist(accessToken, userId);
+  public async unfollowPlaylist(body: ReactionDto): Promise<any> {
+    const userId = (await this.getAuthenticatedUserInformation(body.accessToken)).id;
+    const playlistName = getElemContentInParams(body.params, 'playlist', '', body.returnValues);
+    const playlistRes = await this.getUserPlaylist(body.accessToken, userId);
     const result = playlistRes.items.find(
       (playlist: any) => playlist.name.toLowerCase() == playlistName.toLowerCase(),
     );
@@ -279,7 +274,7 @@ export class SpotifyService {
         .delete(`https://api.spotify.com/v1/playlists/${result.id}/followers`, {
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${body.accessToken}`,
           },
         })
         .pipe(
@@ -417,14 +412,14 @@ export class SpotifyService {
     return track;
   }
 
-  public async addTrackToQueue(accessToken: string, params: Params): Promise<any> {
-    let artist = getElemContentInParams(params, 'artist', '');
-    let track = getElemContentInParams(params, 'track', '');
+  public async addTrackToQueue(body: ReactionDto): Promise<any> {
+    let artist = getElemContentInParams(body.params, 'artist', '', body.returnValues);
+    let track = getElemContentInParams(body.params, 'track', '', body.returnValues);
     if (artist === '' && track === '') {
       track = 'after the after';
       artist = 'teeers';
     }
-    const res = await this.searchAny(accessToken, {
+    const res = await this.searchAny(body.accessToken, {
       q: 'artist:' + artist + ' track:' + track,
       type: 'track',
     });
@@ -433,7 +428,7 @@ export class SpotifyService {
         .post(`https://api.spotify.com/v1/me/player/queue?uri=${res.tracks.items[0].uri}`, null, {
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${body.accessToken}`,
           },
         })
         .pipe(
@@ -451,10 +446,13 @@ export class SpotifyService {
     return queue;
   }
 
-  public async createPlaylist(accessToken: string, params: Params): Promise<any> {
-    const userId = (await this.getAuthenticatedUserInformation(accessToken)).id;
-    const name = getElemContentInParams(params, 'name', 'new Playlist');
-    const isPublic = getElemContentInParams(params, 'public', 'false') === 'true' ? true : false;
+  public async createPlaylist(body: ReactionDto): Promise<any> {
+    const userId = (await this.getAuthenticatedUserInformation(body.accessToken)).id;
+    const name = getElemContentInParams(body.params, 'name', 'new Playlist', body.returnValues);
+    const isPublic =
+      getElemContentInParams(body.params, 'public', 'false', body.returnValues) === 'true'
+        ? true
+        : false;
 
     const playlistCreated = await lastValueFrom(
       this.httpService
@@ -467,7 +465,7 @@ export class SpotifyService {
           {
             headers: {
               Accept: 'application/json',
-              Authorization: `Bearer ${accessToken}`,
+              Authorization: `Bearer ${body.accessToken}`,
             },
           },
         )
@@ -486,18 +484,18 @@ export class SpotifyService {
     return playlistCreated;
   }
 
-  public async addTrackToPlaylist(accessToken: string, params: Params): Promise<any> {
-    const userId = (await this.getAuthenticatedUserInformation(accessToken)).id;
-    let track = getElemContentInParams(params, 'track', '');
-    let artist = getElemContentInParams(params, 'artist', '');
-    const playlistName = getElemContentInParams(params, 'playlist', '');
+  public async addTrackToPlaylist(body: ReactionDto): Promise<any> {
+    const userId = (await this.getAuthenticatedUserInformation(body.accessToken)).id;
+    let track = getElemContentInParams(body.params, 'track', '', body.returnValues);
+    let artist = getElemContentInParams(body.params, 'artist', '', body.returnValues);
+    const playlistName = getElemContentInParams(body.params, 'playlist', '', body.returnValues);
 
     if (artist === '' && track === '') {
       track = 'after the after';
       artist = 'teeers';
     }
 
-    const trackRes = await this.searchAny(accessToken, {
+    const trackRes = await this.searchAny(body.accessToken, {
       q: 'artirst: ' + artist + ' track: ' + track,
       type: 'track',
     });
@@ -506,7 +504,7 @@ export class SpotifyService {
       throw new HttpException(() => 'No track found', HttpStatus.BAD_REQUEST);
     }
 
-    const playlistRes = await this.getUserPlaylist(accessToken, userId);
+    const playlistRes = await this.getUserPlaylist(body.accessToken, userId);
     let result = playlistRes.items.find(
       (playlist: any) => playlist.name.toLowerCase() == playlistName.toLowerCase(),
     );
@@ -525,7 +523,7 @@ export class SpotifyService {
           {
             headers: {
               Accept: 'application/json',
-              Authorization: `Bearer ${accessToken}`,
+              Authorization: `Bearer ${body.accessToken}`,
             },
           },
         )

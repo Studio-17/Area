@@ -16,11 +16,19 @@ export class ActionSeederService {
     const actions = [
       // ----- DISCORD TEMPLATES -----
       {
-        uuid: 'df51e414-32b5-40fa-852c-60eaacfb7e2c',
+        uuid: 'd1e1e414-32b5-40fa-852c-60eaacfb7e2c',
         service: ServiceList.DISCORD,
         type: ActionType.ACTION,
         name: 'A new scheduled event has been created',
         params: [{ name: 'server', type: 'string', description: 'Name of the server.' }],
+        returnValues: [
+          { name: 'eventId', type: 'string', desciption: 'id of the event' },
+          { name: 'eventName', type: 'string', desciption: 'name of the event' },
+          { name: 'eventDescription', type: 'string', desciption: 'description of the event' },
+          { name: 'startTime', type: 'string', desciption: 'scheculed start time of the event' },
+          { name: 'serverId', type: 'string', desciption: 'server id of the event' },
+          { name: 'serverName', type: 'string', desciption: 'server name of the event' },
+        ],
         description:
           'This action check if a new scheculed event has been created in a Discord server.',
         link: 'discord/get/guild/scheduled-events/',
@@ -34,6 +42,17 @@ export class ActionSeederService {
           { name: 'server', type: 'string', description: 'Name of the server.' },
           { name: 'channel', type: 'string', description: 'Name of the channel in the server.' },
         ],
+        returnValues: [
+          { name: 'serverId', type: 'string', description: 'server id' },
+          { name: 'serverName', type: 'string', description: 'server name' },
+          { name: 'channelId', type: 'string', description: 'channel id' },
+          { name: 'channelName', type: 'string', description: 'channel name' },
+          { name: 'messageId', type: 'string', description: 'message id' },
+          { name: 'messageContent', type: 'string', description: 'message content' },
+          { name: 'messageAuthorId', type: 'string', description: 'message author id' },
+          { name: 'messageAuthor', type: 'string', description: 'message author username' },
+        ],
+
         description:
           'This action check if a new message has been sent in a channel of a Discord server.',
         link: 'discord/get/guild/channel/new-message/',
@@ -97,6 +116,12 @@ export class ActionSeederService {
         service: ServiceList.SPOTIFY,
         type: ActionType.ACTION,
         name: 'A new track is playing',
+        returnValues: [
+          { name: 'trackUrl', type: 'string', description: 'Url to access to the track' },
+          { name: 'trackName', type: 'string', description: 'name of the track' },
+          { name: 'trackId', type: 'string', description: 'id of the track' },
+          { name: 'artistName', type: 'string', description: 'artist who sing the track' },
+        ],
         description: 'This action check the current playing track on Spotify.',
         link: 'spotify/get-current-playing-track/',
       },
@@ -244,12 +269,34 @@ export class ActionSeederService {
         description: 'This reaction follow a playlist on Spotify.',
         link: 'spotify/follow-playlist/',
       },
+      // ----- DEEZER TEMPLATES -----
+
+      {
+        uuid: 'df56e414-32b5-40fa-852c-61e11cfa7a5d',
+        service: ServiceList.DEEZER,
+        type: ActionType.REACTION,
+        name: 'Create playlist',
+        params: [
+          {
+            name: 'playlist',
+            type: 'string',
+            description: 'name of the playlist you want to create',
+          },
+        ],
+        description: 'This reaction create a playlist on Deezer.',
+        link: 'deezer/create-playlist/',
+      },
+
       // ----- TWITCH TEMPLATES -----
       {
         uuid: '65011817-eec8-4d26-817e-45cbe3881ef3',
         service: ServiceList.TWITCH,
         type: ActionType.ACTION,
         name: 'A new channel is followed',
+        returnValues: [
+          { name: 'broadcasterId', type: 'string', description: 'twitch id of the broadcaster' },
+          { name: 'broadcasterName', type: 'string', description: 'name of the broadcaster' },
+        ],
         description: 'This action check if a new channel has been followed.',
         link: 'twitch/new-followed-channel/',
       },
@@ -273,6 +320,13 @@ export class ActionSeederService {
             description: 'name of the followed channel you want to listen.',
           },
         ],
+        returnValues: [
+          { name: 'gameName', type: 'string', description: 'name of the broadcasted game' },
+          { name: 'title', type: 'string', description: 'title of the broadcast' },
+          { name: 'broadcasterName', type: 'string', description: 'name of the broadcaster' },
+          { name: 'viewerCount', type: 'number', description: 'number of viewers' },
+          { name: 'startedAt', type: 'string', description: 'date of the start of the broadcast' },
+        ],
         description: 'This action check if a specific followed channel is on live.',
         link: 'twitch/channel-on-stream/',
       },
@@ -295,6 +349,7 @@ export class ActionSeederService {
       });
 
       if (!exists) {
+        console.log('saving');
         await this.actionRepository.save(action);
       }
     }

@@ -17,6 +17,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ServiceList } from 'src/service/entity/service.entity';
 import { catchError, firstValueFrom, map } from 'rxjs';
 import { AxiosError } from 'axios/index';
+import { UserService } from 'src/user/user.service';
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -24,6 +25,7 @@ export class TypeformOauth2Controller {
   constructor(
     private readonly connectionService: TypeformOauth2Service,
     private readonly credentialsService: CredentialsService,
+    private readonly userService: UserService,
     private readonly httpService: HttpService,
     private readonly jwtService: JwtService,
   ) {}
@@ -42,7 +44,7 @@ export class TypeformOauth2Controller {
     ];
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
-    if (!token['id']) {
+    if (!token['email']) {
       return response.status(HttpStatus.UNAUTHORIZED).json({
         message: 'Error unauthenticated (using jwt)',
         data: token,
@@ -52,7 +54,7 @@ export class TypeformOauth2Controller {
 
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
-        `https://api.typeform.com/oauth/authorize?state=${token['id']}&client_id=${clientID}&redirect_uri=${callbackURL}&scope=${scope[0]}+${scope[1]}+${scope[2]}+${scope[3]}+${scope[4]}`,
+        `https://api.typeform.com/oauth/authorize?state=${token['email']}&client_id=${clientID}&redirect_uri=${callbackURL}&scope=${scope[0]}+${scope[1]}+${scope[2]}+${scope[3]}+${scope[4]}`,
       ),
       status: 200,
     });
@@ -98,11 +100,13 @@ export class TypeformOauth2Controller {
     const accessToken = typeformData.access_token;
 
     if (accessToken) {
+      const user = await this.userService.findByEmail(id);
+
       const userCredentials = {
-        userId: id,
+        userId: user.uuid,
         service: ServiceList.TYPEFORM,
-        accessToken: typeformData.access_token,
-        refreshToken: 'null',
+        accessToken: accessToken,
+        refreshToken: null,
       };
 
       await this.credentialsService.createCredentialsUser(userCredentials);
