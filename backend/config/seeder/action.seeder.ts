@@ -90,6 +90,11 @@ export class ActionSeederService {
         service: ServiceList.GOOGLE_MAIL,
         type: ActionType.ACTION,
         name: 'Check Google Mail',
+        returnValues: [
+          { name: 'mailTitle', type: 'string', description: 'mail title' },
+          { name: 'mailContent', type: 'string', description: 'mail content' },
+          { name: 'mailId', type: 'string', description: 'mail id' },
+        ],
         description: 'This action allow you to catch events when you receive a new mail.',
         link: 'google/check-mail/',
       },
