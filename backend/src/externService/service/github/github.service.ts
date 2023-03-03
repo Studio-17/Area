@@ -9,6 +9,7 @@ import { GithubCronService } from './github.cron.service';
 import { GithubIssueDto } from './dto/github-issue.dto';
 import { GithubPullRequestDto } from './dto/github-pull-request.dto';
 import { GithubForkDto } from './dto/github-fork.dto';
+import {GithubStarDto} from "./dto/github-star.dto";
 
 @Injectable()
 export class GithubService {
@@ -189,6 +190,34 @@ export class GithubService {
 
     if (issue.length) {
       return issue[0].id;
+    }
+    return '0';
+  }
+
+  public async getStar(accessToken: string, githubStarDto: GithubStarDto) {
+    const star = await firstValueFrom(
+      this.httpService
+        .get(`https://api.github.com/repos/${githubStarDto.owner}/${githubStarDto.repo}/issues`, {
+          headers: {
+            Accept: 'application/vnd.github+json',
+            Authorization: `Bearer ${accessToken}`,
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+        })
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+
+    if (star.length) {
+      return star[0].id;
     }
     return '0';
   }

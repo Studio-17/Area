@@ -37,6 +37,38 @@ export class GithubController {
   //   }
   // }
 
+  // TODO - LIST
+  // --- ACTIONS ---
+  // GET A COLLABORATOR
+  // GET AN INVITATION
+  // GET ALL COMMENTS
+  // GET ALL REPOSITORIES
+  // GET ALL REPOSITORIES OF A USER
+  // CHECK STAR REPOSITORY
+  // LIST ISSUES ASSIGNED TO A USER
+  // GET ALL MILESTONES
+  // GET ALL LABELS
+
+
+
+
+
+
+
+  // --- REACTIONS ---
+  // UPDATE A BRANCH
+  // ADD A COLLABORATOR
+  // REMOVE A COLLABORATOR
+  // DELETE AN INVITATION
+  // CREATE AN ISSUE
+  // CREATE A LABEL
+  // DELETE A LABEL
+  // CREATE A MILESTONE
+  // DELETE A MILESTONE
+  // DELETE A REPOSITORY
+  // STAR A REPOSITORY
+  // UNSTAR A REPOSITORY
+
   // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/check-pull-request')
   public async checkNewPullRequest(
