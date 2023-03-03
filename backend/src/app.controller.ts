@@ -52,8 +52,8 @@ export class AppController {
             ],
             reactions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'Send a message in a channel',
+                description: 'This reaction send a message in a Discord Server channel.',
               },
             ],
           },
