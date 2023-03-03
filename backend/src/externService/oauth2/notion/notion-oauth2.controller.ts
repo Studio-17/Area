@@ -9,15 +9,16 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authentication.guard';
+import { JwtAuthenticationGuard } from 'src/authentication/guards/jwt-authentication.guard';
 import { NotionOAuth2Service } from './notion-oauth2.service';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
-import { CredentialsService } from '../../../credentials/credentials.service';
+import { CredentialsService } from 'src/credentials/credentials.service';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
-import {ServiceList} from "../../../service/entity/service.entity";
+import { ServiceList } from 'src/service/entity/service.entity';
+import { UserService } from 'src/user/user.service';
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -25,6 +26,7 @@ export class NotionOAuth2Controller {
   constructor(
     private readonly connectionService: NotionOAuth2Service,
     private readonly credentialsService: CredentialsService,
+    private readonly userService: UserService,
     private readonly httpService: HttpService,
     private readonly jwtService: JwtService,
   ) {}
@@ -36,7 +38,7 @@ export class NotionOAuth2Controller {
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/notion/redirect`;
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
-    if (!token['id']) {
+    if (!token['email']) {
       return response.status(HttpStatus.UNAUTHORIZED).json({
         message: 'Error unauthenticated (using jwt)',
         data: token,
@@ -45,7 +47,7 @@ export class NotionOAuth2Controller {
     }
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
-        `https://api.notion.com/v1/oauth/authorize?client_id=${clientID}&response_type=code&owner=user&redirect_uri=${callbackURL}&state=${token['id']}`,
+        `https://api.notion.com/v1/oauth/authorize?client_id=${clientID}&response_type=code&owner=user&redirect_uri=${callbackURL}&state=${token['email']}`,
       ),
       status: 200,
     });
@@ -85,10 +87,12 @@ export class NotionOAuth2Controller {
     const accessToken = notionData.data.access_token;
 
     if (accessToken) {
+      const user = await this.userService.findByEmail(id);
+
       const userCredentials = {
-        userId: id,
-        service: ServiceList.NOTION,
-        accessToken: notionData.data.access_token,
+        userId: user.uuid,
+        service: ServiceList.GITHUB,
+        accessToken: accessToken,
         refreshToken: null,
       };
 
