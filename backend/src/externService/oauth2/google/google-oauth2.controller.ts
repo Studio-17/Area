@@ -256,7 +256,7 @@ export class GoogleOAuth2Controller {
     const clientID = process.env.GOOGLE_CLIENT_ID;
     const clientSECRET = process.env.GOOGLE_CLIENT_SECRET;
     const code = query.code;
-    const state = query.state;
+    const id = query.state;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
 
     const googleData = await firstValueFrom(
@@ -290,7 +290,7 @@ export class GoogleOAuth2Controller {
 
       const userCredentials = {
         userId: user.uuid,
-        service: ServiceList.GITHUB,
+        service: ServiceList.GOOGLE,
         accessToken: accessToken,
         refreshToken: null,
       };
