@@ -100,7 +100,7 @@ export default function ActionsListScreen({ navigation, route }: any) {
     params?: GetParamsDto[] | null,
     action?: Action
   ) => {
-    if (params || !serviceInfo?.isConnected) {
+    if (params || (!serviceInfo?.isConnected && serviceInfo?.type === "external")) {
       setCurrentActionParams(params!);
       setCurrentAction(action);
       setOpenFormModal(true);

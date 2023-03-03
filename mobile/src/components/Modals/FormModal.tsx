@@ -132,7 +132,7 @@ export default function FormModal({
             <MaterialCommunityIcons name="close" color={"black"} size={50} />
           </Pressable>
           <MyText style={styles.textHeaderStyle}>
-            {!serviceInfo?.isConnected
+            {(!serviceInfo?.isConnected && serviceInfo?.type === "external")
               ? "Connect Service"
               : "Fill in the trigger fields"}
           </MyText>
@@ -140,7 +140,7 @@ export default function FormModal({
         </View>
         <ScrollView>
           <View style={styles.contentConainter}>
-            {!serviceInfo?.isConnected ? (
+            {(!serviceInfo?.isConnected && serviceInfo?.type === "external") ? (
               <>
                 <View
                   style={{
