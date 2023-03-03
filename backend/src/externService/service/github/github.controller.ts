@@ -17,6 +17,7 @@ import { GithubReviewCommentDto } from './dto/github-review-comment.dto';
 import { GithubContributorDto } from './dto/github-contributor.dto';
 import { GithubTeamDto } from './dto/github-team.dto';
 import { GithubInvitationDto } from './dto/github-invitation.dto';
+import { GithubMilestoneDto } from './dto/github-milestone.dto';
 
 @Controller('actions/github')
 export class GithubController {
@@ -48,7 +49,6 @@ export class GithubController {
   // GET ALL REPOSITORIES OF A USER
   // CHECK STAR USER REPOSITORY
   // LIST ISSUES ASSIGNED TO A USER
-  // GET ALL MILESTONES
   // GET ALL LABELS
 
   // --- REACTIONS ---
@@ -161,6 +161,32 @@ export class GithubController {
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         message: 'Error fetching star from Github API',
+        error: error,
+        status: 400,
+      });
+    }
+  }
+
+  @Get('/check-milestone')
+  public async checkNewMilestone(
+    @Req() request,
+    @Res() response,
+    @Body() githubMilestoneDto: GithubMilestoneDto,
+  ) {
+    try {
+      const milestoneResult = await this.githubService.getMilestone(
+        request.credentials.accessToken,
+        githubMilestoneDto,
+      );
+
+      return response.status(HttpStatus.OK).json({
+        message: 'Got last milestone from Github API',
+        content: milestoneResult,
+        status: 200,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error fetching milestone from Github API',
         error: error,
         status: 400,
       });

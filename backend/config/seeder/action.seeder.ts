@@ -102,8 +102,21 @@ export class ActionSeederService {
           { name: 'repo', type: 'string', description: 'Name of the repository.' },
         ],
         description:
-          'This action allow you to catch events when a repository get a new invitation.',
+            'This action allow you to catch events when a repository get a new invitation.',
         link: 'github/check-invitation/',
+      },
+      {
+        uuid: '096d779f-9b28-4e30-b065-669284749b79',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github Milestone',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
+        description:
+            'This action allow you to catch events when a repository get a new milestone.',
+        link: 'github/check-milestone/',
       },
       {
         uuid: 'd1c52fb8-f2a7-4e0a-b705-3412ae5d37a6',
