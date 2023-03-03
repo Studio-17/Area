@@ -55,6 +55,15 @@ export class ActionSeederService {
         link: 'github/check-star/',
       },
       {
+        uuid: '0b11633b-a373-434d-9886-b2bd89129dc1',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github User Star',
+        description:
+          'This action allow you to catch events when the connected user stars a repository.',
+        link: 'github/check-user-star/',
+      },
+      {
         uuid: 'f8a89517-8539-4024-bf60-8f29f28001ce',
         service: ServiceList.GITHUB,
         type: ActionType.ACTION,
@@ -102,7 +111,7 @@ export class ActionSeederService {
           { name: 'repo', type: 'string', description: 'Name of the repository.' },
         ],
         description:
-            'This action allow you to catch events when a repository get a new invitation.',
+          'This action allow you to catch events when a repository get a new invitation.',
         link: 'github/check-invitation/',
       },
       {
@@ -114,8 +123,7 @@ export class ActionSeederService {
           { name: 'owner', type: 'string', description: 'Name of the owner.' },
           { name: 'repo', type: 'string', description: 'Name of the repository.' },
         ],
-        description:
-            'This action allow you to catch events when a repository get a new milestone.',
+        description: 'This action allow you to catch events when a repository get a new milestone.',
         link: 'github/check-milestone/',
       },
       {

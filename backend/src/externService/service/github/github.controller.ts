@@ -47,7 +47,6 @@ export class GithubController {
   // --- ACTIONS ---
   // GET ALL REPOSITORIES
   // GET ALL REPOSITORIES OF A USER
-  // CHECK STAR USER REPOSITORY
   // LIST ISSUES ASSIGNED TO A USER
   // GET ALL LABELS
 
@@ -161,6 +160,25 @@ export class GithubController {
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         message: 'Error fetching star from Github API',
+        error: error,
+        status: 400,
+      });
+    }
+  }
+
+  @Get('/check-user-star')
+  public async checkNewUserStar(@Req() request, @Res() response) {
+    try {
+      const starResult = await this.githubService.getUserStar(request.credentials.accessToken);
+
+      return response.status(HttpStatus.OK).json({
+        message: 'Got last user star from Github API',
+        content: starResult,
+        status: 200,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error fetching user star from Github API',
         error: error,
         status: 400,
       });

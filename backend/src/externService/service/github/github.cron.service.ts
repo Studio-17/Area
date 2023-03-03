@@ -367,6 +367,84 @@ export class GithubCronService {
     }
   }
 
+  // --- USER STAR ---
+  // TODO - Fix conflict between users
+  public async checkUserStar(accessToken: string) {
+    try {
+      const star = await this.githubService.getUserStar(accessToken);
+
+      const record = new GithubRecordEntity();
+      record.owner = '';
+      record.repo = '';
+      record.category = 'user-star';
+      record.id = star;
+      return (await this.findOrUpdateLastUserStar(record)).new;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+  }
+
+  public async findOrUpdateLastUserStar(githubRecordDto: GithubRecordDto) {
+    const record = await this.findUserStar(githubRecordDto);
+
+    if (!record) {
+      try {
+        return {
+          new: false,
+          data: await this.githubRecordRepository.save(githubRecordDto),
+        };
+      } catch (err) {
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
+      }
+    } else if (
+      githubRecordDto.id.toString() !== '0' &&
+      record.id.toString() < githubRecordDto.id.toString()
+    ) {
+      try {
+        const newRecord = await this.githubRecordRepository.update(
+          {
+            id: record.id,
+          },
+          { ...githubRecordDto },
+        );
+
+        if (!newRecord) {
+          throw new NotFoundException(`Record does not exist`);
+        }
+
+        return {
+          new: true,
+          data: await this.findUserStar(githubRecordDto),
+        };
+      } catch (err) {
+        console.error(err);
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
+      }
+    } else {
+      return { new: false, data: record };
+    }
+  }
+
+  public async findUserStar(githubRecordDto: GithubRecordDto): Promise<GithubRecordEntity> {
+    try {
+      const records = await this.githubRecordRepository.findOneBy({
+        owner: githubRecordDto.owner,
+        repo: githubRecordDto.repo,
+        category: 'user-star',
+      });
+
+      if (!records) {
+        return undefined;
+      }
+
+      return records;
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
+
   // --- MILESTONE ---
   public async checkMilestone(accessToken: string, params: { name: string; content: string }[]) {
     let owner = '';

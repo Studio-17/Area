@@ -230,6 +230,35 @@ export class GithubService {
     return '0';
   }
 
+  public async getUserStar(accessToken: string) {
+    let star: any;
+    star = await firstValueFrom(
+      this.httpService
+        .get(`https://api.github.com/user/starred`, {
+          headers: {
+            Accept: 'application/vnd.github+json',
+            Authorization: `Bearer ${accessToken}`,
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+        })
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+
+    if (star.length) {
+      return star[0].id;
+    }
+    return '0';
+  }
+
   public async getTeam(accessToken: string, githubTeamDto: GithubTeamDto) {
     const team = await firstValueFrom(
       this.httpService
