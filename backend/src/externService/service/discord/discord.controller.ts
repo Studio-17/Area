@@ -1,7 +1,6 @@
 import { Body, Controller, Post, HttpStatus, Res } from '@nestjs/common';
 import { DiscordService } from './discord.service';
 import { CreateSchedulesEventDto } from './dto/create-schedules-event.dto';
-import { CreateMessageDto } from './dto/create-message.dto';
 import { ReactionDto } from 'src/cron/dto/reaction.dto';
 import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 
@@ -249,23 +248,40 @@ export class DiscordController {
   @Post('/create/message')
   public async postGuildChannelMessage(
     @Res() response,
-    @Body() body: { botToken: string; guildChannelID: string; createMessage: CreateMessageDto },
-    // @Body() body: ReactionDto,
+    // @Body() body: { botToken: string; guildChannelID: string; createMessage: CreateMessageDto },
+    @Body() body: ReactionDto,
   ) {
     try {
-      const user = await this.discordService.postGuildChannelMessage(
-        body.guildChannelID,
-        body.createMessage,
-      );
+      // console.log(body.params);
+      const guildName = getElemContentInParams(body.params, 'server', '', body.returnValues);
+      // console.log(guildName);
+      const channelName = getElemContentInParams(body.params, 'channel', '', body.returnValues);
+      const message = getElemContentInParams(body.params, 'message', '', body.returnValues);
+
+      // console.log(guildName, channelName, message);
+      const guild = await this.discordService
+        .getAuthenticatedUserGuilds(body.accessToken)
+        .then((guilds) => guilds.find((guild: any) => guild.name === guildName));
+      // console.log(guild);
+      const channel = await this.discordService
+        .getGuildChannels(guild.id)
+        .then((channels) =>
+          channels.find(
+            (channel: any) =>
+              channel.name.toLowerCase() === channelName.toLowerCase() && channel.last_message_id,
+          ),
+        );
+      console.log(channel);
+      const user = await this.discordService.postGuildChannelMessage(channel.id, message);
 
       return response.status(HttpStatus.OK).json({
-        message: `Posted message in channel ${body.guildChannelID} from Discord services`,
+        message: `Posted message in channel from Discord services`,
         content: user,
         status: 200,
       });
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
-        message: `Error posting message in channel ${body.guildChannelID} from Discord Apis`,
+        message: `Error posting message in channel from Discord Apis`,
         error: error,
         status: 400,
       });

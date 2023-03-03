@@ -57,6 +57,19 @@ export class ActionSeederService {
           'This action check if a new message has been sent in a channel of a Discord server.',
         link: 'discord/get/guild/channel/new-message/',
       },
+      {
+        uuid: 'df51e414-19b5-40ea-852c-60eaacfb7e2c',
+        service: ServiceList.DISCORD,
+        type: ActionType.REACTION,
+        name: 'send a message in a channel',
+        params: [
+          { name: 'server', type: 'string', description: 'Name of the server.' },
+          { name: 'channel', type: 'string', description: 'Name of the channel in the server.' },
+          { name: 'message', type: 'string', description: 'content of the message.' },
+        ],
+        description: 'This reaction send a new message in a discord channel as Reaccoon bot.',
+        link: 'discord/create/message/',
+      },
       // ----- GITHUB TEMPLATES -----
       {
         uuid: '0e423200-9d5a-4f7c-8949-3d9bbad368df',

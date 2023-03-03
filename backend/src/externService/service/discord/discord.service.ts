@@ -15,7 +15,6 @@ import {
   ScheduledEventObject,
   ScheduledEventResponseObject,
 } from './interface/scheduled-events.interface';
-import { CreateMessageDto } from './dto/create-message.dto';
 import { MessageCreatedObject } from './interface/message-created.interface';
 
 @Injectable()
@@ -222,12 +221,15 @@ export class DiscordService {
   ): Promise<any> {
     const message = await lastValueFrom(
       this.httpService
-        .post(`https://discord.com/api/guilds/${guildChannelID}/scheduled-events`, {
-          data: scheduledEvent,
-          headers: {
-            Authorization: `Bot ${process.env.DISCORD_CLIENT_BOT}`,
+        .post(
+          `https://discord.com/api/guilds/${guildChannelID}/scheduled-events`,
+          { scheduledEvent },
+          {
+            headers: {
+              Authorization: `Bot ${process.env.DISCORD_CLIENT_BOT}`,
+            },
           },
-        })
+        )
         .pipe(
           map((value) => {
             return plainToInstance(ScheduledEventResponseObject, value.data);
@@ -271,16 +273,20 @@ export class DiscordService {
 
   public async postGuildChannelMessage(
     guildChannelID: string,
-    createMessage: CreateMessageDto,
+    messageToSend: string,
   ): Promise<any> {
     const message = await lastValueFrom(
       this.httpService
-        .post(`https://discord.com/api/channels/${guildChannelID}/message`, {
-          data: createMessage,
-          headers: {
-            Authorization: `Bot ${process.env.DISCORD_CLIENT_BOT}`,
+        .post(
+          `https://discord.com/api/channels/${guildChannelID}/messages`,
+          { content: messageToSend },
+          {
+            headers: {
+              Authorization: `Bot ${process.env.DISCORD_CLIENT_BOT}`,
+              'Content-Type': 'application/json',
+            },
           },
-        })
+        )
         .pipe(
           map((value) => {
             return plainToInstance(MessageCreatedObject, value.data);
@@ -292,7 +298,6 @@ export class DiscordService {
           }),
         ),
     );
-
     return message;
   }
 }
