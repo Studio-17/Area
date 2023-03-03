@@ -6,7 +6,7 @@ import { GoogleService } from './google.service';
 export class GoogleCronService {
   constructor(private readonly googleService: GoogleService) {}
 
-  availableActions = new Map<string, ActionFunction>([
+  googleMailAvailableActions = new Map<string, ActionFunction>([
     ['google/check-mail/', this.googleService.updateLastEmailReceived.bind(this.googleService)],
   ]);
 }
