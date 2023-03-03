@@ -10,6 +10,7 @@ import { GithubIssueDto } from './dto/github-issue.dto';
 import { GithubPullRequestDto } from './dto/github-pull-request.dto';
 import { GithubForkDto } from './dto/github-fork.dto';
 import { GithubStarDto } from './dto/github-star.dto';
+import { GithubReviewCommentDto } from './dto/github-review-comment.dto';
 
 @Injectable()
 export class GithubService {
@@ -221,6 +222,40 @@ export class GithubService {
 
     if (star.length) {
       return star[0].id;
+    }
+    return '0';
+  }
+
+  public async getReviewComment(
+    accessToken: string,
+    githubReviewCommentDto: GithubReviewCommentDto,
+  ) {
+    const reviewComment = await firstValueFrom(
+      this.httpService
+        .get(
+          `https://api.github.com/repos/${githubReviewCommentDto.owner}/${githubReviewCommentDto.repo}/pulls/comments`,
+          {
+            headers: {
+              Accept: 'application/vnd.github+json',
+              Authorization: `Bearer ${accessToken}`,
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          },
+        )
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+
+    if (reviewComment.length) {
+      return reviewComment[0].id;
     }
     return '0';
   }

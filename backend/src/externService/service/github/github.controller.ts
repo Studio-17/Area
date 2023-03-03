@@ -13,6 +13,7 @@ import { ReactionDto } from '../../../cron/dto/reaction.dto';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { GithubForkDto } from './dto/github-fork.dto';
 import { GithubStarDto } from './dto/github-star.dto';
+import { GithubReviewCommentDto } from './dto/github-review-comment.dto';
 
 @Controller('actions/github')
 export class GithubController {
@@ -48,7 +49,7 @@ export class GithubController {
   // CHECK STAR USER REPOSITORY
   // LIST ISSUES ASSIGNED TO A USER
   // GET ALL MILESTONES
-  // GET ALL LABELS
+  // GET ALL LABELS// GET REVIEW COMMENTS
 
   // --- REACTIONS ---
   // UPDATE A BRANCH
@@ -99,14 +100,40 @@ export class GithubController {
     @Body() githubIssueDto: GithubIssueDto,
   ) {
     try {
-      const pullRequestResult = await this.githubService.getIssue(
+      const issueResult = await this.githubService.getIssue(
         request.credentials.accessToken,
         githubIssueDto,
       );
 
       return response.status(HttpStatus.OK).json({
         message: 'Got last issue from Github API',
-        content: pullRequestResult,
+        content: issueResult,
+        status: 200,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error fetching issue from Github API',
+        error: error,
+        status: 400,
+      });
+    }
+  }
+
+  @Get('/check-review-comment')
+  public async checkNewReviewComment(
+    @Req() request,
+    @Res() response,
+    @Body() githubReviewCommentDto: GithubReviewCommentDto,
+  ) {
+    try {
+      const reviewCommentResult = await this.githubService.getReviewComment(
+        request.credentials.accessToken,
+        githubReviewCommentDto,
+      );
+
+      return response.status(HttpStatus.OK).json({
+        message: 'Got last issue from Github API',
+        content: reviewCommentResult,
         status: 200,
       });
     } catch (error) {

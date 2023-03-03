@@ -55,6 +55,18 @@ export class ActionSeederService {
         link: 'github/check-star/',
       },
       {
+        uuid: 'f8a89517-8539-4024-bf60-8f29f28001ce',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github Review Comment',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
+        description: 'This action allow you to catch events when a repository get a new review comment.',
+        link: 'github/check-review-comment/',
+      },
+      {
         uuid: 'd1c52fb8-f2a7-4e0a-b705-3412ae5d37a6',
         service: ServiceList.GITHUB,
         type: ActionType.ACTION,
