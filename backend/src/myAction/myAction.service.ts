@@ -106,7 +106,7 @@ export class MyActionService {
     // NOTION
     [ServiceList.TWITCH, this.twitchCronService.availableActions],
     // return value not set up for google
-    [ServiceList.GOOGLE, this.googleCronService.availableActions],
+    [ServiceList.GOOGLE_MAIL, this.googleCronService.googleMailAvailableActions],
     [ServiceList.GITHUB, this.githubCronService.availableActions],
     [ServiceList.SPOTIFY, this.spotifyCronService.availableActions],
     [ServiceList.DISCORD, this.discordCronService.availableActions],
