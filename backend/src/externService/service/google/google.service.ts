@@ -12,7 +12,6 @@ import { CronService } from 'src/cron/cron.service';
 export class GoogleService {
   constructor(private readonly cronService: CronService) {}
 
-  // TODO: add a fuction to get the content of the mail to return it
   public async updateLastEmailReceived(actionParam: ActionParam): Promise<ActionResult> {
     const config = {
       method: 'get',
@@ -38,10 +37,19 @@ export class GoogleService {
         record.myActionId = actionParam.myActionId;
         record.category = 'lastMail';
         record.content = emailId;
-
+        const mailContent = await this.getEmailContent(actionParam.accessToken, emailId);
         return {
           isTriggered: await this.cronService.findOrUpdateLastRecord(record),
-          returnValues: [],
+          returnValues: [
+            { name: 'mailTitle', content: mailContent.snippet },
+            {
+              name: 'mailContent',
+              content: Buffer.from(mailContent.payload.parts[0].body.data, 'base64').toString(
+                'binary',
+              ),
+            },
+            { name: 'mailId', content: emailId },
+          ],
         };
       }
     } catch (error) {
@@ -107,9 +115,9 @@ export class GoogleService {
       },
     };
 
-    axios(config)
+    return axios(config)
       .then(function (apiResponse) {
-        return apiResponse;
+        return apiResponse.data;
       })
       .catch(function (error) {
         return new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });

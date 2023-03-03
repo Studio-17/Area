@@ -36,9 +36,8 @@ export class GoogleOAuth2Controller {
     const clientID = process.env.GOOGLE_CLIENT_ID;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
     const scope =
-      'email profile https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/gmail.readonly';
+      'email profile https://mail.google.com/ https://www.googleapis.com/auth/gmail.modify  https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/drive';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
-
     if (!token['email']) {
       return response.status(HttpStatus.UNAUTHORIZED).json({
         message: 'Error unauthenticated (using jwt)',
@@ -47,7 +46,6 @@ export class GoogleOAuth2Controller {
       });
     }
 
-    const googleServiceName = 'google';
     const state = `${token['email']}`;
 
     return response.status(HttpStatus.OK).json({
