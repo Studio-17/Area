@@ -109,7 +109,7 @@ export class DiscordOAuth2Controller {
 
       const userCredentials = {
         userId: user.uuid,
-        service: ServiceList.GITHUB,
+        service: ServiceList.DISCORD,
         accessToken: accessToken,
         refreshToken: null,
       };

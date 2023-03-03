@@ -104,7 +104,7 @@ export class TypeformOauth2Controller {
 
       const userCredentials = {
         userId: user.uuid,
-        service: ServiceList.GITHUB,
+        service: ServiceList.TYPEFORM,
         accessToken: accessToken,
         refreshToken: null,
       };

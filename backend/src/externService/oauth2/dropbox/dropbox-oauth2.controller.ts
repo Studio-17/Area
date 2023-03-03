@@ -99,7 +99,7 @@ export class DropboxOauth2Controller {
 
       const userCredentials = {
         userId: user.uuid,
-        service: ServiceList.GITHUB,
+        service: ServiceList.DROPBOX,
         accessToken: accessToken,
         refreshToken: null,
       };

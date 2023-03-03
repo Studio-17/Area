@@ -95,7 +95,7 @@ export class TwitchOAuth2Controller {
 
       const userCredentials = {
         userId: user.uuid,
-        service: ServiceList.GITHUB,
+        service: ServiceList.TWITCH,
         accessToken: accessToken,
         refreshToken: null,
       };
