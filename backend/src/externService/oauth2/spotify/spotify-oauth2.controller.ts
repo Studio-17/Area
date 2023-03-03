@@ -114,7 +114,7 @@ export class SpotifyOAuth2Controller {
 
       const userCredentials = {
         userId: user.uuid,
-        service: ServiceList.GITHUB,
+        service: ServiceList.SPOTIFY,
         accessToken: accessToken,
         refreshToken: null,
       };

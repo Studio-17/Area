@@ -91,7 +91,7 @@ export class NotionOAuth2Controller {
 
       const userCredentials = {
         userId: user.uuid,
-        service: ServiceList.GITHUB,
+        service: ServiceList.NOTION,
         accessToken: accessToken,
         refreshToken: null,
       };

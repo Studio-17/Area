@@ -93,7 +93,7 @@ export class DeezerOauth2Controller {
 
       const userCredentials = {
         userId: user.uuid,
-        service: ServiceList.GITHUB,
+        service: ServiceList.DEEZER,
         accessToken: accessToken,
         refreshToken: null,
       };

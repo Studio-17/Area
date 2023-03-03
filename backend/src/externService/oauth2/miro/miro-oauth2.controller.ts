@@ -80,7 +80,7 @@ export class MiroOAuth2Controller {
 
       const userCredentials = {
         userId: user.uuid,
-        service: ServiceList.GITHUB,
+        service: ServiceList.MIRO,
         accessToken: accessToken,
         refreshToken: null,
       };
