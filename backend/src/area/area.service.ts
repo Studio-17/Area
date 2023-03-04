@@ -18,18 +18,16 @@ export class AreaService {
 
   async checkCron(value: string, minimum: number, maximum: number) {
     if (value !== '*' && +value >= minimum && +value <= maximum) {
-      console.log(true);
       return `*/${value}`;
     } else {
-      console.log(false);
       return '*';
     }
   }
 
   async create(createAreaDto: CreateAreaDto, userId: string): Promise<AreaEntity> {
-    createAreaDto.hour = await this.checkCron(createAreaDto.hour, 0, 23);
-    createAreaDto.minute = await this.checkCron(createAreaDto.minute, 0, 59);
-    createAreaDto.second = await this.checkCron(createAreaDto.second, 0, 59);
+    createAreaDto.hour = await this.checkCron(createAreaDto.hour || `*`, 0, 23);
+    createAreaDto.minute = await this.checkCron(createAreaDto.minute || `*`, 0, 59);
+    createAreaDto.second = await this.checkCron(createAreaDto.second || `*`, 0, 59);
     const area: AreaEntity = this.areaRepository.create({ ...createAreaDto, userId: userId });
     const areaInData = await this.areaRepository.save(area);
     const action = await this.myActionService.addAction(
@@ -94,6 +92,9 @@ export class AreaService {
   async update(areaId: string, updateAreaDto: UpdateAreaDto, userId: string): Promise<AreaEntity> {
     const area: AreaEntity = await this.areaRepository.findOneBy({ uuid: areaId });
 
+    updateAreaDto.hour = await this.checkCron(updateAreaDto.hour || `*`, 0, 23);
+    updateAreaDto.minute = await this.checkCron(updateAreaDto.minute || `*`, 0, 59);
+    updateAreaDto.second = await this.checkCron(updateAreaDto.second || `*`, 0, 59);
     await this.areaRepository
       .update(
         { uuid: areaId, userId: userId },
@@ -112,9 +113,9 @@ export class AreaService {
       {
         actionId: updateAreaDto.action.id,
         linkedFromId: null,
-        hour: updateAreaDto.hour || '*',
-        minute: updateAreaDto.minute || '*',
-        second: updateAreaDto.second || '*',
+        hour: updateAreaDto.hour,
+        minute: updateAreaDto.minute,
+        second: updateAreaDto.second,
         params: updateAreaDto.action.params,
       },
       userId,
@@ -126,9 +127,9 @@ export class AreaService {
         {
           actionId: myAction.id,
           linkedFromId: action.uuid,
-          hour: updateAreaDto.hour || '*',
-          minute: updateAreaDto.minute || '*',
-          second: updateAreaDto.second || '*',
+          hour: updateAreaDto.hour,
+          minute: updateAreaDto.minute,
+          second: updateAreaDto.second,
           params: myAction.params ? myAction.params : null,
         },
         userId,
