@@ -32,6 +32,7 @@ import { TwitchModule } from './externService/service/twitch/twitch.module';
 import { DeezerModule } from './externService/service/deezer/deezer.module';
 import { TimerModule } from './externService/service/timer/timer.module';
 import { WebhookModule } from './externService/service/webhook/webhook.module';
+import { MiroModule } from './externService/service/miro/miro.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { WebhookModule } from './externService/service/webhook/webhook.module';
     DiscordModule,
     GoogleModule,
     GithubModule,
+    MiroModule,
     SpotifyModule,
     TwitchModule,
     TimerModule,
