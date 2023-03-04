@@ -6,6 +6,8 @@ import { Service } from "../../redux/models/serviceModels";
 
 import { Dimensions } from "react-native";
 
+import { capitalizeNames } from "../../components/Cards/CapitalizeNames";
+
 // Components
 import MyText from "../MyText";
 
@@ -26,10 +28,6 @@ export default function ServiceCard({
 }: Props) {
   const cardWidth = (Dimensions.get("window").width - cardGap * 3) / 2;
 
-  const capitalizeFirstLetter = (string: string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
-
   return (
     <TouchableOpacity
       key={index}
@@ -47,7 +45,7 @@ export default function ServiceCard({
       <View style={styles.contentContainer}>
         <Image style={styles.logo} source={logo} />
         <MyText style={styles.textProperties}>
-          {capitalizeFirstLetter(service.name)}
+          {capitalizeNames(service.name)}
         </MyText>
       </View>
     </TouchableOpacity>

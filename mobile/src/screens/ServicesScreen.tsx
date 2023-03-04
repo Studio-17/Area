@@ -15,8 +15,6 @@ import { images } from "../redux/models/serviceModels";
 import ServiceCard from "../components/Cards/ServiceCard";
 
 import MyText from "../components/MyText";
-
-import { GetParamsDto, PostParamsDto } from "../redux/models/paramsModel";
 import { Area } from "../redux/models/areaModels";
 
 LogBox.ignoreLogs([
@@ -66,13 +64,21 @@ export default function ServicesScreen({ navigation, route }: Props) {
               service={service}
               onClickService={() => {
                 navigation.navigate("ActionsList", {
-                  item: { service, typeOfAction, typeOfRequest, indexBlock, onClickOnAreasCards, toScreen, area },
+                  item: {
+                    service,
+                    typeOfAction,
+                    typeOfRequest,
+                    indexBlock,
+                    onClickOnAreasCards,
+                    toScreen,
+                    area,
+                  },
                 });
               }}
               cardGap={20}
               index={index}
               key={index}
-              logo={images[service.name]}
+              logo={images[service.name.replace("-", "_")]}
             />
           ))}
         </View>
