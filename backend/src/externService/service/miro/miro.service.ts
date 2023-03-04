@@ -1,23 +1,21 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { catchError, firstValueFrom, lastValueFrom } from 'rxjs';
+import { catchError, lastValueFrom } from 'rxjs';
 import { AxiosError } from 'axios/index';
 import { map } from 'rxjs';
 import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 import { ReactionDto } from 'src/cron/dto/reaction.dto';
-import { getBodyParserOptions } from '@nestjs/platform-express/adapters/utils/get-body-parser-options.util';
 
 @Injectable()
 export class MiroService {
   constructor(private readonly httpService: HttpService) {}
 
-  public async getAuthenticatedUserInformation(body: ReactionDto): Promise<any> {
-    // const url = getElemContentInParams(body.params, 'url', undefined, body.returnValues);
+  public async getAuthenticatedUserInformation(accessToken: string): Promise<any> {
     const user = await lastValueFrom(
       this.httpService
         .get('https://api.miro.com/v1/oauth-token', {
           headers: {
-            Authorization: `Bearer ${body.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         })
         .pipe(
@@ -35,13 +33,12 @@ export class MiroService {
     return user;
   }
 
-  public async getTeamBoards(body: ReactionDto): Promise<any> {
-    const teamId = getElemContentInParams(body.params, 'teamId', undefined, body.returnValues);
+  public async getTeamBoards(accessToken: string, teamId: string): Promise<any> {
     const teamBoards = await lastValueFrom(
       this.httpService
         .get(`https://api.miro.com/v2/boards?sort=default&team_id=${teamId}`, {
           headers: {
-            Authorization: `Bearer ${body.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         })
         .pipe(
@@ -116,7 +113,7 @@ export class MiroService {
     const boardId = getElemContentInParams(body.params, 'boardId', undefined, body.returnValues);
     const email = getElemContentInParams(body.params, 'email', undefined, body.returnValues);
     // Available roles are the following: commenter, editor, coowner
-    const role = getElemContentInParams(body.params, 'role', undefined, body.returnValues);
+    const role = getElemContentInParams(body.params, 'role', 'commenter', body.returnValues);
 
     const sharedBoard = await lastValueFrom(
       this.httpService
@@ -147,13 +144,13 @@ export class MiroService {
     return sharedBoard;
   }
 
-  public async getBoardTeamMembers(body: ReactionDto): Promise<any> {
-    const boardId = getElemContentInParams(body.params, 'boardId', undefined, body.returnValues);
+  public async getBoardTeamMembers(accessToken: string, boardId: string): Promise<any> {
+    // const boardId = getElemContentInParams(body.params, 'boardId', undefined, body.returnValues);
     const boardMembers = await lastValueFrom(
       this.httpService
         .get(encodeURI(`https://api.miro.com/v2/boards/${boardId}/members`), {
           headers: {
-            Authorization: `Bearer ${body.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         })
         .pipe(

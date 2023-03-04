@@ -106,14 +106,18 @@ export class AppController {
             name: 'miro',
             actions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'member joined a board',
+                description: 'It check if a member joined a board on Miro.',
               },
             ],
             reactions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'create a board',
+                description: 'It create a new board on Miro.',
+              },
+              {
+                name: 'share a board',
+                description: 'It share a board on Miro.',
               },
             ],
           },

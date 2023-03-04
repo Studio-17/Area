@@ -18,7 +18,8 @@ import { DiscordCronService } from 'src/externService/service/discord/discord.cr
 import { TwitchCronService } from 'src/externService/service/twitch/twitch.cron.service';
 import { TimerCronService } from 'src/externService/service/timer/timer.cron.service';
 import { ActionFunction } from 'src/cron/interfaces/actionFunction.interface';
-import { DeezerService } from 'src/externService/service/deezer/deezer.service';
+import { MiroCronService } from 'src/externService/service/miro/miro.cron.service';
+// import { DeezerService } from 'src/externService/service/deezer/deezer.service';
 import { DeezerCronService } from 'src/externService/service/deezer/deezer.cron.service';
 
 @Injectable()
@@ -36,6 +37,7 @@ export class MyActionService {
     private readonly discordCronService: DiscordCronService,
     private readonly twitchCronService: TwitchCronService,
     private readonly timerCronService: TimerCronService,
+    private readonly miroCronService: MiroCronService,
     private readonly cronService: CronService,
     private readonly deezerCronService: DeezerCronService,
   ) {}
@@ -105,7 +107,7 @@ export class MyActionService {
   }
 
   availableActions = new Map<string, Map<string, ActionFunction>>([
-    // MIRONon assigné
+    [ServiceList.MIRO, this.miroCronService.availableActions],
     // NOTION
     [ServiceList.TWITCH, this.twitchCronService.availableActions],
     // return value not set up for google

@@ -127,6 +127,45 @@ export class ActionSeederService {
         link: 'google/publish-doc/',
       },
       // ----- MIRO TEMPLATES -----
+      {
+        uuid: '1f5bea14-32b5-40fa-817c-60ea1cfb2a29',
+        service: ServiceList.MIRO,
+        type: ActionType.ACTION,
+        name: 'A user Joined a board',
+        params: [{ name: 'boardName', type: 'string', description: 'name of the board.' }],
+        returnValues: [
+          { name: 'memberName', type: 'string', description: 'name of the joining member' },
+          { name: 'memberId', type: 'string', description: 'name of the joining member' },
+        ],
+        description: 'This action will check if a user joined a board on Miro.',
+        link: 'miro/user-join-board/',
+      },
+      {
+        uuid: 'df56ea14-32b5-40fa-852c-60ea3cfb7e2c',
+        service: ServiceList.MIRO,
+        type: ActionType.REACTION,
+        name: 'Create a new board',
+        params: [
+          { name: 'name', type: 'string', description: 'name of the board.' },
+          { name: 'description', type: 'string', description: 'description of the board.' },
+        ],
+        description: 'This reaction will create a new board in the team on Miro.',
+        link: 'miro/create/team/boards/',
+      },
+      {
+        uuid: 'ae56ea14-3295-40fa-852c-6fea3cfb7e2c',
+        service: ServiceList.MIRO,
+        type: ActionType.REACTION,
+        name: 'Share a board',
+        params: [
+          { name: 'name', type: 'string', description: 'name of the board.' },
+          { name: 'email', type: 'string', description: 'email of the new user.' },
+          { name: 'role', type: 'string', description: 'Role of the new user.' },
+        ],
+        description: 'This reaction will share a board with email member on Miro.',
+        link: 'miro/board/share',
+      },
+
       // ----- NOTION TEMPLATES -----
       // ----- SPOTIFY TEMPLATES -----
       {
