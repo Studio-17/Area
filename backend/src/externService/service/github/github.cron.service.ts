@@ -41,6 +41,7 @@ export class GithubCronService {
     // REACTIONS
     ['github/fork-repository/', this.forkRepository.bind(this)],
     ['github/star-repository/', this.starRepository.bind(this)],
+    ['github/unstar-repository/', this.unstarRepository.bind(this)],
   ]);
 
   // --- USER STAR ---

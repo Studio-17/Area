@@ -35,8 +35,6 @@ export class GithubController {
   // CREATE A MILESTONE
   // DELETE A MILESTONE
   // DELETE A REPOSITORY
-  // STAR A REPOSITORY
-  // UNSTAR A REPOSITORY
 
   @Get('/check-repository')
   public async checkNewUserRepository(@Req() request, @Res() response) {

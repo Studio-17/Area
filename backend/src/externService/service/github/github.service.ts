@@ -16,7 +16,7 @@ import { GithubTeamDto } from './dto/github-team.dto';
 import { GithubInvitationDto } from './dto/github-invitation.dto';
 import { GithubMilestoneDto } from './dto/github-milestone.dto';
 import { GithubStarRepositoryDto } from './dto/star/github-star-repository.dto';
-import {GithubUnstarRepositoryDto} from "./dto/star/github-unstar-repository.dto";
+import { GithubUnstarRepositoryDto } from './dto/star/github-unstar-repository.dto';
 
 @Injectable()
 export class GithubService {
