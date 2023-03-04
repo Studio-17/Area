@@ -29,3 +29,9 @@
     margin: 0px 0px 1vw 0px;
     text-align: center;
 }
+
+.landing-page-buttons-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -16,6 +16,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import UserProfile from "./pages/UserProfile";
 import EditAreaForm from "./components/EditAreaForm/EditAreaForm";
+import DownloadSdk from "./pages/DownloadSdk";
 
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -101,6 +102,15 @@ const router = createBrowserRouter([
       <>
         <HeaderApp />
         <EditAreaForm />
+      </>
+    ),
+  },
+  {
+    path: "/client.apk",
+    element: (
+      <>
+        <HeaderApp />
+        <DownloadSdk />
       </>
     ),
   },
