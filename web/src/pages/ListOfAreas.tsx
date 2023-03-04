@@ -87,10 +87,10 @@ const ListOfAreas = () => {
       <Fab
         style={{
           position: "fixed",
-          bottom: 36,
-          right: 36,
-          width: 70,
-          height: 70,
+          bottom: 60,
+          right: 60,
+          width: 75,
+          height: 75,
         }}
         color="primary"
         onClick={() => navigate("/new-area")}

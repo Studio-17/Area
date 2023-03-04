@@ -12,6 +12,7 @@ import { Service } from "../models/serviceModels";
 import { useNavigate } from "react-router-dom";
 import NewAreaForm from "../components/NewAreaForm/NewAreaForm";
 import { PostParamsDto } from "../models/paramsModel";
+import { motion } from "framer-motion";
 
 const NewArea = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -123,14 +124,28 @@ const NewArea = () => {
                 </div>
                 {thensInstance.map((block: any, index: number) => (
                   <>
-                    <div
+                    <motion.div
                       className="link"
                       style={{ backgroundColor: theme.palette.common.grey }}
                       key={index}
-                    ></div>
-                    <div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.2 }}
+                    ></motion.div>
+                    <motion.div
                       className="then-container"
                       style={{ backgroundColor: theme.palette.primary }}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{
+                        default: { duration: 0.2 },
+                        scale: {
+                          type: "spring",
+                          damping: 5,
+                          stiffness: 100,
+                          restDelta: 0.001,
+                        },
+                      }}
                     >
                       {blocksState[index + 1] ? (
                         <>
@@ -163,7 +178,7 @@ const NewArea = () => {
                       >
                         <AddIcon />
                       </Fab>
-                    </div>
+                    </motion.div>
                   </>
                 ))}
                 <div className="more-thens-button">

@@ -18,7 +18,13 @@ const AreasCards = ({ area, onClickOnCard, onClickDeleteArea }: Props) => {
   const navigate = useNavigate();
   return (
     <Card
-      sx={{ width: 350, height: 250, borderRadius: 2, position: "relative" }}
+      sx={{
+        width: 350,
+        height: 250,
+        borderRadius: 2,
+        position: "relative",
+        backgroundColor: theme.palette.secondary,
+      }}
     >
       <IconButton
         style={{ position: "absolute", right: 0, bottom: 0 }}

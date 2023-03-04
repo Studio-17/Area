@@ -12,6 +12,11 @@ import dropBoxLogo from "../../assets/dropbox.png";
 import twitchLogo from "../../assets/twitch.png";
 import typeformLogo from "../../assets/typeform.png";
 import deezerLogo from "../../assets/deezer.png";
+import googleEventLogo from "../../assets/google_event.png";
+import googleFormsLogo from "../../assets/google_forms.png";
+import googleMailLogo from "../../assets/google_mail.png";
+import googleSuiteLogo from "../../assets/google_suite.png";
+import timerLogo from "../../assets/timer.png";
 
 interface Props {
   open: boolean;
@@ -42,16 +47,16 @@ const logos = [
   dropBoxLogo,
   githubLogo,
   googleLogo,
-  "",
-  "",
-  "",
-  "",
-  "",
+  googleEventLogo,
+  googleFormsLogo,
+  googleMailLogo,
+  googleSuiteLogo,
   miroLogo,
   notionLogo,
   spotifyLogo,
   twitchLogo,
   typeformLogo,
+  timerLogo,
 ];
 
 const ServicesModal = ({
