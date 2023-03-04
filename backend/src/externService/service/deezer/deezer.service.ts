@@ -90,6 +90,10 @@ export class DeezerService {
           }),
         ),
     );
+    const playlists = await this.getPlaylists(body.accessToken);
+    const lenght = playlists.data.length;
+    console.log(lenght, playlists.data[lenght - 1]);
+    console.log(playlists.data);
     return playlistCreated;
   }
 }

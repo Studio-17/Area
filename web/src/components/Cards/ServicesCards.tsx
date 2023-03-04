@@ -20,7 +20,9 @@ const ServicesCards = ({
     onClose();
   };
   return (
-    <Card sx={{ width: 200, height: 200, borderRadius: 2 }}>
+    <Card
+      sx={{ width: 200, height: 200, borderRadius: 2, backgroundColor: service.color }}
+    >
       <CardActionArea
         sx={{ height: "100%", position: "relative" }}
         onClick={onClickOnCards}
