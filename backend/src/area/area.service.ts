@@ -92,22 +92,21 @@ export class AreaService {
   }
 
   async update(areaId: string, updateAreaDto: UpdateAreaDto, userId: string): Promise<AreaEntity> {
-    console.log(updateAreaDto);
     const area: AreaEntity = await this.areaRepository.findOneBy({ uuid: areaId });
 
     await this.areaRepository
       .update(
         { uuid: areaId, userId: userId },
-        { name: updateAreaDto.name ? updateAreaDto.name : area.name },
+        {
+          name: updateAreaDto.name ? updateAreaDto.name : area.name,
+          color: updateAreaDto.color ? updateAreaDto.color : area.color,
+        },
       )
-      .catch((e) => {
-        console.error(e);
+      .catch(() => {
         throw NotFoundException('area');
       });
-    console.log('aaa');
 
     await this.myActionService.removeByAreaId(areaId, userId);
-    console.log('000');
     const action = await this.myActionService.addAction(
       areaId,
       {
@@ -120,7 +119,6 @@ export class AreaService {
       },
       userId,
     );
-    console.log('111');
 
     for (const myAction of updateAreaDto.reactions) {
       await this.myActionService.addAction(
