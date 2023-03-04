@@ -118,6 +118,25 @@ export class GithubController {
     }
   }
 
+  @Get('/check-user-issue')
+  public async checkNewUserIssue(@Req() request, @Res() response) {
+    try {
+      const issueResult = await this.githubService.getUserIssue(request.credentials.accessToken);
+
+      return response.status(HttpStatus.OK).json({
+        message: 'Got last user issue from Github API',
+        content: issueResult,
+        status: 200,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error fetching user issue from Github API',
+        error: error,
+        status: 400,
+      });
+    }
+  }
+
   @Get('/check-review-comment')
   public async checkNewReviewComment(
     @Req() request,

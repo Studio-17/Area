@@ -43,6 +43,14 @@ export class ActionSeederService {
         link: 'github/check-issue/',
       },
       {
+        uuid: 'e52c87ae-ad10-4040-ae66-75df2d9ccb71',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github User Issue',
+        description: 'This action allow you to catch events when a new issue is assigned to you.',
+        link: 'github/check-user-issue/',
+      },
+      {
         uuid: '5e5db1e5-14b6-4abd-babd-3d50f5619dbe',
         service: ServiceList.GITHUB,
         type: ActionType.ACTION,

@@ -27,10 +27,12 @@ export class GithubCronService {
     // ACTIONS
     ['github/check-pull-request/', this.checkPullRequest.bind(this)],
     ['github/check-issue/', this.checkIssue.bind(this)],
+    ['github/check-user-issue/', this.checkUserIssue.bind(this)],
     ['github/check-team/', this.checkTeam.bind(this)],
     ['github/check-contributor/', this.checkIssue.bind(this)],
     ['github/check-fork/', this.checkFork.bind(this)],
     ['github/check-star/', this.checkStar.bind(this)],
+    ['github/check-user-star/', this.checkUserStar.bind(this)],
     ['github/check-invitation/', this.checkInvitation.bind(this)],
     ['github/check-milestone/', this.checkMilestone.bind(this)],
     ['github/check-review-comment/', this.checkReviewComment.bind(this)],
@@ -261,6 +263,84 @@ export class GithubCronService {
         owner: githubRecordDto.owner,
         repo: githubRecordDto.repo,
         category: 'issue',
+      });
+
+      if (!records) {
+        return undefined;
+      }
+
+      return records;
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
+
+  // TODO - Fix user conflicts
+  // --- USER ISSUE ---
+  public async checkUserIssue(accessToken: string, params: { name: string; content: string }[]) {
+    try {
+      const issue = await this.githubService.getUserIssue(accessToken);
+
+      const record = new GithubRecordEntity();
+      record.owner = '';
+      record.repo = '';
+      record.category = 'user-issue';
+      record.id = issue;
+      return (await this.findOrUpdateLastUserIssue(record)).new;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+  }
+
+  public async findOrUpdateLastUserIssue(githubRecordDto: GithubRecordDto) {
+    const record = await this.findUserIssue(githubRecordDto);
+
+    if (!record) {
+      try {
+        return {
+          new: false,
+          data: await this.githubRecordRepository.save(githubRecordDto),
+        };
+      } catch (err) {
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
+      }
+    } else if (
+      githubRecordDto.id.toString() !== '0' &&
+      record.id.toString() < githubRecordDto.id.toString()
+    ) {
+      try {
+        const newRecord = await this.githubRecordRepository.update(
+          {
+            id: record.id,
+          },
+          { ...githubRecordDto },
+        );
+
+        if (!newRecord) {
+          throw new NotFoundException(`Record does not exist`);
+        }
+
+        return {
+          new: true,
+          data: await this.findUserIssue(githubRecordDto),
+        };
+      } catch (err) {
+        console.error(err);
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
+      }
+    } else {
+      return { new: false, data: record };
+    }
+  }
+
+  public async findUserIssue(githubRecordDto: GithubRecordDto): Promise<GithubRecordEntity> {
+    try {
+      const records = await this.githubRecordRepository.findOneBy({
+        owner: githubRecordDto.owner,
+        repo: githubRecordDto.repo,
+        category: 'user-issue',
       });
 
       if (!records) {

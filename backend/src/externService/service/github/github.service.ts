@@ -199,6 +199,34 @@ export class GithubService {
     return '0';
   }
 
+  public async getUserIssue(accessToken: string) {
+    const issue = await firstValueFrom(
+      this.httpService
+        .get(`https://api.github.com/issues`, {
+          headers: {
+            Accept: 'application/vnd.github+json',
+            Authorization: `Bearer ${accessToken}`,
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+        })
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+
+    if (issue.length) {
+      return issue[0].id;
+    }
+    return '0';
+  }
+
   public async getStar(accessToken: string, githubStarDto: GithubStarDto) {
     const star = await firstValueFrom(
       this.httpService
