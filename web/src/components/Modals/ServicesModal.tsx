@@ -42,6 +42,11 @@ const logos = [
   dropBoxLogo,
   githubLogo,
   googleLogo,
+  "",
+  "",
+  "",
+  "",
+  "",
   miroLogo,
   notionLogo,
   spotifyLogo,
@@ -55,6 +60,7 @@ const ServicesModal = ({
   setServiceSelected,
   services,
 }: Props) => {
+  console.log(services);
   return (
     <Modal open={open} onClose={onClose}>
       <Fade in={open}>

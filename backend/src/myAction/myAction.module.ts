@@ -13,6 +13,7 @@ import { CronModule } from 'src/cron/cron.module';
 import { DiscordModule } from 'src/externService/service/discord/discord.module';
 import { TwitchModule } from 'src/externService/service/twitch/twitch.module';
 import { TimerModule } from 'src/externService/service/timer/timer.module';
+import { DeezerModule } from 'src/externService/service/deezer/deezer.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { TimerModule } from 'src/externService/service/timer/timer.module';
     forwardRef(() => DiscordModule),
     forwardRef(() => TwitchModule),
     forwardRef(() => TimerModule),
+    forwardRef(() => DeezerModule),
   ],
   providers: [MyActionService],
   controllers: [MyActionController],
