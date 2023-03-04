@@ -106,28 +106,28 @@ export class MiroController {
     }
   }
 
-  @Post('/board/team/members')
-  public async getBoardTeamMembers(@Res() response, @Body() body: ReactionDto) {
-    try {
-      const teamMembers = await this.miroService.getBoardTeamMembers(body);
+  // @Post('/board/team/members')
+  // public async getBoardTeamMembers(@Res() response, @Body() body: ReactionDto) {
+  //   try {
+  //     const teamMembers = await this.miroService.getBoardTeamMembers(body.accessToken, '');
 
-      const data = teamMembers.data;
-      const memberIds = data.map((objects) => objects.id);
+  //     const data = teamMembers.data;
+  //     const memberIds = data.map((objects) => objects.id);
 
-      return response.status(HttpStatus.OK).json({
-        message: 'Got authenticated user information using Miro service',
-        id: memberIds,
-        teamMembers,
-        status: 200,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error fetching user information from Miro services',
-        error: error,
-        status: 400,
-      });
-    }
-  }
+  //     return response.status(HttpStatus.OK).json({
+  //       message: 'Got authenticated user information using Miro service',
+  //       id: memberIds,
+  //       teamMembers,
+  //       status: 200,
+  //     });
+  //   } catch (error) {
+  //     return response.status(HttpStatus.BAD_REQUEST).json({
+  //       message: 'Error fetching user information from Miro services',
+  //       error: error,
+  //       status: 400,
+  //     });
+  //   }
+  // }
 
   @Post('/board/get/items')
   public async getBoardItems(@Res() response, @Body() body: ReactionDto) {

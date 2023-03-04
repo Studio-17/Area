@@ -144,13 +144,13 @@ export class MiroService {
     return sharedBoard;
   }
 
-  public async getBoardTeamMembers(body: ReactionDto): Promise<any> {
-    const boardId = getElemContentInParams(body.params, 'boardId', undefined, body.returnValues);
+  public async getBoardTeamMembers(accessToken: string, boardId: string): Promise<any> {
+    // const boardId = getElemContentInParams(body.params, 'boardId', undefined, body.returnValues);
     const boardMembers = await lastValueFrom(
       this.httpService
         .get(encodeURI(`https://api.miro.com/v2/boards/${boardId}/members`), {
           headers: {
-            Authorization: `Bearer ${body.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         })
         .pipe(
