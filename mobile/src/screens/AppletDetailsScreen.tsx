@@ -6,7 +6,7 @@ import {
   View,
   ScrollView,
   Alert,
-  Pressable
+  Pressable,
 } from "react-native";
 
 // Icons
@@ -18,10 +18,10 @@ import DetailsActionCard from "../components/Cards/DetailsActionCard";
 
 // Redux
 import { Action } from "../redux/models/actionModels";
-import {useAreaQuery, useDeleteAreaMutation, useServicesQuery} from "../redux/services/servicesApi";
-// import {GetParamsDto} from "../redux/models/paramsModels";
-// import { Area } from "../redux/models/areaModels";
-// import { PostParamsDto, GetParamsDto } from "../redux/models/paramsModel";
+import {
+  useAreaQuery,
+  useDeleteAreaMutation,
+} from "../redux/services/servicesApi";
 
 export default function AppletDetailsScreen({
   route,
@@ -32,7 +32,6 @@ export default function AppletDetailsScreen({
 }) {
   const { item } = route.params;
   const [deleteArea] = useDeleteAreaMutation();
-  const { data: area, isError, isLoading } = useAreaQuery(item.area.uuid);
 
   const onClickDelete = () => {
     Alert.alert("Delete", "Are you sure you want to delete this area?", [
@@ -52,7 +51,7 @@ export default function AppletDetailsScreen({
   };
 
   const onClickOnModify = () => {
-    navigation.navigate("EditArea", { item: { areaData: area } });
+    navigation.navigate("EditArea", { item: { areaData: item } });
   };
 
   return (
@@ -72,20 +71,22 @@ export default function AppletDetailsScreen({
         <View style={{ flex: 1 }} />
       </SafeAreaView>
       <ScrollView style={styles.contentContainer}>
-        <Pressable
-          onPress={onClickOnModify}
-        >
+        <Pressable onPress={onClickOnModify}>
           <MaterialCommunityIcons name="pen" color={"black"} size={30} />
         </Pressable>
         <MyText style={[styles.actionTitle, { color: "#A37C5B" }]}>
           Action
         </MyText>
-        <DetailsActionCard style={{backgroundColor: "#A37C5B"}} >{item.action.name}</DetailsActionCard>
+        <DetailsActionCard style={{ backgroundColor: "#A37C5B" }}>
+          {item.action.name}
+        </DetailsActionCard>
         <MyText style={[styles.actionTitle, { color: "#0165F5" }]}>
           Reactions
         </MyText>
         {item.reactions.map((reaction: Action, index: number) => (
-          <DetailsActionCard style={{backgroundColor: "#0165F5"}} key={index}>{reaction.name}</DetailsActionCard>
+          <DetailsActionCard style={{ backgroundColor: "#0165F5" }} key={index}>
+            {reaction.name}
+          </DetailsActionCard>
         ))}
         <TouchableOpacity style={styles.deleteButton} onPress={onClickDelete}>
           <MyText style={styles.deleteText}>Delete</MyText>
