@@ -20,6 +20,8 @@ import { Action } from "../redux/models/actionModels";
 import { GetParamsDto, PostParamsDto } from "../redux/models/paramsModel";
 import { Area } from "../redux/models/areaModels";
 
+import { capitalizeNames } from "../components/Cards/CapitalizeNames";
+
 // Components
 import ActionCard from "../components/Cards/ActionCard";
 import FormModal from "../components/Modals/FormModal";
@@ -36,7 +38,9 @@ export default function ActionsListScreen({ navigation, route }: any) {
   const area: Area = item.area;
 
   const [openFormModal, setOpenFormModal] = useState<boolean>(false);
-  const [currentActionParams, setCurrentActionParams] = useState<GetParamsDto[] | null>(null);
+  const [currentActionParams, setCurrentActionParams] = useState<
+    GetParamsDto[] | null
+  >(null);
   const [currentAction, setCurrentAction] = useState<any | null>(null);
 
   const {
@@ -88,10 +92,6 @@ export default function ActionsListScreen({ navigation, route }: any) {
     navigation.goBack();
   };
 
-  const capitalizeFirstLetter = (string: string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
-
   const onClickOnActionCardsCheck = (
     actionContent?: string,
     reactionContent?: string,
@@ -99,7 +99,10 @@ export default function ActionsListScreen({ navigation, route }: any) {
     params?: GetParamsDto[] | null,
     action?: Action
   ) => {
-    if (params || (!serviceInfo?.isConnected && serviceInfo?.type === "external")) {
+    if (
+      params ||
+      (!serviceInfo?.isConnected && serviceInfo?.type === "external")
+    ) {
       setCurrentActionParams(params!);
       setCurrentAction(action);
       setOpenFormModal(true);
@@ -143,9 +146,12 @@ export default function ActionsListScreen({ navigation, route }: any) {
       <ScrollView>
         <View style={{ display: "flex", padding: 20 }}>
           <View style={styles.descriptionContainer}>
-            <Image source={images[service.name]} style={styles.logo} />
+            <Image
+              source={images[service.name.replace("-", "_")]}
+              style={styles.logo}
+            />
             <MyText style={[styles.textHeaderStyle, { marginBottom: 10 }]}>
-              {capitalizeFirstLetter(service.name)}
+              {capitalizeNames(service.name)}
             </MyText>
             <MyText style={styles.textContentStyle}>
               {service.description}

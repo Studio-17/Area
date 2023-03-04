@@ -19,6 +19,8 @@ import { TwitchCronService } from 'src/externService/service/twitch/twitch.cron.
 import { TimerCronService } from 'src/externService/service/timer/timer.cron.service';
 import { ActionFunction } from 'src/cron/interfaces/actionFunction.interface';
 import { MiroCronService } from 'src/externService/service/miro/miro.cron.service';
+// import { DeezerService } from 'src/externService/service/deezer/deezer.service';
+import { DeezerCronService } from 'src/externService/service/deezer/deezer.cron.service';
 
 @Injectable()
 export class MyActionService {
@@ -37,6 +39,7 @@ export class MyActionService {
     private readonly timerCronService: TimerCronService,
     private readonly miroCronService: MiroCronService,
     private readonly cronService: CronService,
+    private readonly deezerCronService: DeezerCronService,
   ) {}
 
   async findAction(areaId: string) {
@@ -113,6 +116,7 @@ export class MyActionService {
     [ServiceList.SPOTIFY, this.spotifyCronService.availableActions],
     [ServiceList.DISCORD, this.discordCronService.availableActions],
     [ServiceList.TIMER, this.timerCronService.availableActions],
+    [ServiceList.DEEZER, this.deezerCronService.availableActions],
   ]);
 
   async addCron(actionId: string, timer: any, myActionId: string, userId: string, params: Params) {

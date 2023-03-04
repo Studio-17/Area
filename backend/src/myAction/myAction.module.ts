@@ -14,6 +14,7 @@ import { DiscordModule } from 'src/externService/service/discord/discord.module'
 import { TwitchModule } from 'src/externService/service/twitch/twitch.module';
 import { TimerModule } from 'src/externService/service/timer/timer.module';
 import { MiroModule } from 'src/externService/service/miro/miro.module';
+import { DeezerModule } from 'src/externService/service/deezer/deezer.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { MiroModule } from 'src/externService/service/miro/miro.module';
     forwardRef(() => TwitchModule),
     forwardRef(() => TimerModule),
     forwardRef(() => MiroModule),
+    forwardRef(() => DeezerModule),
   ],
   providers: [MyActionService],
   controllers: [MyActionController],

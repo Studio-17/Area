@@ -327,7 +327,28 @@ export class ActionSeederService {
         link: 'spotify/follow-playlist/',
       },
       // ----- DEEZER TEMPLATES -----
-
+      {
+        uuid: '65011817-eec8-4d26-817e-46cbe3181ef3',
+        service: ServiceList.DEEZER,
+        type: ActionType.ACTION,
+        name: 'A new playlist is created',
+        returnValues: [
+          { name: 'playlistName', type: 'string', description: 'New created playlist name' },
+        ],
+        description: 'This action check if a new playlist has been created',
+        link: 'deezer/new-created-playlist/',
+      },
+      {
+        uuid: '65011817-eec8-4d26-817e-46cbe3181ef3',
+        service: ServiceList.DEEZER,
+        type: ActionType.ACTION,
+        name: 'A playlist is deleted',
+        returnValues: [
+          { name: 'playlistName', type: 'string', description: 'Deleted playlist name' },
+        ],
+        description: 'This action check if a playlist has been deleted',
+        link: 'deezer/deleted-playlist/',
+      },
       {
         uuid: 'df56e414-32b5-40fa-852c-61e11cfa7a5d',
         service: ServiceList.DEEZER,

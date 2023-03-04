@@ -9,7 +9,6 @@ export enum ServiceList {
   GOOGLE = 'google',
   GOOGLE_EVENT = 'google-event',
   GOOGLE_FORMS = 'google-forms',
-  GOOGLE_KEEP = 'google-keep',
   GOOGLE_MAIL = 'google-mail',
   GOOGLE_SUITE = 'google-suite',
   LINKEDIN = 'linkedin',

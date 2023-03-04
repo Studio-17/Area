@@ -29,4 +29,8 @@ export const images: Images = {
   typeform: require("../../assets/images/services/typeform.png"),
   timer: require("../../assets/images/services/timer.png"),
   loading: require("../../assets/images/services/loading.png"),
+  google_event: require("../../assets/images/services/google_event.png"),
+  google_forms: require("../../assets/images/services/google_forms.png"),
+  google_mail: require("../../assets/images/services/google_mail.png"),
+  google_suite: require("../../assets/images/services/google_suite.png"),
 };

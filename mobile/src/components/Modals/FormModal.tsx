@@ -25,6 +25,7 @@ const API_ENDPOINT = "http://localhost:8080/api/reaccoon";
 
 import MyText from "../MyText";
 import InputField from "../InputField";
+import { capitalizeNames } from "../../components/Cards/CapitalizeNames";
 
 import { Action } from "../../redux/models/actionModels";
 
@@ -115,10 +116,6 @@ export default function FormModal({
     setParamsState(paramsStateTmp);
   };
 
-  const capitalizeFirstLetter = (string: string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
-
   return (
     <Modal animationType="slide" visible={openFormModal}>
       <SafeAreaView
@@ -157,12 +154,12 @@ export default function FormModal({
                 >
                   <Image
                     source={
-                      images[serviceInfo?.name ? serviceInfo.name : "loading"]
+                      images[serviceInfo?.name ? (serviceInfo?.name).replace("-", "_") : "loading"]
                     }
                     style={styles.logo}
                   />
                   <MyText style={[styles.textStyle, { fontSize: 25 }]}>
-                    Log in to {capitalizeFirstLetter(serviceInfo?.name ? serviceInfo.name : "loading")} to continue
+                    Log in to {capitalizeNames(serviceInfo?.name ? serviceInfo.name : "loading")} to continue
                   </MyText>
                 </View>
                 <TouchableOpacity

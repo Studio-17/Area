@@ -30,6 +30,10 @@ import MyText from "../components/MyText";
 export default function HomeScreen({ navigation }: { navigation: any }) {
   const { data: areas, isLoading, isFetching, refetch } = useAreasQuery();
 
+  React.useEffect(() => {
+    refetch();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <MainHeader />
