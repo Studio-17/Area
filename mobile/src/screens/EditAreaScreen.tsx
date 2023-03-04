@@ -32,46 +32,64 @@ export default function EditAreaScreen({ navigation, route }: Props) {
   const { item } = route.params;
   const area = item.areaData;
 
-  let initBlockState: [{name: string | undefined, service: string | undefined, uuid: string | undefined, params: GetParamsDto[] | null | undefined}] = [
+  let initBlockState: [
+    {
+      name: string | undefined;
+      service: string | undefined;
+      uuid: string | undefined;
+      params: GetParamsDto[] | null | undefined;
+    }
+  ] = [
     {
       name: area?.action.name,
       service: area?.action.service,
       uuid: area?.action.uuid,
       params: area?.action.params,
-    }
+    },
   ];
-  let initThenInstance: [{name: string | undefined, service: string | undefined, uuid: string | undefined, params: GetParamsDto[] | null | undefined}] = [
+  let initThenInstance: [
+    {
+      name: string | undefined;
+      service: string | undefined;
+      uuid: string | undefined;
+      params: GetParamsDto[] | null | undefined;
+    }
+  ] = [
     {
       name: area?.reactions[0].name,
       service: area?.reactions[0].service,
       uuid: area?.reactions[0].uuid,
       params: area?.reactions[0].params,
-    }
+    },
   ];
 
   area?.reactions.map((reaction: Action, i: number) => {
-    initBlockState.push(
-      {
+    initBlockState.push({
+      name: reaction.name,
+      service: reaction.service,
+      uuid: reaction.uuid,
+      params: reaction.params,
+    });
+    if (i > 0) {
+      initThenInstance.push({
         name: reaction.name,
         service: reaction.service,
         uuid: reaction.uuid,
         params: reaction.params,
-      }
-    );
-    if (i > 0) {
-      initThenInstance.push(
-        {
-          name: reaction.name,
-          service: reaction.service,
-          uuid: reaction.uuid,
-          params: reaction.params,
-        }
-      );
+      });
     }
   });
   const [blocksState, setBlockState] = useState<any>(initBlockState);
   const [thensInstance, setThensInstance] = useState<any>(initThenInstance);
-  const [timer, setTimerState] = useState<{hour: string | undefined, minute: string | undefined, second: string | undefined}>({hour: area?.action.hour, minute: area?.action.minute, second: area?.action.second});
+  const [timer, setTimerState] = useState<{
+    hour: string | undefined;
+    minute: string | undefined;
+    second: string | undefined;
+  }>({
+    hour: area?.action.hour,
+    minute: area?.action.minute,
+    second: area?.action.second,
+  });
   const [color, setColorState] = useState<string | undefined>(area?.area.color);
   const [title, setTitleState] = useState<string | undefined>(area?.area.name);
 
@@ -83,25 +101,25 @@ export default function EditAreaScreen({ navigation, route }: Props) {
     params?: PostParamsDto[] | null
   ) => {
     actionContent &&
-    setBlockState((state: any) => [
-      ...state,
-      {
-        name: actionContent,
-        service: serviceSelected?.name,
-        uuid: uuidOfAction,
-        params: params ? params : null,
-      },
-    ]);
+      setBlockState((state: any) => [
+        ...state,
+        {
+          name: actionContent,
+          service: serviceSelected?.name,
+          uuid: uuidOfAction,
+          params: params ? params : null,
+        },
+      ]);
     reactionContent &&
-    setBlockState((state: any) => [
-      ...state,
-      {
-        name: reactionContent,
-        service: serviceSelected?.name,
-        uuid: uuidOfAction,
-        params: params ? params : null,
-      },
-    ]);
+      setBlockState((state: any) => [
+        ...state,
+        {
+          name: reactionContent,
+          service: serviceSelected?.name,
+          uuid: uuidOfAction,
+          params: params ? params : null,
+        },
+      ]);
   };
 
   const onClickOnModifyAreasCards = (
@@ -142,7 +160,15 @@ export default function EditAreaScreen({ navigation, route }: Props) {
     onClickOnAreasCards: () => void
   ) => {
     navigation.navigate("Services", {
-      item: { services, typeOfAction, typeOfRequest, indexBlock, onClickOnAreasCards, toScreen: "EditArea", area },
+      item: {
+        services,
+        typeOfAction,
+        typeOfRequest,
+        indexBlock,
+        onClickOnAreasCards,
+        toScreen: "EditArea",
+        area,
+      },
     });
   };
 
@@ -229,7 +255,18 @@ export default function EditAreaScreen({ navigation, route }: Props) {
 
   const onClickContinue = () => {
     navigation.navigate("FinishEditArea", {
-      item: { blocksState, setBlockState, setthensInstance: setThensInstance, title, hours: timer.hour, minutes: timer.minute, seconds: timer.second, color, toScreen: "Home", area },
+      item: {
+        blocksState,
+        setBlockState,
+        setthensInstance: setThensInstance,
+        title,
+        hours: timer.hour,
+        minutes: timer.minute,
+        seconds: timer.second,
+        color,
+        toScreen: "Home",
+        area,
+      },
     });
   };
 
@@ -237,7 +274,18 @@ export default function EditAreaScreen({ navigation, route }: Props) {
     <SafeAreaView style={styles.screenContainer}>
       <>
         <View style={styles.headerContainer}>
+          <TouchableOpacity
+            style={styles.backIcon}
+            onPress={() => navigation.goBack()}
+          >
+            <MaterialCommunityIcons
+              name="chevron-left"
+              color={"black"}
+              size={50}
+            />
+          </TouchableOpacity>
           <MyText style={styles.textHeaderStyle}>Edit your coonie</MyText>
+          <View style={{ flex: 1 }} />
         </View>
         <ScrollView>
           <View style={styles.contentContainer}>
@@ -388,6 +436,9 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight || 0,
     backgroundColor: "#FFF7FA",
   },
+  backIcon: {
+    flex: 1,
+  },
   contentContainer: {
     marginTop: 20,
     paddingTop: 13,
@@ -404,10 +455,9 @@ const styles = StyleSheet.create({
   headerContainer: {
     display: "flex",
     flexDirection: "row",
-    flexWrap: "wrap",
     alignItems: "center",
-    justifyContent: "center",
-    padding: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   textHeaderStyle: {
     fontSize: 25,

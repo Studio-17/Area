@@ -68,12 +68,21 @@ export default function AppletDetailsScreen({
           />
         </TouchableOpacity>
         <MyText style={styles.textStyle}>{item.area.name}</MyText>
-        <View style={{ flex: 1 }} />
+        <TouchableOpacity style={styles.backIcon} onPress={onClickOnModify}>
+          <MaterialCommunityIcons
+            name="pencil-outline"
+            color={"black"}
+            size={30}
+          />
+        </TouchableOpacity>
       </SafeAreaView>
       <ScrollView style={styles.contentContainer}>
-        <Pressable onPress={onClickOnModify}>
-          <MaterialCommunityIcons name="pen" color={"black"} size={30} />
-        </Pressable>
+        <MyText style={[styles.actionTitle, { color: "#A04000" }]}>
+          Runs every
+        </MyText>
+        <DetailsActionCard style={{ backgroundColor: "#A04000" }}>
+            Hour: {item.action.hour} Minute: {item.action.minute} Second: {item.action.second}
+          </DetailsActionCard>
         <MyText style={[styles.actionTitle, { color: "#A37C5B" }]}>
           Action
         </MyText>
