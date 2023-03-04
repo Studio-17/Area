@@ -61,7 +61,6 @@ export default function FinishEditAreaScreen(
       color: color,
     };
     editArea({areaToUpdate, areaId: area?.area.uuid});
-    console.log(areaToUpdate);
     item.setBlockState([]);
     item.setthensInstance([]);
     navigation.navigate(toScreen);
@@ -89,7 +88,7 @@ export default function FinishEditAreaScreen(
       <SafeAreaView style={styles.headerContainer}>
         <TouchableOpacity
           style={styles.backIcon}
-          onPress={() => navigation.navigate(toScreen)}
+          onPress={() => navigation.goBack()}
         >
           <MaterialCommunityIcons
             name="chevron-left"

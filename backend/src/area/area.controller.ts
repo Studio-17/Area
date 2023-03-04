@@ -38,7 +38,7 @@ export class AreaController {
     @Req() request: any,
     @Body() updateAreaDto: UpdateAreaDto,
   ): Promise<AreaEntity> {
-    return this.areaService.update(areaId, updateAreaDto, request.user.id);
+    return this.areaService.update(areaId, updateAreaDto, request.user.userId);
   }
 
   @Delete(':areaId')
