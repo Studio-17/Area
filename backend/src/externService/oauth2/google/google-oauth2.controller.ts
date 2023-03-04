@@ -59,11 +59,11 @@ export class GoogleOAuth2Controller {
 
   @Get('/google-event')
   @UseGuards(AuthGuard('jwt'))
-  public async googleEvengt(@Req() request, @Res() response) {
+  public async googleEvent(@Req() request, @Res() response) {
     const clientID = process.env.GOOGLE_CLIENT_ID;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
     const scope =
-      'email profile https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.calendarlist';
+      'email profile https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.calendarlist https://www.googleapis.com/auth/tasks';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
     if (!token['email']) {
