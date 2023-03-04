@@ -17,6 +17,7 @@ import ServiceCard from "../components/Cards/ServiceCard";
 import MyText from "../components/MyText";
 
 import { GetParamsDto, PostParamsDto } from "../redux/models/paramsModel";
+import { Area } from "../redux/models/areaModels";
 
 LogBox.ignoreLogs([
   "Non-serializable values were found in the navigation state",
@@ -34,9 +35,11 @@ export default function ServicesScreen({ navigation, route }: Props) {
   const typeOfRequest: "new" | "modify" = item.typeOfRequest;
   const indexBlock: number = item.indexBlock;
   const onClickOnAreasCards: () => void = item.onClickOnAreasCards;
+  const toScreen: string = item.toScreen;
+  const area: Area = item.area;
 
   const handleClose = () => {
-    navigation.navigate("NewArea");
+    navigation.navigate(toScreen, { item: { areaData: area } });
   };
 
   return (
@@ -63,7 +66,7 @@ export default function ServicesScreen({ navigation, route }: Props) {
               service={service}
               onClickService={() => {
                 navigation.navigate("ActionsList", {
-                  item: { service, typeOfAction, typeOfRequest, indexBlock, onClickOnAreasCards },
+                  item: { service, typeOfAction, typeOfRequest, indexBlock, onClickOnAreasCards, toScreen, area },
                 });
               }}
               cardGap={20}

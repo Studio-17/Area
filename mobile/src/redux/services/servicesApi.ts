@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Action } from "../models/actionModels";
-import { Area, createAreaDto } from "../models/areaModels";
+import { Area, createAreaDto, updateAreaDto } from "../models/areaModels";
 import {
   LoginRequest,
   RegisterRequest,
@@ -11,7 +11,7 @@ import { Service, ServiceInfo } from "../models/serviceModels";
 import { RootState } from "../store/store";
 // import { REACT_NATIVE_APP_API_URL } from "@env";
 
-const API_ENDPOINT = "http://localhost:8080/api/reaccoon";
+const API_ENDPOINT = "http://10.0.2.2:8080/api/reaccoon";
 
 export const servicesApi = createApi({
   reducerPath: "servicesApi",
@@ -51,6 +51,17 @@ export const servicesApi = createApi({
       }),
       invalidatesTags: ["Area"],
     }),
+    editArea: builder.mutation<
+      void,
+      { areaToUpdate: updateAreaDto; areaId: string }
+    >({
+      query: ({ areaToUpdate, areaId }) => ({
+        url: `area/${areaId}`,
+        method: "PATCH",
+        body: areaToUpdate,
+      }),
+      invalidatesTags: ["Area"],
+    }),
     deleteArea: builder.mutation<void, string>({
       query: (id) => ({
         url: `area/${id}`,
@@ -85,6 +96,7 @@ export const {
   useActionsQuery,
   useAddAreaMutation,
   useAreasQuery,
+  useEditAreaMutation,
   useDeleteAreaMutation,
   useAreaQuery,
   useLoginMutation,

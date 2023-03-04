@@ -13,6 +13,7 @@ import {
 
 // Redux
 import { ServiceInfo } from "../../redux/models/serviceModels";
+import { Area } from "../../redux/models/areaModels";
 
 import * as WebBrowser from "expo-web-browser";
 
@@ -20,7 +21,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // import { REACT_NATIVE_APP_API_URL } from "@env";
 
-const API_ENDPOINT = "http://localhost:8080/api/reaccoon";
+const API_ENDPOINT = "http://10.0.2.2:8080/api/reaccoon";
 
 import MyText from "../MyText";
 import InputField from "../InputField";
@@ -45,6 +46,8 @@ interface Props {
   serviceInfo: ServiceInfo | undefined;
   refetchServiceInfos: any;
   indexBlock?: number;
+  toScreen: string;
+  area: Area;
 }
 
 export default function FormModal({
@@ -57,8 +60,13 @@ export default function FormModal({
   serviceInfo,
   refetchServiceInfos,
   indexBlock,
+  toScreen,
+  area
 }: Props) {
   const [paramsState, setParamsState] = useState<PostParamsDto[]>([]);
+
+  // console.log("\nFormModal");
+  // console.log(toScreen, '\n');
 
   const handleOauthConnection = async () => {
     const token = await AsyncStorage.getItem("userToken");
@@ -96,7 +104,9 @@ export default function FormModal({
       indexBlock
     );
     setOpenFormModal(false);
-    navigation.navigate("NewArea");
+    // console.log("\nOnSubmit: ", toScreen, '\n');
+    // console.log(toScreen, '\n');
+    navigation.navigate(toScreen, { item: { areaData: area } });
   };
 
   const onChangeTextField = (name: string, content: string) => {
@@ -128,54 +138,55 @@ export default function FormModal({
             <MaterialCommunityIcons name="close" color={"black"} size={50} />
           </Pressable>
           <MyText style={styles.textHeaderStyle}>
-            {!serviceInfo?.isConnected
-              ? "Connect Service"
-              : "Fill in the trigger fields"}
+            {/*{!serviceInfo?.isConnected*/}
+            {/*  ? "Connect Service"*/}
+            {/*  : "Fill in the trigger fields"}*/}
+            Fill in the trigger fields
           </MyText>
           <View style={{ flex: 1 }} />
         </View>
         <ScrollView>
           <View style={styles.contentConainter}>
-            {!serviceInfo?.isConnected ? (
-              <>
-                <View
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginBottom: 20,
-                  }}
-                >
-                  <Image
-                    source={
-                      images[serviceInfo?.name ? serviceInfo.name : "loading"]
-                    }
-                    style={styles.logo}
-                  />
-                  <MyText style={[styles.textStyle, { fontSize: 25 }]}>
-                    Log in to {capitalizeFirstLetter(serviceInfo?.name ? serviceInfo.name : "loading")} to continue
-                  </MyText>
-                </View>
-                {/* <Button title="Connect" onPress={handleOauthConnection} /> */}
-                <TouchableOpacity
-                  style={{
-                    padding: 10,
-                    borderRadius: 15,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "100%",
-                    borderColor: "black",
-                    borderWidth: 3,
-                  }}
-                  onPress={handleOauthConnection}
-                >
-                  <MyText style={{ color: "black", fontSize: 20 }}>
-                    Connect
-                  </MyText>
-                </TouchableOpacity>
-              </>
-            ) : (
+            {/*{!serviceInfo?.isConnected ? (*/}
+            {/*  <>*/}
+            {/*    <View*/}
+            {/*      style={{*/}
+            {/*        display: "flex",*/}
+            {/*        justifyContent: "center",*/}
+            {/*        alignItems: "center",*/}
+            {/*        marginBottom: 20,*/}
+            {/*      }}*/}
+            {/*    >*/}
+            {/*      <Image*/}
+            {/*        source={*/}
+            {/*          images[serviceInfo?.name ? serviceInfo.name : "loading"]*/}
+            {/*        }*/}
+            {/*        style={styles.logo}*/}
+            {/*      />*/}
+            {/*      <MyText style={[styles.textStyle, { fontSize: 25 }]}>*/}
+            {/*        Log in to {capitalizeFirstLetter(serviceInfo?.name ? serviceInfo.name : "loading")} to continue*/}
+            {/*      </MyText>*/}
+            {/*    </View>*/}
+            {/*    /!* <Button title="Connect" onPress={handleOauthConnection} /> *!/*/}
+            {/*    <TouchableOpacity*/}
+            {/*      style={{*/}
+            {/*        padding: 10,*/}
+            {/*        borderRadius: 15,*/}
+            {/*        display: "flex",*/}
+            {/*        justifyContent: "center",*/}
+            {/*        alignItems: "center",*/}
+            {/*        width: "100%",*/}
+            {/*        borderColor: "black",*/}
+            {/*        borderWidth: 3,*/}
+            {/*      }}*/}
+            {/*      onPress={handleOauthConnection}*/}
+            {/*    >*/}
+            {/*      <MyText style={{ color: "black", fontSize: 20 }}>*/}
+            {/*        Connect*/}
+            {/*      </MyText>*/}
+            {/*    </TouchableOpacity>*/}
+            {/*  </>*/}
+            {/*) : (*/}
               <View>
                 {params?.map((param: GetParamsDto, index: number) => {
                   return (
@@ -201,7 +212,7 @@ export default function FormModal({
                 })}
                 <Button title="Submit" onPress={onSubmit} />
               </View>
-            )}
+            {/*)}*/}
           </View>
         </ScrollView>
       </SafeAreaView>

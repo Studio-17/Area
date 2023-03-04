@@ -7,8 +7,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 // Screens
-import HomeStack from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import HomeStack from "../navigation/HomeNavigator";
 import NewAreaStack from "../navigation/NewAreaNavigator";
 
 const Tab = createBottomTabNavigator();

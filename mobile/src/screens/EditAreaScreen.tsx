@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -14,8 +14,9 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // Redux
-import { useServicesQuery } from "../redux/services/servicesApi";
+import { useServicesQuery, useAreaQuery } from "../redux/services/servicesApi";
 import { Service } from "../redux/models/serviceModels";
+import { Action } from "../redux/models/actionModels";
 import { GetParamsDto, PostParamsDto } from "../redux/models/paramsModel";
 
 // Components
@@ -23,13 +24,56 @@ import MyText from "../components/MyText";
 
 interface Props {
   navigation: any;
+  route: any;
 }
 
-export default function NewAreaScreen({ navigation }: Props) {
+export default function EditAreaScreen({ navigation, route }: Props) {
   const { data: services, isError, isLoading } = useServicesQuery();
+  const { item } = route.params;
+  const area = item.areaData;
 
-  const [blocksState, setBlockState] = useState<any>([]);
-  const [thensInstance, setThensInstance] = useState<any>([]);
+  let initBlockState: [{name: string | undefined, service: string | undefined, uuid: string | undefined, params: GetParamsDto[] | null | undefined}] = [
+    {
+      name: area?.action.name,
+      service: area?.action.service,
+      uuid: area?.action.uuid,
+      params: area?.action.params,
+    }
+  ];
+  let initThenInstance: [{name: string | undefined, service: string | undefined, uuid: string | undefined, params: GetParamsDto[] | null | undefined}] = [
+    {
+      name: area?.reactions[0].name,
+      service: area?.reactions[0].service,
+      uuid: area?.reactions[0].uuid,
+      params: area?.reactions[0].params,
+    }
+  ];
+
+  area?.reactions.map((reaction: Action, i: number) => {
+    initBlockState.push(
+      {
+        name: reaction.name,
+        service: reaction.service,
+        uuid: reaction.uuid,
+        params: reaction.params,
+      }
+    );
+    if (i > 0) {
+      initThenInstance.push(
+        {
+          name: reaction.name,
+          service: reaction.service,
+          uuid: reaction.uuid,
+          params: reaction.params,
+        }
+      );
+    }
+  });
+  const [blocksState, setBlockState] = useState<any>(initBlockState);
+  const [thensInstance, setThensInstance] = useState<any>(initThenInstance);
+  const [timer, setTimerState] = useState<{hour: string | undefined, minute: string | undefined, second: string | undefined}>({hour: area?.action.hour, minute: area?.action.minute, second: area?.action.second});
+  const [color, setColorState] = useState<string | undefined>(area?.area.color);
+  const [title, setTitleState] = useState<string | undefined>(area?.area.name);
 
   const onClickOnAreasCards = (
     serviceSelected?: Service | undefined,
@@ -39,25 +83,25 @@ export default function NewAreaScreen({ navigation }: Props) {
     params?: PostParamsDto[] | null
   ) => {
     actionContent &&
-      setBlockState((state: any) => [
-        ...state,
-        {
-          name: actionContent,
-          service: serviceSelected?.name,
-          uuid: uuidOfAction,
-          params: params ? params : null,
-        },
-      ]);
+    setBlockState((state: any) => [
+      ...state,
+      {
+        name: actionContent,
+        service: serviceSelected?.name,
+        uuid: uuidOfAction,
+        params: params ? params : null,
+      },
+    ]);
     reactionContent &&
-      setBlockState((state: any) => [
-        ...state,
-        {
-          name: reactionContent,
-          service: serviceSelected?.name,
-          uuid: uuidOfAction,
-          params: params ? params : null,
-        },
-      ]);
+    setBlockState((state: any) => [
+      ...state,
+      {
+        name: reactionContent,
+        service: serviceSelected?.name,
+        uuid: uuidOfAction,
+        params: params ? params : null,
+      },
+    ]);
   };
 
   const onClickOnModifyAreasCards = (
@@ -97,9 +141,8 @@ export default function NewAreaScreen({ navigation }: Props) {
     typeOfRequest: "new" | "modify",
     onClickOnAreasCards: () => void
   ) => {
-    const toScreen = "NewArea";
     navigation.navigate("Services", {
-      item: { services, typeOfAction, typeOfRequest, indexBlock, onClickOnAreasCards, toScreen },
+      item: { services, typeOfAction, typeOfRequest, indexBlock, onClickOnAreasCards, toScreen: "EditArea", area },
     });
   };
 
@@ -184,23 +227,9 @@ export default function NewAreaScreen({ navigation }: Props) {
     ]);
   };
 
-  const getTitle = () => {
-    let title = "If " + blocksState[0].name;
-    blocksState.slice(1).map((block: any) => {
-      title += " Then " + block.name;
-    });
-    return title;
-  };
-
   const onClickContinue = () => {
-    const title = getTitle();
-    const hours = "00";
-    const minutes = "00";
-    const seconds = "00";
-    const color = "#db643a";
-    const toScreen = "Home";
-    navigation.navigate("FinishArea", {
-      item: { blocksState, setBlockState, setthensInstance: setThensInstance, title, hours, minutes, seconds, color, toScreen },
+    navigation.navigate("FinishEditArea", {
+      item: { blocksState, setBlockState, setthensInstance: setThensInstance, title, hours: timer.hour, minutes: timer.minute, seconds: timer.second, color, toScreen: "Home", area },
     });
   };
 
@@ -208,7 +237,7 @@ export default function NewAreaScreen({ navigation }: Props) {
     <SafeAreaView style={styles.screenContainer}>
       <>
         <View style={styles.headerContainer}>
-          <MyText style={styles.textHeaderStyle}>New coonie u said ?</MyText>
+          <MyText style={styles.textHeaderStyle}>Edit your coonie</MyText>
         </View>
         <ScrollView>
           <View style={styles.contentContainer}>
