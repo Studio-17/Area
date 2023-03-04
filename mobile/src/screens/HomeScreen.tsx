@@ -9,10 +9,11 @@ import {
 } from "react-native";
 
 // Navigation
-import { createStackNavigator } from "@react-navigation/stack";
+// import { createStackNavigator } from "@react-navigation/stack";
 
 // Screens
-import AppletDetailsScreen from "./AppletDetailsScreen";
+// import AppletDetailsScreen from "./AppletDetailsScreen";
+// import EditAreaScreen from "./EditAreaScreen";
 
 // Redux
 import { useAreasQuery, useDeleteAreaMutation } from "../redux/services/servicesApi";
@@ -22,9 +23,16 @@ import { Area } from "../redux/models/areaModels";
 import MainHeader from "../components/MainHeader";
 import AppletCard from "../components/Cards/AppletCard";
 import MyText from "../components/MyText";
+// import ServicesScreen from "./ServicesScreen";
+// import ActionsListScreen from "./ActionsListScreen";
+// import FinishEditAreaScreen from "./FinishEditAreaScreen";
 
-function HomeScreen({ navigation }: { navigation: any }) {
+export default function HomeScreen({ navigation }: { navigation: any }) {
   const { data: areas, isLoading, isFetching, refetch } = useAreasQuery();
+
+  React.useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -41,27 +49,6 @@ function HomeScreen({ navigation }: { navigation: any }) {
         )}
       </ScrollView>
     </SafeAreaView>
-  );
-}
-
-const Stack = createStackNavigator();
-
-export default function HomeStack() {
-  return (
-    <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="AppletDetailsScreen"
-        component={AppletDetailsScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-    </Stack.Navigator>
   );
 }
 

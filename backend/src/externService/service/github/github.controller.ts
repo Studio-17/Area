@@ -1,16 +1,8 @@
-import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
-import { GithubService } from '../github/github.service';
-import { AuthGuard } from '@nestjs/passport';
-import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authentication.guard';
-import { CredentialsGuard } from './guard/credentials.guard';
-import { CreateRepositoryDto } from './dto/repository/create-repository.dto';
-import { ForkRepositoryDto } from './dto/repository/fork-repository.dto';
-import { ActionDto } from '../../../cron/dto/action.dto';
-import { GithubCronService } from './github.cron.service';
+import { Body, Controller, Get, HttpStatus, Post, Req, Res } from '@nestjs/common';
+import { GithubService } from './github.service';
 import { GithubIssueDto } from './dto/github-issue.dto';
 import { GithubPullRequestDto } from './dto/github-pull-request.dto';
 import { ReactionDto } from '../../../cron/dto/reaction.dto';
-import { IsNotEmpty, IsString } from 'class-validator';
 import { GithubForkDto } from './dto/github-fork.dto';
 import { GithubCheckStarDto } from './dto/star/github-check-star.dto';
 import { GithubReviewCommentDto } from './dto/github-review-comment.dto';
@@ -18,6 +10,7 @@ import { GithubContributorDto } from './dto/github-contributor.dto';
 import { GithubTeamDto } from './dto/github-team.dto';
 import { GithubInvitationDto } from './dto/github-invitation.dto';
 import { GithubMilestoneDto } from './dto/github-milestone.dto';
+import { getElemContentInParams } from '../../../cron/utils/getElemContentInParams';
 
 @Controller('actions/github')
 export class GithubController {
@@ -57,7 +50,6 @@ export class GithubController {
     }
   }
 
-  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/check-pull-request')
   public async checkNewPullRequest(
     @Req() request,
@@ -77,14 +69,13 @@ export class GithubController {
       });
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error fetching pull requests from Github API',
+        message: 'Error fetching pull request from Github API',
         error: error,
         status: 400,
       });
     }
   }
 
-  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/check-issue')
   public async checkNewIssue(
     @Req() request,
@@ -157,7 +148,11 @@ export class GithubController {
   }
 
   @Get('/check-star')
-  public async checkNewStar(@Req() request, @Res() response, @Body() githubStarDto: GithubCheckStarDto) {
+  public async checkNewStar(
+    @Req() request,
+    @Res() response,
+    @Body() githubStarDto: GithubCheckStarDto,
+  ) {
     try {
       const starResult = await this.githubService.getStar(
         request.credentials.accessToken,
@@ -319,7 +314,6 @@ export class GithubController {
     }
   }
 
-  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   // @Get('/create-repository')
   // public async createAuthenticatedUserRepository(
   //   @Req() request,
@@ -346,17 +340,20 @@ export class GithubController {
   //   }
   // }
 
-  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Post('/fork-repository')
   public async forkRepository(@Req() request, @Res() response, @Body() reactionDto: ReactionDto) {
     try {
       const userRepositories = await this.githubService.forkRepository(reactionDto.accessToken, {
-        owner: reactionDto.params.find((param) => param.name === 'owner').content,
-        repo: reactionDto.params.find((param) => param.name === 'repo').content,
-        name: reactionDto.params.find((param) => param.name === 'name').content,
+        owner: getElemContentInParams(reactionDto.params, 'owner', '', reactionDto.returnValues),
+        repo: getElemContentInParams(reactionDto.params, 'repo', '', reactionDto.returnValues),
+        name: getElemContentInParams(reactionDto.params, 'name', '', reactionDto.returnValues),
         default_branch_only:
-            reactionDto.params.find((param) => param.name === 'default_branch_only').content ===
-            'true',
+          getElemContentInParams(
+            reactionDto.params,
+            'default_branch_only',
+            '',
+            reactionDto.returnValues,
+          ) === 'true',
       });
 
       return response.status(HttpStatus.OK).json({
@@ -378,8 +375,8 @@ export class GithubController {
   public async starRepository(@Req() request, @Res() response, @Body() reactionDto: ReactionDto) {
     try {
       const star = await this.githubService.starRepository(reactionDto.accessToken, {
-        owner: reactionDto.params.find((param) => param.name === 'owner').content,
-        repo: reactionDto.params.find((param) => param.name === 'repo').content,
+        owner: getElemContentInParams(reactionDto.params, 'owner', '', reactionDto.returnValues),
+        repo: getElemContentInParams(reactionDto.params, 'repo', '', reactionDto.returnValues),
       });
 
       return response.status(HttpStatus.OK).json({
@@ -401,8 +398,8 @@ export class GithubController {
   public async unstarRepository(@Req() request, @Res() response, @Body() reactionDto: ReactionDto) {
     try {
       const star = await this.githubService.unstarRepository(reactionDto.accessToken, {
-        owner: reactionDto.params.find((param) => param.name === 'owner').content,
-        repo: reactionDto.params.find((param) => param.name === 'repo').content,
+        owner: getElemContentInParams(reactionDto.params, 'owner', '', reactionDto.returnValues),
+        repo: getElemContentInParams(reactionDto.params, 'repo', '', reactionDto.returnValues),
       });
 
       return response.status(HttpStatus.OK).json({

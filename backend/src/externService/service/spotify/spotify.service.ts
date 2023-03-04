@@ -4,7 +4,8 @@ import { catchError, firstValueFrom, lastValueFrom } from 'rxjs';
 import { AxiosError } from 'axios/index';
 import { map } from 'rxjs';
 import { SearchDto } from './dto/search.dto';
-import { AddTrackPlaylistDto } from './dto/add-track-playlist.dto';
+import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
+import { ReactionDto } from 'src/cron/dto/reaction.dto';
 
 @Injectable()
 export class SpotifyService {
@@ -26,7 +27,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -50,7 +51,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -74,7 +75,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -98,7 +99,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -126,12 +127,7 @@ export class SpotifyService {
           }),
         ),
     );
-    if (currentPlayingTrack) {
-      if (currentPlayingTrack.item) {
-        return currentPlayingTrack.item.id;
-      }
-    }
-    return '';
+    return currentPlayingTrack;
   }
 
   public async playCurrentTrack(accessToken: string): Promise<any> {
@@ -150,7 +146,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -174,7 +170,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -198,7 +194,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -222,7 +218,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -230,13 +226,22 @@ export class SpotifyService {
     return previousTrack;
   }
 
-  public async followPlaylist(accessToken: string, playlistId: string): Promise<any> {
+  public async followPlaylist(body: ReactionDto): Promise<any> {
+    const playlistName = getElemContentInParams(body.params, 'playlist', '', body.returnValues);
+    const res = await this.searchAny(body.accessToken, {
+      q: playlistName,
+      type: 'playlist',
+    });
+    if (!res.playlists.items) {
+      throw new HttpException('Playlist not found', HttpStatus.BAD_REQUEST);
+    }
+
     const followedPlaylist = await firstValueFrom(
       this.httpService
-        .put(`https://api.spotify.com/v1/playlists/${playlistId}/followers`, null, {
+        .put(`https://api.spotify.com/v1/playlists/${res.playlists.items[0].id}/followers`, null, {
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${body.accessToken}`,
           },
         })
         .pipe(
@@ -246,7 +251,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -254,13 +259,22 @@ export class SpotifyService {
     return followedPlaylist;
   }
 
-  public async unfollowPlaylist(accessToken: string, playlistId: string): Promise<any> {
+  public async unfollowPlaylist(body: ReactionDto): Promise<any> {
+    const userId = (await this.getAuthenticatedUserInformation(body.accessToken)).id;
+    const playlistName = getElemContentInParams(body.params, 'playlist', '', body.returnValues);
+    const playlistRes = await this.getUserPlaylist(body.accessToken, userId);
+    const result = playlistRes.items.find(
+      (playlist: any) => playlist.name.toLowerCase() == playlistName.toLowerCase(),
+    );
+    if (!result) {
+      throw new HttpException('Playlist not found', HttpStatus.NOT_FOUND);
+    }
     const unfollowedPlaylist = await firstValueFrom(
       this.httpService
-        .delete(`https://api.spotify.com/v1/playlists/${playlistId}/followers`, {
+        .delete(`https://api.spotify.com/v1/playlists/${result.id}/followers`, {
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${body.accessToken}`,
           },
         })
         .pipe(
@@ -270,7 +284,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -294,12 +308,36 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
 
     return playlist;
+  }
+
+  public async getUserPlaylist(accessToken: string, userId: string): Promise<any> {
+    const userPlaylist = await firstValueFrom(
+      this.httpService
+        .get(`https://api.spotify.com/v1/users/${userId}/playlists`, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+
+    return userPlaylist;
   }
 
   public async getAlbums(accessToken: string, albumId: string): Promise<any> {
@@ -318,7 +356,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -342,7 +380,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -366,7 +404,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -374,13 +412,23 @@ export class SpotifyService {
     return track;
   }
 
-  public async addTrackToQueue(accessToken: string, uri: string): Promise<any> {
+  public async addTrackToQueue(body: ReactionDto): Promise<any> {
+    let artist = getElemContentInParams(body.params, 'artist', '', body.returnValues);
+    let track = getElemContentInParams(body.params, 'track', '', body.returnValues);
+    if (artist === '' && track === '') {
+      track = 'after the after';
+      artist = 'teeers';
+    }
+    const res = await this.searchAny(body.accessToken, {
+      q: 'artist:' + artist + ' track:' + track,
+      type: 'track',
+    });
     const queue = await firstValueFrom(
       this.httpService
-        .post(`https://api.spotify.com/v1/me/player/queue?uri=${uri}`, null, {
+        .post(`https://api.spotify.com/v1/me/player/queue?uri=${res.tracks.items[0].uri}`, null, {
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${body.accessToken}`,
           },
         })
         .pipe(
@@ -390,7 +438,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
@@ -398,19 +446,13 @@ export class SpotifyService {
     return queue;
   }
 
-  public async createPlaylist(
-    accessToken: string,
-    params: { name: string; content: string }[],
-  ): Promise<any> {
-    const userId = (await this.getAuthenticatedUserInformation(accessToken)).id;
-    let name = 'new Playlist';
-    try {
-      name = params.find((param) => param.name === 'name').content;
-    } catch (error) {}
-    let isPublic = false;
-    try {
-      isPublic = params.find((param) => param.name === 'public').content === 'true' ? true : false;
-    } catch (error) {}
+  public async createPlaylist(body: ReactionDto): Promise<any> {
+    const userId = (await this.getAuthenticatedUserInformation(body.accessToken)).id;
+    const name = getElemContentInParams(body.params, 'name', 'new Playlist', body.returnValues);
+    const isPublic =
+      getElemContentInParams(body.params, 'public', 'false', body.returnValues) === 'true'
+        ? true
+        : false;
 
     const playlistCreated = await lastValueFrom(
       this.httpService
@@ -423,7 +465,7 @@ export class SpotifyService {
           {
             headers: {
               Accept: 'application/json',
-              Authorization: `Bearer ${accessToken}`,
+              Authorization: `Bearer ${body.accessToken}`,
             },
           },
         )
@@ -442,22 +484,46 @@ export class SpotifyService {
     return playlistCreated;
   }
 
-  public async addTrackToPlaylist(
-    accessToken: string,
-    trackList: AddTrackPlaylistDto,
-  ): Promise<any> {
+  public async addTrackToPlaylist(body: ReactionDto): Promise<any> {
+    const userId = (await this.getAuthenticatedUserInformation(body.accessToken)).id;
+    let track = getElemContentInParams(body.params, 'track', '', body.returnValues);
+    let artist = getElemContentInParams(body.params, 'artist', '', body.returnValues);
+    const playlistName = getElemContentInParams(body.params, 'playlist', '', body.returnValues);
+
+    if (artist === '' && track === '') {
+      track = 'after the after';
+      artist = 'teeers';
+    }
+
+    const trackRes = await this.searchAny(body.accessToken, {
+      q: 'artirst: ' + artist + ' track: ' + track,
+      type: 'track',
+    });
+
+    if (trackRes.tracks.items.length === 0) {
+      throw new HttpException(() => 'No track found', HttpStatus.BAD_REQUEST);
+    }
+
+    const playlistRes = await this.getUserPlaylist(body.accessToken, userId);
+    let result = playlistRes.items.find(
+      (playlist: any) => playlist.name.toLowerCase() == playlistName.toLowerCase(),
+    );
+    if (!result) {
+      result = playlistRes.items[0];
+    }
+
     const playlistUpdated = await firstValueFrom(
       this.httpService
         .post(
-          `https://api.spotify.com/v1/playlists/${trackList.userId}/tracks`,
+          `https://api.spotify.com/v1/playlists/${result.id}/tracks`,
           {
-            uris: [trackList.uri],
+            uris: [trackRes.tracks.items[0].uri],
             position: '0',
           },
           {
             headers: {
               Accept: 'application/json',
-              Authorization: `Bearer ${accessToken}`,
+              Authorization: `Bearer ${body.accessToken}`,
             },
           },
         )
@@ -468,7 +534,7 @@ export class SpotifyService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );

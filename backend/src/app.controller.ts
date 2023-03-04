@@ -40,14 +40,20 @@ export class AppController {
             name: 'discord',
             actions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'A new event is scheduled in a Server',
+                description:
+                  'This action check if a new scheduled event is created in a Discord Server.',
+              },
+              {
+                name: 'A new message in a channel',
+                description:
+                  'This action check if a new message has been sent in a Discord Server channel.',
               },
             ],
             reactions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'Send a message in a channel',
+                description: 'This reaction send a message in a Discord Server channel.',
               },
             ],
           },
@@ -100,14 +106,18 @@ export class AppController {
             name: 'miro',
             actions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'member joined a board',
+                description: 'It check if a member joined a board on Miro.',
               },
             ],
             reactions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'create a board',
+                description: 'It create a new board on Miro.',
+              },
+              {
+                name: 'share a board',
+                description: 'It share a board on Miro.',
               },
             ],
           },
@@ -130,14 +140,54 @@ export class AppController {
             name: 'spotify',
             actions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'A new track is playing',
+                description: 'It check the current playing track on Spotify.',
+              },
+              {
+                name: 'The top artist has changed',
+                description: 'It check the current top artist on Spotify.',
+              },
+              {
+                name: 'The top track has changed',
+                description: 'It check the current top track on Spotify.',
               },
             ],
             reactions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'Create a playlist',
+                description: 'It create a new playlist on Spotify.',
+              },
+              {
+                name: 'Pause the playing track',
+                description: 'It pause the playing track on Spotify.',
+              },
+              {
+                name: 'Resume the playing track',
+                description: 'It resume the playing track on Spotify.',
+              },
+              {
+                name: 'Play next track',
+                description: 'It plays the next track on Spotify.',
+              },
+              {
+                name: 'Play previous track',
+                description: 'It plays the previous track on Spotify.',
+              },
+              {
+                name: 'Add track to queue',
+                description: 'It add track in queue on Spotify.',
+              },
+              {
+                name: 'Add track to playlist',
+                description: 'It add track in a playlist Spotify.',
+              },
+              {
+                name: 'Unfollow or delete a playlist',
+                description: 'It unfollow or delete a playlist Spotify.',
+              },
+              {
+                name: 'Follow a playlist',
+                description: 'It follow a playlist Spotify.',
               },
             ],
           },
@@ -145,8 +195,16 @@ export class AppController {
             name: 'twitch',
             actions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'A new channel is followed',
+                description: 'It check if a new channel is followed.',
+              },
+              {
+                name: 'A channel is unfollowed',
+                description: 'It check if a channel is unfollowed.',
+              },
+              {
+                name: 'A followed channel is on live',
+                description: 'It check if a specific followed channel is on live.',
               },
             ],
             reactions: [
@@ -162,6 +220,21 @@ export class AppController {
               {
                 name: undefined,
                 description: undefined,
+              },
+            ],
+            reactions: [
+              {
+                name: undefined,
+                description: undefined,
+              },
+            ],
+          },
+          {
+            name: 'timer',
+            actions: [
+              {
+                name: 'Timer is done',
+                description: 'The reactions are executed when the timer is done.',
               },
             ],
             reactions: [

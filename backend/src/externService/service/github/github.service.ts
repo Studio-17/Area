@@ -1,11 +1,10 @@
-import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
-import { AxiosError } from 'axios/index';
+import { AxiosError } from 'axios';
 import { map } from 'rxjs';
 import { ForkRepositoryDto } from './dto/repository/fork-repository.dto';
 import { ForkedRepository } from './interface/fork-repository.interface';
-import { GithubCronService } from './github.cron.service';
 import { GithubIssueDto } from './dto/github-issue.dto';
 import { GithubPullRequestDto } from './dto/github-pull-request.dto';
 import { GithubForkDto } from './dto/github-fork.dto';
@@ -20,11 +19,7 @@ import { GithubUnstarRepositoryDto } from './dto/star/github-unstar-repository.d
 
 @Injectable()
 export class GithubService {
-  constructor(
-    private readonly httpService: HttpService,
-    @Inject(forwardRef(() => GithubCronService))
-    private readonly githubCronService: GithubCronService,
-  ) {}
+  constructor(private readonly httpService: HttpService) {}
 
   public async forkRepository(
     accessToken: string,
@@ -327,8 +322,7 @@ export class GithubService {
   }
 
   public async getUserStar(accessToken: string) {
-    let star: any;
-    star = await firstValueFrom(
+    const star = await firstValueFrom(
       this.httpService
         .get(`https://api.github.com/user/starred`, {
           headers: {

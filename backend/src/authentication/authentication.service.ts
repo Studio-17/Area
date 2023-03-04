@@ -8,6 +8,9 @@ import { UserLoginDto } from './dto/user-login.dto';
 import { UserRegisterDto } from './dto/user-register.dto';
 import { OAuth2Client } from 'google-auth-library';
 import { UserEntity } from '../user/entity/user.entity';
+import { catchError, lastValueFrom, map } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
+import { AxiosError } from 'axios';
 
 const client = new OAuth2Client(
   process.env.GOOGLE_ACCOUNT_CLIENT_ID,
@@ -19,6 +22,7 @@ export class AuthenticationService {
   constructor(
     private readonly usersService: UserService,
     private readonly jwtService: JwtService,
+    private readonly httpService: HttpService,
   ) {}
 
   // Used in the CONTROLLER to register a user
@@ -136,7 +140,7 @@ export class AuthenticationService {
   public async googleConnect(token: string): Promise<any | { status: number; message: string }> {
     const ticket = await client.verifyIdToken({
       idToken: token,
-      audience: process.env.GOOGLE_ACCOUNT_CLIENT_ID,
+      audience: process.env.GOOGLE_CLIENT_ID,
     });
     const payload = ticket.getPayload();
     const isExistingUser: boolean = await this.usersService.existByEmail(payload.email);
@@ -161,6 +165,58 @@ export class AuthenticationService {
       };
     } else {
       const user: UserEntity = await this.usersService.findByEmail(payload.email);
+      const jwt = this.createJwtPayload(user);
+
+      await this.usersService.updateUser(user.uuid, {
+        jwt: jwt.token,
+      });
+
+      return {
+        user: user,
+        accessToken: jwt.token,
+      };
+    }
+  }
+
+  public async googleConnectMobile(
+    token: string,
+  ): Promise<any | { status: number; message: string }> {
+    const userInfos = await lastValueFrom(
+      this.httpService
+        .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${token}`)
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+    const isExistingUser: boolean = await this.usersService.existByEmail(userInfos.email);
+
+    if (!isExistingUser) {
+      const user = {
+        email: userInfos.email,
+      };
+      const jwt = this.createJwtPayload(user);
+
+      const userCreated = await this.usersService.create({
+        email: userInfos.email,
+        firstName: userInfos.name,
+        lastName: userInfos.given_name,
+        password: '',
+        jwt: jwt.token,
+      });
+
+      return {
+        user: userCreated,
+        accessToken: jwt.token,
+      };
+    } else {
+      const user: UserEntity = await this.usersService.findByEmail(userInfos.email);
       const jwt = this.createJwtPayload(user);
 
       await this.usersService.updateUser(user.uuid, {

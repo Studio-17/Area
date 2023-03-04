@@ -3,7 +3,7 @@
 .card-text-first-bloc {
     font-family: 'Titan One', cursive !important;
     display: flex;
-    font-size: 20px;
+    font-size: 30px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -11,7 +11,7 @@
 .card-text-second-bloc {
     font-family: 'Titan One', cursive !important;
     display: flex;
-    font-size: 20px;
+    font-size: 30px;
     margin: 2vw 0px 0px 0px;
     flex-wrap: nowrap;
     overflow: hidden;

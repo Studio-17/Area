@@ -20,8 +20,6 @@ export default function NewAreaStack() {
         gestureDirection: "horizontal",
       }}
     >
-      {/*<Stack.Group screenOptions={{ gestureDirections: "horizontal" }}>*/}
-      {/*</Stack.Group>*/}
       <Stack.Screen name="NewArea" component={NewAreaScreen} />
       <Stack.Screen name="Services" component={ServicesScreen} />
       <Stack.Screen name="ActionsList" component={ActionsListScreen} />

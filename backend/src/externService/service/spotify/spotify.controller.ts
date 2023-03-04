@@ -1,40 +1,11 @@
-import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Req, Res } from '@nestjs/common';
 import { SpotifyService } from './spotify.service';
-import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authentication.guard';
-import { CredentialsGuard } from './guard/credentials.guard';
-import { SearchDto } from './dto/search.dto';
-import { SpotifyObjectDto } from './dto/spotify-object.dto';
-import { TrackDto } from './dto/track.dto';
-import { AddTrackPlaylistDto } from './dto/add-track-playlist.dto';
 import { ReactionDto } from 'src/cron/dto/reaction.dto';
 
 @Controller('actions/spotify')
 export class SpotifyController {
   constructor(private readonly spotifyService: SpotifyService) {}
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/user')
-  public async getAuthenticatedUserInformation(@Req() request, @Res() response) {
-    try {
-      const userTopArtists = await this.spotifyService.getAuthenticatedUserInformation(
-        request.credentials.accessToken,
-      );
-
-      return response.status(HttpStatus.OK).json({
-        message: 'Got top artists list for the authenticated user using Spotify service',
-        data: userTopArtists,
-        status: 200,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error fetching top artists from Spotify services',
-        error: error,
-        status: 400,
-      });
-    }
-  }
-
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/get-top-artists')
   public async getAuthenticatedUserTopArtists(@Req() request, @Res() response) {
     try {
@@ -56,7 +27,6 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/get-top-tracks')
   public async getAuthenticatedUserTopTracks(@Req() request, @Res() response) {
     try {
@@ -78,30 +48,6 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/search')
-  public async searchAny(@Req() request, @Res() response, @Body() searchDto: SearchDto) {
-    try {
-      const searchResult = await this.spotifyService.searchAny(
-        request.credentials.accessToken,
-        searchDto,
-      );
-
-      return response.status(HttpStatus.OK).json({
-        message: 'Got search result for the authenticated user query using Spotify service',
-        data: searchResult,
-        status: 200,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error fetching search result from Spotify services',
-        error: error,
-        status: 400,
-      });
-    }
-  }
-
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/get-current-playing-track')
   public async getCurrentPlayingTrack(@Req() request, @Res() response) {
     try {
@@ -123,13 +69,10 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/play-resume-current-track')
-  public async playPauseCurrentPlayingTrack(@Req() request, @Res() response) {
+  @Post('/play-resume-current-track')
+  public async playPauseCurrentPlayingTrack(@Res() response, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.playCurrentTrack(
-        request.credentials.accessToken,
-      );
+      const searchResult = await this.spotifyService.playCurrentTrack(body.accessToken);
 
       return response.status(HttpStatus.OK).json({
         message: 'Set current track play resume for the authenticated user using Spotify service',
@@ -145,13 +88,10 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/pause-current-track')
-  public async pauseCurrentPlayingTrack(@Req() request, @Res() response) {
+  @Post('/pause-current-track')
+  public async pauseCurrentPlayingTrack(@Res() response, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.pauseCurrentTrack(
-        request.credentials.accessToken,
-      );
+      const searchResult = await this.spotifyService.pauseCurrentTrack(body.accessToken);
 
       return response.status(HttpStatus.OK).json({
         message: 'Set current track pause for the authenticated user using Spotify service',
@@ -167,13 +107,10 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/play-next-track')
-  public async playNextTrack(@Req() request, @Res() response) {
+  @Post('/play-next-track')
+  public async playNextTrack(@Res() response, @Body() body: ReactionDto) {
     try {
-      const nextTrack = await this.spotifyService.playNextAudioTrack(
-        request.credentials.accessToken,
-      );
+      const nextTrack = await this.spotifyService.playNextAudioTrack(body.accessToken);
 
       return response.status(HttpStatus.OK).json({
         message:
@@ -190,13 +127,10 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/play-previous-track')
-  public async playPreviousTrack(@Req() request, @Res() response) {
+  @Post('/play-previous-track')
+  public async playPreviousTrack(@Res() response, @Body() body: ReactionDto) {
     try {
-      const previousTrack = await this.spotifyService.playPreviousAudioTrack(
-        request.credentials.accessToken,
-      );
+      const previousTrack = await this.spotifyService.playPreviousAudioTrack(body.accessToken);
 
       return response.status(HttpStatus.OK).json({
         message:
@@ -213,14 +147,10 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/follow-playlist')
-  public async followPlaylist(@Req() request, @Res() response, @Body() playlist: SpotifyObjectDto) {
+  @Post('/follow-playlist')
+  public async followPlaylist(@Res() response, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.followPlaylist(
-        request.credentials.accessToken,
-        playlist.id,
-      );
+      const searchResult = await this.spotifyService.followPlaylist(body);
 
       return response.status(HttpStatus.OK).json({
         message: 'Followed playlist for the authenticated user using Spotify service',
@@ -236,18 +166,10 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/unfollow-playlist')
-  public async unfollowPlaylist(
-    @Req() request,
-    @Res() response,
-    @Body() playlist: SpotifyObjectDto,
-  ) {
+  @Post('/unfollow-playlist')
+  public async unfollowPlaylist(@Res() response, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.unfollowPlaylist(
-        request.credentials.accessToken,
-        playlist.id,
-      );
+      const searchResult = await this.spotifyService.unfollowPlaylist(body);
 
       return response.status(HttpStatus.OK).json({
         message: 'Unfollowed playlist for the authenticated user using Spotify service',
@@ -263,83 +185,10 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/get-playlists')
-  public async getPlaylists(@Req() request, @Res() response, @Body() playlist: SpotifyObjectDto) {
+  @Post('/add-track-to-queue')
+  public async addTrackToQueue(@Res() response, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.getPlaylist(
-        request.credentials.accessToken,
-        playlist.id,
-      );
-
-      return response.status(HttpStatus.OK).json({
-        message: 'Got playlist for the authenticated user using Spotify service',
-        data: searchResult,
-        status: 200,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error getting playlist from Spotify services',
-        error: error,
-        status: 400,
-      });
-    }
-  }
-
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/get-albums')
-  public async getAlbums(@Req() request, @Res() response, @Body() album: SpotifyObjectDto) {
-    try {
-      const searchResult = await this.spotifyService.getAlbums(
-        request.credentials.accessToken,
-        album.id,
-      );
-
-      return response.status(HttpStatus.OK).json({
-        message: 'Got album for the authenticated user using Spotify service',
-        data: searchResult,
-        status: 200,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error getting album from Spotify services',
-        error: error,
-        status: 400,
-      });
-    }
-  }
-
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/get-artists')
-  public async getArtists(@Req() request, @Res() response, @Body() artist: SpotifyObjectDto) {
-    try {
-      const searchResult = await this.spotifyService.getArtist(
-        request.credentials.accessToken,
-        artist.id,
-      );
-
-      return response.status(HttpStatus.OK).json({
-        message: 'Got artist for the authenticated user using Spotify service',
-        data: searchResult,
-        status: 200,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error getting artist from Spotify services',
-        error: error,
-        status: 400,
-      });
-    }
-  }
-
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/get-tracks')
-  public async getTracks(@Req() request, @Res() response, @Body() track: TrackDto) {
-    try {
-      const searchResult = await this.spotifyService.getTrack(
-        request.credentials.accessToken,
-        track.id,
-      );
+      const searchResult = await this.spotifyService.addTrackToQueue(body);
 
       return response.status(HttpStatus.OK).json({
         message: 'Got track for the authenticated user using Spotify service',
@@ -355,42 +204,10 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/add-track-to-queue')
-  public async addTrackToQueue(@Req() request, @Res() response, @Body() track: TrackDto) {
-    try {
-      const searchResult = await this.spotifyService.addTrackToQueue(
-        request.credentials.accessToken,
-        track.uri,
-      );
-
-      return response.status(HttpStatus.OK).json({
-        message: 'Got track for the authenticated user using Spotify service',
-        data: searchResult,
-        status: 200,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error getting track from Spotify services',
-        error: error,
-        status: 400,
-      });
-    }
-  }
-
-  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Post('/create-playlist')
-  public async createPlaylist(
-    // @Req() request,
-    @Res() response,
-    @Body() body: ReactionDto,
-  ) {
+  public async createPlaylist(@Res() response, @Body() body: ReactionDto) {
     try {
-      const searchResult = await this.spotifyService.createPlaylist(
-        // request.credentials.accessToken,
-        body.accessToken,
-        body.params,
-      );
+      const searchResult = await this.spotifyService.createPlaylist(body);
 
       return response.status(HttpStatus.OK).json({
         message: 'Created playlist for the authenticated user using Spotify service',
@@ -406,18 +223,10 @@ export class SpotifyController {
     }
   }
 
-  @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  @Get('/add-track-to-playlist')
-  public async addTrackToPlaylist(
-    @Req() request,
-    @Res() response,
-    @Body() trackAndPlaylist: AddTrackPlaylistDto,
-  ) {
+  @Post('/add-track-to-playlist')
+  public async addTrackToPlaylist(@Res() response, @Body() body: ReactionDto) {
     try {
-      const tracksToAdd = await this.spotifyService.addTrackToPlaylist(
-        request.credentials.accessToken,
-        trackAndPlaylist,
-      );
+      const tracksToAdd = await this.spotifyService.addTrackToPlaylist(body);
 
       return response.status(HttpStatus.OK).json({
         message: 'Added track to the playlist for the authenticated user using Spotify service',

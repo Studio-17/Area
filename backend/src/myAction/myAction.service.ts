@@ -13,6 +13,14 @@ import { ServiceList } from 'src/service/entity/service.entity';
 import { GithubCronService } from 'src/externService/service/github/github.cron.service';
 import { GoogleCronService } from 'src/externService/service/google/google.cron.service';
 import { CronService } from 'src/cron/cron.service';
+import { Params } from 'src/cron/type/param.type';
+import { DiscordCronService } from 'src/externService/service/discord/discord.cron.service';
+import { TwitchCronService } from 'src/externService/service/twitch/twitch.cron.service';
+import { TimerCronService } from 'src/externService/service/timer/timer.cron.service';
+import { ActionFunction } from 'src/cron/interfaces/actionFunction.interface';
+import { MiroCronService } from 'src/externService/service/miro/miro.cron.service';
+// import { DeezerService } from 'src/externService/service/deezer/deezer.service';
+import { DeezerCronService } from 'src/externService/service/deezer/deezer.cron.service';
 
 @Injectable()
 export class MyActionService {
@@ -26,7 +34,12 @@ export class MyActionService {
     private readonly googleCronService: GoogleCronService,
     private readonly githubCronService: GithubCronService,
     private readonly spotifyCronService: SpotifyCronService,
+    private readonly discordCronService: DiscordCronService,
+    private readonly twitchCronService: TwitchCronService,
+    private readonly timerCronService: TimerCronService,
+    private readonly miroCronService: MiroCronService,
     private readonly cronService: CronService,
+    private readonly deezerCronService: DeezerCronService,
   ) {}
 
   async findAction(areaId: string) {
@@ -35,7 +48,7 @@ export class MyActionService {
     if (myActions.length) {
       const action = await this.actionService.findOne(myActions[0].actionId);
       resultAction = {
-        actionId: action.uuid,
+        uuid: action.uuid,
         name: action.name,
         service: action.service,
         myActionId: myActions[0].uuid,
@@ -57,9 +70,9 @@ export class MyActionService {
     for (let i = 0; i < myActions.length; i++) {
       const action = await this.actionService.findOne(myActions[i].actionId);
       reactions.push({
-        actionId: action.uuid,
+        uuid: action.uuid,
         name: action.name,
-        serviceId: action.service,
+        service: action.service,
         myActionId: myActions[i].uuid,
         params: myActions[i].params,
       });
@@ -93,32 +106,27 @@ export class MyActionService {
     return await this.myActionRepository.findBy({ linkedFromId: actionId });
   }
 
-  availableActions = new Map([
-    // DISCORD
-    // GITHUB
-    // GOOGLE
-    // MIRO
+  availableActions = new Map<string, Map<string, ActionFunction>>([
+    [ServiceList.MIRO, this.miroCronService.availableActions],
     // NOTION
-    // SPOTIFY
-    // TWITCH:
-    [ServiceList.GOOGLE, this.googleCronService.availableActions],
+    [ServiceList.TWITCH, this.twitchCronService.availableActions],
+    // return value not set up for google
+    [ServiceList.GOOGLE_MAIL, this.googleCronService.googleMailAvailableActions],
     [ServiceList.GITHUB, this.githubCronService.availableActions],
     [ServiceList.SPOTIFY, this.spotifyCronService.availableActions],
+    [ServiceList.DISCORD, this.discordCronService.availableActions],
+    [ServiceList.TIMER, this.timerCronService.availableActions],
+    [ServiceList.DEEZER, this.deezerCronService.availableActions],
   ]);
 
-  async addCron(
-    actionId: string,
-    timer: any,
-    myActionId: string,
-    userId: string,
-    params: { name: string; content: string }[],
-  ) {
+  async addCron(actionId: string, timer: any, myActionId: string, userId: string, params: Params) {
     const action = await this.actionService.findOne(actionId);
 
     if (action.type === 'action') {
       this.cronService.addCron(
         {
           name: action.name + '-' + myActionId,
+          myActionId: myActionId,
           userId: userId,
           link: action.link,
           service: action.service,
@@ -166,6 +174,7 @@ export class MyActionService {
       try {
         const cronJob = await this.schedulerRegistry.getCronJob(action.name + '-' + myAction.uuid);
         cronJob.stop();
+        this.cronService.removeRecord(myAction.uuid);
       } catch (error) {}
     }
   }

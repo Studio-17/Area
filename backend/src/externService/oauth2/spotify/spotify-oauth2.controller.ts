@@ -9,15 +9,16 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthenticationGuard } from '../../../authentication/guards/jwt-authentication.guard';
+import { JwtAuthenticationGuard } from 'src/authentication/guards/jwt-authentication.guard';
 import { SpotifyOAuth2Service } from './spotify-oauth2.service';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
-import { CredentialsService } from '../../../credentials/credentials.service';
+import { CredentialsService } from 'src/credentials/credentials.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
-import { ServiceList } from '../../../service/entity/service.entity';
+import { ServiceList } from 'src/service/entity/service.entity';
+import { UserService } from 'src/user/user.service';
 
 @ApiTags('/service/connect')
 @Controller('/service/connect')
@@ -25,6 +26,7 @@ export class SpotifyOAuth2Controller {
   constructor(
     private readonly connectionService: SpotifyOAuth2Service,
     private readonly credentialsService: CredentialsService,
+    private readonly userService: UserService,
     private readonly httpService: HttpService,
     private readonly jwtService: JwtService,
   ) {}
@@ -38,7 +40,7 @@ export class SpotifyOAuth2Controller {
       'ugc-image-upload user-read-playback-state user-modify-playback-state user-read-currently-playing app-remote-control streaming playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public user-follow-modify user-follow-read user-read-playback-position user-top-read user-read-recently-played user-library-modify user-library-read user-read-email user-read-private';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
-    if (!token['id']) {
+    if (!token['email']) {
       return response.status(HttpStatus.UNAUTHORIZED).json({
         message: 'Error unauthenticated (using jwt)',
         data: token,
@@ -47,7 +49,7 @@ export class SpotifyOAuth2Controller {
     }
     return response.status(HttpStatus.OK).json({
       url: encodeURI(
-        `https://accounts.spotify.com/authorize?scope=${scope}&response_type=code&redirect_uri=${callbackURL}&client_id=${clientID}&state=${token['id']}`,
+        `https://accounts.spotify.com/authorize?scope=${scope}&response_type=code&redirect_uri=${callbackURL}&client_id=${clientID}&state=${token['email']}`,
       ),
       status: 200,
     });
@@ -108,13 +110,12 @@ export class SpotifyOAuth2Controller {
           throw new HttpException(error, HttpStatus.BAD_REQUEST);
         });
 
-      console.log('data:', userEmail);
-      console.log('token:', spotifyData.data.access_token);
+      const user = await this.userService.findByEmail(id);
 
       const userCredentials = {
-        userId: id,
+        userId: user.uuid,
         service: ServiceList.SPOTIFY,
-        accessToken: spotifyData.data.access_token,
+        accessToken: accessToken,
         refreshToken: null,
       };
 

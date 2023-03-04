@@ -18,7 +18,7 @@ export default function AppletCard({ navigation, area}: AppletProps) {
   };
 
   return (
-    <Pressable style={styles.cardProperties} onPress={onPressFunction}>
+    <Pressable style={[styles.cardProperties, { backgroundColor: (area?.area.color ? area?.area.color : "grey") }]} onPress={onPressFunction}>
       <MyText style={styles.appletContainer}>
         <MyText style={styles.textProperties}>{area?.area.name}</MyText>
       </MyText>
@@ -33,7 +33,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF7FA",
   },
   cardProperties: {
-    backgroundColor: "grey",
     padding: 20,
     height: 200,
     marginVertical: 10,

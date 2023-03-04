@@ -3,4 +3,6 @@
 }
 .card-text-logo {
     font-family: 'Titan One', cursive !important;
+    width: 56%;
+    height: 70%;
 }

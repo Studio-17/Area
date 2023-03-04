@@ -16,7 +16,18 @@ export class AreaService {
     private readonly myActionService: MyActionService,
   ) {}
 
+  async checkCron(value: string, minimum: number, maximum: number) {
+    if (value !== '*' && +value >= minimum && +value <= maximum) {
+      return `*/${value}`;
+    } else {
+      return '*';
+    }
+  }
+
   async create(createAreaDto: CreateAreaDto, userId: string): Promise<AreaEntity> {
+    createAreaDto.hour = await this.checkCron(createAreaDto.hour || `*`, 0, 23);
+    createAreaDto.minute = await this.checkCron(createAreaDto.minute || `*`, 0, 59);
+    createAreaDto.second = await this.checkCron(createAreaDto.second || `*`, 0, 59);
     const area: AreaEntity = this.areaRepository.create({ ...createAreaDto, userId: userId });
     const areaInData = await this.areaRepository.save(area);
     const action = await this.myActionService.addAction(
@@ -64,50 +75,51 @@ export class AreaService {
   }
 
   async findOne(areaId: string, userId: string): Promise<any> {
-    const res = await this.areaRepository
+    const area = await this.areaRepository
       .findOneByOrFail({ uuid: areaId, userId: userId })
       .catch((e) => {
         console.error(e);
         throw NotFoundException('area');
       });
-    if (!res) {
+    if (!area) {
       throw NotFoundException('area');
     }
     const myAction = await this.myActionService.findAction(areaId);
     const myReactions = await this.myActionService.findReaction(areaId, myAction.myActionId);
-    return { res, action: myAction, reactions: myReactions };
+    return { area, action: myAction, reactions: myReactions };
   }
 
   async update(areaId: string, updateAreaDto: UpdateAreaDto, userId: string): Promise<AreaEntity> {
-    console.log(updateAreaDto);
     const area: AreaEntity = await this.areaRepository.findOneBy({ uuid: areaId });
 
+    updateAreaDto.hour = await this.checkCron(updateAreaDto.hour || `*`, 0, 23);
+    updateAreaDto.minute = await this.checkCron(updateAreaDto.minute || `*`, 0, 59);
+    updateAreaDto.second = await this.checkCron(updateAreaDto.second || `*`, 0, 59);
     await this.areaRepository
       .update(
         { uuid: areaId, userId: userId },
-        { name: updateAreaDto.name ? updateAreaDto.name : area.name },
+        {
+          name: updateAreaDto.name ? updateAreaDto.name : area.name,
+          color: updateAreaDto.color ? updateAreaDto.color : area.color,
+        },
       )
-      .catch((e) => {
-        console.error(e);
+      .catch(() => {
         throw NotFoundException('area');
       });
-    console.log('update area');
 
     await this.myActionService.removeByAreaId(areaId, userId);
-    console.log('000');
     const action = await this.myActionService.addAction(
       areaId,
       {
         actionId: updateAreaDto.action.id,
         linkedFromId: null,
-        hour: updateAreaDto.hour || '*',
-        minute: updateAreaDto.minute || '*',
-        second: updateAreaDto.second || '*',
+        hour: updateAreaDto.hour,
+        minute: updateAreaDto.minute,
+        second: updateAreaDto.second,
         params: updateAreaDto.action.params,
       },
       userId,
     );
-    console.log('111');
 
     for (const myAction of updateAreaDto.reactions) {
       await this.myActionService.addAction(
@@ -115,9 +127,9 @@ export class AreaService {
         {
           actionId: myAction.id,
           linkedFromId: action.uuid,
-          hour: updateAreaDto.hour || '*',
-          minute: updateAreaDto.minute || '*',
-          second: updateAreaDto.second || '*',
+          hour: updateAreaDto.hour,
+          minute: updateAreaDto.minute,
+          second: updateAreaDto.second,
           params: myAction.params ? myAction.params : null,
         },
         userId,

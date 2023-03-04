@@ -35,6 +35,9 @@ export class ActionEntity {
   @Column({ type: 'json', nullable: true })
   params: { name: string; type: string; description: string }[];
 
+  @Column({ type: 'json', nullable: true })
+  returnValues: { name: string; type: string; description: string }[];
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP()',

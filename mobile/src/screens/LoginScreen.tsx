@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Keyboard,
+  LogBox,
 } from "react-native";
 
 // Icons
@@ -14,7 +15,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // Redux
 import { loginUser, loginUserGoogle } from "../redux/slices/authSlice";
-import { LoginRequest } from "../redux/models/authModel";
+import { LoginRequest, LogInGoogleRequest } from "../redux/models/authModel";
 import {
   RootState,
   useAppDispatch,
@@ -22,7 +23,6 @@ import {
 } from "../redux/store/store";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
-import axios from "axios";
 
 // Navigation
 import InputField from "../components/InputField";
@@ -30,6 +30,10 @@ import CustomButton from "../components/CustomButton";
 
 // Components
 import MyText from "../components/MyText";
+
+LogBox.ignoreLogs([
+  "You are not currently signed in to Expo on your development machine",
+]);
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -41,8 +45,13 @@ export default function LoginScreen({ navigation }: any) {
   const dispatchLoginUser = async (dataToSend: LoginRequest) => {
     dispatch(loginUser(dataToSend));
   };
+  const dispatchLoginUserGoogle = async (dataToSend: LogInGoogleRequest) => {
+    dispatch(loginUserGoogle(dataToSend));
+  };
 
   const [request, response, promptAsync] = Google.useAuthRequest({
+    selectAccount: true,
+    shouldAutoExchangeCode: false,
     expoClientId:
       "760928825534-9f7c3d69o48jl3nrj4mnlnar1qbe91d3.apps.googleusercontent.com",
   });
@@ -50,9 +59,10 @@ export default function LoginScreen({ navigation }: any) {
   React.useEffect(() => {
     if (response?.type === "success") {
       const { authentication } = response;
-      console.log(authentication);
-      // dispatch(loginUserGoogle({ token: authentication?.accessToken }));
-      console.log("Yo");
+      const dataToSend: LogInGoogleRequest = {
+        token: authentication?.accessToken,
+      };
+      dispatchLoginUserGoogle(dataToSend);
     }
   }, [response]);
 

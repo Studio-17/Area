@@ -27,6 +27,14 @@ import { DeezerOAuth2Module } from './externService/oauth2/deezer/deezer-oauth2.
 import { DropboxOAuth2Module } from './externService/oauth2/dropbox/dropbox-oauth2.module';
 import { TypeformOAuth2Module } from './externService/oauth2/typeform/typeform-oauth2.module';
 import { CronModule } from './cron/cron.module';
+import { DiscordModule } from './externService/service/discord/discord.module';
+import { TwitchModule } from './externService/service/twitch/twitch.module';
+import { DeezerModule } from './externService/service/deezer/deezer.module';
+import { TimerModule } from './externService/service/timer/timer.module';
+import { WebhookModule } from './externService/service/webhook/webhook.module';
+import { MiroModule } from './externService/service/miro/miro.module';
+import { GoogleFormsModule } from './externService/service/google-forms/google-forms.module';
+import { GoogleEventModule } from './externService/service/google-event/google-event.module';
 
 @Module({
   imports: [
@@ -51,15 +59,23 @@ import { CronModule } from './cron/cron.module';
     AuthenticationModule,
     UserModule,
     CredentialsModule,
-    GoogleModule,
-    GithubModule,
     AreaModule,
     ServiceModule,
     ActionModule,
     MyActionModule,
-    GithubModule,
+
+    DeezerModule,
+    DiscordModule,
     GoogleModule,
+    GoogleEventModule,
+    GoogleFormsModule,
+    GithubModule,
+    MiroModule,
     SpotifyModule,
+    TwitchModule,
+    TimerModule,
+    WebhookModule,
+
     DeezerOAuth2Module,
     DiscordOAuth2Module,
     DropboxOAuth2Module,

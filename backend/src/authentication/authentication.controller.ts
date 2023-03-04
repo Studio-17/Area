@@ -1,14 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Req,
-  Res,
-  Query,
-  HttpStatus,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, Res, Query, HttpStatus } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { UserLoginDto } from './dto/user-login.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -45,6 +35,24 @@ export class AuthenticationController {
   public async loginWithGoogle(@Req() request, @Res() response, @Query() query: { token: string }) {
     try {
       const user = await this.authenticationService.googleConnect(query.token);
+
+      return response.status(HttpStatus.OK).json(user);
+    } catch (err) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error: User not logged in (using google)!',
+        status: 400,
+      });
+    }
+  }
+
+  @Get('/login/mobile/google')
+  public async loginWithMobileGoogle(
+    @Req() request,
+    @Res() response,
+    @Query() query: { token: string },
+  ) {
+    try {
+      const user = await this.authenticationService.googleConnectMobile(query.token);
 
       return response.status(HttpStatus.OK).json(user);
     } catch (err) {

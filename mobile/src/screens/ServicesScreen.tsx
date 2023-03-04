@@ -10,12 +10,12 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Service } from "../redux/models/serviceModels";
 import { LogBox } from "react-native";
+import { images } from "../redux/models/serviceModels";
 
 import ServiceCard from "../components/Cards/ServiceCard";
 
 import MyText from "../components/MyText";
-
-import { GetParamsDto, PostParamsDto } from "../redux/models/paramsModel";
+import { Area } from "../redux/models/areaModels";
 
 LogBox.ignoreLogs([
   "Non-serializable values were found in the navigation state",
@@ -30,23 +30,21 @@ export default function ServicesScreen({ navigation, route }: Props) {
   const { item } = route.params;
   const services: Service[] | null = item.services;
   const typeOfAction: "action" | "reaction" = item.typeOfAction;
-  const onClickOnAreasCards: (
-    serviceSelected?: Service | undefined,
-    actionContent?: string,
-    responseContent?: string,
-    uuidOfAction?: string,
-    params?: PostParamsDto[] | null
-  ) => void = item.onClickOnAreasCards;
+  const typeOfRequest: "new" | "modify" = item.typeOfRequest;
+  const indexBlock: number = item.indexBlock;
+  const onClickOnAreasCards: () => void = item.onClickOnAreasCards;
+  const toScreen: string = item.toScreen;
+  const area: Area = item.area;
 
   const handleClose = () => {
-    navigation.navigate("NewArea");
+    navigation.navigate(toScreen, { item: { areaData: area } });
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.modalContainer}>
         <Pressable style={styles.button} onPress={handleClose}>
-          <MaterialCommunityIcons name="close" color={"black"} size={50} />
+          <MaterialCommunityIcons name="arrow-left" color={"black"} size={50} />
         </Pressable>
         <MyText style={styles.textHeaderStyle}>Choose a service</MyText>
         <View style={{ flex: 1 }} />
@@ -66,12 +64,21 @@ export default function ServicesScreen({ navigation, route }: Props) {
               service={service}
               onClickService={() => {
                 navigation.navigate("ActionsList", {
-                  item: { service, typeOfAction, onClickOnAreasCards },
+                  item: {
+                    service,
+                    typeOfAction,
+                    typeOfRequest,
+                    indexBlock,
+                    onClickOnAreasCards,
+                    toScreen,
+                    area,
+                  },
                 });
               }}
               cardGap={20}
               index={index}
               key={index}
+              logo={images[service.name.replace("-", "_")]}
             />
           ))}
         </View>

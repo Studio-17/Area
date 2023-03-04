@@ -1,4 +1,5 @@
 import { IsArray, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import { Params } from 'src/cron/type/param.type';
 
 export class CreateMyActionDto {
   @IsUUID()
@@ -11,7 +12,7 @@ export class CreateMyActionDto {
 
   @IsArray()
   @IsOptional()
-  params?: { name: string; content: string }[];
+  params?: Params;
 
   @IsString()
   @IsOptional()

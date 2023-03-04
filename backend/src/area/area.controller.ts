@@ -6,13 +6,16 @@ import { UpdateAreaDto } from './dto/update-area.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthenticationGuard } from '../authentication/guards/jwt-authentication.guard';
 import { AreaEntity } from './entity/area.entity';
-import { UserId } from '../utils/decorators/user-id.decorator';
+import { UserService } from '../user/user.service';
 
 @ApiTags('Area')
 @UseGuards(JwtAuthenticationGuard)
 @Controller('area')
 export class AreaController {
-  constructor(private readonly areaService: AreaService) {}
+  constructor(
+    private readonly areaService: AreaService,
+    private readonly userService: UserService,
+  ) {}
 
   @Post()
   async create(@Body() createAreaDto: CreateAreaDto, @Req() request: any): Promise<AreaEntity> {
@@ -32,14 +35,16 @@ export class AreaController {
   @Patch(':areaId')
   async update(
     @IsUuidParam('areaId') areaId: string,
+    @Req() request: any,
     @Body() updateAreaDto: UpdateAreaDto,
-    @UserId() userId: string,
   ): Promise<AreaEntity> {
-    return this.areaService.update(areaId, updateAreaDto, userId);
+    return this.areaService.update(areaId, updateAreaDto, request.user.userId);
   }
 
   @Delete(':areaId')
   async delete(@IsUuidParam('areaId') areaId: string, @Req() request: any): Promise<string> {
-    return this.areaService.remove(areaId, request.user.userId);
+    const user = await this.userService.findByEmail(request.user.email);
+
+    return this.areaService.remove(areaId, user.uuid);
   }
 }

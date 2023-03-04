@@ -1,6 +1,7 @@
 export type Service = {
   name: string;
   description: string;
+  color: string;
 };
 
 export type ServiceInfo = {

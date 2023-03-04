@@ -1,76 +1,23 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { GmailRecord } from './entity/gmail/gmail.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { GmailRecordDto } from './dto/gmail/gmail.dto';
 import { ServiceList } from '../../../service/entity/service.entity';
+import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
+import { ActionResult } from 'src/cron/interfaces/actionResult.interface';
+import { ActionParam } from 'src/cron/interfaces/actionParam.interface';
+import { ReactionDto } from 'src/cron/dto/reaction.dto';
+import { ActionRecord } from 'src/cron/entity/actionRecord.entity';
+import { CronService } from 'src/cron/cron.service';
 
 @Injectable()
 export class GoogleService {
-  constructor(
-    @InjectRepository(GmailRecord)
-    private readonly gmailRecordRepository: Repository<GmailRecord>,
-  ) {}
+  constructor(private readonly cronService: CronService) {}
 
-  public async findByEmail(email: string): Promise<GmailRecord> {
-    try {
-      const records = await this.gmailRecordRepository.findOneBy({
-        email: email,
-      });
-
-      if (!records) {
-        return undefined;
-      }
-
-      return records;
-    } catch (error) {
-      return undefined;
-    }
-  }
-
-  public async findOrUpdateLastEmailReceived(gmailRecord: GmailRecordDto) {
-    const record = await this.findByEmail(gmailRecord.email);
-
-    if (!record) {
-      try {
-        return { new: false, mail: await this.gmailRecordRepository.save(gmailRecord) };
-      } catch (err) {
-        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
-      }
-    } else {
-      if (record.lastEmailId !== gmailRecord.lastEmailId) {
-        try {
-          const newrecord = await this.gmailRecordRepository.update(
-            {
-              lastEmailId: record.lastEmailId,
-            },
-            { ...gmailRecord },
-          );
-
-          if (!newrecord) {
-            throw new NotFoundException(`Record does not exist`);
-          }
-
-          return { new: true, mail: await this.findByEmail(gmailRecord.email) };
-        } catch (err) {
-          throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
-        }
-      } else {
-        return { new: false, mail: record };
-      }
-    }
-  }
-
-  public async updateLastEmailReceived(
-    accessToken: string,
-    params: { name: string; content: string }[],
-  ) {
+  public async updateLastEmailReceived(actionParam: ActionParam): Promise<ActionResult> {
     const config = {
       method: 'get',
       url: `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=1`,
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${actionParam.accessToken}`,
       },
     };
     try {
@@ -86,25 +33,39 @@ export class GoogleService {
       console.log('emailId (to be updated):', emailId);
 
       if (emailId) {
-        const record = new GmailRecordDto();
-        record.email = params.find((param) => param.name === 'userId').content;
-        record.lastEmailId = emailId;
-
-        return (await this.findOrUpdateLastEmailReceived(record)).new;
+        const record = new ActionRecord();
+        record.myActionId = actionParam.myActionId;
+        record.category = 'lastMail';
+        record.content = emailId;
+        const mailContent = await this.getEmailContent(actionParam.accessToken, emailId);
+        return {
+          isTriggered: await this.cronService.findOrUpdateLastRecord(record),
+          returnValues: [
+            { name: 'mailTitle', content: mailContent.snippet },
+            {
+              name: 'mailContent',
+              content: Buffer.from(mailContent.payload.parts[0].body.data, 'base64').toString(
+                'binary',
+              ),
+            },
+            { name: 'mailId', content: emailId },
+          ],
+        };
       }
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+      throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
     }
   }
 
-  public async createGoogleDocOnDrive(accessToken: string, filename: string): Promise<string> {
+  public async createGoogleDocOnDrive(body: ReactionDto): Promise<string> {
+    const filename = getElemContentInParams(body.params, 'filename', 'Untitled', body.returnValues);
+    console.log('filename', filename);
     const config = {
       method: 'post',
       url: 'https://www.googleapis.com/drive/v3/files',
       headers: {
         Accept: 'application/json',
-        // TODO - Update accessToken by the good one
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${body.accessToken}`,
         ContentType: 'application/json',
       },
       data: {
@@ -118,7 +79,7 @@ export class GoogleService {
       })
       .catch(function (error) {
         console.log(JSON.stringify(error));
-        throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+        throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
       });
 
     return fileId;
@@ -139,7 +100,7 @@ export class GoogleService {
         return apiResponse;
       })
       .catch(function (error) {
-        throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+        throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
       });
 
     return credentials;
@@ -154,12 +115,12 @@ export class GoogleService {
       },
     };
 
-    axios(config)
+    return axios(config)
       .then(function (apiResponse) {
-        return apiResponse;
+        return apiResponse.data;
       })
       .catch(function (error) {
-        return new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+        return new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
       });
   }
 }

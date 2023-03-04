@@ -1,10 +1,15 @@
 import { IsNotEmpty, IsString, IsOptional, IsArray, IsUUID } from 'class-validator';
 import { ServiceList } from 'src/service/entity/service.entity';
+import { Params } from '../type/param.type';
 
 export class CreateCronDto {
   @IsString()
   @IsNotEmpty()
   name!: string;
+
+  @IsUUID()
+  @IsNotEmpty()
+  myActionId!: string;
 
   @IsString()
   @IsNotEmpty()
@@ -31,5 +36,5 @@ export class CreateCronDto {
 
   @IsArray()
   @IsOptional()
-  params?: [{ name: string; content: string }];
+  params?: Params;
 }

@@ -6,6 +6,7 @@ import {
   StatusBar,
   Pressable,
   ScrollView,
+  Image,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -14,9 +15,12 @@ import {
   useActionsQuery,
   useServiceQuery,
 } from "../redux/services/servicesApi";
-import { Service } from "../redux/models/serviceModels";
+import { Service, images } from "../redux/models/serviceModels";
 import { Action } from "../redux/models/actionModels";
 import { GetParamsDto, PostParamsDto } from "../redux/models/paramsModel";
+import { Area } from "../redux/models/areaModels";
+
+import { capitalizeNames } from "../components/Cards/CapitalizeNames";
 
 // Components
 import ActionCard from "../components/Cards/ActionCard";
@@ -27,16 +31,13 @@ export default function ActionsListScreen({ navigation, route }: any) {
   const { item } = route.params;
   const service: Service = item.service;
   const typeOfAction: "action" | "reaction" = item.typeOfAction;
-  const onClickOnAreasCards: (
-    serviceSelected?: Service | undefined,
-    actionContent?: string,
-    responseContent?: string,
-    uuidOfAction?: string,
-    params?: PostParamsDto[] | null
-  ) => void = item.onClickOnAreasCards;
+  const typeOfRequest: "new" | "modify" = item.typeOfRequest;
+  const indexBlock: number = item.indexBlock;
+  const onClickOnAreasCards: any = item.onClickOnAreasCards;
+  const toScreen: string = item.toScreen;
+  const area: Area = item.area;
 
   const [openFormModal, setOpenFormModal] = useState<boolean>(false);
-
   const [currentActionParams, setCurrentActionParams] = useState<
     GetParamsDto[] | null
   >(null);
@@ -62,16 +63,29 @@ export default function ActionsListScreen({ navigation, route }: any) {
     actionContent?: string,
     reactionContent?: string,
     uuidOfAction?: string,
-    params?: PostParamsDto[]
+    params?: PostParamsDto[],
+    indexBlock?: number
   ) => {
     setCurrentActionParams(null);
-    onClickOnAreasCards(
-      service,
-      actionContent,
-      reactionContent,
-      uuidOfAction,
-      params
-    );
+    if (typeOfRequest === "modify") {
+      onClickOnAreasCards(
+        service,
+        actionContent,
+        reactionContent,
+        uuidOfAction,
+        params,
+        indexBlock
+      );
+    } else {
+      onClickOnAreasCards(
+        service,
+        actionContent,
+        reactionContent,
+        uuidOfAction,
+        params,
+        indexBlock
+      );
+    }
   };
 
   const handleCloseActionsListScreen = () => {
@@ -85,21 +99,40 @@ export default function ActionsListScreen({ navigation, route }: any) {
     params?: GetParamsDto[] | null,
     action?: Action
   ) => {
-    if (params || !serviceInfo?.isConnected) {
+    if (
+      params ||
+      (!serviceInfo?.isConnected && serviceInfo?.type === "external")
+    ) {
       setCurrentActionParams(params!);
       setCurrentAction(action);
       setOpenFormModal(true);
     } else {
-      onClickOnAreasCards(
-        service,
-        actionContent,
-        reactionContent,
-        uuidOfAction,
-        params
-      );
-      navigation.navigate("NewArea");
+      if (typeOfRequest === "modify") {
+        onClickOnAreasCards(
+          service,
+          actionContent,
+          reactionContent,
+          uuidOfAction,
+          params,
+          indexBlock
+        );
+      } else {
+        onClickOnAreasCards(
+          service,
+          actionContent,
+          reactionContent,
+          uuidOfAction,
+          params,
+          indexBlock
+        );
+      }
+      navigation.navigate(toScreen, { item: { areaData: area } });
     }
   };
+
+  if (isLoading || isFetching || isFetchingServiceInfo) {
+    return <MyText>Loading...</MyText>;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -111,7 +144,19 @@ export default function ActionsListScreen({ navigation, route }: any) {
         <View style={{ flex: 1 }} />
       </View>
       <ScrollView>
-        <View style={{ padding: 10 }}>
+        <View style={{ display: "flex", padding: 20 }}>
+          <View style={styles.descriptionContainer}>
+            <Image
+              source={images[service.name.replace("-", "_")]}
+              style={styles.logo}
+            />
+            <MyText style={[styles.textHeaderStyle, { marginBottom: 10 }]}>
+              {capitalizeNames(service.name)}
+            </MyText>
+            <MyText style={styles.textContentStyle}>
+              {service.description}
+            </MyText>
+          </View>
           {actions
             ?.filter((action: Action) => action.type === typeOfAction)
             .map((element: Action, index: number) => (
@@ -127,6 +172,7 @@ export default function ActionsListScreen({ navigation, route }: any) {
                 key={index}
                 params={element.params}
                 action={element}
+                color={service.color ? service.color : "grey"}
               />
             ))}
         </View>
@@ -140,6 +186,9 @@ export default function ActionsListScreen({ navigation, route }: any) {
         navigation={navigation}
         serviceInfo={serviceInfo}
         refetchServiceInfos={() => refetchServiceInfos()}
+        indexBlock={indexBlock}
+        toScreen={toScreen}
+        area={area}
       />
     </SafeAreaView>
   );
@@ -163,6 +212,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: "70%",
   },
+  textContentStyle: {
+    fontSize: 17,
+    fontWeight: "bold",
+    color: "black",
+    textAlign: "center",
+    width: "70%",
+  },
   textModal: {
     fontSize: 25,
     fontWeight: "bold",
@@ -175,5 +231,17 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight: "bold",
     textAlign: "center",
+  },
+  descriptionContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  logo: {
+    width: 50,
+    height: 50,
+    marginBottom: 10,
   },
 });

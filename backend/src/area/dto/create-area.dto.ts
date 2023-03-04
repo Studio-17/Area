@@ -1,4 +1,5 @@
 import { IsString, IsNotEmpty, IsArray, IsOptional } from 'class-validator';
+import { Params } from 'src/cron/type/param.type';
 
 export class CreateAreaDto {
   @IsString()
@@ -10,11 +11,11 @@ export class CreateAreaDto {
   color?: string;
 
   @IsNotEmpty()
-  action!: { id: string; params: { name: string; content: string }[] };
+  action!: { id: string; params: Params };
 
   @IsArray()
   @IsNotEmpty()
-  reactions!: { id: string; params: { name: string; content: string }[] }[];
+  reactions!: { id: string; params: Params }[];
 
   @IsString()
   @IsOptional()

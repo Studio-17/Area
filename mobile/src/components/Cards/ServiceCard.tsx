@@ -1,50 +1,53 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Image } from "react-native";
 
 // Redux
 import { Service } from "../../redux/models/serviceModels";
 
 import { Dimensions } from "react-native";
 
+import { capitalizeNames } from "../../components/Cards/CapitalizeNames";
+
 // Components
 import MyText from "../MyText";
 
 interface Props {
   service: Service;
-  logo?: any;
+  logo: any;
   onClickService: any;
   cardGap: number;
   index: number;
 }
 
-export default function ServiceCard(
-  {
-    service,
-    logo,
-    onClickService,
-    cardGap,
-    index,
-  }: Props) {
-
+export default function ServiceCard({
+  service,
+  logo,
+  onClickService,
+  cardGap,
+  index,
+}: Props) {
   const cardWidth = (Dimensions.get("window").width - cardGap * 3) / 2;
-
-  const capitalizeFirstLetter = (string: string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
 
   return (
     <TouchableOpacity
+      key={index}
       style={[
         styles.cardContainer,
         {
           marginTop: cardGap,
           marginLeft: index % 2 !== 0 ? cardGap : 0,
           width: cardWidth,
+          backgroundColor: service.color ? service.color : "grey",
         },
       ]}
       onPress={onClickService}
     >
-      <MyText style={styles.textProperties}>{capitalizeFirstLetter(service.name)}</MyText>
+      <View style={styles.contentContainer}>
+        <Image style={styles.logo} source={logo} />
+        <MyText style={styles.textProperties}>
+          {capitalizeNames(service.name)}
+        </MyText>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -52,16 +55,27 @@ export default function ServiceCard(
 const styles = StyleSheet.create({
   cardContainer: {
     height: 180,
-    backgroundColor: "grey",
     borderRadius: 15,
     shadowOffset: {
       width: 0,
       height: 2,
     },
+    borderColor: "black",
+    borderWidth: 3,
     justifyContent: "center",
     alignItems: "center",
   },
   textProperties: {
     color: "black",
+  },
+  contentContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logo: {
+    width: 50,
+    height: 50,
+    marginBottom: 10,
+    margin: "auto",
   },
 });

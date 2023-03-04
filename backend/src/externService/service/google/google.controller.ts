@@ -1,51 +1,40 @@
-import { Controller, Get, HttpStatus, Req, Res, Body, Post } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Res, Body, Post } from '@nestjs/common';
 import { ReactionDto } from 'src/cron/dto/reaction.dto';
 import { GoogleService } from './google.service';
 
-// @UseGuards(JwtAuthenticationGuard)
 @Controller('actions/google')
 export class GoogleController {
   constructor(private readonly googleService: GoogleService) {}
 
-  @Get('/check-mail')
-  public async checkIfMailReceived(
-    @Req() request,
-    @Res() response,
-    @Body() body: { accessToken: string; email: string },
-  ) {
-    try {
-      const gmailRecord = await this.googleService.updateLastEmailReceived(
-        body.accessToken,
-        [{ name: 'userId', content: body.email }],
-      );
+  // @Get('/check-mail')
+  // public async checkIfMailReceived(@Res() response, @Body() body: ReactionDto) {
+  //   console.log('in /check-mail');
+  //   try {
+  //     const gmailRecord = await this.googleService.updateLastEmailReceived({
+  //       accessToken: body.accessToken,
+  //       params: body.params,
+  //     });
 
-      console.log(gmailRecord);
+  //     console.log(gmailRecord);
 
-      return response.status(HttpStatus.OK).json({
-        message: 'Got last email from Google services',
-        content: gmailRecord,
-        status: 200,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Error fetching emails from Google Apis',
-        error: error,
-        status: 400,
-      });
-    }
-  }
+  //     return response.status(HttpStatus.OK).json({
+  //       message: 'Got last email from Google services',
+  //       content: gmailRecord,
+  //       status: 200,
+  //     });
+  //   } catch (error) {
+  //     return response.status(HttpStatus.BAD_REQUEST).json({
+  //       message: 'Error fetching emails from Google Apis',
+  //       error: error,
+  //       status: 400,
+  //     });
+  //   }
+  // }
 
   @Post('/publish-doc')
-  public async createGoogleDoc(@Req() request, @Res() response, @Body() body: ReactionDto) {
-    let filename: string;
-    if (!body.params || body.params.length === 0) {
-      filename = 'Untitled';
-    } else {
-      filename = body.params[0].content;
-    }
-
+  public async createGoogleDoc(@Res() response, @Body() body: ReactionDto) {
     try {
-      const fileId = await this.googleService.createGoogleDocOnDrive(body.accessToken, filename);
+      const fileId = await this.googleService.createGoogleDocOnDrive(body);
 
       return response.status(HttpStatus.OK).json({
         message: 'Successfully created document on personal drive',
