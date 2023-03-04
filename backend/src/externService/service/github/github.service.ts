@@ -9,12 +9,14 @@ import { GithubCronService } from './github.cron.service';
 import { GithubIssueDto } from './dto/github-issue.dto';
 import { GithubPullRequestDto } from './dto/github-pull-request.dto';
 import { GithubForkDto } from './dto/github-fork.dto';
-import { GithubStarDto } from './dto/github-star.dto';
+import { GithubCheckStarDto } from './dto/star/github-check-star.dto';
 import { GithubReviewCommentDto } from './dto/github-review-comment.dto';
 import { GithubContributorDto } from './dto/github-contributor.dto';
 import { GithubTeamDto } from './dto/github-team.dto';
 import { GithubInvitationDto } from './dto/github-invitation.dto';
 import { GithubMilestoneDto } from './dto/github-milestone.dto';
+import { GithubStarRepositoryDto } from './dto/star/github-star-repository.dto';
+import {GithubUnstarRepositoryDto} from "./dto/star/github-unstar-repository.dto";
 
 @Injectable()
 export class GithubService {
@@ -57,6 +59,69 @@ export class GithubService {
     );
 
     return forkedRepository;
+  }
+
+  public async starRepository(
+    accessToken: string,
+    starRepositoryDto: GithubStarRepositoryDto,
+  ): Promise<ForkedRepository> {
+    const starredRepository = await firstValueFrom(
+      this.httpService
+        .put(
+          `https://api.github.com/repos/${starRepositoryDto.owner}/${starRepositoryDto.repo}/starred`,
+          {},
+          {
+            headers: {
+              Accept: 'application/vnd.github+json',
+              Authorization: `Bearer ${accessToken}`,
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          },
+        )
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+
+    return starredRepository;
+  }
+
+  public async unstarRepository(
+    accessToken: string,
+    unstarRepositoryDto: GithubUnstarRepositoryDto,
+  ): Promise<ForkedRepository> {
+    const unstarredRepository = await firstValueFrom(
+      this.httpService
+        .delete(
+          `https://api.github.com/repos/${unstarRepositoryDto.owner}/${unstarRepositoryDto.repo}/starred`,
+          {
+            headers: {
+              Accept: 'application/vnd.github+json',
+              Authorization: `Bearer ${accessToken}`,
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          },
+        )
+        .pipe(
+          map((value) => {
+            return value.data;
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+
+    return unstarredRepository;
   }
 
   public async getFork(accessToken: string, githubForkDto: GithubForkDto) {
@@ -230,7 +295,7 @@ export class GithubService {
     return '0';
   }
 
-  public async getStar(accessToken: string, githubStarDto: GithubStarDto) {
+  public async getStar(accessToken: string, githubStarDto: GithubCheckStarDto) {
     const star = await firstValueFrom(
       this.httpService
         .get(

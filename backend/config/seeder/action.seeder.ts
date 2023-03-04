@@ -72,6 +72,18 @@ export class ActionSeederService {
         link: 'github/check-star/',
       },
       {
+        uuid: '93cc220c-dae7-4b05-9b8b-31daabb45ca6',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Star Github repository',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
+        description: 'This action allow you to star a Github repository.',
+        link: 'github/star-repository/',
+      },
+      {
         uuid: '0b11633b-a373-434d-9886-b2bd89129dc1',
         service: ServiceList.GITHUB,
         type: ActionType.ACTION,

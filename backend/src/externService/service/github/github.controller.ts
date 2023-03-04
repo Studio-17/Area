@@ -12,7 +12,7 @@ import { GithubPullRequestDto } from './dto/github-pull-request.dto';
 import { ReactionDto } from '../../../cron/dto/reaction.dto';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { GithubForkDto } from './dto/github-fork.dto';
-import { GithubStarDto } from './dto/github-star.dto';
+import { GithubCheckStarDto } from './dto/star/github-check-star.dto';
 import { GithubReviewCommentDto } from './dto/github-review-comment.dto';
 import { GithubContributorDto } from './dto/github-contributor.dto';
 import { GithubTeamDto } from './dto/github-team.dto';
@@ -159,7 +159,7 @@ export class GithubController {
   }
 
   @Get('/check-star')
-  public async checkNewStar(@Req() request, @Res() response, @Body() githubStarDto: GithubStarDto) {
+  public async checkNewStar(@Req() request, @Res() response, @Body() githubStarDto: GithubCheckStarDto) {
     try {
       const starResult = await this.githubService.getStar(
         request.credentials.accessToken,
@@ -322,28 +322,6 @@ export class GithubController {
   }
 
   // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  // @Get('/get-repository')
-  // public async getAuthenticatedUserRepositories(@Req() request, @Res() response) {
-  //   try {
-  //     const userRepositories = await this.githubService.getAuthenticatedUserRepositories(
-  //       request.credentials.accessToken,
-  //     );
-  //
-  //     return response.status(HttpStatus.OK).json({
-  //       message: 'Got repositories list for the authenticated user using GitHub service',
-  //       data: userRepositories,
-  //       status: 200,
-  //     });
-  //   } catch (error) {
-  //     return response.status(HttpStatus.BAD_REQUEST).json({
-  //       message: 'Error fetching repositories from GitHub services',
-  //       error: error,
-  //       status: 400,
-  //     });
-  //   }
-  // }
-
-  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   // @Get('/create-repository')
   // public async createAuthenticatedUserRepository(
   //   @Req() request,
@@ -379,8 +357,8 @@ export class GithubController {
         repo: reactionDto.params.find((param) => param.name === 'repo').content,
         name: reactionDto.params.find((param) => param.name === 'name').content,
         default_branch_only:
-          reactionDto.params.find((param) => param.name === 'default_branch_only').content ===
-          'true',
+            reactionDto.params.find((param) => param.name === 'default_branch_only').content ===
+            'true',
       });
 
       return response.status(HttpStatus.OK).json({
@@ -392,6 +370,52 @@ export class GithubController {
       console.error(error);
       return response.status(HttpStatus.BAD_REQUEST).json({
         message: 'Error fetching repositories from GitHub services',
+        error: error,
+        status: 400,
+      });
+    }
+  }
+
+  @Post('/star-repository')
+  public async starRepository(@Req() request, @Res() response, @Body() reactionDto: ReactionDto) {
+    try {
+      const star = await this.githubService.starRepository(reactionDto.accessToken, {
+        owner: reactionDto.params.find((param) => param.name === 'owner').content,
+        repo: reactionDto.params.find((param) => param.name === 'repo').content,
+      });
+
+      return response.status(HttpStatus.OK).json({
+        message: 'Successfully starred repository',
+        data: star,
+        status: 200,
+      });
+    } catch (error) {
+      console.error(error);
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error starring repository from GitHub services',
+        error: error,
+        status: 400,
+      });
+    }
+  }
+
+  @Post('/unstar-repository')
+  public async unstarRepository(@Req() request, @Res() response, @Body() reactionDto: ReactionDto) {
+    try {
+      const star = await this.githubService.unstarRepository(reactionDto.accessToken, {
+        owner: reactionDto.params.find((param) => param.name === 'owner').content,
+        repo: reactionDto.params.find((param) => param.name === 'repo').content,
+      });
+
+      return response.status(HttpStatus.OK).json({
+        message: 'Successfully unstarred repository',
+        data: star,
+        status: 200,
+      });
+    } catch (error) {
+      console.error(error);
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error unstarring repository from GitHub services',
         error: error,
         status: 400,
       });

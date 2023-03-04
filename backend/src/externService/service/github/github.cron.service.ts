@@ -40,6 +40,7 @@ export class GithubCronService {
 
     // REACTIONS
     ['github/fork-repository/', this.forkRepository.bind(this)],
+    ['github/star-repository/', this.starRepository.bind(this)],
   ]);
 
   // --- USER STAR ---
@@ -146,7 +147,7 @@ export class GithubCronService {
     let default_branch_only: boolean;
     try {
       default_branch_only =
-        params.find((param) => param.name === 'default_branch_only').content === 'true';
+          params.find((param) => param.name === 'default_branch_only').content === 'true';
     } catch (error) {
       console.error(error);
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
@@ -158,6 +159,62 @@ export class GithubCronService {
         repo: repo,
         name: name,
         default_branch_only: default_branch_only,
+      });
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+  }
+
+  // --- STAR REPOSITORY ---
+  public async starRepository(accessToken: string, params: { name: string; content: string }[]) {
+    let owner = '';
+    try {
+      owner = params.find((param) => param.name === 'owner').content;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+    let repo = '';
+    try {
+      repo = params.find((param) => param.name === 'repo').content;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+
+    try {
+      return this.githubService.starRepository(accessToken, {
+        owner: owner,
+        repo: repo,
+      });
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+  }
+
+  // --- UNSTAR REPOSITORY ---
+  public async unstarRepository(accessToken: string, params: { name: string; content: string }[]) {
+    let owner = '';
+    try {
+      owner = params.find((param) => param.name === 'owner').content;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+    let repo = '';
+    try {
+      repo = params.find((param) => param.name === 'repo').content;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+
+    try {
+      return this.githubService.unstarRepository(accessToken, {
+        owner: owner,
+        repo: repo,
       });
     } catch (error) {
       console.error(error);

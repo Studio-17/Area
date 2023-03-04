@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class GithubStarDto {
+export class GithubStarRepositoryDto {
   @IsString()
   @IsNotEmpty()
   owner!: string;
