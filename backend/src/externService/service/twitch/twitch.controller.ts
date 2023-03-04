@@ -39,9 +39,15 @@ export class TwitchController {
     @Body() body: ReactionDto,
   ) {
     try {
+      const userId = getElemContentInParams(
+        body.params,
+        'twitchUserId',
+        'undefined',
+        body.returnValues,
+      );
       const userInformation = await this.spotifyService.getAuthenticatedUserChannelsFollowed(
         body.accessToken,
-        body.params,
+        userId,
       );
 
       return response.status(HttpStatus.OK).json({
@@ -65,7 +71,12 @@ export class TwitchController {
     @Body() body: ReactionDto,
   ) {
     try {
-      const channelId = getElemContentInParams(body.params, 'channelId', 'undefined');
+      const channelId = getElemContentInParams(
+        body.params,
+        'channelId',
+        'undefined',
+        body.returnValues,
+      );
 
       const userInformation = await this.spotifyService.getStream(body.accessToken, channelId);
 

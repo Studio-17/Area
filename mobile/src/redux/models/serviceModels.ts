@@ -17,15 +17,16 @@ interface Images {
 }
 
 export const images: Images = {
-  deezer: require("../../assets/services/deezer.png"),
-  discord: require("../../assets/services/discord.png"),
-  dropbox: require("../../assets/services/dropbox.png"),
-  github: require("../../assets/services/github.png"),
-  google: require("../../assets/services/google.png"),
-  miro: require("../../assets/services/miro.png"),
-  notion: require("../../assets/services/notion.png"),
-  spotify: require("../../assets/services/spotify.png"),
-  twitch: require("../../assets/services/twitch.png"),
-  typeform: require("../../assets/services/typeform.png"),
-  loading: require("../../assets/services/loading.png"),
+  deezer: require("../../assets/images/services/deezer.png"),
+  discord: require("../../assets/images/services/discord.png"),
+  dropbox: require("../../assets/images/services/dropbox.png"),
+  github: require("../../assets/images/services/github.png"),
+  google: require("../../assets/images/services/google.png"),
+  miro: require("../../assets/images/services/miro.png"),
+  notion: require("../../assets/images/services/notion.png"),
+  spotify: require("../../assets/images/services/spotify.png"),
+  twitch: require("../../assets/images/services/twitch.png"),
+  typeform: require("../../assets/images/services/typeform.png"),
+  timer: require("../../assets/images/services/timer.png"),
+  loading: require("../../assets/images/services/loading.png"),
 };

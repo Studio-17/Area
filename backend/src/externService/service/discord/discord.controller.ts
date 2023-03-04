@@ -1,27 +1,17 @@
-import { Body, Controller, Post, HttpStatus, Req, Res, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { CredentialsGuard } from './guard/credentials.guard';
+import { Body, Controller, Post, HttpStatus, Res } from '@nestjs/common';
 import { DiscordService } from './discord.service';
-import { AuthorizeBotDto } from './dto/authorize-bot.dto';
-import { GuildInformationDto } from './dto/guild-information.dto';
-import { ChannelInformationDto } from './dto/channel-information.dto';
-import { ChannelMessageInformationDto } from './dto/message-information.dto';
 import { CreateSchedulesEventDto } from './dto/create-schedules-event.dto';
-import { ScheduledEventInformationByIdDto } from './dto/scheduled-event-information.dto';
-import { CreateMessageDto } from './dto/create-message.dto';
+import { ReactionDto } from 'src/cron/dto/reaction.dto';
+import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 
 @Controller('actions/discord')
 export class DiscordController {
   constructor(private readonly discordService: DiscordService) {}
 
   @Post('/get/authenticated/user')
-  @UseGuards(AuthGuard('jwt'), CredentialsGuard)
-  public async getAuthenticatedUserInformation(@Req() request, @Res() response) {
+  public async getAuthenticatedUserInformation(@Res() response, @Body() body: ReactionDto) {
     try {
-      const user = await this.discordService.getAuthenticatedUserInformation(
-        request.user.id,
-        request.credentials.accessToken,
-      );
+      const user = await this.discordService.getAuthenticatedUserInformation(body.accessToken);
 
       return response.status(HttpStatus.OK).json({
         message: 'Got authenticated user from Discord services',
@@ -38,13 +28,9 @@ export class DiscordController {
   }
 
   @Post('/get/authenticated/user/guilds')
-  @UseGuards(AuthGuard('jwt'), CredentialsGuard)
-  public async getAuthenticatedUserGuilds(@Req() request, @Res() response) {
+  public async getAuthenticatedUserGuilds(@Res() response, @Body() body: ReactionDto) {
     try {
-      const user = await this.discordService.getAuthenticatedUserGuilds(
-        request.user.id,
-        request.credentials.accessToken,
-      );
+      const user = await this.discordService.getAuthenticatedUserGuilds(body.accessToken);
 
       return response.status(HttpStatus.OK).json({
         message: 'Got authenticated user from Discord services',
@@ -61,23 +47,19 @@ export class DiscordController {
   }
 
   @Post('/get/guild/information')
-  @UseGuards(AuthGuard('jwt'), CredentialsGuard)
-  public async getGuildInformation(
-    @Req() request,
-    @Res() response,
-    @Body() body: GuildInformationDto,
-  ) {
+  public async getGuildInformation(@Res() response, @Body() body: ReactionDto) {
     try {
-      const user = await this.discordService.getGuildInformation(body.bot_token, body.guild_id);
+      const guildId = getElemContentInParams(body.params, 'guildId', '', body.returnValues);
+      const user = await this.discordService.getGuildInformation(guildId);
 
       return response.status(HttpStatus.OK).json({
-        message: `Got information for guild ${body.guild_id} from Discord services`,
+        message: `Got information for guild from Discord services`,
         content: user,
         status: 200,
       });
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
-        message: `Error getting information for guild ${body.guild_id} from Discord Apis`,
+        message: `Error getting information for guild from Discord Apis`,
         error: error,
         status: 400,
       });
@@ -85,23 +67,19 @@ export class DiscordController {
   }
 
   @Post('/get/guild/channels')
-  @UseGuards(AuthGuard('jwt'), CredentialsGuard)
-  public async getGuildChannels(
-    @Req() request,
-    @Res() response,
-    @Body() body: GuildInformationDto,
-  ) {
+  public async getGuildChannels(@Res() response, @Body() body: ReactionDto) {
     try {
-      const user = await this.discordService.getGuildChannels(body.bot_token, body.guild_id);
+      const guildId = getElemContentInParams(body.params, 'guildId', '', body.returnValues);
+      const user = await this.discordService.getGuildChannels(guildId);
 
       return response.status(HttpStatus.OK).json({
-        message: `Got channels for guild ${body.guild_id} from Discord services`,
+        message: `Got channels for guild from Discord services`,
         content: user,
         status: 200,
       });
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
-        message: `Error getting channels for guild ${body.guild_id} from Discord Apis`,
+        message: `Error getting channels for guild from Discord Apis`,
         error: error,
         status: 400,
       });
@@ -109,46 +87,45 @@ export class DiscordController {
   }
 
   @Post('/get/guild/invites')
-  @UseGuards(AuthGuard('jwt'), CredentialsGuard)
-  public async getGuildInvites(@Req() request, @Res() response, @Body() body: GuildInformationDto) {
+  public async getGuildInvites(@Res() response, @Body() body: ReactionDto) {
     try {
-      const user = await this.discordService.getGuildInvites(body.bot_token, body.guild_id);
+      const guildId = getElemContentInParams(body.params, 'guildId', '', body.returnValues);
+      const user = await this.discordService.getGuildInvites(guildId);
 
       return response.status(HttpStatus.OK).json({
-        message: `Got invites for guild ${body.guild_id} from Discord services`,
+        message: `Got invites for guild from Discord services`,
         content: user,
         status: 200,
       });
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
-        message: `Error getting invites for guild ${body.guild_id} from Discord Apis`,
+        message: `Error getting invites for guild from Discord Apis`,
         error: error,
         status: 400,
       });
     }
   }
 
+  //Action
   @Post('/get/guild/channel/message')
-  @UseGuards(AuthGuard('jwt'), CredentialsGuard)
-  public async getGuildChannelMessages(
-    @Req() request,
-    @Res() response,
-    @Body() body: ChannelInformationDto,
-  ) {
+  public async getGuildChannelMessages(@Res() response, @Body() body: ReactionDto) {
     try {
-      const user = await this.discordService.getGuildChannelMessages(
-        body.bot_token,
-        body.guild_channel_id,
+      const guildChannelId = getElemContentInParams(
+        body.params,
+        'guildChannelId',
+        '',
+        body.returnValues,
       );
+      const user = await this.discordService.getGuildChannelMessages(guildChannelId);
 
       return response.status(HttpStatus.OK).json({
-        message: `Got messages for channel ${body.guild_channel_id} from Discord services`,
+        message: `Got messages for channel from Discord services`,
         content: user,
         status: 200,
       });
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
-        message: `Error getting messages for channel ${body.guild_channel_id} from Discord Apis`,
+        message: `Error getting messages for channel from Discord Apis`,
         error: error,
         status: 400,
       });
@@ -156,68 +133,72 @@ export class DiscordController {
   }
 
   @Post('/get/guild/channel/message/byId')
-  @UseGuards(AuthGuard('jwt'), CredentialsGuard)
-  public async getGuildChannelMessagesById(
-    @Req() request,
-    @Res() response,
-    @Body() body: ChannelMessageInformationDto,
-  ) {
+  public async getGuildChannelMessagesById(@Res() response, @Body() body: ReactionDto) {
     try {
+      const guildChannelId = getElemContentInParams(
+        body.params,
+        'guildChannelId',
+        '',
+        body.returnValues,
+      );
+      const guildChannelMessageId = getElemContentInParams(
+        body.params,
+        'guildChannelMessageId',
+        '',
+        body.returnValues,
+      );
+
       const user = await this.discordService.getGuildChannelMessagesById(
-        body.bot_token,
-        body.guild_channel_id,
-        body.message_id,
+        guildChannelId,
+        guildChannelMessageId,
       );
 
       return response.status(HttpStatus.OK).json({
-        message: `Got content for message ${body.message_id} from Discord services`,
+        message: `Got content for message from Discord services`,
         content: user,
         status: 200,
       });
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
-        message: `Error getting content for message ${body.message_id} from Discord Apis`,
+        message: `Error getting content for message from Discord Apis`,
         error: error,
         status: 400,
       });
     }
   }
 
+  //Action
   @Post('/get/guild/scheduled-events')
-  @UseGuards(AuthGuard('jwt'), CredentialsGuard)
-  public async getGuildScheduledEvents(
-    @Req() request,
-    @Res() response,
-    @Body() body: GuildInformationDto,
-  ) {
+  public async getGuildScheduledEvents(@Res() response, @Body() body: ReactionDto) {
     try {
-      const user = await this.discordService.getGuildScheduledEvents(body.bot_token, body.guild_id);
+      const guildId = getElemContentInParams(body.params, 'guildId', '', body.returnValues);
+      const user = await this.discordService.getGuildScheduledEvents(guildId);
 
       return response.status(HttpStatus.OK).json({
-        message: `Got scheduled-events for guild ${body.guild_id} from Discord services`,
+        message: `Got scheduled-events for guild from Discord services`,
         content: user,
         status: 200,
       });
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
-        message: `Error getting scheduled-events for guild ${body.guild_id} from Discord Apis`,
+        message: `Error getting scheduled-events for guild from Discord Apis`,
         error: error,
         status: 400,
       });
     }
   }
 
+  //reAction
   @Post('/create/guild/scheduled-events')
-  @UseGuards(AuthGuard('jwt'), CredentialsGuard)
   public async createGuildScheduledEvents(
-    @Req() request,
     @Res() response,
     @Body()
-    body: { botToken: string; guildChannelID: string; scheduledEvent: CreateSchedulesEventDto },
+    body: { guildChannelID: string; scheduledEvent: CreateSchedulesEventDto },
+    // channel to link
+    // @Body() body: ReactionDto,
   ) {
     try {
       const user = await this.discordService.createGuildScheduledEvents(
-        body.botToken,
         body.guildChannelID,
         body.scheduledEvent,
       );
@@ -236,56 +217,71 @@ export class DiscordController {
     }
   }
 
-  @Post('/get/guild/scheduled-events')
-  @UseGuards(AuthGuard('jwt'), CredentialsGuard)
-  public async getGuildScheduledEventsById(
-    @Req() request,
-    @Res() response,
-    @Body() body: ScheduledEventInformationByIdDto,
-  ) {
+  @Post('/get/guild/scheduled-events/byId')
+  public async getGuildScheduledEventsById(@Res() response, @Body() body: ReactionDto) {
     try {
-      const user = await this.discordService.getGuildScheduledEventsById(
-        body.bot_token,
-        body.guild_id,
-        body.scheduled_event_id,
+      const guildId = getElemContentInParams(body.params, 'guildId', '', body.returnValues);
+      const scheduledEventId = getElemContentInParams(
+        body.params,
+        'scheduledEventId',
+        '',
+        body.returnValues,
       );
 
+      const user = await this.discordService.getGuildScheduledEventsById(guildId, scheduledEventId);
+
       return response.status(HttpStatus.OK).json({
-        message: `Got scheduled-events for id ${body.scheduled_event_id} from Discord services`,
+        message: `Got scheduled-events for id from Discord services`,
         content: user,
         status: 200,
       });
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
-        message: `Error getting scheduled-events for id ${body.scheduled_event_id} from Discord Apis`,
+        message: `Error getting scheduled-events for id from Discord Apis`,
         error: error,
         status: 400,
       });
     }
   }
 
+  //reAction
   @Post('/create/message')
-  @UseGuards(AuthGuard('jwt'), CredentialsGuard)
   public async postGuildChannelMessage(
-    @Req() request,
     @Res() response,
-    @Body() body: { botToken: string; guildChannelID: string; createMessage: CreateMessageDto },
+    // @Body() body: { botToken: string; guildChannelID: string; createMessage: CreateMessageDto },
+    @Body() body: ReactionDto,
   ) {
     try {
-      const user = await this.discordService.postGuildChannelMessage(
-        body.botToken,
-        body.guildChannelID,
-        body.createMessage,
-      );
+      // console.log(body.params);
+      const guildName = getElemContentInParams(body.params, 'server', '', body.returnValues);
+      // console.log(guildName);
+      const channelName = getElemContentInParams(body.params, 'channel', '', body.returnValues);
+      const message = getElemContentInParams(body.params, 'message', '', body.returnValues);
+
+      // console.log(guildName, channelName, message);
+      const guild = await this.discordService
+        .getAuthenticatedUserGuilds(body.accessToken)
+        .then((guilds) => guilds.find((guild: any) => guild.name === guildName));
+      // console.log(guild);
+      const channel = await this.discordService
+        .getGuildChannels(guild.id)
+        .then((channels) =>
+          channels.find(
+            (channel: any) =>
+              channel.name.toLowerCase() === channelName.toLowerCase() && channel.last_message_id,
+          ),
+        );
+      console.log(channel);
+      const user = await this.discordService.postGuildChannelMessage(channel.id, message);
 
       return response.status(HttpStatus.OK).json({
-        message: `Posted message in channel ${body.guildChannelID} from Discord services`,
+        message: `Posted message in channel from Discord services`,
         content: user,
         status: 200,
       });
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
-        message: `Error posting message in channel ${body.guildChannelID} from Discord Apis`,
+        message: `Error posting message in channel from Discord Apis`,
         error: error,
         status: 400,
       });

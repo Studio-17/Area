@@ -5,9 +5,9 @@ import { AxiosError } from 'axios/index';
 import { plainToInstance } from 'class-transformer';
 import { map } from 'rxjs';
 import { UserObject } from './interface/user.interface';
-import { GuildObject, UserGuilds } from './interface/guild.interface';
+import { UserGuilds } from './interface/guild.interface';
 import { CreateSchedulesEventDto } from './dto/create-schedules-event.dto';
-import { ChannelObject, GuildChannels } from './interface/channels.interface';
+import { GuildChannels } from './interface/channels.interface';
 import { GuildInvites } from './interface/invites.interface';
 import { ChannelMessages, MessageObject } from './interface/message.interface';
 import {
@@ -15,14 +15,13 @@ import {
   ScheduledEventObject,
   ScheduledEventResponseObject,
 } from './interface/scheduled-events.interface';
-import { CreateMessageDto } from './dto/create-message.dto';
 import { MessageCreatedObject } from './interface/message-created.interface';
 
 @Injectable()
 export class DiscordService {
   constructor(private readonly httpService: HttpService) {}
 
-  public async getAuthenticatedUserInformation(userId: string, accessToken: string): Promise<any> {
+  public async getAuthenticatedUserInformation(accessToken: string): Promise<any> {
     const repositories = await lastValueFrom(
       this.httpService
         .get('https://discord.com/api/users/@me', {
@@ -45,7 +44,7 @@ export class DiscordService {
     return repositories;
   }
 
-  public async getAuthenticatedUserGuilds(userId: string, accessToken: string): Promise<any> {
+  public async getAuthenticatedUserGuilds(accessToken: string): Promise<any> {
     const guilds = await lastValueFrom(
       this.httpService
         .get('https://discord.com/api/users/@me/guilds', {
@@ -68,12 +67,12 @@ export class DiscordService {
     return guilds;
   }
 
-  public async getGuildInformation(botToken: string, guildID: string): Promise<any> {
+  public async getGuildInformation(guildID: string): Promise<any> {
     const guildInformation = await lastValueFrom(
       this.httpService
         .get(`https://discord.com/api/guilds/${guildID}`, {
           headers: {
-            Authorization: `Bot ${botToken}`,
+            Authorization: `Bot ${process.env.DISCORD_CLIENT_BOT}`,
           },
         })
         .pipe(
@@ -91,12 +90,15 @@ export class DiscordService {
     return guildInformation;
   }
 
-  public async getGuildChannels(botToken: string, guildID: string): Promise<any> {
+  public async getGuildChannels(guildID: string): Promise<any> {
     const guildChannels = await lastValueFrom(
       this.httpService
         .get(`https://discord.com/api/guilds/${guildID}/channels`, {
+          params: {
+            type: 0,
+          },
           headers: {
-            Authorization: `Bot ${botToken}`,
+            Authorization: `Bot ${process.env.DISCORD_CLIENT_BOT}`,
           },
         })
         .pipe(
@@ -106,6 +108,7 @@ export class DiscordService {
         )
         .pipe(
           catchError((error: AxiosError) => {
+            console.log(error);
             throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
@@ -114,12 +117,12 @@ export class DiscordService {
     return guildChannels;
   }
 
-  public async getGuildInvites(botToken: string, guildID: string): Promise<any> {
+  public async getGuildInvites(guildID: string): Promise<any> {
     const guildInvites = await lastValueFrom(
       this.httpService
         .get(`https://discord.com/api/guilds/${guildID}/invites`, {
           headers: {
-            Authorization: `Bot ${botToken}`,
+            Authorization: `Bot ${process.env.DISCORD_CLIENT_BOT}`,
           },
         })
         .pipe(
@@ -137,21 +140,24 @@ export class DiscordService {
     return guildInvites;
   }
 
-  public async getGuildChannelMessages(botToken: string, guildChannelID: string): Promise<any> {
+  public async getGuildChannelMessages(guildChannelID: string): Promise<any> {
+    console.log(`https://discord.com/api/channels/${guildChannelID}/messages`);
     const channelMessages = await lastValueFrom(
       this.httpService
-        .get(`https://discord.com/api/guilds/${guildChannelID}/messages`, {
+        .get(`https://discord.com/api/channels/${guildChannelID}/messages`, {
           headers: {
-            Authorization: `Bot ${botToken}`,
+            Authorization: `Bot ${process.env.DISCORD_CLIENT_BOT}`,
           },
         })
         .pipe(
           map((value) => {
+            // console.log(value);
             return plainToInstance(ChannelMessages, value.data);
           }),
         )
         .pipe(
           catchError((error: AxiosError) => {
+            console.log(error);
             throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
@@ -161,15 +167,14 @@ export class DiscordService {
   }
 
   public async getGuildChannelMessagesById(
-    botToken: string,
     guildChannelID: string,
     messageID: string,
   ): Promise<any> {
     const message = await lastValueFrom(
       this.httpService
-        .get(`https://discord.com/api/guilds/${guildChannelID}/messages/${messageID}`, {
+        .get(`https://discord.com/api/channels/${guildChannelID}/messages/${messageID}`, {
           headers: {
-            Authorization: `Bot ${botToken}`,
+            Authorization: `Bot ${process.env.DISCORD_CLIENT_BOT}`,
           },
         })
         .pipe(
@@ -187,12 +192,12 @@ export class DiscordService {
     return message;
   }
 
-  public async getGuildScheduledEvents(botToken: string, guildChannelID: string): Promise<any> {
+  public async getGuildScheduledEvents(guildChannelID: string): Promise<any> {
     const message = await lastValueFrom(
       this.httpService
         .get(`https://discord.com/api/guilds/${guildChannelID}/scheduled-events`, {
           headers: {
-            Authorization: `Bot ${botToken}`,
+            Authorization: `Bot ${process.env.DISCORD_CLIENT_BOT}`,
           },
         })
         .pipe(
@@ -211,18 +216,20 @@ export class DiscordService {
   }
 
   public async createGuildScheduledEvents(
-    botToken: string,
     guildChannelID: string,
     scheduledEvent: CreateSchedulesEventDto,
   ): Promise<any> {
     const message = await lastValueFrom(
       this.httpService
-        .post(`https://discord.com/api/guilds/${guildChannelID}/scheduled-events`, {
-          data: scheduledEvent,
-          headers: {
-            Authorization: `Bot ${botToken}`,
+        .post(
+          `https://discord.com/api/guilds/${guildChannelID}/scheduled-events`,
+          { scheduledEvent },
+          {
+            headers: {
+              Authorization: `Bot ${process.env.DISCORD_CLIENT_BOT}`,
+            },
           },
-        })
+        )
         .pipe(
           map((value) => {
             return plainToInstance(ScheduledEventResponseObject, value.data);
@@ -239,7 +246,6 @@ export class DiscordService {
   }
 
   public async getGuildScheduledEventsById(
-    botToken: string,
     guildID: string,
     scheduledEventId: string,
   ): Promise<any> {
@@ -247,7 +253,7 @@ export class DiscordService {
       this.httpService
         .get(`https://discord.com/api/guilds/${guildID}/scheduled-events/${scheduledEventId}`, {
           headers: {
-            Authorization: `Bot ${botToken}`,
+            Authorization: `Bot ${process.env.DISCORD_CLIENT_BOT}`,
           },
         })
         .pipe(
@@ -266,18 +272,21 @@ export class DiscordService {
   }
 
   public async postGuildChannelMessage(
-    botToken: string,
     guildChannelID: string,
-    createMessage: CreateMessageDto,
+    messageToSend: string,
   ): Promise<any> {
     const message = await lastValueFrom(
       this.httpService
-        .post(`https://discord.com/api/channels/${guildChannelID}/message`, {
-          data: createMessage,
-          headers: {
-            Authorization: `Bot ${botToken}`,
+        .post(
+          `https://discord.com/api/channels/${guildChannelID}/messages`,
+          { content: messageToSend },
+          {
+            headers: {
+              Authorization: `Bot ${process.env.DISCORD_CLIENT_BOT}`,
+              'Content-Type': 'application/json',
+            },
           },
-        })
+        )
         .pipe(
           map((value) => {
             return plainToInstance(MessageCreatedObject, value.data);
@@ -289,7 +298,6 @@ export class DiscordService {
           }),
         ),
     );
-
     return message;
   }
 }

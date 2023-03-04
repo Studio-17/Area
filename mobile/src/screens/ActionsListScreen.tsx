@@ -88,6 +88,10 @@ export default function ActionsListScreen({ navigation, route }: any) {
     navigation.goBack();
   };
 
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   const onClickOnActionCardsCheck = (
     actionContent?: string,
     reactionContent?: string,
@@ -95,7 +99,7 @@ export default function ActionsListScreen({ navigation, route }: any) {
     params?: GetParamsDto[] | null,
     action?: Action
   ) => {
-    if (params || !serviceInfo?.isConnected) {
+    if (params || (!serviceInfo?.isConnected && serviceInfo?.type === "external")) {
       setCurrentActionParams(params!);
       setCurrentAction(action);
       setOpenFormModal(true);
@@ -140,6 +144,9 @@ export default function ActionsListScreen({ navigation, route }: any) {
         <View style={{ display: "flex", padding: 20 }}>
           <View style={styles.descriptionContainer}>
             <Image source={images[service.name]} style={styles.logo} />
+            <MyText style={[styles.textHeaderStyle, { marginBottom: 10 }]}>
+              {capitalizeFirstLetter(service.name)}
+            </MyText>
             <MyText style={styles.textContentStyle}>
               {service.description}
             </MyText>
@@ -200,7 +207,7 @@ const styles = StyleSheet.create({
     width: "70%",
   },
   textContentStyle: {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: "bold",
     color: "black",
     textAlign: "center",

@@ -7,6 +7,11 @@ export enum ServiceList {
   GITHUB = 'github',
   GITLAB = 'gitlab',
   GOOGLE = 'google',
+  GOOGLE_EVENT = 'google-event',
+  GOOGLE_FORMS = 'google-forms',
+  GOOGLE_KEEP = 'google-keep',
+  GOOGLE_MAIL = 'google-mail',
+  GOOGLE_SUITE = 'google-suite',
   LINKEDIN = 'linkedin',
   MAILCHIMP = 'mailchimp',
   MIRO = 'miro',
@@ -17,6 +22,7 @@ export enum ServiceList {
   TUMBLR = 'tumblr',
   TWITCH = 'twitch',
   TYPEFORM = 'typeform',
+  TIMER = 'timer',
 }
 
 export enum ServiceType {

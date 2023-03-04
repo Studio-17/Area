@@ -40,7 +40,6 @@ export default function FinishEditAreaScreen(
   const [minutes, setMinutes] = useState(item.minutes);
   const [seconds, setSeconds] = useState(item.seconds);
   const [color, setColorSelected] = useState(item.color);
-  // console.log("color: ", color);
 
   const onClickOnSaveButton = () => {
     const reactions: any = [];
@@ -82,7 +81,6 @@ export default function FinishEditAreaScreen(
     const finalTime = x.split(":", 2);
     setHours(finalTime[0]);
     setMinutes(finalTime[1]);
-    setSeconds("0");
     hideTimePicker();
   };
 
@@ -91,7 +89,7 @@ export default function FinishEditAreaScreen(
       <SafeAreaView style={styles.headerContainer}>
         <TouchableOpacity
           style={styles.backIcon}
-          onPress={() => navigation.navigate(toScreen, { item: { areaData: area } })}
+          onPress={() => navigation.navigate(toScreen)}
         >
           <MaterialCommunityIcons
             name="chevron-left"
@@ -112,20 +110,30 @@ export default function FinishEditAreaScreen(
             maxLength={50}
             onChangeText={(text) => setTitle(text)}
             value={title}
-            style={styles.textTitleInput}
+            style={[styles.textTitleInput, { paddingLeft: 10 }]}
           />
         </View>
         <MyText style={[styles.textStyle, { color: "#A37C5B" }]}>
           Run every:
         </MyText>
-        <TouchableOpacity
-          style={styles.selectTimeButton}
-          onPress={showTimePicker}
-        >
-          <MyText style={styles.textTitleInput}>
-            Hours: {hours} Minutes: {minutes}
-          </MyText>
-        </TouchableOpacity>
+        <View style={styles.timeView}>
+          <TouchableOpacity
+            style={styles.selectTimeButton}
+            onPress={showTimePicker}
+          >
+            <MyText style={styles.textTitleInput}>
+              Hours: {hours} Minutes: {minutes}
+            </MyText>
+          </TouchableOpacity>
+          <MyText style={styles.textTitleInput}> Seconds: </MyText>
+          <TextInput
+            maxLength={2}
+            onChangeText={(text) => setSeconds(text)}
+            value={seconds}
+            placeholder="00"
+            style={styles.textTitleInput}
+          />
+        </View>
         <DateTimePickerModal
           isVisible={isTimePickerVisible}
           mode="time"
@@ -142,13 +150,17 @@ export default function FinishEditAreaScreen(
               onChangeText={(textColor) => setColorSelected(textColor)}
               value={color}
               placeholder="#"
-              style={styles.textTitleInput}
+              style={[styles.textTitleInput, { paddingLeft: 10 }]}
             />
           </View>
           <View style={[styles.colorResult, { backgroundColor: color }]} />
         </View>
-        {color.length === 7 ? null : (<MyText style={[{ color: "red" }]}>Please add an existant hexacode color</MyText>)}
-        {title && color.length === 7  ? (
+        {color.length === 7 ? null : (
+          <MyText style={[{ color: "red" }]}>
+            Please add an existant hexacode color
+          </MyText>
+        )}
+        {title && color.length === 7 ? (
           <TouchableOpacity
             style={styles.finishButton}
             onPress={() => onClickOnSaveButton()}
@@ -184,6 +196,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
+  timeView: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    borderRadius: 15,
+    borderColor: "#A37C5B",
+    backgroundColor: "#FFFFFF",
+    borderWidth: 3,
+    marginBottom: 20,
+  },
   colorInput: {
     backgroundColor: "#FFFFFF",
     borderRadius: 15,
@@ -208,8 +230,9 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "bold",
     color: "black",
-    padding: 10,
     fontFamily: "TitanOne",
+    paddingBottom: 10,
+    paddingTop: 10,
   },
   contentContainer: {
     margin: 20,
@@ -222,16 +245,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "black",
   },
-  selectTimeButton: {
-    borderRadius: 15,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    borderColor: "#A37C5B",
-    backgroundColor: "#FFFFFF",
-    borderWidth: 3,
-    marginBottom: 20,
-  },
+  selectTimeButton: {},
   finishButton: {
     marginTop: 20,
     padding: 10,

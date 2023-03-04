@@ -48,6 +48,36 @@ export class ServiceSeederService {
         type: ServiceType.EXTERNAL,
       },
       {
+        name: ServiceList.GOOGLE_EVENT,
+        description: 'Google Event',
+        color: '#F6450D',
+        type: ServiceType.EXTERNAL,
+      },
+      {
+        name: ServiceList.GOOGLE_KEEP,
+        description: 'Google Keep',
+        color: '#F6450D',
+        type: ServiceType.EXTERNAL,
+      },
+      {
+        name: ServiceList.GOOGLE_FORMS,
+        description: 'Google Forms',
+        color: '#F6450D',
+        type: ServiceType.EXTERNAL,
+      },
+      {
+        name: ServiceList.GOOGLE_MAIL,
+        description: 'Google Mail',
+        color: '#F6450D',
+        type: ServiceType.EXTERNAL,
+      },
+      {
+        name: ServiceList.GOOGLE_SUITE,
+        description: 'Google Suite',
+        color: '#F6450D',
+        type: ServiceType.EXTERNAL,
+      },
+      {
         name: ServiceList.MIRO,
         description:
           'Miro is an online collaborative whiteboard solution that allows you to share ideas between employees.',
@@ -81,6 +111,12 @@ export class ServiceSeederService {
           'Create meaningful connections with people-friendly forms and surveys. Typeform Applets help you launch, track, and organize your forms.',
         color: '#F7FAFB',
         type: ServiceType.EXTERNAL,
+      },
+      {
+        name: ServiceList.TIMER,
+        description: 'Timer.',
+        color: '#F7FAFB',
+        type: ServiceType.INTERNAL,
       },
     ];
 

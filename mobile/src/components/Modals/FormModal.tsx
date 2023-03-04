@@ -21,7 +21,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // import { REACT_NATIVE_APP_API_URL } from "@env";
 
-const API_ENDPOINT = "http://10.0.2.2:8080/api/reaccoon";
+const API_ENDPOINT = "http://localhost:8080/api/reaccoon";
 
 import MyText from "../MyText";
 import InputField from "../InputField";
@@ -65,25 +65,26 @@ export default function FormModal({
 }: Props) {
   const [paramsState, setParamsState] = useState<PostParamsDto[]>([]);
 
-  // console.log("\nFormModal");
-  // console.log(toScreen, '\n');
-
   const handleOauthConnection = async () => {
     const token = await AsyncStorage.getItem("userToken");
-    const res = await axios.get(
-      `${API_ENDPOINT}/service/connect/${serviceInfo?.name}`,
-      {
+    const res = await axios
+      .get(`${API_ENDPOINT}/service/connect/${serviceInfo?.name}`, {
         headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+      })
       .then((res) => res);
-    const webBrowserResult = await WebBrowser.openBrowserAsync(res.data.url);
+    const webBrowserResult = await WebBrowser.openAuthSessionAsync(res.data.url, `${API_ENDPOINT}/service/connect/${serviceInfo?.name}/redirect`);
     if (webBrowserResult.type === "cancel") {
       const refetch = await refetchServiceInfos();
       if (refetch.data?.isConnected && !params) {
         onSubmit();
       }
     }
+  };
+
+  const connectBotToDiscord = async () => {
+    await WebBrowser.openBrowserAsync(
+      "https://discord.com/oauth2/authorize?client_id=1073274269133455460&scope=bot&permissions=1503507196976"
+    );
   };
 
   useEffect(() => {
@@ -104,8 +105,6 @@ export default function FormModal({
       indexBlock
     );
     setOpenFormModal(false);
-    // console.log("\nOnSubmit: ", toScreen, '\n');
-    // console.log(toScreen, '\n');
     navigation.navigate(toScreen, { item: { areaData: area } });
   };
 
@@ -138,56 +137,69 @@ export default function FormModal({
             <MaterialCommunityIcons name="close" color={"black"} size={50} />
           </Pressable>
           <MyText style={styles.textHeaderStyle}>
-            {/*{!serviceInfo?.isConnected*/}
-            {/*  ? "Connect Service"*/}
-            {/*  : "Fill in the trigger fields"}*/}
-            Fill in the trigger fields
+            {!serviceInfo?.isConnected
+              ? "Connect Service"
+              : "Fill in the trigger fields"}
           </MyText>
           <View style={{ flex: 1 }} />
         </View>
         <ScrollView>
           <View style={styles.contentConainter}>
-            {/*{!serviceInfo?.isConnected ? (*/}
-            {/*  <>*/}
-            {/*    <View*/}
-            {/*      style={{*/}
-            {/*        display: "flex",*/}
-            {/*        justifyContent: "center",*/}
-            {/*        alignItems: "center",*/}
-            {/*        marginBottom: 20,*/}
-            {/*      }}*/}
-            {/*    >*/}
-            {/*      <Image*/}
-            {/*        source={*/}
-            {/*          images[serviceInfo?.name ? serviceInfo.name : "loading"]*/}
-            {/*        }*/}
-            {/*        style={styles.logo}*/}
-            {/*      />*/}
-            {/*      <MyText style={[styles.textStyle, { fontSize: 25 }]}>*/}
-            {/*        Log in to {capitalizeFirstLetter(serviceInfo?.name ? serviceInfo.name : "loading")} to continue*/}
-            {/*      </MyText>*/}
-            {/*    </View>*/}
-            {/*    /!* <Button title="Connect" onPress={handleOauthConnection} /> *!/*/}
-            {/*    <TouchableOpacity*/}
-            {/*      style={{*/}
-            {/*        padding: 10,*/}
-            {/*        borderRadius: 15,*/}
-            {/*        display: "flex",*/}
-            {/*        justifyContent: "center",*/}
-            {/*        alignItems: "center",*/}
-            {/*        width: "100%",*/}
-            {/*        borderColor: "black",*/}
-            {/*        borderWidth: 3,*/}
-            {/*      }}*/}
-            {/*      onPress={handleOauthConnection}*/}
-            {/*    >*/}
-            {/*      <MyText style={{ color: "black", fontSize: 20 }}>*/}
-            {/*        Connect*/}
-            {/*      </MyText>*/}
-            {/*    </TouchableOpacity>*/}
-            {/*  </>*/}
-            {/*) : (*/}
+            {(!serviceInfo?.isConnected && serviceInfo?.type === "external") ? (
+              <>
+                <View
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: 20,
+                  }}
+                >
+                  <Image
+                    source={
+                      images[serviceInfo?.name ? serviceInfo.name : "loading"]
+                    }
+                    style={styles.logo}
+                  />
+                  <MyText style={[styles.textStyle, { fontSize: 25 }]}>
+                    Log in to {capitalizeFirstLetter(serviceInfo?.name ? serviceInfo.name : "loading")} to continue
+                  </MyText>
+                </View>
+                <TouchableOpacity
+                  style={{
+                    padding: 10,
+                    borderRadius: 15,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    borderColor: "black",
+                    borderWidth: 3,
+                  }}
+                  onPress={handleOauthConnection}
+                >
+                  <MyText style={{ color: "black", fontSize: 20 }}>
+                    Connect
+                  </MyText>
+                </TouchableOpacity>
+              </>
+            ) : (
               <View>
+                {serviceInfo?.name === "discord" && (
+                  <TouchableOpacity
+                    style={[styles.buttonContainer, { marginBottom: 20 }]}
+                    onPress={connectBotToDiscord}
+                  >
+                    <MyText
+                      style={[
+                        styles.textStyle,
+                        { fontSize: 17 },
+                      ]}
+                    >
+                      Connect the Bot
+                    </MyText>
+                  </TouchableOpacity>
+                )}
                 {params?.map((param: GetParamsDto, index: number) => {
                   return (
                     <View key={index}>
@@ -210,9 +222,21 @@ export default function FormModal({
                     </View>
                   );
                 })}
-                <Button title="Submit" onPress={onSubmit} />
+                <TouchableOpacity
+                  style={styles.buttonContainer}
+                  onPress={onSubmit}
+                >
+                  <MyText
+                    style={[
+                      styles.textStyle,
+                      { fontSize: 20 },
+                    ]}
+                  >
+                    Submit
+                  </MyText>
+                </TouchableOpacity>
               </View>
-            {/*)}*/}
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -224,7 +248,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight || 0,
-    // backgroundColor: "#FFF7FA",
   },
   headerContainer: {
     display: "flex",
@@ -258,5 +281,17 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     marginBottom: 10,
+  },
+  buttonContainer: {
+    padding: 10,
+    borderRadius: 15,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    borderColor: "black",
+    borderWidth: 3,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
