@@ -127,6 +127,19 @@ export class ActionSeederService {
         link: 'google/publish-doc/',
       },
       // ----- MIRO TEMPLATES -----
+      {
+        uuid: 'df56ea14-32b5-40fa-852c-60ea3cfb7e2c',
+        service: ServiceList.MIRO,
+        type: ActionType.REACTION,
+        name: 'Create a new board',
+        params: [
+          { name: 'name', type: 'string', description: 'name of the board.' },
+          { name: 'description', type: 'string', description: 'description of the board.' },
+        ],
+        description: 'This action will create a new board in the team on Miro.',
+        link: 'miro/create/team/boards',
+      },
+
       // ----- NOTION TEMPLATES -----
       // ----- SPOTIFY TEMPLATES -----
       {

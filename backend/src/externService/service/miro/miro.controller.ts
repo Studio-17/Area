@@ -1,20 +1,18 @@
-import { Body, Controller, Get, HttpStatus, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { MiroService } from './miro.service';
 import { ReactionDto } from 'src/cron/dto/reaction.dto';
-import objectContaining = jasmine.objectContaining;
+import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 
 @Controller('actions/miro')
 export class MiroController {
   constructor(private readonly miroService: MiroService) {}
 
   @Post('/user')
-  public async getAuthenticatedUserTopArtists(
-    @Req() request,
-    @Res() response,
-    @Body() body: ReactionDto,
-  ) {
+  public async getAuthenticatedUserTopArtists(@Res() response, @Body() body: ReactionDto) {
     try {
-      const userInformation = await this.miroService.getAuthenticatedUserInformation(body);
+      const userInformation = await this.miroService.getAuthenticatedUserInformation(
+        body.accessToken,
+      );
 
       return response.status(HttpStatus.OK).json({
         message: 'Got authenticated user information using Miro service',
@@ -31,9 +29,10 @@ export class MiroController {
   }
 
   @Post('/team/boards')
-  public async getTeamsBoards(@Req() request, @Res() response, @Body() body: ReactionDto) {
+  public async getTeamsBoards(@Res() response, @Body() body: ReactionDto) {
     try {
-      const teamBoards = await this.miroService.getTeamBoards(body);
+      const teamId = getElemContentInParams(body.params, 'teamId', undefined, body.returnValues);
+      const teamBoards = await this.miroService.getTeamBoards(body.accessToken, teamId);
 
       const data = teamBoards.data;
       const boardIds = data.map((objects) => objects.id);
@@ -54,8 +53,13 @@ export class MiroController {
   }
 
   @Post('/create/team/boards')
-  public async createTeamsBoards(@Req() request, @Res() response, @Body() body: ReactionDto) {
+  public async createTeamsBoards(@Res() response, @Body() body: ReactionDto) {
     try {
+      const userData = await this.miroService.getAuthenticatedUserInformation(body.accessToken);
+      body.params = [
+        { name: 'teamId', content: userData.team.id, isActionResult: false },
+        ...body.params,
+      ];
       const createBoard = await this.miroService.createTeamBoards(body);
 
       return response.status(HttpStatus.OK).json({
@@ -73,7 +77,7 @@ export class MiroController {
   }
 
   @Post('/board/share')
-  public async shareBoard(@Req() request, @Res() response, @Body() body: ReactionDto) {
+  public async shareBoard(@Res() response, @Body() body: ReactionDto) {
     try {
       const sharedBoard = await this.miroService.shareBoard(body);
 
@@ -92,7 +96,7 @@ export class MiroController {
   }
 
   @Post('/board/team/members')
-  public async getBoardTeamMembers(@Req() request, @Res() response, @Body() body: ReactionDto) {
+  public async getBoardTeamMembers(@Res() response, @Body() body: ReactionDto) {
     try {
       const teamMembers = await this.miroService.getBoardTeamMembers(body);
 
@@ -115,7 +119,7 @@ export class MiroController {
   }
 
   @Post('/board/get/items')
-  public async getBoardItems(@Req() request, @Res() response, @Body() body: ReactionDto) {
+  public async getBoardItems(@Res() response, @Body() body: ReactionDto) {
     try {
       const embedItem = await this.miroService.getBoardItems(body);
 
@@ -143,7 +147,7 @@ export class MiroController {
   }
 
   @Post('/board/create/embed')
-  public async createBoardEmbedItem(@Req() request, @Res() response, @Body() body: ReactionDto) {
+  public async createBoardEmbedItem(@Res() response, @Body() body: ReactionDto) {
     try {
       const embedItem = await this.miroService.createBoardEmbedItem(body);
 
@@ -162,7 +166,7 @@ export class MiroController {
   }
 
   @Post('/board/create/text')
-  public async createBoardText(@Req() request, @Res() response, @Body() body: ReactionDto) {
+  public async createBoardText(@Res() response, @Body() body: ReactionDto) {
     try {
       const text = await this.miroService.createBoardText(body);
 
@@ -181,7 +185,7 @@ export class MiroController {
   }
 
   @Post('/board/create/sticky-note')
-  public async createBoardStickyNote(@Req() request, @Res() response, @Body() body: ReactionDto) {
+  public async createBoardStickyNote(@Res() response, @Body() body: ReactionDto) {
     try {
       const stickNote = await this.miroService.createBoardStickyNote(body);
 
@@ -200,7 +204,7 @@ export class MiroController {
   }
 
   @Post('/board/create/card')
-  public async createBoardCard(@Req() request, @Res() response, @Body() body: ReactionDto) {
+  public async createBoardCard(@Res() response, @Body() body: ReactionDto) {
     try {
       const card = await this.miroService.createBoardCard(body);
 
