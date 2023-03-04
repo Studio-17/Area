@@ -59,9 +59,9 @@ export default function CreateAreaScreen({
       color: color,
     };
     addArea(areaToSend);
-    // console.log(areaToSend);
     item.setBlockState([]);
     item.setthensInstance([]);
+    navigation.navigate("NewArea");
     navigation.navigate(toScreen);
   };
 
@@ -87,7 +87,7 @@ export default function CreateAreaScreen({
       <SafeAreaView style={styles.headerContainer}>
         <TouchableOpacity
           style={styles.backIcon}
-          onPress={() => navigation.navigate(toScreen)}
+          onPress={() => navigation.navigate("NewArea")}
         >
           <MaterialCommunityIcons
             name="chevron-left"
