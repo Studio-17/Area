@@ -54,12 +54,6 @@ export class ServiceSeederService {
         type: ServiceType.EXTERNAL,
       },
       {
-        name: ServiceList.GOOGLE_KEEP,
-        description: 'Google Keep',
-        color: '#F6450D',
-        type: ServiceType.EXTERNAL,
-      },
-      {
         name: ServiceList.GOOGLE_FORMS,
         description: 'Google Forms',
         color: '#F6450D',

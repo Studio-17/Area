@@ -33,6 +33,7 @@ import { DeezerModule } from './externService/service/deezer/deezer.module';
 import { TimerModule } from './externService/service/timer/timer.module';
 import { WebhookModule } from './externService/service/webhook/webhook.module';
 import { MiroModule } from './externService/service/miro/miro.module';
+import { GoogleFormsModule } from './externService/service/google-forms/google-forms.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { MiroModule } from './externService/service/miro/miro.module';
     DeezerModule,
     DiscordModule,
     GoogleModule,
+    GoogleFormsModule,
     GithubModule,
     MiroModule,
     SpotifyModule,

@@ -57,33 +57,6 @@ export class GoogleOAuth2Controller {
     });
   }
 
-  @Get('/google-keep')
-  @UseGuards(AuthGuard('jwt'))
-  public async googleAnalytics(@Req() request, @Res() response) {
-    const clientID = process.env.GOOGLE_CLIENT_ID;
-    const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
-    const scope = 'email profile https://www.googleapis.com/auth/keep';
-    const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
-
-    if (!token['email']) {
-      return response.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'Error unauthenticated (using jwt)',
-        data: token,
-        status: 401,
-      });
-    }
-
-    const googleServiceName = 'google-keep';
-    const state = `${token['email']}_${googleServiceName}`;
-
-    return response.status(HttpStatus.OK).json({
-      url: encodeURI(
-        `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${state}&redirect_uri=${callbackURL}&client_id=${clientID}`,
-      ),
-      status: 200,
-    });
-  }
-
   @Get('/google-event')
   @UseGuards(AuthGuard('jwt'))
   public async googleEvengt(@Req() request, @Res() response) {
@@ -118,7 +91,7 @@ export class GoogleOAuth2Controller {
     const clientID = process.env.GOOGLE_CLIENT_ID;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/google/redirect`;
     const scope =
-      'email profile https://www.googleapis.com/auth/forms.body https://www.googleapis.com/auth/forms.responses.readonly';
+      'email profile https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/forms.body';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
     if (!token['email']) {
@@ -235,7 +208,6 @@ export class GoogleOAuth2Controller {
       ['google-event', ServiceList.GOOGLE_EVENT],
       ['google-forms', ServiceList.GOOGLE_FORMS],
       ['google-mail', ServiceList.GOOGLE_MAIL],
-      ['google-keep', ServiceList.GOOGLE_KEEP],
       ['google-suite', ServiceList.GOOGLE_SUITE],
     ]);
 
