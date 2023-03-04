@@ -23,33 +23,7 @@ import { GithubMilestoneDto } from './dto/github-milestone.dto';
 export class GithubController {
   constructor(private readonly githubService: GithubService) {}
 
-  // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
-  // @Get('/get-repository')
-  // public async pullRepository(@Req() request, @Res() response) {
-  //   try {
-  //     const gmailRecord = await this.githubService;
-  //
-  //     return response.status(HttpStatus.OK).json({
-  //       message: 'Got last email from Google services',
-  //       content: gmailRecord,
-  //       status: 200,
-  //     });
-  //   } catch (error) {
-  //     return response.status(HttpStatus.BAD_REQUEST).json({
-  //       message: 'Error fetching emails from Google Apis',
-  //       error: error,
-  //       status: 400,
-  //     });
-  //   }
-  // }
-
   // TODO - LIST
-  // --- ACTIONS ---
-  // GET ALL REPOSITORIES
-  // GET ALL REPOSITORIES OF A USER
-  // LIST ISSUES ASSIGNED TO A USER
-  // GET ALL LABELS
-
   // --- REACTIONS ---
   // UPDATE A BRANCH
   // ADD A COLLABORATOR
@@ -63,6 +37,27 @@ export class GithubController {
   // DELETE A REPOSITORY
   // STAR A REPOSITORY
   // UNSTAR A REPOSITORY
+
+  @Get('/check-repository')
+  public async checkNewUserRepository(@Req() request, @Res() response) {
+    try {
+      const repositoryResult = await this.githubService.getUserRepository(
+        request.credentials.accessToken,
+      );
+
+      return response.status(HttpStatus.OK).json({
+        message: 'Got last user repository from Github API',
+        content: repositoryResult,
+        status: 200,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error fetching user repository from Github API',
+        error: error,
+        status: 400,
+      });
+    }
+  }
 
   // @UseGuards(JwtAuthenticationGuard, CredentialsGuard)
   @Get('/check-pull-request')

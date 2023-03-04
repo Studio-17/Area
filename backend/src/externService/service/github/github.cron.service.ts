@@ -25,6 +25,7 @@ export class GithubCronService {
 
   availableActions = new Map([
     // ACTIONS
+    ['github/check-user-repository/', this.checkUserRepository.bind(this)],
     ['github/check-pull-request/', this.checkPullRequest.bind(this)],
     ['github/check-issue/', this.checkIssue.bind(this)],
     ['github/check-user-issue/', this.checkUserIssue.bind(this)],
@@ -39,8 +40,85 @@ export class GithubCronService {
 
     // REACTIONS
     ['github/fork-repository/', this.forkRepository.bind(this)],
-    // ['github/get-repository/', this.githubService.addRepositoryCron.bind(this.githubService)],
   ]);
+
+  // --- USER STAR ---
+  // TODO - Fix conflict between users
+  public async checkUserRepository(accessToken: string) {
+    try {
+      const repository = await this.githubService.getUserRepository(accessToken);
+
+      const record = new GithubRecordEntity();
+      record.owner = '';
+      record.repo = '';
+      record.category = 'user-repository';
+      record.id = repository;
+      return (await this.findOrUpdateLastUserRepository(record)).new;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
+    }
+  }
+
+  public async findOrUpdateLastUserRepository(githubRecordDto: GithubRecordDto) {
+    const record = await this.findUserRepository(githubRecordDto);
+
+    if (!record) {
+      try {
+        return {
+          new: false,
+          data: await this.githubRecordRepository.save(githubRecordDto),
+        };
+      } catch (err) {
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
+      }
+    } else if (
+      githubRecordDto.id.toString() !== '0' &&
+      record.id.toString() < githubRecordDto.id.toString()
+    ) {
+      try {
+        const newRecord = await this.githubRecordRepository.update(
+          {
+            id: record.id,
+          },
+          { ...githubRecordDto },
+        );
+
+        if (!newRecord) {
+          throw new NotFoundException(`Record does not exist`);
+        }
+
+        return {
+          new: true,
+          data: await this.findUserRepository(githubRecordDto),
+        };
+      } catch (err) {
+        console.error(err);
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST, { cause: err });
+      }
+    } else {
+      return { new: false, data: record };
+    }
+  }
+
+  public async findUserRepository(githubRecordDto: GithubRecordDto): Promise<GithubRecordEntity> {
+    try {
+      const records = await this.githubRecordRepository.findOneBy({
+        owner: githubRecordDto.owner,
+        repo: githubRecordDto.repo,
+        category: 'user-repository',
+      });
+
+      if (!records) {
+        return undefined;
+      }
+
+      return records;
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
 
   // --- FORK ---
   public async forkRepository(accessToken: string, params: { name: string; content: string }[]) {

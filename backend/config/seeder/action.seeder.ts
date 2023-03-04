@@ -17,6 +17,15 @@ export class ActionSeederService {
       // ----- DISCORD TEMPLATES -----
       // ----- GITHUB TEMPLATES -----
       {
+        uuid: '7d21181c-98e2-452b-b9db-b022a0d00d9f',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github User Repository',
+        description:
+          'This action allow you to catch events when a new repository is created by the connected user.',
+        link: 'github/check-user-repository/',
+      },
+      {
         uuid: '0e423200-9d5a-4f7c-8949-3d9bbad368df',
         service: ServiceList.GITHUB,
         type: ActionType.ACTION,
