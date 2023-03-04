@@ -9,7 +9,6 @@ import {
   TextInput,
   Button,
 } from "react-native";
-import { Platform } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 // Icons
@@ -19,18 +18,21 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import MyText from "../components/MyText";
 
 // Redux
-import { useAddAreaMutation } from "../redux/services/servicesApi";
+import { useEditAreaMutation } from "../redux/services/servicesApi";
+import { Area } from "../redux/models/areaModels";
 
-export default function CreateAreaScreen({
-  route,
-  navigation,
-}: {
+export default function FinishEditAreaScreen(
+  {
+    route,
+    navigation,
+  }: {
   route: any;
   navigation: any;
 }) {
   const { item } = route.params;
-  const [addArea, error] = useAddAreaMutation();
+  const [editArea, error] = useEditAreaMutation();
   const toScreen = item.toScreen;
+  const area: Area = item.area;
 
   const [title, setTitle] = useState<string>(item.title);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
@@ -46,7 +48,7 @@ export default function CreateAreaScreen({
       .map((block: any) =>
         reactions.push({ id: block.uuid, params: block.params })
       );
-    const areaToSend = {
+    const areaToUpdate = {
       action: {
         id: item.blocksState[0].uuid,
         params: item.blocksState[0].params,
@@ -58,8 +60,8 @@ export default function CreateAreaScreen({
       second: seconds.toString() === "00" ? "*" : seconds.toString(),
       color: color,
     };
-    addArea(areaToSend);
-    // console.log(areaToSend);
+    editArea({areaToUpdate, areaId: area?.area.uuid});
+    console.log(areaToUpdate);
     item.setBlockState([]);
     item.setthensInstance([]);
     navigation.navigate(toScreen);

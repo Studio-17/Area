@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Action } from "../models/actionModels";
-import { Area, createAreaDto } from "../models/areaModels";
+import { Area, createAreaDto, updateAreaDto } from "../models/areaModels";
 import {
   LoginRequest,
   RegisterRequest,
@@ -51,6 +51,17 @@ export const servicesApi = createApi({
       }),
       invalidatesTags: ["Area"],
     }),
+    editArea: builder.mutation<
+      void,
+      { areaToUpdate: updateAreaDto; areaId: string }
+    >({
+      query: ({ areaToUpdate, areaId }) => ({
+        url: `area/${areaId}`,
+        method: "PATCH",
+        body: areaToUpdate,
+      }),
+      invalidatesTags: ["Area"],
+    }),
     deleteArea: builder.mutation<void, string>({
       query: (id) => ({
         url: `area/${id}`,
@@ -85,6 +96,7 @@ export const {
   useActionsQuery,
   useAddAreaMutation,
   useAreasQuery,
+  useEditAreaMutation,
   useDeleteAreaMutation,
   useAreaQuery,
   useLoginMutation,

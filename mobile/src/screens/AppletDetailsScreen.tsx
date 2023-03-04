@@ -6,6 +6,7 @@ import {
   View,
   ScrollView,
   Alert,
+  Pressable
 } from "react-native";
 
 // Icons
@@ -17,7 +18,10 @@ import DetailsActionCard from "../components/Cards/DetailsActionCard";
 
 // Redux
 import { Action } from "../redux/models/actionModels";
-import { useDeleteAreaMutation } from "../redux/services/servicesApi";
+import {useAreaQuery, useDeleteAreaMutation, useServicesQuery} from "../redux/services/servicesApi";
+// import {GetParamsDto} from "../redux/models/paramsModels";
+// import { Area } from "../redux/models/areaModels";
+// import { PostParamsDto, GetParamsDto } from "../redux/models/paramsModel";
 
 export default function AppletDetailsScreen({
   route,
@@ -28,6 +32,7 @@ export default function AppletDetailsScreen({
 }) {
   const { item } = route.params;
   const [deleteArea] = useDeleteAreaMutation();
+  const { data: area, isError, isLoading } = useAreaQuery(item.area.uuid);
 
   const onClickDelete = () => {
     Alert.alert("Delete", "Are you sure you want to delete this area?", [
@@ -44,6 +49,10 @@ export default function AppletDetailsScreen({
         style: "destructive",
       },
     ]);
+  };
+
+  const onClickOnModify = () => {
+    navigation.navigate("EditArea", { item: { areaData: area } });
   };
 
   return (
@@ -63,6 +72,11 @@ export default function AppletDetailsScreen({
         <View style={{ flex: 1 }} />
       </SafeAreaView>
       <ScrollView style={styles.contentContainer}>
+        <Pressable
+          onPress={onClickOnModify}
+        >
+          <MaterialCommunityIcons name="pen" color={"black"} size={30} />
+        </Pressable>
         <MyText style={[styles.actionTitle, { color: "#A37C5B" }]}>
           Action
         </MyText>

@@ -13,6 +13,7 @@ import {
 
 // Redux
 import { ServiceInfo } from "../../redux/models/serviceModels";
+import { Area } from "../../redux/models/areaModels";
 
 import * as WebBrowser from "expo-web-browser";
 
@@ -45,6 +46,8 @@ interface Props {
   serviceInfo: ServiceInfo | undefined;
   refetchServiceInfos: any;
   indexBlock?: number;
+  toScreen: string;
+  area: Area;
 }
 
 export default function FormModal({
@@ -57,6 +60,8 @@ export default function FormModal({
   serviceInfo,
   refetchServiceInfos,
   indexBlock,
+  toScreen,
+  area
 }: Props) {
   const [paramsState, setParamsState] = useState<PostParamsDto[]>([]);
 
@@ -100,7 +105,7 @@ export default function FormModal({
       indexBlock
     );
     setOpenFormModal(false);
-    navigation.navigate("NewArea");
+    navigation.navigate(toScreen, { item: { areaData: area } });
   };
 
   const onChangeTextField = (name: string, content: string) => {
@@ -132,7 +137,7 @@ export default function FormModal({
             <MaterialCommunityIcons name="close" color={"black"} size={50} />
           </Pressable>
           <MyText style={styles.textHeaderStyle}>
-            {(!serviceInfo?.isConnected && serviceInfo?.type === "external")
+            {!serviceInfo?.isConnected
               ? "Connect Service"
               : "Fill in the trigger fields"}
           </MyText>
@@ -157,11 +162,7 @@ export default function FormModal({
                     style={styles.logo}
                   />
                   <MyText style={[styles.textStyle, { fontSize: 25 }]}>
-                    Log in to{" "}
-                    {capitalizeFirstLetter(
-                      serviceInfo?.name ? serviceInfo.name : "loading"
-                    )}{" "}
-                    to continue
+                    Log in to {capitalizeFirstLetter(serviceInfo?.name ? serviceInfo.name : "loading")} to continue
                   </MyText>
                 </View>
                 <TouchableOpacity

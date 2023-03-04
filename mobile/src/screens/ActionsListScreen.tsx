@@ -15,15 +15,15 @@ import {
   useActionsQuery,
   useServiceQuery,
 } from "../redux/services/servicesApi";
-import { Service } from "../redux/models/serviceModels";
+import { Service, images } from "../redux/models/serviceModels";
 import { Action } from "../redux/models/actionModels";
 import { GetParamsDto, PostParamsDto } from "../redux/models/paramsModel";
+import { Area } from "../redux/models/areaModels";
 
 // Components
 import ActionCard from "../components/Cards/ActionCard";
 import FormModal from "../components/Modals/FormModal";
 import MyText from "../components/MyText";
-import { images } from "../redux/models/serviceModels";
 
 export default function ActionsListScreen({ navigation, route }: any) {
   const { item } = route.params;
@@ -32,12 +32,11 @@ export default function ActionsListScreen({ navigation, route }: any) {
   const typeOfRequest: "new" | "modify" = item.typeOfRequest;
   const indexBlock: number = item.indexBlock;
   const onClickOnAreasCards: any = item.onClickOnAreasCards;
+  const toScreen: string = item.toScreen;
+  const area: Area = item.area;
 
   const [openFormModal, setOpenFormModal] = useState<boolean>(false);
-
-  const [currentActionParams, setCurrentActionParams] = useState<
-    GetParamsDto[] | null
-  >(null);
+  const [currentActionParams, setCurrentActionParams] = useState<GetParamsDto[] | null>(null);
   const [currentAction, setCurrentAction] = useState<any | null>(null);
 
   const {
@@ -124,7 +123,7 @@ export default function ActionsListScreen({ navigation, route }: any) {
           indexBlock
         );
       }
-      navigation.navigate("NewArea");
+      navigation.navigate(toScreen, { item: { areaData: area } });
     }
   };
 
@@ -182,6 +181,8 @@ export default function ActionsListScreen({ navigation, route }: any) {
         serviceInfo={serviceInfo}
         refetchServiceInfos={() => refetchServiceInfos()}
         indexBlock={indexBlock}
+        toScreen={toScreen}
+        area={area}
       />
     </SafeAreaView>
   );
