@@ -113,7 +113,7 @@ export class MiroService {
     const boardId = getElemContentInParams(body.params, 'boardId', undefined, body.returnValues);
     const email = getElemContentInParams(body.params, 'email', undefined, body.returnValues);
     // Available roles are the following: commenter, editor, coowner
-    const role = getElemContentInParams(body.params, 'role', undefined, body.returnValues);
+    const role = getElemContentInParams(body.params, 'role', 'commenter', body.returnValues);
 
     const sharedBoard = await lastValueFrom(
       this.httpService

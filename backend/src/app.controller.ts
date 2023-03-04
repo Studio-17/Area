@@ -115,6 +115,10 @@ export class AppController {
                 name: 'create a board',
                 description: 'It create a new board on Miro.',
               },
+              {
+                name: 'share a board',
+                description: 'It share a board on Miro.',
+              },
             ],
           },
           {

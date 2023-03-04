@@ -137,7 +137,20 @@ export class ActionSeederService {
           { name: 'description', type: 'string', description: 'description of the board.' },
         ],
         description: 'This action will create a new board in the team on Miro.',
-        link: 'miro/create/team/boards',
+        link: 'miro/create/team/boards/',
+      },
+      {
+        uuid: 'ae56ea14-3295-40fa-852c-6fea3cfb7e2c',
+        service: ServiceList.MIRO,
+        type: ActionType.REACTION,
+        name: 'Share a board',
+        params: [
+          { name: 'name', type: 'string', description: 'name of the board.' },
+          { name: 'email', type: 'string', description: 'email of the new user.' },
+          { name: 'role', type: 'string', description: 'Role of the new user.' },
+        ],
+        description: 'This action will share a board with email member on Miro.',
+        link: 'miro/board/share',
       },
 
       // ----- NOTION TEMPLATES -----

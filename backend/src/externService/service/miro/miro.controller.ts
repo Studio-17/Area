@@ -79,6 +79,17 @@ export class MiroController {
   @Post('/board/share')
   public async shareBoard(@Res() response, @Body() body: ReactionDto) {
     try {
+      const userData = await this.miroService.getAuthenticatedUserInformation(body.accessToken);
+      const teamBoards = await this.miroService.getTeamBoards(body.accessToken, userData.team.id);
+      const boardName = getElemContentInParams(body.params, 'name', undefined, body.returnValues);
+      body.params = [
+        {
+          name: 'boardId',
+          content: teamBoards.data.find((board: any) => board.name === boardName).id,
+          isActionResult: false,
+        },
+        ...body.params,
+      ];
       const sharedBoard = await this.miroService.shareBoard(body);
 
       return response.status(HttpStatus.OK).json({
