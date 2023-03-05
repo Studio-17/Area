@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Req, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -10,6 +10,16 @@ export class AppController {
   @Get('healthcheck')
   healthCheck(): string {
     return this.appService.healthCheck();
+  }
+
+  @Get('date')
+  date() {
+    return Date.now();
+  }
+
+  @Post('ping')
+  ping(@Body() body: string): void {
+    console.log('ping', body);
   }
 
   @Get('about.json')
@@ -260,6 +270,21 @@ export class AppController {
               {
                 name: undefined,
                 description: undefined,
+              },
+            ],
+          },
+          {
+            name: 'webhook',
+            actions: [
+              {
+                name: 'get response webhook changed',
+                description: 'The action check if the response of the get url call changed.',
+              },
+            ],
+            reactions: [
+              {
+                name: 'Post webhook call',
+                description: 'The reaction call the post url.',
               },
             ],
           },

@@ -22,6 +22,7 @@ import { MiroCronService } from 'src/externService/service/miro/miro.cron.servic
 // import { DeezerService } from 'src/externService/service/deezer/deezer.service';
 import { DeezerCronService } from 'src/externService/service/deezer/deezer.cron.service';
 import { GoogleEventCronService } from 'src/externService/service/google-event/google-event.cron.service';
+import { WebhookCronService } from 'src/externService/service/webhook/webhook.cron.service';
 
 @Injectable()
 export class MyActionService {
@@ -42,6 +43,7 @@ export class MyActionService {
     private readonly miroCronService: MiroCronService,
     private readonly cronService: CronService,
     private readonly deezerCronService: DeezerCronService,
+    private readonly webhookCronService: WebhookCronService,
   ) {}
 
   async findAction(areaId: string) {
@@ -120,6 +122,7 @@ export class MyActionService {
     [ServiceList.DISCORD, this.discordCronService.availableActions],
     [ServiceList.TIMER, this.timerCronService.availableActions],
     [ServiceList.DEEZER, this.deezerCronService.availableActions],
+    [ServiceList.WEBHOOK, this.webhookCronService.availableActions],
   ]);
 
   async addCron(actionId: string, timer: any, myActionId: string, userId: string, params: Params) {
