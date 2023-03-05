@@ -29,7 +29,7 @@ const LandingPage = () => {
             onClick={() => navigate("/home")}
           />
           <BigRoundedButton
-            label={"Download SDK"}
+            label={"Download APK"}
             color={"primary"}
             onClick={() => navigate("/client.apk")}
           />

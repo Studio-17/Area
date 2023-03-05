@@ -1,8 +1,16 @@
+import { useCallback } from "react";
 import BigRoundedButton from "../components/Buttons/BigRoundedButton";
 import { theme } from "../constants/theme";
 import "../styles/DownloadSdk.css";
 
 const DownloadSdk = () => {
+  const downloadApk = useCallback(() => {
+    const link = document.createElement("a");
+    link.href = "/front_data/client.apk";
+    link.download = "client.apk";
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }, []);
   return (
     <div
       className="download-main-container"
@@ -12,9 +20,9 @@ const DownloadSdk = () => {
       }}
     >
       <BigRoundedButton
-        label="Download SDK"
+        label="Download APK"
         color="primary"
-        onClick={() => null}
+        onClick={() => downloadApk()}
       />
     </div>
   );
