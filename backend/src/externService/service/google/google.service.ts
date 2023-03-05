@@ -81,6 +81,56 @@ export class GoogleService {
     return fileId;
   }
 
+  public async encodeMessage(to: string, subject: string, mailContent: string): Promise<string> {
+    const message = [
+      'Content-Type: text/html; charset=utf-8',
+      'To: ' + to,
+      'From: ' + '',
+      'Subject: ' + subject,
+      '',
+      mailContent,
+    ].join('\n');
+
+    return Buffer.from(message).toString('base64');
+  }
+
+  public async sendMail(body: ReactionDto): Promise<string> {
+    const to = getElemContentInParams(body.params, 'to', 'contact@reaccoon.io', body.returnValues);
+    const subject = getElemContentInParams(body.params, 'subject', 'No object', body.returnValues);
+    const mailContent = getElemContentInParams(
+      body.params,
+      'mailContent',
+      'No body',
+      body.returnValues,
+    );
+
+    const encodedMessage = await this.encodeMessage(to, subject, mailContent);
+
+    const config = {
+      method: 'post',
+      url: 'https://gmail.googleapis.com/gmail/v1/users/me/messages/send',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${body.accessToken}`,
+        ContentType: 'application/json',
+      },
+      data: {
+        raw: encodedMessage,
+      },
+    };
+
+    const emailId = await axios(config)
+      .then(function (apiResponse) {
+        return apiResponse.data.id;
+      })
+      .catch(function (error) {
+        console.log(JSON.stringify(error));
+        throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
+      });
+
+    return emailId;
+  }
+
   public async checkNewGoogleDocOnDriveCreated(actionParam: ActionParam): Promise<ActionResult> {
     const configBis = {
       method: 'get',
