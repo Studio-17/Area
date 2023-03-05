@@ -35,14 +35,18 @@ export class AppController {
             name: 'deezer',
             actions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'A new playlist is created',
+                description: 'This action check if a new playlist has been created',
+              },
+              {
+                name: 'A playlist is deleted',
+                description: 'This action check if a playlist has been deleted',
               },
             ],
             reactions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'Create playlist',
+                description: 'This reaction create a playlist on Deezer.',
               },
             ],
           },
@@ -68,21 +72,6 @@ export class AppController {
             ],
           },
           {
-            name: 'dropbox',
-            actions: [
-              {
-                name: undefined,
-                description: undefined,
-              },
-            ],
-            reactions: [
-              {
-                name: undefined,
-                description: undefined,
-              },
-            ],
-          },
-          {
             name: 'github',
             actions: [
               {
@@ -98,7 +87,7 @@ export class AppController {
             ],
           },
           {
-            name: 'google',
+            name: 'google-mail',
             actions: [
               {
                 name: 'new_email_received',
@@ -107,8 +96,28 @@ export class AppController {
             ],
             reactions: [
               {
-                name: 'create_google_doc',
-                description: 'It creates a google doc on the user`s google drive',
+                name: undefined,
+                description: undefined,
+              },
+            ],
+          },
+          {
+            name: 'google-suite',
+            actions: [
+              {
+                name: 'Check doc created on google drive',
+                description:
+                  'This action allow you to catch events when a new doc is created on your drive.',
+              },
+            ],
+            reactions: [
+              {
+                name: 'Empty the trash of your google drive',
+                description: 'This action allow you to trash your google drive trash',
+              },
+              {
+                name: 'Create file on Google Drive',
+                description: 'This reaction allow you to create a file on Google Drive.',
               },
             ],
           },
@@ -147,21 +156,6 @@ export class AppController {
               {
                 name: 'share a board',
                 description: 'It share a board on Miro.',
-              },
-            ],
-          },
-          {
-            name: 'notion',
-            actions: [
-              {
-                name: undefined,
-                description: undefined,
-              },
-            ],
-            reactions: [
-              {
-                name: undefined,
-                description: undefined,
               },
             ],
           },
@@ -234,21 +228,6 @@ export class AppController {
               {
                 name: 'A followed channel is on live',
                 description: 'It check if a specific followed channel is on live.',
-              },
-            ],
-            reactions: [
-              {
-                name: undefined,
-                description: undefined,
-              },
-            ],
-          },
-          {
-            name: 'typeform',
-            actions: [
-              {
-                name: undefined,
-                description: undefined,
               },
             ],
             reactions: [
