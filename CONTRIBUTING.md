@@ -151,27 +151,281 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/Epitec
 ### Your First Code Contribution
 Follow the next guidelines for any contribution on this repository
 
-## Add a new service
-You have to implement first the connection of the service with the GET route `service/connect/serviceName`.
-In this route, you have to handle the guard with the Json Web Token of the user and should return a link to connect to the service oauth2.
-The redirect URI of the service request will be the route `service/connect/serviceName/redirect` wich will add the service token to the credential entity. Look some existing example to know how it works (for example google).
+- [Add a new service](#add-a-new-service)
+- [Add a new action](#add-a-new-action)
+- [Add a new reaction](#add-a-new-reaction)
+<br/>
 
-Next you will add in the [serviceList](/backend/src/service/entity/service.entity.ts) enum the name of the service and in the [service seeder](/backend/config/seeder/service.seeder.ts) the new service with the ServiceList enum reference, the name of the service and if it is external (need an oauth connection) or internal.
+#### **Add a new service**
+First you have to implement the connection of this service. If it don't need connection, skip this step.
+Add a new module in [extern service connection](/backend/src/externService/oauth2/). You can see example in this folder to help you.
+
+The controller of your service is named `/service/connect` and need to have two routes:
+- `/serviceName` (GET) will return the external connection url.
+- `/serviceName/redirect` is the redirect called in the redirect_uri of external connection url.
+
+The user can now connect to the service
+
+All the logic of your service actions / reactions have to be coded in an other module located in the [extern service service](/backend/src/externService/service/) folder. So create a new module in the folder with the name of your service. It have to contains a crontroller, a service and a cron.service.
+
+Now you will add the service to the service list of the Reaccoon application.
+- Add in the [ServiceList](/backend/src/service/entity/service.entity.ts#L3) enum the service name.
+```ts
+export enum ServiceList {
+  ...
+  SERVICENAME = 'servicename'
+}
+```
+
+- Add in the [service Seeder](/backend/config/seeder/service.seeder.ts#L14) the sevice information
+```ts
+async seed() {
+    const services = [
+      ...
+      {
+        name: ServiceList.SERVICENAME
+        description: 'the description of the service'
+        color: '#000000' (used in front side)
+        type: ServiceType.EXTERNAL | ServiceType.INTERNAL
+      }
+    ]
+}
+```
+> The type of your service is external if it need a connection or internal if it doesn't
+
+- Add the modules in the [app module imports](/backend/src/app.module.ts#L40) (your oauth module and service module).
+
+- Add the service in the [appController about Json list](/backend/src/app.controller.ts#L33)
+```ts
+server: {
+  services: [
+    ...
+    {
+      name: 'serviceName',
+      actions: [
+        { name: undefined, description: undefined },
+      ],
+      reactions: [
+        { name: undefined description: undefined },
+      ],
+    },
+  ]
+}
+```
+
 
 Congratulations, you added a new service !
 
-Now, you can add many actions of reactions in this service. To do that you first have to add in the [availableActions](/backend/src/myAction/myAction.service.ts) map the service with the ServiceList enum refence of your service and the reference of a map of the availableActions of you service (it will contains all the actions reference and functions to handle them of your service). See example if you are lost.
-Warning ! Don't forget to import the module of your service in myAction module.
 
-Next you can add actions and reactions route to your service controller (the crontroller will juste call the action and reaction logic in the .service file).
-The REACTION MUST have a crontroller route.
+#### **Add a new action**
 
-To add an ACTION, you have to implement an other function that will call the service api call wich will handle the logic of the trigger of the action. In fact, in this function you will check if the action is triggered or not (for example check if the last mail received is different than the last one). This function will take as parameter an accessToken (of the service) and a list of params (an array of Json with the name of the param and a content) and return a Boolean (True if is triggered).
-After the logic of your action is created, you will add to the availableActions map of your service the link (representing the route of your action call) and the reference of your action logic function. (See example to know how it works with already implemented [services](/backend/src/externService/service/google/google.cron.service.ts)).
+All your external API call will be added in function in the `.service` of your service.
 
-To finish add the action or the reaction in the [action seeder](/backend/config/seeder/action.seeder.ts) with the reference of the service ([ServiceList](/backend/src/service/service.service.ts)), the type ([an action or a reaction](/backend/src/action/entity/action.entity.ts)), the name of the action, a description, a link (the route to access to the action) and the params (it is an array of Json with the name of the param, a description and his type (string, float...)).
+The action will run in a cron, that is generated with a generic method. All you have to do is to develop the logic function of the action. In fact it will check if the action is triggered or not.
 
-The last thing to do is to add to the [about.json](/backend/src/app.controller.ts) the new service and actions / reactions
+This function will be added in the `.cron.service`. The function to add the action Cron will call a map containing the list of available services that contains map of available actions of the service.
+
+In your `.cron.service` add a map (usually named availableActions):
+```ts
+ availableActions = new Map<string, ActionFunction>();
+```
+> ActionFunction is an interface that we will see later the details.
+
+In the [myAction service](/backend/src/myAction/myAction.service.ts) add this map to the map of [available service Actions]((/backend/src/myAction/myAction.service.ts#L113)):
+```ts
+ availableActions = new Map<string, Map<string, ActionFunction>>([
+    ...
+    [ServiceList.SERVICENAME, this.serviceNameCronService.availableActions],
+  ]);
+```
+> Don't forget to add serviceNameCronService in the constructor of the myActionservice and to import the ServiceNameModule in myActionModule.
+
+Now the app can call your future action when the user create an area.
+
+The format of your function have is specific. It is an [ActionFunction](/backend/src/cron/interfaces/actionFunction.interface.ts)
+```ts
+(actionParam: ActionParam): Promise<ActionResult>;
+```
+The [actionParam](/backend/src/cron/interfaces/actionParam.interface.ts) have 3 elements:
+- accessToken: The token of the user of the service (created in the service connect). Is empty and not used if it is an internal service.
+- myActionId: The uuid in the database of the created action of the area (used later to store some data of your action).
+- [params](/backend/src/cron/type/param.type.ts): list of params sent by the user to be used in the action (see later how to use them).
+
+The [ActionResult](/backend/src/cron/interfaces/actionResult.interface.ts) have 2 elements:
+- isTriggered: a boolean to know if your action is triggered.
+- [returnValues](/backend/src/cron/type/returnValue.type.ts): a list of value that the action will return tu be used by the reaction (see how to set them later).
+
+You can now develop your action function. If the request of your external Api requires some arguments, you have to get them from the params. To do that, you can use the [getElemContentInParams](/backend/src/cron/utils/getElemContentInParams.ts) function.
+```ts
+    const elem = getElemContentInParams(body.params, 'nameOfElemInParams', 'standartValue', []);
+```
+> You can chose what is the name of your element(see later where we gonna define it) and his standart value.
+
+In most case, the function will compare a past value with the new gotten by the call of api to check if it has changed, so you have to store the value to use it at the next iteration.
+You can store it in the [ActionReccord](/backend/src/cron/entity/actionRecord.entity.ts) entity.
+
+Some [functions](/backend/src/cron/cron.service.ts) are related to this entity.
+
+[To create a new local record](/backend/src/cron/cron.service.ts#L81):
+```ts
+  const record = this.cronService.createRecord(actionParam.myActionId, 'category', content);
+```
+> the category is a name of your choice to store it and difference them if you have plurial values to store
+
+> the content of your choice in string format
+
+[To get the stored record](/backend/src/cron/cron.service.ts#L38):
+```ts
+  const record = await this.cronService.findByActionId(actionParam.myActionId, 'category');
+```
+
+[To store a new record](/backend/src/cron/cron.service.ts#L49) (it will replace the past one):
+```ts
+  const newReccord = this.cronService.createReccord(actionParam.myActionId, 'category', content);
+
+  const isChanged = await this.cronService.findOrUpdateLastRecord(newReccord);
+```
+The function will store the new value at the place of the past one but it will compare it before. if it changed, it will return true.
+
+It can be very helpful to reduce the code in your action fucntion.
+
+After having devolopped your fucntion, you can add it to the `availableAction` map previously created.
+```ts
+availableActions = new Map<string, ActionFunction>(
+  ['fake/path/to/the/action', this.actionFunction.bind(this)],
+)
+```
+> the left part of the map is a fake path to the action
+
+If the action return some values, you can add them in the returnValues field:
+```ts
+return { isTriggered: true,
+  returnValues: [
+    { name: 'valueNameOne', content: content.value1 },
+    { name: 'valueNametwo', content: content.value2 },
+  ],
+}
+```
+> the names of the returnValues is your choice.
+
+Your action is now complete. The last thing you have to do is to add it in the [action seeders](/backend/config/seeder/action.seeder.ts) for the users:
+```ts
+const actions = [
+  ...
+  {
+    uuid: 'd1e11414-32b5-40fa-852c-60eaacfb7e2c',
+    service: ServiceList.SERVICENAME,
+    type: ActionType.ACTION,
+    name: 'action name',
+    params: [{ name: 'param sample', type: 'string', description: 'description of the param.' }],
+    returnValues: [{ name: 'returnValueO1', type: 'string', description: 'description of the return value.' }],
+    description:
+      'description of the action',
+    link: 'fake/path/to/the/action',
+  },
+]
+```
+> the params field are the params you have used (from the actionParam.params). the name have to be the same as you defined in your function. the type is for the front side. The same shit with the returnValues.
+
+Finally, finish by add the action in the [aboutJson](/backend/src/app.controller.ts#L31)
+```ts
+server: {
+  services: [
+    ...
+    {
+      name: 'serviceName',
+      actions: [
+        { name: 'name of the action', description: 'description of the action.' },
+      ],
+      reactions: [
+        { name: undefined description: undefined },
+      ],
+    },
+  ]
+}
+```
+
+#### **Add a new reaction**
+To implement a reaction, it is spimplier. All you have to do is to add it in your `service.controller` as a Post request.
+```ts
+@Controller('actions/serviceName')
+export class ServiceNameController {
+  constructor(private readonly serviceNameService: ServiceNameService) {}
+
+  @Post('/reactionName')
+  public async getAuthenticatedUserTopArtists(@Res() response, @Body() body: ReactionDto) {
+    try {
+      const result = await this.serviceNameService.reactionFunction(body);
+
+      return response.status(HttpStatus.OK).json({
+        message: 'all is ok',
+        result,
+        status: 200,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error in the reaction services',
+        error: error,
+        status: 400,
+      });
+    }
+  }
+}
+```
+> your controller must be named `actions/serviceName`
+
+The reaction controller have a [ReactionDto](/backend/src/cron/dto/reaction.dto.ts) as body:
+- accessToken: The token of the user of the service (created in the service connect). Is empty and not used if it is an internal service
+- [params](/backend/src/cron/type/param.type.ts): list of params sent by the user to be used in the reaction (see later how to use them).
+- [returnValues](/backend/src/cron/type/param.type.ts): list of return values sent back by the action when it was triggered (you don't have to handle them except call specific function using them. see just later to see the case).
+
+To get the content of a param:
+```ts
+const elem = getElemContentInParams(body.params, 'nameOfElemInParams', 'standartValue', body.returnValues);
+```
+> this is the only case where the returnValues will be used
+
+> The name of the element and the standart value is your choice
+
+
+Your reaction is now complete. The last thing you have to do is to add it in the [action seeders](/backend/config/seeder/action.seeder.ts) for the users:
+```ts
+const actions = [
+  ...
+  {
+    uuid: 'd1e11414-32b5-40fa-852c-60eaacfb7e2c',
+    service: ServiceList.SERVICENAME,
+    type: ActionType.REACTION,
+    name: 'reaction name',
+    params: [{ name: 'param sample', type: 'string', description: 'description of the param.' }],
+    description:
+      'description of the action',
+    link: 'serviceName/reactionName/',
+  },
+]
+```
+> the params field are the params you have used (from the actionParam.params). the name have to be the same as you defined in your function. the type is for the front side.
+
+Finally, finish by add the reaction in the [aboutJson](/backend/src/app.controller.ts#L31)
+```ts
+server: {
+  services: [
+    ...
+    {
+      name: 'serviceName',
+      actions: [
+        { name: undefined description: undefined },
+      ],
+      reactions: [
+        { name: 'name of the reaction', description: 'description of the reaction.' },
+      ],
+    },
+  ]
+}
+```
+
+
+
 
 ### Improving The Documentation
 The usage of DOxygen is mandatory, please document your functions, methods, class and other instances
