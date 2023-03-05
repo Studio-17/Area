@@ -103,6 +103,25 @@ export class AppController {
             ],
           },
           {
+            name: 'google-event',
+            actions: [
+              {
+                name: 'A new calendar is created or added',
+                description: 'A new calendar is created or added in the user`s google account',
+              },
+              {
+                name: 'A new event is created',
+                description: 'A new event is created in a specific user`s calendar',
+              },
+            ],
+            reactions: [
+              {
+                name: undefined,
+                description: undefined,
+              },
+            ],
+          },
+          {
             name: 'miro',
             actions: [
               {

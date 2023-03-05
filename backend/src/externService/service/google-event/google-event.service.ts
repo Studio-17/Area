@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { ReactionDto } from '../../../cron/dto/reaction.dto';
 import { getElemContentInParams } from '../../../cron/utils/getElemContentInParams';
 import { catchError, lastValueFrom, map } from 'rxjs';
@@ -10,13 +10,13 @@ export class GoogleEventService {
   constructor(private readonly httpService: HttpService) {}
 
   // ----------------------- CALENDAR -----------------------
-  public async listGoogleCalendars(body: ReactionDto): Promise<any> {
+  public async listGoogleCalendars(accessToken: string): Promise<any> {
     const calendars = await lastValueFrom(
       this.httpService
         .get('https://www.googleapis.com/calendar/v3/users/me/calendarList', {
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${body.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         })
         .pipe(
@@ -37,15 +37,15 @@ export class GoogleEventService {
     return calendars;
   }
 
-  public async getGoogleCalendarById(body: ReactionDto): Promise<any> {
-    const calendarId = getElemContentInParams(body.params, 'calendarId', '', body.returnValues);
+  public async getGoogleCalendarById(accessToken: string, calendarId: string): Promise<any> {
+    // const calendarId = getElemContentInParams(body.params, 'calendarId', '', body.returnValues);
 
     const calendar = await lastValueFrom(
       this.httpService
-        .get(`https://www.googleapis.com/calendar/v3/users/calendars/${calendarId}`, {
+        .get(`https://www.googleapis.com/calendar/v3/calendars/${calendarId}`, {
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${body.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         })
         .pipe(
@@ -55,6 +55,7 @@ export class GoogleEventService {
         )
         .pipe(
           catchError((error: AxiosError) => {
+            console.log(error.message);
             throw new HttpException(() => error.message, error.status);
           }),
         ),
@@ -63,15 +64,15 @@ export class GoogleEventService {
     return calendar;
   }
 
-  public async listGoogleCalendarsEvents(body: ReactionDto): Promise<any> {
-    const calendarId = getElemContentInParams(body.params, 'calendarId', '', body.returnValues);
+  public async listGoogleCalendarsEvents(accessToken: string, calendarId: string): Promise<any> {
+    // const calendarId = getElemContentInParams(body.params, 'calendarId', '', body.returnValues);
 
     const events = await lastValueFrom(
       this.httpService
         .get(`https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`, {
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${body.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         })
         .pipe(

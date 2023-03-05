@@ -124,6 +124,7 @@ export class CronService {
         myActionId: myActionId,
       });
       if (conditionChecked.isTriggered) {
+        console.log('action is triggered');
         await this.handleCronReaction(userId, actionLink, conditionChecked.returnValues);
       }
     } catch (error: any) {

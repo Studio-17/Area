@@ -21,6 +21,7 @@ import { ActionFunction } from 'src/cron/interfaces/actionFunction.interface';
 import { MiroCronService } from 'src/externService/service/miro/miro.cron.service';
 // import { DeezerService } from 'src/externService/service/deezer/deezer.service';
 import { DeezerCronService } from 'src/externService/service/deezer/deezer.cron.service';
+import { GoogleEventCronService } from 'src/externService/service/google-event/google-event.cron.service';
 
 @Injectable()
 export class MyActionService {
@@ -32,6 +33,7 @@ export class MyActionService {
     private readonly areaService: AreaService,
     private schedulerRegistry: SchedulerRegistry,
     private readonly googleCronService: GoogleCronService,
+    private readonly googleEventCronService: GoogleEventCronService,
     private readonly githubCronService: GithubCronService,
     private readonly spotifyCronService: SpotifyCronService,
     private readonly discordCronService: DiscordCronService,
@@ -112,6 +114,7 @@ export class MyActionService {
     [ServiceList.TWITCH, this.twitchCronService.availableActions],
     // return value not set up for google
     [ServiceList.GOOGLE_MAIL, this.googleCronService.googleMailAvailableActions],
+    [ServiceList.GOOGLE_EVENT, this.googleEventCronService.googleEventAvailableActions],
     [ServiceList.GITHUB, this.githubCronService.availableActions],
     [ServiceList.SPOTIFY, this.spotifyCronService.availableActions],
     [ServiceList.DISCORD, this.discordCronService.availableActions],
