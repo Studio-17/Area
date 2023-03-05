@@ -9,9 +9,9 @@ import {
 } from "../models/authModel";
 import { Service, ServiceInfo } from "../models/serviceModels";
 import { RootState } from "../store/store";
-// import { REACT_NATIVE_APP_API_URL } from "@env";
+import { REACT_NATIVE_APP_API_URL } from "@env";
 
-const API_ENDPOINT = "http://localhost:8080/api/reaccoon";
+const API_ENDPOINT = REACT_NATIVE_APP_API_URL;
 
 export const servicesApi = createApi({
   reducerPath: "servicesApi",

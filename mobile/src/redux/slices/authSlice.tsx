@@ -7,10 +7,9 @@ import {
 } from "../models/authModel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "../store/store";
-// import { REACT_NATIVE_APP_API_URL } from "@env";
+import { REACT_NATIVE_APP_API_URL } from "@env";
 
-const API_ENDPOINT = "http://localhost:8080/api/reaccoon";
-// const API_ENDPOINT = process.env.REACT_NATIVE_APP_API_URL;
+const API_ENDPOINT = REACT_NATIVE_APP_API_URL;
 
 let userToken = null;
 
