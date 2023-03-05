@@ -33,8 +33,8 @@ services:
     ports:
       - ${WEB_PORT}:${WEB_PORT}
     volumes:
-      - ./web:/home/node/app
-      - front_data:/home/node/app/front_data
+      - ./web:/app
+      - front_data:/app/front_data
     depends_on:
       - server
       - client_mobile
@@ -49,13 +49,13 @@ services:
       context: ./mobile
       dockerfile: ./Dockerfile
     volumes:
-      - ./mobile:/home/node/app
-      - front_data:/home/node/app/front_data
+      - ./mobile:/app
+      - front_data:/app/front_data
     depends_on:
       - server
     healthcheck:
       disable: true
-    entrypoint: [ "npm", "run", "web" ]
+    # entrypoint: [ "npm", "run", "web" ]
 
   server:
     profiles:

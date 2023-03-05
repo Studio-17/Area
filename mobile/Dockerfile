@@ -12,4 +12,4 @@ RUN git init
 
 RUN sh ./build.sh
 
-CMD ["echo", "App built successfully"]
+CMD ["echo", "App built"]
