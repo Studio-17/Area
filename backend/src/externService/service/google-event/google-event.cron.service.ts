@@ -44,9 +44,12 @@ export class GoogleEventCronService {
 
   public async checkNewEvent(actionParam: ActionParam): Promise<ActionResult> {
     try {
-      const calendars = await this.googleEventService.listGoogleCalendars(actionParam.accessToken);
+      const calendar = await this.googleEventService
+        .listGoogleCalendars(actionParam.accessToken)
+        .then((calendars) => {
+          return calendars.items.find((calendar) => calendar.summary === calendarName);
+        });
       const calendarName = getElemContentInParams(actionParam.params, 'calendarName', '', []);
-      const calendar = calendars.items.find((calendar) => calendar.summary === calendarName);
       const calendarEvents = await this.googleEventService.listGoogleCalendarsEvents(
         actionParam.accessToken,
         calendar.id.toString(),

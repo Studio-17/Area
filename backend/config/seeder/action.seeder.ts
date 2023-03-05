@@ -296,6 +296,28 @@ export class ActionSeederService {
         link: 'google-event/new-event/',
       },
       {
+        uuid: 'a523b807-fec8-4d26-817e-491be38212f3',
+        service: ServiceList.GOOGLE_EVENT,
+        type: ActionType.REACTION,
+        name: 'Create a new event on Google Calendar',
+        params: [
+          { name: 'calendarName', type: 'string', description: 'Name of the calendar.' },
+          { name: 'eventLocation', type: 'string', description: 'Location of the event.' },
+          {
+            name: 'eventStartDate',
+            type: 'date',
+            description: 'Start date of the event in YYY-MM-DD format.',
+          },
+          {
+            name: 'eventContent',
+            type: 'string',
+            description: 'content of the event.',
+          },
+        ],
+        description: 'This reaction create a new event on google calendar.',
+        link: 'google-event/calendars/events/create/',
+      },
+      {
         uuid: 'df56e414-32b5-40fa-852c-60eaacfb7ebc',
         service: ServiceList.GOOGLE_SUITE,
         type: ActionType.REACTION,

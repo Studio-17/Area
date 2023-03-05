@@ -116,8 +116,8 @@ export class AppController {
             ],
             reactions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'Create a new event',
+                description: 'It create a new event in a specific calendar.',
               },
             ],
           },

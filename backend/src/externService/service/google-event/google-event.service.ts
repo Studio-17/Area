@@ -123,17 +123,30 @@ export class GoogleEventService {
   }
 
   public async createGoogleCalendarEvent(body: ReactionDto): Promise<any> {
-    const calendarId = getElemContentInParams(body.params, 'calendarId', '', body.returnValues);
-    const location = getElemContentInParams(body.params, 'location', '', body.returnValues);
-    // format YYYY-MM-DD
-    const startDate = getElemContentInParams(body.params, 'startDate', '', body.returnValues);
-    const endDate = getElemContentInParams(body.params, 'endDate', '', body.returnValues);
-    const content = getElemContentInParams(body.params, 'content', '', body.returnValues);
+    const calendarName = getElemContentInParams(body.params, 'calendarName', '', body.returnValues);
+    const calendar = await this.listGoogleCalendars(body.accessToken)
+      .then((calendars) => {
+        return calendars.items.find((calendar) => calendar.summary === calendarName).id;
+      })
+      .catch(() => 'primary');
+    const location = getElemContentInParams(body.params, 'eventLocation', '', body.returnValues);
+    const dateObj = new Date();
+    const month = dateObj.getUTCMonth() + 1; //months from 1-12
+    const day = dateObj.getUTCDate();
+    const year = dateObj.getUTCFullYear();
+    const date = year + '-' + month + '-' + day;
+    const startDate = getElemContentInParams(
+      body.params,
+      'eventStartDate',
+      date,
+      body.returnValues,
+    );
+    const content = getElemContentInParams(body.params, 'eventContent', '', body.returnValues);
 
     const event = await lastValueFrom(
       this.httpService
         .post(
-          `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?sendUpdates=all`,
+          `https://www.googleapis.com/calendar/v3/calendars/${calendar}/events?sendUpdates=all`,
           {
             summary: content,
             location: location,
@@ -141,7 +154,7 @@ export class GoogleEventService {
               date: startDate,
             },
             end: {
-              date: endDate,
+              date: startDate,
             },
           },
           {
