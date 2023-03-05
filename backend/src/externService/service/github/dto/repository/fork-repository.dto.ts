@@ -1,23 +1,19 @@
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class ForkRepositoryDto {
   @IsString()
   @IsNotEmpty()
-  owner!: string;
+  owner: string;
 
   @IsString()
   @IsNotEmpty()
-  repo!: string;
+  repo: string;
 
   @IsString()
-  @IsNotEmpty()
-  organization!: string;
+  @IsOptional()
+  name: string;
 
-  @IsString()
-  @IsNotEmpty()
-  name!: string;
-
-  @IsString()
-  @IsNotEmpty()
-  default_branch_only!: boolean;
+  @IsBoolean()
+  @IsOptional()
+  default_branch_only: boolean;
 }

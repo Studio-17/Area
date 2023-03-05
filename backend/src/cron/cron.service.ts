@@ -95,6 +95,7 @@ export class CronService {
     if (!actionHandling) {
       return;
     }
+
     this.userService.existByUserId(userId).then((exist) => {
       if (!exist) {
         return;
@@ -118,6 +119,7 @@ export class CronService {
         await this.handleCronReaction(userId, actionLink, conditionChecked.returnValues);
       }
     } catch (error: any) {
+      console.error(error);
       return;
     }
   }
@@ -173,7 +175,7 @@ export class CronService {
             )
             .pipe(
               catchError((error: AxiosError) => {
-                // console.log(error);
+                console.error(error);
                 throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
               }),
             ),

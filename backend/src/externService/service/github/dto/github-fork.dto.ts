@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class GithubIssueDto {
+export class GithubForkDto {
   @IsString()
   @IsNotEmpty()
   owner!: string;

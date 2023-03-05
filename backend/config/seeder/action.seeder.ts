@@ -72,6 +72,15 @@ export class ActionSeederService {
       },
       // ----- GITHUB TEMPLATES -----
       {
+        uuid: '7d21181c-98e2-452b-b9db-b022a0d00d9f',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github User Repository',
+        description:
+          'This action allow you to catch events when a new repository is created by the connected user.',
+        link: 'github/check-user-repository/',
+      },
+      {
         uuid: '0e423200-9d5a-4f7c-8949-3d9bbad368df',
         service: ServiceList.GITHUB,
         type: ActionType.ACTION,
@@ -96,6 +105,153 @@ export class ActionSeederService {
         description:
           'This action allow you to catch events when a new issue is posted on a repository.',
         link: 'github/check-issue/',
+      },
+      {
+        uuid: 'e52c87ae-ad10-4040-ae66-75df2d9ccb71',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github User Issue',
+        description: 'This action allow you to catch events when a new issue is assigned to you.',
+        link: 'github/check-user-issue/',
+      },
+      {
+        uuid: '5e5db1e5-14b6-4abd-babd-3d50f5619dbe',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github Star',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
+        description: 'This action allow you to catch events when a new repository is starred.',
+        link: 'github/check-star/',
+      },
+      {
+        uuid: '93cc220c-dae7-4b05-9b8b-31daabb45ca6',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Star Github repository',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
+        description: 'This action allow you to star a Github repository.',
+        link: 'github/star-repository/',
+      },
+      {
+        uuid: '04ec2e87-6cf5-4891-b5f4-d9d57c68b7bd',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Unstar Github repository',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
+        description: 'This action allow you to star a Github repository.',
+        link: 'github/unstar-repository/',
+      },
+      {
+        uuid: '0b11633b-a373-434d-9886-b2bd89129dc1',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github User Star',
+        description:
+          'This action allow you to catch events when the connected user stars a repository.',
+        link: 'github/check-user-star/',
+      },
+      {
+        uuid: 'f8a89517-8539-4024-bf60-8f29f28001ce',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github Review Comment',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
+        description:
+          'This action allow you to catch events when a repository get a new review comment.',
+        link: 'github/check-review-comment/',
+      },
+      {
+        uuid: '3c3b5e09-2c45-415e-86cd-e1850689127b',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github Contributor',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
+        description:
+          'This action allow you to catch events when a repository get a new contributor.',
+        link: 'github/check-contributor/',
+      },
+      {
+        uuid: 'ee2242c8-2cf2-4a99-bbba-963ba9aadfcc',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github Team',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
+        description: 'This action allow you to catch events when a repository get a new team.',
+        link: 'github/check-team/',
+      },
+      {
+        uuid: '5d1e8fb8-4913-483b-880e-3819888daced',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github Invitation',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
+        description:
+          'This action allow you to catch events when a repository get a new invitation.',
+        link: 'github/check-invitation/',
+      },
+      {
+        uuid: '096d779f-9b28-4e30-b065-669284749b79',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github Milestone',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
+        description: 'This action allow you to catch events when a repository get a new milestone.',
+        link: 'github/check-milestone/',
+      },
+      {
+        uuid: 'd1c52fb8-f2a7-4e0a-b705-3412ae5d37a6',
+        service: ServiceList.GITHUB,
+        type: ActionType.ACTION,
+        name: 'Check Github Fork',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+        ],
+        description:
+          'This action allow you to catch events when a new fork is detected on a repository.',
+        link: 'github/check-fork/',
+      },
+      {
+        uuid: 'd7e3bd41-2dd2-4aec-ad77-5579eb42fcbd',
+        service: ServiceList.GITHUB,
+        type: ActionType.REACTION,
+        name: 'Fork Github Repository',
+        params: [
+          { name: 'owner', type: 'string', description: 'Name of the owner.' },
+          { name: 'repo', type: 'string', description: 'Name of the repository.' },
+          { name: 'name', type: 'string', description: 'New name of the forked repository.' },
+          {
+            name: 'default_branch_only',
+            type: 'boolean',
+            description: 'Clone only default branch (boolean).',
+          },
+        ],
+        description: 'This action allow you to fork an existing repository.',
+        link: 'github/fork-repository/',
       },
       // ----- GOOGLE TEMPLATES -----
       {
@@ -427,7 +583,6 @@ export class ActionSeederService {
       });
 
       if (!exists) {
-        console.log('saving');
         await this.actionRepository.save(action);
       }
     }
