@@ -111,7 +111,7 @@ export class GithubService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),
     );
