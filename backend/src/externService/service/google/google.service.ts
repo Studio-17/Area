@@ -208,4 +208,27 @@ export class GoogleService {
         return new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
       });
   }
+
+  public async emptyTrash(body: ReactionDto): Promise<string> {
+    const config = {
+      method: 'delete',
+      url: 'https://www.googleapis.com/drive/v3/trash',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${body.accessToken}`,
+        ContentType: 'application/json',
+      },
+    };
+
+    const trash = await axios(config)
+      .then(function (apiResponse) {
+        return apiResponse.data;
+      })
+      .catch(function (error) {
+        console.log(JSON.stringify(error));
+        throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
+      });
+
+    return trash;
+  }
 }

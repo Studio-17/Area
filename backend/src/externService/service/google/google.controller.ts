@@ -42,4 +42,22 @@ export class GoogleController {
       });
     }
   }
+
+  @Post('/empty-trash')
+  public async emptyTrash(@Res() response, @Body() body: ReactionDto) {
+    try {
+      const emptyTrash = await this.googleService.emptyTrash(body);
+      return response.status(HttpStatus.OK).json({
+        message: 'Successfully send email',
+        content: emptyTrash,
+        status: 200,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error while sending email',
+        error: error,
+        status: 400,
+      });
+    }
+  }
 }

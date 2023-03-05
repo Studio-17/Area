@@ -299,6 +299,15 @@ export class ActionSeederService {
         link: 'google/check-doc-created/',
       },
       {
+        uuid: '6503b807-eec8-2d22-817e-45cbe3881ef3',
+        service: ServiceList.GOOGLE_SUITE,
+        type: ActionType.REACTION,
+        name: 'Empty the trash of your google drive',
+        returnValues: [],
+        description: 'This action allow you to trash your google drive trash',
+        link: 'google/empty-trash/',
+      },
+      {
         uuid: '1503b807-aec8-4a26-817e-49cab38218f3',
         service: ServiceList.GOOGLE_EVENT,
         type: ActionType.ACTION,
