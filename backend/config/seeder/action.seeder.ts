@@ -628,7 +628,7 @@ export class ActionSeederService {
         uuid: '65011817-eea2-4d26-817e-45cbe3881ef3',
         service: ServiceList.TWITCH,
         type: ActionType.ACTION,
-        name: 'A is unfollowed',
+        name: 'A channel is unfollowed',
         description: 'This action check if a channel has been unfollowed.',
         link: 'twitch/unfollowed-channel/',
       },
