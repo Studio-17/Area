@@ -145,4 +145,27 @@ export class TwitchService {
 
     return playlist;
   }
+
+  public async updateUserColorChat(accessToken: string): Promise<any> {
+    const userId = this.getAuthenticatedUserInformation(accessToken);
+    const result = await lastValueFrom(
+      this.httpService
+        .get(`https://api.twitch.tv/helix/chat/color?id=${userId}&?color=blue`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Client-Id': process.env.TWITCH_CLIENT_ID,
+          },
+        })
+        .pipe(
+          map((value) => {
+            return plainToInstance(SoundTrackPlaylistObject, value.data);
+          }),
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
+          }),
+        ),
+    );
+  }
 }

@@ -134,4 +134,23 @@ export class TwitchController {
       });
     }
   }
+
+  @Post('/update-chat-color')
+  public async updateChatColor(@Res() response, @Body() body: ReactionDto) {
+    try {
+      const userInformation = await this.spotifyService.updateUserColorChat(body.accessToken);
+
+      return response.status(HttpStatus.OK).json({
+        message: 'Update color chat user',
+        userInformation,
+        status: 200,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error while updating user color chat',
+        error: error,
+        status: 400,
+      });
+    }
+  }
 }

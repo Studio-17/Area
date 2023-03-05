@@ -299,7 +299,7 @@ export class ActionSeederService {
         link: 'google/check-doc-created/',
       },
       {
-        uuid: '6503b807-eec8-2d22-817e-45cbe3881ef3',
+        uuid: '6509b807-eec1-2d22-817e-45cbe3881ef3',
         service: ServiceList.GOOGLE_SUITE,
         type: ActionType.REACTION,
         name: 'Empty the trash of your google drive',
@@ -653,6 +653,14 @@ export class ActionSeederService {
         ],
         description: 'This action check if a specific followed channel is on live.',
         link: 'twitch/channel-on-stream/',
+      },
+      {
+        uuid: '65011817-eea2-4d26-818e-45cbe3881ef9',
+        service: ServiceList.TWITCH,
+        type: ActionType.REACTION,
+        name: 'Update your chat color',
+        description: 'This action will update your chat color.',
+        link: 'twitch/update-chat-color/',
       },
       // ----- TIMER TEMPLATES -----
       {
