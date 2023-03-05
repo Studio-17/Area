@@ -1,15 +1,22 @@
 # Welcome to Reaccoon web app
 
-## How to run the app ? 
+## How to run the app ?
 
-To launch the app in dev mode do the following commands : 
+First, create a .env.local file in the root of the project with the following content :
+
+```
+REACT_APP_API_URL=
+PORT=
+REACT_APP_GOOGLE_CLIENT_ID=
+```
+
+**To launch the app in dev mode do the following commands:**
 
 ```
 npm install
-
 ```
 
-then : 
+Then:
 
 ```
 npm start
