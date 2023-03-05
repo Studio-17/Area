@@ -150,7 +150,7 @@ export class GithubService {
   public async getUserRepository(accessToken: string) {
     const repository = await firstValueFrom(
       this.httpService
-        .get(`https://api.github.com/repos`, {
+        .get(`https://api.github.com/repositories`, {
           headers: {
             Accept: 'application/vnd.github+json',
             Authorization: `Bearer ${accessToken}`,
