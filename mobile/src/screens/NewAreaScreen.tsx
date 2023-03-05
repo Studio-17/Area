@@ -97,9 +97,8 @@ export default function NewAreaScreen({ navigation }: Props) {
     typeOfRequest: "new" | "modify",
     onClickOnAreasCards: () => void
   ) => {
-    const toScreen = "NewArea";
     navigation.navigate("Services", {
-      item: { services, typeOfAction, typeOfRequest, indexBlock, onClickOnAreasCards, toScreen },
+      item: { services, typeOfAction, typeOfRequest, indexBlock, onClickOnAreasCards, toScreen: "NewArea" },
     });
   };
 
@@ -198,9 +197,8 @@ export default function NewAreaScreen({ navigation }: Props) {
     const minutes = "00";
     const seconds = "00";
     const color = "#db643a";
-    const toScreen = "Home";
     navigation.navigate("FinishArea", {
-      item: { blocksState, setBlockState, setthensInstance: setThensInstance, title, hours, minutes, seconds, color, toScreen },
+      item: { blocksState, setBlockState, setthensInstance: setThensInstance, title, hours, minutes, seconds, color, toScreen: "Home", area: null },
     });
   };
 

@@ -254,7 +254,7 @@ export default function EditAreaScreen({ navigation, route }: Props) {
   };
 
   const onClickContinue = () => {
-    navigation.navigate("FinishEditArea", {
+    navigation.navigate("FinishArea", {
       item: {
         blocksState,
         setBlockState,
