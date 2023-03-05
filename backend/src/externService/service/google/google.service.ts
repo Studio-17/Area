@@ -81,6 +81,45 @@ export class GoogleService {
     return fileId;
   }
 
+  public async checkNewGoogleDocOnDriveCreated(actionParam: ActionParam): Promise<ActionResult> {
+    const configBis = {
+      method: 'get',
+      url: 'https://www.googleapis.com/drive/v3/files',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${actionParam.accessToken}`,
+        ContentType: 'application/json',
+      },
+    };
+
+    const length = await axios(configBis)
+      .then(function (apiResponse) {
+        return apiResponse.data.files.length;
+      })
+      .catch(function (error) {
+        console.log(JSON.stringify(error));
+        throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
+      });
+
+    const pastReccord = await this.cronService.findByActionId(
+      actionParam.myActionId,
+      'numberOfDocCreated',
+    );
+    const record = this.cronService.createRecord(
+      actionParam.myActionId,
+      'numberOfDocCreated',
+      length,
+    );
+    const res = await this.cronService.findOrUpdateLastRecord(record);
+    if (res && +pastReccord.content < +length) {
+      return {
+        isTriggered: true,
+        returnValues: [],
+      };
+    }
+    return { isTriggered: false };
+  }
+
   public async getCredentialsForApi(email: string): Promise<any> {
     const config = {
       method: 'get',
