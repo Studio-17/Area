@@ -1,10 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CronService } from 'src/cron/cron.service';
-import { ActionRecord } from 'src/cron/entity/actionRecord.entity';
 import { ActionFunction } from 'src/cron/interfaces/actionFunction.interface';
 import { ActionParam } from 'src/cron/interfaces/actionParam.interface';
 import { ActionResult } from 'src/cron/interfaces/actionResult.interface';
-import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 import { DeezerService } from './deezer.service';
 
 @Injectable()
@@ -19,11 +17,12 @@ export class DeezerCronService {
       actionParam.myActionId,
       'numberOfCreatedPlaylists',
     );
-    const record = new ActionRecord();
     const length = playlists.data.length;
-    record.myActionId = actionParam.myActionId;
-    record.content = length;
-    record.category = 'numberOfCreatedPlaylists';
+    const record = this.cronService.createRecord(
+      actionParam.myActionId,
+      'numberOfCreatedPlaylists',
+      length,
+    );
     console.log('Check deezer');
     const res = await this.cronService.findOrUpdateLastRecord(record);
     if (res && +pastReccord.content < +length) {
@@ -41,11 +40,12 @@ export class DeezerCronService {
       actionParam.myActionId,
       'numberOfCreatedPlaylists',
     );
-    const record = new ActionRecord();
     const length = playlists.data.length;
-    record.myActionId = actionParam.myActionId;
-    record.content = length;
-    record.category = 'numberOfCreatedPlaylists';
+    const record = this.cronService.createRecord(
+      actionParam.myActionId,
+      'numberOfCreatedPlaylists',
+      length,
+    );
     console.log('Check deezer');
     const res = await this.cronService.findOrUpdateLastRecord(record);
     if (res && +pastReccord.content > +length) {

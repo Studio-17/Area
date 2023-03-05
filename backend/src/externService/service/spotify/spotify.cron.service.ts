@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CronService } from 'src/cron/cron.service';
-import { ActionRecord } from 'src/cron/entity/actionRecord.entity';
 import { ActionFunction } from 'src/cron/interfaces/actionFunction.interface';
 import { ActionParam } from 'src/cron/interfaces/actionParam.interface';
 import { ActionResult } from 'src/cron/interfaces/actionResult.interface';
@@ -20,10 +19,11 @@ export class SpotifyCronService {
           actionParam.accessToken,
         );
 
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'topArtist';
-      record.content = currentlyPlayingTrack.item.id;
+      const record = this.cronService.createRecord(
+        actionParam.myActionId,
+        'topArtist',
+        currentlyPlayingTrack.item.id,
+      );
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [],
@@ -39,10 +39,11 @@ export class SpotifyCronService {
         actionParam.accessToken,
       );
 
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'topTrack';
-      record.content = currentlyPlayingTrack;
+      const record = this.cronService.createRecord(
+        actionParam.myActionId,
+        'topTrack',
+        currentlyPlayingTrack,
+      );
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [],
@@ -59,10 +60,11 @@ export class SpotifyCronService {
           actionParam.accessToken,
         );
 
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'currentlyPlayingTrack';
-      record.content = currentlyPlayingTrack.item.id;
+      const record = this.cronService.createRecord(
+        actionParam.myActionId,
+        'currentlyPlayingTrack',
+        currentlyPlayingTrack.item.id,
+      );
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [

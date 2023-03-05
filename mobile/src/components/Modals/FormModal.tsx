@@ -10,18 +10,16 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as WebBrowser from "expo-web-browser";
 
 // Redux
 import { ServiceInfo } from "../../redux/models/serviceModels";
 import { Area } from "../../redux/models/areaModels";
 
-import * as WebBrowser from "expo-web-browser";
+import { REACT_NATIVE_APP_API_URL } from "@env";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-// import { REACT_NATIVE_APP_API_URL } from "@env";
-
-const API_ENDPOINT = "http://localhost:8080/api/reaccoon";
+const API_ENDPOINT = REACT_NATIVE_APP_API_URL;
 
 import MyText from "../MyText";
 import InputField from "../InputField";

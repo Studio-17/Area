@@ -9,7 +9,6 @@ import {
   TextInput,
   Button,
 } from "react-native";
-import { Platform } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 // Icons
@@ -19,7 +18,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import MyText from "../components/MyText";
 
 // Redux
-import { useAddAreaMutation } from "../redux/services/servicesApi";
+import { useAddAreaMutation, useEditAreaMutation } from "../redux/services/servicesApi";
+import { Area } from "../redux/models/areaModels";
 
 export default function CreateAreaScreen({
   route,
@@ -29,8 +29,10 @@ export default function CreateAreaScreen({
   navigation: any;
 }) {
   const { item } = route.params;
-  const [addArea, error] = useAddAreaMutation();
-  const toScreen = item.toScreen;
+  const [addArea] = useAddAreaMutation();
+  const [editArea] = useEditAreaMutation();
+  const toScreen: string = item.toScreen;
+  const area: Area = item.area;
 
   const [title, setTitle] = useState<string>(item.title);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
@@ -46,22 +48,39 @@ export default function CreateAreaScreen({
       .map((block: any) =>
         reactions.push({ id: block.uuid, params: block.params })
       );
-    const areaToSend = {
-      action: {
-        id: item.blocksState[0].uuid,
-        params: item.blocksState[0].params,
-      },
-      reactions: reactions,
-      name: title,
-      hour: hours.toString() === "00" ? "*" : hours.toString(),
-      minute: minutes.toString() === "00" ? "*" : minutes.toString(),
-      second: seconds.toString() === "00" ? "*" : seconds.toString(),
-      color: color,
-    };
-    addArea(areaToSend);
+    if (area === null) {
+      const areaToSend = {
+        action: {
+          id: item.blocksState[0].uuid,
+          params: item.blocksState[0].params,
+        },
+        reactions: reactions,
+        name: title,
+        hour: hours.toString() === "00" ? "*" : hours.toString(),
+        minute: minutes.toString() === "00" ? "*" : minutes.toString(),
+        second: seconds.toString() === "00" ? "*" : seconds.toString(),
+        color: color,
+      };
+      addArea(areaToSend);
+    } else {
+      const areaToUpdate = {
+        action: {
+          id: item.blocksState[0].uuid,
+          params: item.blocksState[0].params,
+        },
+        reactions: reactions,
+        name: title,
+        hour: hours.toString() === "00" ? "*" : hours.toString(),
+        minute: minutes.toString() === "00" ? "*" : minutes.toString(),
+        second: seconds.toString() === "00" ? "*" : seconds.toString(),
+        color: color,
+      };
+      editArea({areaToUpdate, areaId: area?.area.uuid});
+    }
     item.setBlockState([]);
     item.setthensInstance([]);
-    navigation.navigate("NewArea");
+    if (area === null)
+      navigation.navigate("NewArea");
     navigation.navigate(toScreen);
   };
 
@@ -87,7 +106,7 @@ export default function CreateAreaScreen({
       <SafeAreaView style={styles.headerContainer}>
         <TouchableOpacity
           style={styles.backIcon}
-          onPress={() => navigation.navigate("NewArea")}
+          onPress={() => navigation.goBack()}
         >
           <MaterialCommunityIcons
             name="chevron-left"

@@ -78,6 +78,14 @@ export class CronService {
     return false;
   }
 
+  public createRecord(myActionId: string, category: string, content: string): ActionRecord {
+    const record = new ActionRecord();
+    record.myActionId = myActionId;
+    record.category = category;
+    record.content = content;
+    return record;
+  }
+
   public async removeRecord(myActionId: string): Promise<void> {
     await this.actionRecordRepository.delete({ myActionId: myActionId }).catch(() => {
       throw NotFoundException('area');

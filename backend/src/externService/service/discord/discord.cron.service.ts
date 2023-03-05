@@ -5,7 +5,6 @@ import { ActionResult } from 'src/cron/interfaces/actionResult.interface';
 import { ActionParam } from 'src/cron/interfaces/actionParam.interface';
 import { ActionFunction } from 'src/cron/interfaces/actionFunction.interface';
 import { CronService } from 'src/cron/cron.service';
-import { ActionRecord } from 'src/cron/entity/actionRecord.entity';
 
 @Injectable()
 export class DiscordCronService {
@@ -24,10 +23,11 @@ export class DiscordCronService {
       if (!events.length) {
         return { isTriggered: false };
       }
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'lastScheduledEvents';
-      record.content = events.at(-1).id.toString();
+      const record = this.cronService.createRecord(
+        actionParam.myActionId,
+        'lastScheduledEvents',
+        events.at(-1).id.toString(),
+      );
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [
@@ -64,10 +64,11 @@ export class DiscordCronService {
         channel.id,
         channel.last_message_id,
       );
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'lastMessage';
-      record.content = channel.last_message_id;
+      const record = this.cronService.createRecord(
+        actionParam.myActionId,
+        'lastMessage',
+        channel.last_message_id,
+      );
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [
