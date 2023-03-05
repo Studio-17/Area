@@ -276,8 +276,8 @@ export class ActionSeederService {
         description:
           'This action allow you to catch events when a new doc is created on your drive.',
         link: 'google/check-doc-created/',
-     },
-     {
+      },
+      {
         uuid: '1503b807-aec8-4a26-817e-49cab38218f3',
         service: ServiceList.GOOGLE_EVENT,
         type: ActionType.ACTION,
