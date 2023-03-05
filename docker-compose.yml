@@ -10,10 +10,10 @@ x-typeorm: &typeorm-env
 
 volumes:
   postgres_data: {}
-  front_data:
-    driver: local
+  shared-volume:
 
 networks:
+  api-network: {}
   authentication-network:
     name: authentication-network
     driver: bridge
@@ -23,46 +23,32 @@ networks:
 services:
 
   client_web:
-    profiles:
-      - web
-      - all
-    container_name: web
-    build:
-      context: ./web
-      dockerfile: ./Dockerfile
+    restart: always
+    image: web-frontend
+    build: ./web
     ports:
       - ${WEB_PORT}:${WEB_PORT}
-    volumes:
-      - ./web:/app
-      - front_data:/app/front_data
+    environment:
+      WEB_PORT: ${WEB_PORT}
+    networks:
+      - api-network
     depends_on:
-      - server
       - client_mobile
-    entrypoint: [ "npm", "start" ]
+      - server
+    volumes:
+      - shared-volume:/app/public/apk
 
   client_mobile:
-    profiles:
-      - mobile
-      - all
-    container_name: mobile
-    build:
-      context: ./mobile
-      dockerfile: ./Dockerfile
-    volumes:
-      - ./mobile:/app
-      - front_data:/app/front_data
+    image: mobile-frontend
+    build: ./mobile
+    networks:
+      - api-network
     depends_on:
       - server
-    healthcheck:
-      disable: true
-    # entrypoint: [ "npm", "run", "web" ]
+    volumes:
+      - shared-volume:/app
 
   server:
-    profiles:
-      - backend
-      - mobile
-      - web
-      - all
     container_name: backend
     build:
       context: ./backend
