@@ -27,13 +27,6 @@ export class ServiceSeederService {
         type: ServiceType.EXTERNAL,
       },
       {
-        name: ServiceList.DROPBOX,
-        description:
-          'Dropbox lets people bring their documents, photos and videos everywhere and share them easily. Use Applets to sync your Dropbox uploads with other services, quickly add new files, and keep track of all your important photos, documents, and data — automatically.',
-        color: '#0179DB',
-        type: ServiceType.EXTERNAL,
-      },
-      {
         name: ServiceList.GITHUB,
         description:
           'GitHub is the best place to share code with friends, co-workers, classmates, and complete strangers. Turn on Applets to automatically track issues, pull requests, repositories, and to quickly create issues.',
@@ -41,21 +34,8 @@ export class ServiceSeederService {
         type: ServiceType.EXTERNAL,
       },
       {
-        name: ServiceList.GOOGLE,
-        description:
-          "Search the world's information, including webpages, images, videos and more. Google has many special features to help you find exactly what you're looking.",
-        color: '#F6450D',
-        type: ServiceType.EXTERNAL,
-      },
-      {
         name: ServiceList.GOOGLE_EVENT,
         description: 'Google Event',
-        color: '#F6450D',
-        type: ServiceType.EXTERNAL,
-      },
-      {
-        name: ServiceList.GOOGLE_FORMS,
-        description: 'Google Forms',
         color: '#F6450D',
         type: ServiceType.EXTERNAL,
       },
@@ -97,13 +77,6 @@ export class ServiceSeederService {
         description:
           "Twitch is the world’s leading social video platform and community for gamers, video game culture, and the creative arts. Turn on Applets to grow your Twitch audience, and keep up with your favorite broadcasters' videos and livestreams.",
         color: '#8A44F3',
-        type: ServiceType.EXTERNAL,
-      },
-      {
-        name: ServiceList.TYPEFORM,
-        description:
-          'Create meaningful connections with people-friendly forms and surveys. Typeform Applets help you launch, track, and organize your forms.',
-        color: '#F7FAFB',
         type: ServiceType.EXTERNAL,
       },
       {
