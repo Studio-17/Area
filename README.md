@@ -107,10 +107,7 @@ And Voilà ! **Your app is running !** :tada:
 
 ## :globe_with_meridians: Services :globe_with_meridians:
 
-Here is the list of the services that are implemented into Reaccoon:
-
-- GMail
-- GitHub
+See list of all services with actions and reactions [here](/backend/README.md) .
 
 ## :brain: Tech Stack :brain:
 
