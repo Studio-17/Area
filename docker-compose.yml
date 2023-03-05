@@ -33,12 +33,11 @@ services:
     ports:
       - ${WEB_PORT}:${WEB_PORT}
     volumes:
-#      - ./web/node_modules:/home/node/app/node_modules
       - ./web:/home/node/app
       - front_data:/home/node/app/front_data
     depends_on:
       - server
-      # - client_mobile
+      - client_mobile
     entrypoint: [ "npm", "start" ]
 
   client_mobile:
@@ -49,18 +48,7 @@ services:
     build:
       context: ./mobile
       dockerfile: ./Dockerfile
-    environment:
-      - NODE_ENV=${NODE_ENV}
-      - EXPO_DEVTOOLS_LISTEN_ADDRESS=${EXPO_DEVTOOLS_LISTEN_ADDRESS}
-      - REACT_NATIVE_PACKAGER_HOSTNAME=${REACT_NATIVE_PACKAGER_HOSTNAME}
-    tty: true
-    ports:
-      - '19000:19000'
-      - '19001:19001'
-      - '19002:19002'
-      - '19006:19006'
     volumes:
-#      - ./mobile/node_modules:/home/node/app/node_modules
       - ./mobile:/home/node/app
       - front_data:/home/node/app/front_data
     depends_on:
