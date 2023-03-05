@@ -79,7 +79,8 @@ export default function CreateAreaScreen({
     }
     item.setBlockState([]);
     item.setthensInstance([]);
-    // navigation.navigate("NewArea");
+    if (area === null)
+      navigation.navigate("NewArea");
     navigation.navigate(toScreen);
   };
 
