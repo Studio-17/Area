@@ -85,6 +85,12 @@ export class ServiceSeederService {
         color: '#F7FAFB',
         type: ServiceType.INTERNAL,
       },
+      {
+        name: ServiceList.WEBHOOK,
+        description: 'Webhook execution.',
+        color: '#F7FAFB',
+        type: ServiceType.INTERNAL,
+      },
     ];
 
     for (const service of services) {
