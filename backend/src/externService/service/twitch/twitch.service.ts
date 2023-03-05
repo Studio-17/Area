@@ -147,10 +147,10 @@ export class TwitchService {
   }
 
   public async updateUserColorChat(accessToken: string): Promise<any> {
-    const userId = this.getAuthenticatedUserInformation(accessToken);
+    const userId = await this.getAuthenticatedUserInformation(accessToken);
     const result = await lastValueFrom(
       this.httpService
-        .get(`https://api.twitch.tv/helix/chat/color?id=${userId}&?color=blue`, {
+        .get(`https://api.twitch.tv/helix/chat/color?user_id=${userId.data[0].id}&color=blue`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
             'Client-Id': process.env.TWITCH_CLIENT_ID,
@@ -163,6 +163,7 @@ export class TwitchService {
         )
         .pipe(
           catchError((error: AxiosError) => {
+            console.log(error);
             throw new HttpException(() => error, HttpStatus.BAD_REQUEST);
           }),
         ),

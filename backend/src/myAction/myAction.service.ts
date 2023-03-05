@@ -117,6 +117,7 @@ export class MyActionService {
     // return value not set up for google
     [ServiceList.GOOGLE_MAIL, this.googleCronService.googleMailAvailableActions],
     [ServiceList.GOOGLE_EVENT, this.googleEventCronService.googleEventAvailableActions],
+    [ServiceList.GOOGLE_SUITE, this.googleCronService.googleMailAvailableActions],
     [ServiceList.GITHUB, this.githubCronService.availableActions],
     [ServiceList.SPOTIFY, this.spotifyCronService.availableActions],
     [ServiceList.DISCORD, this.discordCronService.availableActions],

@@ -134,7 +134,7 @@ export class GoogleService {
   public async checkNewGoogleDocOnDriveCreated(actionParam: ActionParam): Promise<ActionResult> {
     const configBis = {
       method: 'get',
-      url: 'https://www.googleapis.com/drive/v3/files',
+      url: 'https://www.googleapis.com/drive/v3/files?pageSize=1000',
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${actionParam.accessToken}`,
@@ -151,6 +151,7 @@ export class GoogleService {
         throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
       });
 
+    console.log('Check google drive created', length);
     const pastReccord = await this.cronService.findByActionId(
       actionParam.myActionId,
       'numberOfDocCreated',
@@ -212,7 +213,7 @@ export class GoogleService {
   public async emptyTrash(body: ReactionDto): Promise<string> {
     const config = {
       method: 'delete',
-      url: 'https://www.googleapis.com/drive/v3/trash',
+      url: 'https://www.googleapis.com/drive/v3/files/trash',
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${body.accessToken}`,

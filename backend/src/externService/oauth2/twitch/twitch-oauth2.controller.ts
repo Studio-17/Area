@@ -36,7 +36,7 @@ export class TwitchOAuth2Controller {
     const clientID = process.env.TWITCH_CLIENT_ID;
     const callbackURL = `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/service/connect/twitch/redirect`;
     const scope =
-      'user:read:email user:read:follows user:read:subscriptions chat:read analytics:read:games';
+      'user:read:email user:read:follows user:read:subscriptions chat:read analytics:read:games user:manage:chat_color';
     const token = this.jwtService.decode(request.headers['authorization'].split(' ')[1]);
 
     if (!token['email']) {
