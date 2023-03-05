@@ -126,7 +126,6 @@ export default function LoginScreen({ navigation }: any) {
             />
           }
           inputTextValue={(value: string) => setEmail(value)}
-          // onFocus={() => {}}
         />
 
         <InputField
@@ -142,7 +141,6 @@ export default function LoginScreen({ navigation }: any) {
           inputType="password"
           fieldButtonLabel={"Forgot?"}
           inputTextValue={(value: string) => setPassword(value)}
-          // onFocus={() => {}}
         />
 
         <CustomButton label="Login" onPress={onSubmit} />
@@ -152,7 +150,7 @@ export default function LoginScreen({ navigation }: any) {
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "space-around",
+            justifyContent: "center",
             marginBottom: 30,
           }}
         >
@@ -165,12 +163,6 @@ export default function LoginScreen({ navigation }: any) {
           >
             <Image
               source={require("../assets/images/social/google.png")}
-              style={{ width: 30, height: 30 }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.socialmediaBtn}>
-            <Image
-              source={require("../assets/images/social/twitter.png")}
               style={{ width: 30, height: 30 }}
             />
           </TouchableOpacity>

@@ -37,15 +37,12 @@ cd reaccoon/mobile
 
 Then, just before running the Reaccoon mobile application, install expo app on your emulator with this command.
 
-For IOS :
 ```bash
-npm run ios
+npx expo start
 ```
 
-For Android : 
-```bash
-npm run android
-```
+*Then enter a character to choose the emulator you want to use.*
+
 
 And Voilà ! **Your app is running !** :tada:
 
