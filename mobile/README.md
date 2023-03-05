@@ -58,12 +58,12 @@ Here is a representation of the links between screens and navigators :
 
 Here is a representation of the folder containing the various calls to the database API :
 <p align="center">
-  <a target="blank"><img src="./docs/redux.png" width=848 alt="redux" /></a>
+  <a target="blank"><img src="./docs/redux.png" width=672 alt="redux" /></a>
 </p>
 
 Here is a representation of the different components available :
 <p align="center">
-  <a target="blank"><img src="./docs/components.png" width=848 alt="components" /></a>
+  <a target="blank"><img src="./docs/components.png" width=763 alt="components" /></a>
 </p>
 
 ## :busts_in_silhouette: Authors :busts_in_silhouette:
