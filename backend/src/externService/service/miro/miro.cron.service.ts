@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CronService } from 'src/cron/cron.service';
-import { ActionRecord } from 'src/cron/entity/actionRecord.entity';
 import { ActionFunction } from 'src/cron/interfaces/actionFunction.interface';
 import { ActionParam } from 'src/cron/interfaces/actionParam.interface';
 import { ActionResult } from 'src/cron/interfaces/actionResult.interface';
@@ -30,10 +29,11 @@ export class MiroCronService {
       actionParam.myActionId,
       'numberOfMembers',
     );
-    const record = new ActionRecord();
-    record.myActionId = actionParam.myActionId;
-    record.category = 'numberOfMembers';
-    record.content = teamMembers.total.toString();
+    const record = this.cronService.createRecord(
+      actionParam.myActionId,
+      'numberOfMembers',
+      teamMembers.total.toString(),
+    );
     const isChanged = await this.cronService.findOrUpdateLastRecord(record);
     if (isChanged && +pastRecord.content < +record.content) {
       return {

@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CronService } from 'src/cron/cron.service';
-import { ActionRecord } from 'src/cron/entity/actionRecord.entity';
 import { ActionFunction } from 'src/cron/interfaces/actionFunction.interface';
 import { ActionParam } from 'src/cron/interfaces/actionParam.interface';
 import { ActionResult } from 'src/cron/interfaces/actionResult.interface';
@@ -24,10 +23,11 @@ export class TwitchCronService {
       actionParam.myActionId,
       'numberOfFollowedChannels',
     );
-    const record = new ActionRecord();
-    record.myActionId = actionParam.myActionId;
-    record.category = 'numberOfFollowedChannels';
-    record.content = channels.total.toString();
+    const record = this.cronService.createRecord(
+      actionParam.myActionId,
+      'numberOfFollowedChannels',
+      channels.total.toString(),
+    );
     const res = await this.cronService.findOrUpdateLastRecord(record);
     if (res && +pastReccord.content < +channels.total) {
       return {
@@ -51,11 +51,11 @@ export class TwitchCronService {
       actionParam.myActionId,
       'numberOfFollowedChannels',
     );
-    const record = new ActionRecord();
-    record.myActionId = actionParam.myActionId;
-    record.category = 'numberOfFollowedChannels';
-    record.content = channels.total.toString();
-
+    const record = this.cronService.createRecord(
+      actionParam.myActionId,
+      'numberOfFollowedChannels',
+      channels.total.toString(),
+    );
     const res = await this.cronService.findOrUpdateLastRecord(record);
     if (res && +pastReccord.content > +channels.total) {
       return { isTriggered: true };
@@ -80,10 +80,11 @@ export class TwitchCronService {
     }
     const res = await this.twitchService.getStream(actionParam.accessToken, channel.broadcaster_id);
     console.log(res);
-    const record = new ActionRecord();
-    record.myActionId = actionParam.myActionId;
-    record.category = 'channelOnStream';
-    record.content = res.data.length ? 'true' : 'false';
+    const record = this.cronService.createRecord(
+      actionParam.myActionId,
+      'channelOnStream',
+      res.data.length ? 'true' : 'false',
+    );
     const result = await this.cronService.findOrUpdateLastRecord(record);
     if (res.data.length && result) {
       return {

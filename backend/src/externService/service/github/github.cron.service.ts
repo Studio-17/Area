@@ -5,7 +5,6 @@ import { ActionParam } from '../../../cron/interfaces/actionParam.interface';
 import { getElemContentInParams } from '../../../cron/utils/getElemContentInParams';
 import { ActionResult } from '../../../cron/interfaces/actionResult.interface';
 import { CronService } from '../../../cron/cron.service';
-import { ActionRecord } from '../../../cron/entity/actionRecord.entity';
 
 @Injectable()
 export class GithubCronService {
@@ -35,10 +34,11 @@ export class GithubCronService {
     try {
       const repository = await this.githubService.getUserRepository(actionParam.accessToken);
 
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'user-repository';
-      record.content = repository.toString();
+      const record = this.cronService.createRecord(
+        actionParam.myActionId,
+        'user-repository',
+        repository.toString(),
+      );
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [],
@@ -60,10 +60,11 @@ export class GithubCronService {
         repo: repo,
       });
 
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'pullRequest';
-      record.content = pullRequest.toString();
+      const record = this.cronService.createRecord(
+        actionParam.myActionId,
+        'pullRequest',
+        pullRequest.toString(),
+      );
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [],
@@ -85,10 +86,11 @@ export class GithubCronService {
         repo: repo,
       });
 
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'issue';
-      record.content = issue.toString();
+      const record = this.cronService.createRecord(
+        actionParam.myActionId,
+        'issue',
+        issue.toString(),
+      );
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [],
@@ -105,10 +107,11 @@ export class GithubCronService {
     try {
       const issue = await this.githubService.getUserIssue(actionParam.accessToken);
 
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'user-issue';
-      record.content = issue.toString();
+      const record = this.cronService.createRecord(
+        actionParam.myActionId,
+        'user-issue',
+        issue.toString(),
+      );
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [],
@@ -130,10 +133,7 @@ export class GithubCronService {
         repo: repo,
       });
 
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'star';
-      record.content = star.toString();
+      const record = this.cronService.createRecord(actionParam.myActionId, 'star', star.toString());
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [],
@@ -150,10 +150,11 @@ export class GithubCronService {
     try {
       const star = await this.githubService.getUserStar(actionParam.accessToken);
 
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'user-star';
-      record.content = star.toString();
+      const record = this.cronService.createRecord(
+        actionParam.myActionId,
+        'user-star',
+        star.toString(),
+      );
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [],
@@ -175,10 +176,11 @@ export class GithubCronService {
         repo: repo,
       });
 
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'milestone';
-      record.content = milestone.toString();
+      const record = this.cronService.createRecord(
+        actionParam.myActionId,
+        'milestone',
+        milestone.toString(),
+      );
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [],
@@ -200,10 +202,7 @@ export class GithubCronService {
         repo: repo,
       });
 
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'team';
-      record.content = team.toString();
+      const record = this.cronService.createRecord(actionParam.myActionId, 'team', team.toString());
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [],
@@ -225,10 +224,11 @@ export class GithubCronService {
         repo: repo,
       });
 
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'invitation';
-      record.content = invitation.toString();
+      const record = this.cronService.createRecord(
+        actionParam.myActionId,
+        'invitation',
+        invitation.toString(),
+      );
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [],
@@ -249,10 +249,11 @@ export class GithubCronService {
         repo: repo,
       });
 
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'contributor';
-      record.content = contributor.toString();
+      const record = this.cronService.createRecord(
+        actionParam.myActionId,
+        'contributor',
+        contributor.toString(),
+      );
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [],
@@ -274,10 +275,11 @@ export class GithubCronService {
         repo: repo,
       });
 
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'review-comment';
-      record.content = review.toString();
+      const record = this.cronService.createRecord(
+        actionParam.myActionId,
+        'review-comment',
+        review.toString(),
+      );
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [],
@@ -299,10 +301,7 @@ export class GithubCronService {
         repo: repo,
       });
 
-      const record = new ActionRecord();
-      record.myActionId = actionParam.myActionId;
-      record.category = 'fork';
-      record.content = fork.toString();
+      const record = this.cronService.createRecord(actionParam.myActionId, 'fork', fork.toString());
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
         returnValues: [],

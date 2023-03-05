@@ -5,7 +5,6 @@ import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 import { ActionResult } from 'src/cron/interfaces/actionResult.interface';
 import { ActionParam } from 'src/cron/interfaces/actionParam.interface';
 import { ReactionDto } from 'src/cron/dto/reaction.dto';
-import { ActionRecord } from 'src/cron/entity/actionRecord.entity';
 import { CronService } from 'src/cron/cron.service';
 
 @Injectable()
@@ -33,10 +32,7 @@ export class GoogleService {
       console.log('emailId (to be updated):', emailId);
 
       if (emailId) {
-        const record = new ActionRecord();
-        record.myActionId = actionParam.myActionId;
-        record.category = 'lastMail';
-        record.content = emailId;
+        const record = this.cronService.createRecord(actionParam.myActionId, 'lastMail', emailId);
         const mailContent = await this.getEmailContent(actionParam.accessToken, emailId);
         return {
           isTriggered: await this.cronService.findOrUpdateLastRecord(record),
