@@ -22,6 +22,7 @@ export enum ServiceList {
   TWITCH = 'twitch',
   TYPEFORM = 'typeform',
   TIMER = 'timer',
+  WEBHOOK = 'webhook',
 }
 
 export enum ServiceType {

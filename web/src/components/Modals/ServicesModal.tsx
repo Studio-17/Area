@@ -44,11 +44,8 @@ const style = {
 const logos = [
   deezerLogo,
   discordLogo,
-  dropBoxLogo,
   githubLogo,
-  googleLogo,
   googleEventLogo,
-  googleFormsLogo,
   googleMailLogo,
   googleSuiteLogo,
   miroLogo,

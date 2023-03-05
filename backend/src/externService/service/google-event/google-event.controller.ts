@@ -1,5 +1,6 @@
-import { Controller, Get, HttpStatus, Req, Res, Body, Post } from '@nestjs/common';
+import { Controller, HttpStatus, Res, Body, Post } from '@nestjs/common';
 import { ReactionDto } from 'src/cron/dto/reaction.dto';
+import { getElemContentInParams } from 'src/cron/utils/getElemContentInParams';
 import { GoogleEventService } from './google-event.service';
 
 @Controller('actions/google-event')
@@ -9,7 +10,7 @@ export class GoogleEventController {
   @Post('/calendars/list/all')
   public async listGoogleCalendars(@Res() response, @Body() body: ReactionDto) {
     try {
-      const googleCalendars = await this.googleEventService.listGoogleCalendars(body);
+      const googleCalendars = await this.googleEventService.listGoogleCalendars(body.accessToken);
 
       const data = googleCalendars.files;
       const formIds = data.map((objects) => objects.id);
@@ -32,7 +33,12 @@ export class GoogleEventController {
   @Post('calendars/get/byId')
   public async getGoogleCalendarsById(@Res() response, @Body() body: ReactionDto) {
     try {
-      const googleCalendar = await this.googleEventService.getGoogleCalendarById(body);
+      const calendarId = getElemContentInParams(body.params, 'calendarId', '', body.returnValues);
+
+      const googleCalendar = await this.googleEventService.getGoogleCalendarById(
+        body.accessToken,
+        calendarId,
+      );
 
       return response.status(HttpStatus.OK).json({
         message: 'Got calendar from Google Calendar services',
@@ -51,7 +57,12 @@ export class GoogleEventController {
   @Post('calendars/events/list/all')
   public async listGoogleCalendarsEvents(@Res() response, @Body() body: ReactionDto) {
     try {
-      const googleCalendarEvents = await this.googleEventService.listGoogleCalendarsEvents(body);
+      const calendarId = getElemContentInParams(body.params, 'calendarId', '', body.returnValues);
+
+      const googleCalendarEvents = await this.googleEventService.listGoogleCalendarsEvents(
+        body.accessToken,
+        calendarId,
+      );
 
       const data = googleCalendarEvents.data;
       const events = data.map((objects) => {
@@ -96,6 +107,7 @@ export class GoogleEventController {
     }
   }
 
+  // Reaction
   @Post('calendars/events/create')
   public async createGoogleCalendarEvent(@Res() response, @Body() body: ReactionDto) {
     try {
@@ -115,6 +127,7 @@ export class GoogleEventController {
     }
   }
 
+  // Action
   @Post('tasks/tasklist/all')
   public async listGoogleTasksLists(@Res() response, @Body() body: ReactionDto) {
     try {
@@ -162,6 +175,7 @@ export class GoogleEventController {
     }
   }
 
+  // Reaction
   @Post('tasks/tasklist/create')
   public async createGoogleTasksList(@Res() response, @Body() body: ReactionDto) {
     try {
@@ -181,6 +195,7 @@ export class GoogleEventController {
     }
   }
 
+  // Action
   @Post('tasks/tasks/all')
   public async listGoogleTasks(@Res() response, @Body() body: ReactionDto) {
     try {
@@ -228,6 +243,7 @@ export class GoogleEventController {
     }
   }
 
+  // Reaction
   @Post('tasks/tasks/create')
   public async createGoogleTask(@Res() response, @Body() body: ReactionDto) {
     try {
@@ -247,6 +263,7 @@ export class GoogleEventController {
     }
   }
 
+  // Reaction
   @Post('tasks/tasks/complete')
   public async completeGoogleTask(@Res() response, @Body() body: ReactionDto) {
     try {

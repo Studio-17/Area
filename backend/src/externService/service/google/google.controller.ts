@@ -6,31 +6,6 @@ import { GoogleService } from './google.service';
 export class GoogleController {
   constructor(private readonly googleService: GoogleService) {}
 
-  // @Get('/check-mail')
-  // public async checkIfMailReceived(@Res() response, @Body() body: ReactionDto) {
-  //   console.log('in /check-mail');
-  //   try {
-  //     const gmailRecord = await this.googleService.updateLastEmailReceived({
-  //       accessToken: body.accessToken,
-  //       params: body.params,
-  //     });
-
-  //     console.log(gmailRecord);
-
-  //     return response.status(HttpStatus.OK).json({
-  //       message: 'Got last email from Google services',
-  //       content: gmailRecord,
-  //       status: 200,
-  //     });
-  //   } catch (error) {
-  //     return response.status(HttpStatus.BAD_REQUEST).json({
-  //       message: 'Error fetching emails from Google Apis',
-  //       error: error,
-  //       status: 400,
-  //     });
-  //   }
-  // }
-
   @Post('/publish-doc')
   public async createGoogleDoc(@Res() response, @Body() body: ReactionDto) {
     try {
@@ -44,6 +19,42 @@ export class GoogleController {
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         message: 'Error while creating the document',
+        error: error,
+        status: 400,
+      });
+    }
+  }
+
+  @Post('/send-mail')
+  public async sendMail(@Res() response, @Body() body: ReactionDto) {
+    try {
+      const mailId = await this.googleService.sendMail(body);
+      return response.status(HttpStatus.OK).json({
+        message: 'Successfully send email',
+        content: mailId,
+        status: 200,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error while sending email',
+        error: error,
+        status: 400,
+      });
+    }
+  }
+
+  @Post('/empty-trash')
+  public async emptyTrash(@Res() response, @Body() body: ReactionDto) {
+    try {
+      const emptyTrash = await this.googleService.emptyTrash(body);
+      return response.status(HttpStatus.OK).json({
+        message: 'Successfully send email',
+        content: emptyTrash,
+        status: 200,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Error while sending email',
         error: error,
         status: 400,
       });

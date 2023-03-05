@@ -93,26 +93,14 @@ Once this is done, execute the script with the following command.
 
 As the Reaccoon is using Docker, you can manage and run the containers easily.
 
-The application is composed of three [Docker profiles](https://docs.docker.com/compose/profiles/) that you can run separately or together:
-- The `backend` profile, which contains the API and the database.
-- The `mobile` profile, which contains the mobile version of the frontend application.
-- The `web` profile, which contains the mobile version of the frontend application.
+The application is composed of three [services](https://docs.docker.com/compose/profiles/) that you can run separately or together:
+- The `server` profile, which contains the API and the database.
+- The `client_mobile` profile, which contains the mobile version of the frontend application.
+- The `client_web` profile, which contains the mobile version of the frontend application.
 
-For that, you can run one of the following command depending on which profile you need :
+To excute it you can run:
 ```bash
-# To run only the backend profile
-docker compose --profile backend up
-
-# To run the mobile profile with the backend
-docker compose --profile mobile up
-
-# To run the web profile with the backend
-docker compose --profile web up
-```
-
-You can also run all the profiles with only one command.
-```bash
-docker compose --profile all up
+docker compose up --build
 ```
 
 And Voilà ! **Your app is running !** :tada:

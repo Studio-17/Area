@@ -124,10 +124,10 @@ export class CronService {
         myActionId: myActionId,
       });
       if (conditionChecked.isTriggered) {
+        console.log('action is triggered');
         await this.handleCronReaction(userId, actionLink, conditionChecked.returnValues);
       }
     } catch (error: any) {
-      console.error(error);
       return;
     }
   }
@@ -165,9 +165,10 @@ export class CronService {
       const linkedReaction = await this.myActionService.findByLinkedFromId(relatedAction.uuid);
       for (const linked of linkedReaction) {
         const reaction = await this.actionService.findOne(linked.actionId);
-        const newAccessToken = await this.credentialsService.findById(userId, reaction.service);
-        if (!newAccessToken) {
-          return;
+        let newAccessToken = 'undefined';
+        if (await this.serviceService.isType(reaction.service, ServiceType.EXTERNAL)) {
+          newAccessToken = (await this.credentialsService.findById(userId, reaction.service))
+            .accessToken;
         }
         console.log('calling reaction:', reaction.link);
         await firstValueFrom(
@@ -176,14 +177,13 @@ export class CronService {
               `http://${process.env.APP_HOST}:${process.env.API_PORT}${process.env.APP_ENDPOINT}/actions/` +
                 reaction.link,
               {
-                accessToken: newAccessToken.accessToken,
+                accessToken: newAccessToken,
                 params: linked.params,
                 returnValues: returnValues,
               },
             )
             .pipe(
               catchError((error: AxiosError) => {
-                console.error(error);
                 throw new HttpException(error.message, HttpStatus.BAD_REQUEST, { cause: error });
               }),
             ),

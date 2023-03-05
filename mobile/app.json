@@ -1,5 +1,6 @@
 {
   "expo": {
+    "originalFullName": "@manulop/app",
     "name": "Reaccoon",
     "scheme": "app",
     "slug": "app",
@@ -13,7 +14,8 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/f45ea523-0435-4497-90f5-51fdddb447b8"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -35,6 +37,9 @@
       "eas": {
         "projectId": "f45ea523-0435-4497-90f5-51fdddb447b8"
       }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }

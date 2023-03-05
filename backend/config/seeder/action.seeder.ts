@@ -129,7 +129,7 @@ export class ActionSeederService {
       {
         uuid: '93cc220c-dae7-4b05-9b8b-31daabb45ca6',
         service: ServiceList.GITHUB,
-        type: ActionType.ACTION,
+        type: ActionType.REACTION,
         name: 'Star Github repository',
         params: [
           { name: 'owner', type: 'string', description: 'Name of the owner.' },
@@ -141,7 +141,7 @@ export class ActionSeederService {
       {
         uuid: '04ec2e87-6cf5-4891-b5f4-d9d57c68b7bd',
         service: ServiceList.GITHUB,
-        type: ActionType.ACTION,
+        type: ActionType.REACTION,
         name: 'Unstar Github repository',
         params: [
           { name: 'owner', type: 'string', description: 'Name of the owner.' },
@@ -266,6 +266,96 @@ export class ActionSeederService {
         ],
         description: 'This action allow you to catch events when you receive a new mail.',
         link: 'google/check-mail/',
+      },
+      {
+        uuid: 'ad38db1e-7c31-4cd0-a8ef-1f6d61029f11',
+        service: ServiceList.GOOGLE_MAIL,
+        type: ActionType.REACTION,
+        name: 'Send Google Mail',
+        params: [
+          {
+            name: 'to',
+            type: 'string',
+            description: 'E-mail of the person you want to send a mail.',
+          },
+          { name: 'subject', type: 'string', description: 'Subject of your mail.' },
+          {
+            name: 'mailContent',
+            type: 'string',
+            description: 'Content of the mail you want to send.',
+          },
+        ],
+        description: 'This action allow you to email using Gmail service.',
+        link: 'google/send-mail/',
+      },
+      {
+        uuid: '6503b807-eec8-2d22-817e-45cbe3881ef3',
+        service: ServiceList.GOOGLE_SUITE,
+        type: ActionType.ACTION,
+        name: 'Check doc created on google drive',
+        returnValues: [],
+        description:
+          'This action allow you to catch events when a new doc is created on your drive.',
+        link: 'google/check-doc-created/',
+      },
+      {
+        uuid: '6503b807-eec8-2d22-817e-45cbe3881ef3',
+        service: ServiceList.GOOGLE_SUITE,
+        type: ActionType.REACTION,
+        name: 'Empty the trash of your google drive',
+        returnValues: [],
+        description: 'This action allow you to trash your google drive trash',
+        link: 'google/empty-trash/',
+      },
+      {
+        uuid: '1503b807-aec8-4a26-817e-49cab38218f3',
+        service: ServiceList.GOOGLE_EVENT,
+        type: ActionType.ACTION,
+        name: 'New Google Calendar',
+        returnValues: [
+          { name: 'calendarId', type: 'string', description: 'id of the new calendar' },
+          { name: 'calendarName', type: 'string', description: 'name of the new calendar' },
+        ],
+        description: 'This action check if a google calendar has been created.',
+        link: 'google-event/new-calendar/',
+      },
+      {
+        uuid: '6503b807-aec8-4d26-817e-49cbe3821ef3',
+        service: ServiceList.GOOGLE_EVENT,
+        type: ActionType.ACTION,
+        name: 'New event on Google Calendar',
+        params: [{ name: 'calendarName', type: 'string', description: 'Name of the calendar.' }],
+        returnValues: [
+          { name: 'calendarId', type: 'string', description: 'id of the calendar' },
+          { name: 'eventId', type: 'string', description: 'id of the event' },
+          { name: 'eventName', type: 'string', description: 'title of the event' },
+          { name: 'eventStart', type: 'string', description: 'start date of the event' },
+          { name: 'eventEnd', type: 'string', description: 'end date of the event' },
+        ],
+        description: 'This action check if a new event has been added on your google calendar.',
+        link: 'google-event/new-event/',
+      },
+      {
+        uuid: 'a523b807-fec8-4d26-817e-491be38212f3',
+        service: ServiceList.GOOGLE_EVENT,
+        type: ActionType.REACTION,
+        name: 'Create a new event on Google Calendar',
+        params: [
+          { name: 'calendarName', type: 'string', description: 'Name of the calendar.' },
+          { name: 'eventLocation', type: 'string', description: 'Location of the event.' },
+          {
+            name: 'eventStartDate',
+            type: 'date',
+            description: 'Start date of the event in YYY-MM-DD format.',
+          },
+          {
+            name: 'eventContent',
+            type: 'string',
+            description: 'content of the event.',
+          },
+        ],
+        description: 'This reaction create a new event on google calendar.',
+        link: 'google-event/calendars/events/create/',
       },
       {
         uuid: 'df56e414-32b5-40fa-852c-60eaacfb7ebc',
@@ -573,6 +663,39 @@ export class ActionSeederService {
         description:
           'This action is triggered every time. You can manage the timer with the time of the area',
         link: 'timer/timer-done/',
+      },
+      // ----- WEBHOOK TEMPLATES -----
+      {
+        uuid: '1a92e1ab-eec8-4d26-817e-45cbe3881ef3',
+        service: ServiceList.WEBHOOK,
+        type: ActionType.ACTION,
+        name: 'Get webhook value changed',
+        params: [
+          { name: 'url', type: 'string', description: 'url to call in get format' },
+          {
+            name: 'param',
+            type: 'string',
+            description: 'param of the request (stored in param.param).',
+          },
+        ],
+        description: 'This action check if the return value of the get webhook has changed',
+        link: 'webhook/get/',
+      },
+      {
+        uuid: '1a92e1ab-ee18-a426-817e-45cbe3881ef3',
+        service: ServiceList.WEBHOOK,
+        type: ActionType.REACTION,
+        name: 'Post a webhook',
+        params: [
+          { name: 'url', type: 'string', description: 'url to call in post format' },
+          {
+            name: 'body',
+            type: 'string',
+            description: 'body of the request (stored in body.body).',
+          },
+        ],
+        description: 'This reaction post a webhook without params.',
+        link: 'webhook/post/',
       },
     ];
 

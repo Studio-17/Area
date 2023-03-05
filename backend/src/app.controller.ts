@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Req, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -10,6 +10,16 @@ export class AppController {
   @Get('healthcheck')
   healthCheck(): string {
     return this.appService.healthCheck();
+  }
+
+  @Get('date')
+  date() {
+    return Date.now();
+  }
+
+  @Post('ping')
+  ping(@Body() body: string): void {
+    console.log('ping', body);
   }
 
   @Get('about.json')
@@ -25,14 +35,18 @@ export class AppController {
             name: 'deezer',
             actions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'A new playlist is created',
+                description: 'This action check if a new playlist has been created',
+              },
+              {
+                name: 'A playlist is deleted',
+                description: 'This action check if a playlist has been deleted',
               },
             ],
             reactions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'Create playlist',
+                description: 'This reaction create a playlist on Deezer.',
               },
             ],
           },
@@ -58,21 +72,6 @@ export class AppController {
             ],
           },
           {
-            name: 'dropbox',
-            actions: [
-              {
-                name: undefined,
-                description: undefined,
-              },
-            ],
-            reactions: [
-              {
-                name: undefined,
-                description: undefined,
-              },
-            ],
-          },
-          {
             name: 'github',
             actions: [
               {
@@ -88,7 +87,7 @@ export class AppController {
             ],
           },
           {
-            name: 'google',
+            name: 'google-mail',
             actions: [
               {
                 name: 'new_email_received',
@@ -97,8 +96,47 @@ export class AppController {
             ],
             reactions: [
               {
-                name: 'create_google_doc',
-                description: 'It creates a google doc on the user`s google drive',
+                name: undefined,
+                description: undefined,
+              },
+            ],
+          },
+          {
+            name: 'google-suite',
+            actions: [
+              {
+                name: 'Check doc created on google drive',
+                description:
+                  'This action allow you to catch events when a new doc is created on your drive.',
+              },
+            ],
+            reactions: [
+              {
+                name: 'Empty the trash of your google drive',
+                description: 'This action allow you to trash your google drive trash',
+              },
+              {
+                name: 'Create file on Google Drive',
+                description: 'This reaction allow you to create a file on Google Drive.',
+              },
+            ],
+          },
+          {
+            name: 'google-event',
+            actions: [
+              {
+                name: 'A new calendar is created or added',
+                description: 'A new calendar is created or added in the user`s google account',
+              },
+              {
+                name: 'A new event is created',
+                description: 'A new event is created in a specific user`s calendar',
+              },
+            ],
+            reactions: [
+              {
+                name: 'Create a new event',
+                description: 'It create a new event in a specific calendar.',
               },
             ],
           },
@@ -118,21 +156,6 @@ export class AppController {
               {
                 name: 'share a board',
                 description: 'It share a board on Miro.',
-              },
-            ],
-          },
-          {
-            name: 'notion',
-            actions: [
-              {
-                name: undefined,
-                description: undefined,
-              },
-            ],
-            reactions: [
-              {
-                name: undefined,
-                description: undefined,
               },
             ],
           },
@@ -215,21 +238,6 @@ export class AppController {
             ],
           },
           {
-            name: 'typeform',
-            actions: [
-              {
-                name: undefined,
-                description: undefined,
-              },
-            ],
-            reactions: [
-              {
-                name: undefined,
-                description: undefined,
-              },
-            ],
-          },
-          {
             name: 'timer',
             actions: [
               {
@@ -241,6 +249,21 @@ export class AppController {
               {
                 name: undefined,
                 description: undefined,
+              },
+            ],
+          },
+          {
+            name: 'webhook',
+            actions: [
+              {
+                name: 'get response webhook changed',
+                description: 'The action check if the response of the get url call changed.',
+              },
+            ],
+            reactions: [
+              {
+                name: 'Post webhook call',
+                description: 'The reaction call the post url.',
               },
             ],
           },
