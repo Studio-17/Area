@@ -15,6 +15,7 @@ import { TwitchModule } from 'src/externService/service/twitch/twitch.module';
 import { TimerModule } from 'src/externService/service/timer/timer.module';
 import { MiroModule } from 'src/externService/service/miro/miro.module';
 import { DeezerModule } from 'src/externService/service/deezer/deezer.module';
+import { GoogleEventModule } from 'src/externService/service/google-event/google-event.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { DeezerModule } from 'src/externService/service/deezer/deezer.module';
     forwardRef(() => AreaModule),
     forwardRef(() => CronModule),
     forwardRef(() => GoogleModule),
+    forwardRef(() => GoogleEventModule),
     forwardRef(() => GithubModule),
     forwardRef(() => SpotifyModule),
     forwardRef(() => DiscordModule),

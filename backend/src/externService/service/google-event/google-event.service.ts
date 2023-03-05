@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { ReactionDto } from '../../../cron/dto/reaction.dto';
 import { getElemContentInParams } from '../../../cron/utils/getElemContentInParams';
 import { catchError, lastValueFrom, map } from 'rxjs';
@@ -10,13 +10,13 @@ export class GoogleEventService {
   constructor(private readonly httpService: HttpService) {}
 
   // ----------------------- CALENDAR -----------------------
-  public async listGoogleCalendars(body: ReactionDto): Promise<any> {
+  public async listGoogleCalendars(accessToken: string): Promise<any> {
     const calendars = await lastValueFrom(
       this.httpService
         .get('https://www.googleapis.com/calendar/v3/users/me/calendarList', {
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${body.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         })
         .pipe(
@@ -37,15 +37,15 @@ export class GoogleEventService {
     return calendars;
   }
 
-  public async getGoogleCalendarById(body: ReactionDto): Promise<any> {
-    const calendarId = getElemContentInParams(body.params, 'calendarId', '', body.returnValues);
+  public async getGoogleCalendarById(accessToken: string, calendarId: string): Promise<any> {
+    // const calendarId = getElemContentInParams(body.params, 'calendarId', '', body.returnValues);
 
     const calendar = await lastValueFrom(
       this.httpService
-        .get(`https://www.googleapis.com/calendar/v3/users/calendars/${calendarId}`, {
+        .get(`https://www.googleapis.com/calendar/v3/calendars/${calendarId}`, {
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${body.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         })
         .pipe(
@@ -55,6 +55,7 @@ export class GoogleEventService {
         )
         .pipe(
           catchError((error: AxiosError) => {
+            console.log(error.message);
             throw new HttpException(() => error.message, error.status);
           }),
         ),
@@ -63,15 +64,15 @@ export class GoogleEventService {
     return calendar;
   }
 
-  public async listGoogleCalendarsEvents(body: ReactionDto): Promise<any> {
-    const calendarId = getElemContentInParams(body.params, 'calendarId', '', body.returnValues);
+  public async listGoogleCalendarsEvents(accessToken: string, calendarId: string): Promise<any> {
+    // const calendarId = getElemContentInParams(body.params, 'calendarId', '', body.returnValues);
 
     const events = await lastValueFrom(
       this.httpService
         .get(`https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`, {
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${body.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         })
         .pipe(
@@ -122,17 +123,30 @@ export class GoogleEventService {
   }
 
   public async createGoogleCalendarEvent(body: ReactionDto): Promise<any> {
-    const calendarId = getElemContentInParams(body.params, 'calendarId', '', body.returnValues);
-    const location = getElemContentInParams(body.params, 'location', '', body.returnValues);
-    // format YYYY-MM-DD
-    const startDate = getElemContentInParams(body.params, 'startDate', '', body.returnValues);
-    const endDate = getElemContentInParams(body.params, 'endDate', '', body.returnValues);
-    const content = getElemContentInParams(body.params, 'content', '', body.returnValues);
+    const calendarName = getElemContentInParams(body.params, 'calendarName', '', body.returnValues);
+    const calendar = await this.listGoogleCalendars(body.accessToken)
+      .then((calendars) => {
+        return calendars.items.find((calendar) => calendar.summary === calendarName).id;
+      })
+      .catch(() => 'primary');
+    const location = getElemContentInParams(body.params, 'eventLocation', '', body.returnValues);
+    const dateObj = new Date();
+    const month = dateObj.getUTCMonth() + 1; //months from 1-12
+    const day = dateObj.getUTCDate();
+    const year = dateObj.getUTCFullYear();
+    const date = year + '-' + month + '-' + day;
+    const startDate = getElemContentInParams(
+      body.params,
+      'eventStartDate',
+      date,
+      body.returnValues,
+    );
+    const content = getElemContentInParams(body.params, 'eventContent', '', body.returnValues);
 
     const event = await lastValueFrom(
       this.httpService
         .post(
-          `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?sendUpdates=all`,
+          `https://www.googleapis.com/calendar/v3/calendars/${calendar}/events?sendUpdates=all`,
           {
             summary: content,
             location: location,
@@ -140,7 +154,7 @@ export class GoogleEventService {
               date: startDate,
             },
             end: {
-              date: endDate,
+              date: startDate,
             },
           },
           {
