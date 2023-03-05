@@ -6,7 +6,7 @@ import "../styles/DownloadSdk.css";
 const DownloadSdk = () => {
   const downloadApk = useCallback(() => {
     const link = document.createElement("a");
-    link.href = "/front_data/client.apk";
+    link.href = "/apk/client.apk";
     link.download = "client.apk";
     link.click();
     URL.revokeObjectURL(link.href);
