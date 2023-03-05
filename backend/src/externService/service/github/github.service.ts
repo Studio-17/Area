@@ -63,7 +63,7 @@ export class GithubService {
     const starredRepository = await firstValueFrom(
       this.httpService
         .put(
-          `https://api.github.com/repos/${starRepositoryDto.owner}/${starRepositoryDto.repo}/starred`,
+          `https://api.github.com/user/starred/${starRepositoryDto.owner}/${starRepositoryDto.repo}`,
           {},
           {
             headers: {
@@ -95,7 +95,7 @@ export class GithubService {
     const unstarredRepository = await firstValueFrom(
       this.httpService
         .delete(
-          `https://api.github.com/repos/${unstarRepositoryDto.owner}/${unstarRepositoryDto.repo}/starred`,
+          `https://api.github.com/user/starred/${unstarRepositoryDto.owner}/${unstarRepositoryDto.repo}`,
           {
             headers: {
               Accept: 'application/vnd.github+json',
