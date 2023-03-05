@@ -5,6 +5,7 @@ import {
   TextInput,
   Text,
 } from "react-native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 // Components
 import MyText from "../components/MyText";
@@ -42,43 +43,45 @@ export default function InputField(
   // };
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        borderBottomColor: "#ccc",
-        borderBottomWidth: 1,
-        paddingBottom: 8,
-        marginBottom: 25,
-      }}
-    >
-      {icon}
-      {inputType == "password" ? (
-        <TextInput
-          placeholder={label}
-          keyboardType={keyboardType}
-          style={{ flex: 1, paddingVertical: 0 }}
-          secureTextEntry={true}
-          onChangeText={inputTextValue}
-          // onFocus={() => onFocus()}
-        />
-      ) : (
-        <TextInput
-          placeholder={label}
-          keyboardType={keyboardType}
-          style={{ flex: 1, paddingVertical: 0 }}
-          onChangeText={inputTextValue}
-        />
-      )}
-      <TouchableOpacity onPress={fieldButtonFunction}>
-        <MyText style={{ color: "#0165F5" }}>
-          {fieldButtonLabel}
-        </MyText>
-      </TouchableOpacity>
-      {error && (
-        <Text style={{marginTop: 7, color: "red", fontSize: 12}}>
-          {error}
-        </Text>
-      )}
-    </View>
+    <KeyboardAwareScrollView>
+      <View
+        style={{
+          flexDirection: "row",
+          borderBottomColor: "#ccc",
+          borderBottomWidth: 1,
+          paddingBottom: 8,
+          marginBottom: 25,
+        }}
+      >
+        {icon}
+        {inputType == "password" ? (
+          <TextInput
+            placeholder={label}
+            keyboardType={keyboardType}
+            style={{ flex: 1, paddingVertical: 0 }}
+            secureTextEntry={true}
+            onChangeText={inputTextValue}
+            // onFocus={() => onFocus()}
+          />
+        ) : (
+          <TextInput
+            placeholder={label}
+            keyboardType={keyboardType}
+            style={{ flex: 1, paddingVertical: 0 }}
+            onChangeText={inputTextValue}
+          />
+        )}
+        <TouchableOpacity onPress={fieldButtonFunction}>
+          <MyText style={{ color: "#0165F5" }}>
+            {fieldButtonLabel}
+          </MyText>
+        </TouchableOpacity>
+        {error && (
+          <Text style={{marginTop: 7, color: "red", fontSize: 12}}>
+            {error}
+          </Text>
+        )}
+      </View>
+    </KeyboardAwareScrollView>
   );
 }
