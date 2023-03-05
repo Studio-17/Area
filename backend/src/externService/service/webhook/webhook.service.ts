@@ -7,10 +7,10 @@ import { AxiosError } from 'axios';
 export class WebhookService {
   constructor(private readonly httpService: HttpService) {}
 
-  public async getWebhook(url: string): Promise<any> {
+  public async getWebhook(url: string, param: string): Promise<any> {
     const data = await lastValueFrom(
       this.httpService
-        .get(url, null)
+        .get(url, { params: param })
         .pipe(
           map((value) => {
             return value.data;
@@ -26,10 +26,10 @@ export class WebhookService {
     return data;
   }
 
-  public async postWebhook(url: string): Promise<any> {
+  public async postWebhook(url: string, body: string): Promise<any> {
     const data = await lastValueFrom(
       this.httpService
-        .post(url, null)
+        .post(url, { body: body })
         .pipe(
           map((value) => {
             return value.data;

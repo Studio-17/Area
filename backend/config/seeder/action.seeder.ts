@@ -630,7 +630,14 @@ export class ActionSeederService {
         service: ServiceList.WEBHOOK,
         type: ActionType.ACTION,
         name: 'Get webhook value changed',
-        params: [{ name: 'url', type: 'string', description: 'url to call in get format' }],
+        params: [
+          { name: 'url', type: 'string', description: 'url to call in get format' },
+          {
+            name: 'param',
+            type: 'string',
+            description: 'param of the request (stored in param.param).',
+          },
+        ],
         description: 'This action check if the return value of the get webhook has changed',
         link: 'webhook/get/',
       },
@@ -639,7 +646,14 @@ export class ActionSeederService {
         service: ServiceList.WEBHOOK,
         type: ActionType.REACTION,
         name: 'Post a webhook',
-        params: [{ name: 'url', type: 'string', description: 'url to call in post format' }],
+        params: [
+          { name: 'url', type: 'string', description: 'url to call in post format' },
+          {
+            name: 'body',
+            type: 'string',
+            description: 'body of the request (stored in body.body).',
+          },
+        ],
         description: 'This reaction post a webhook without params.',
         link: 'webhook/post/',
       },

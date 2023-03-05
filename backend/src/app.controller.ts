@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Req, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -18,8 +18,8 @@ export class AppController {
   }
 
   @Post('ping')
-  ping(): void {
-    console.log('ping');
+  ping(@Body() body: string): void {
+    console.log('ping', body);
   }
 
   @Get('about.json')

@@ -16,7 +16,8 @@ export class WebhookCronService {
   public async checkGet(actionParam: ActionParam): Promise<ActionResult> {
     try {
       const url = getElemContentInParams(actionParam.params, 'url', undefined, []);
-      const response = await this.webhookService.getWebhook(url);
+      const param = getElemContentInParams(actionParam.params, 'param', undefined, []);
+      const response = await this.webhookService.getWebhook(url, param);
       const record = this.cronService.createRecord(
         actionParam.myActionId,
         'getResponse',
@@ -24,6 +25,7 @@ export class WebhookCronService {
       );
       return {
         isTriggered: await this.cronService.findOrUpdateLastRecord(record),
+        returnValues: [{ name: 'response', content: response.toString() }],
       };
     } catch (error) {
       throw new HttpException(() => error.message, HttpStatus.BAD_REQUEST, { cause: error });
