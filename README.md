@@ -103,6 +103,10 @@ To excute it you can run:
 docker compose up --build
 ```
 
+If you want to run **Mobile** application, go [here](/mobile/README.md).
+
+If you want to run **Web** application, go [here](/web/README.md).
+
 And Voilà ! **Your app is running !** :tada:
 
 ## :globe_with_meridians: Services :globe_with_meridians:
