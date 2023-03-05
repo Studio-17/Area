@@ -48,6 +48,7 @@ const ServicesInfos = ({
   useEffect(() => {
     serviceInfo && setIsServiceConnected(serviceInfo?.isConnected);
     console.log(actions);
+    console.log(serviceInfo);
   }, [actions, serviceInfo, isFetchingServiceInfo]);
 
   const handleOauthConnection = async () => {
@@ -113,22 +114,25 @@ const ServicesInfos = ({
           >
             <div className="main-name" style={{ color: theme.palette.primary }}>
               {service.name}
-              <div className="connection-status-container">
-                {serviceInfo?.isConnected ? (
-                  <DoneIcon />
-                ) : (
-                  <BigRoundedButtonOutlined
-                    label="Connect"
-                    color="primary"
-                    onClick={() => handleOauthConnection()}
-                  />
-                )}
-              </div>
-              {!serviceInfo?.isConnected && (
-                <IconButton onClick={() => refetchServiceInfos()}>
-                  <ReplayIcon color="primary" />
-                </IconButton>
+              {serviceInfo?.type === "external" && (
+                <div className="connection-status-container">
+                  {serviceInfo?.isConnected ? (
+                    <DoneIcon />
+                  ) : (
+                    <BigRoundedButtonOutlined
+                      label="Connect"
+                      color="primary"
+                      onClick={() => handleOauthConnection()}
+                    />
+                  )}
+                </div>
               )}
+              {serviceInfo?.type === "external" &&
+                !serviceInfo?.isConnected && (
+                  <IconButton onClick={() => refetchServiceInfos()}>
+                    <ReplayIcon color="primary" />
+                  </IconButton>
+                )}
             </div>
             <div className="subtext">Choose one ...</div>
             <div className="list-of-cards-container">
@@ -145,7 +149,11 @@ const ServicesInfos = ({
                     }
                     onClick={onClickOnActionCardsCheck}
                     uuidOfAction={element.uuid}
-                    disabled={!isServiceConnected}
+                    disabled={
+                      serviceInfo?.type === "external"
+                        ? !isServiceConnected
+                        : false
+                    }
                     params={element.params}
                     action={element}
                   />

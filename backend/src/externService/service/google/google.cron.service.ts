@@ -9,7 +9,7 @@ export class GoogleCronService {
   googleMailAvailableActions = new Map<string, ActionFunction>([
     ['google/check-mail/', this.googleService.updateLastEmailReceived.bind(this.googleService)],
     [
-      'google/check-doc-created',
+      'google/check-doc-created/',
       this.googleService.checkNewGoogleDocOnDriveCreated.bind(this.googleService),
     ],
   ]);
