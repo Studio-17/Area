@@ -28,7 +28,7 @@ const UserProfile = () => {
       <div className="user-profile-first-name">Nom : {user?.lastName}</div>
       <div className="user-profile-first-name">E-mail : {user?.email}</div>
       <BigRoundedButton
-        label="Deconnexion"
+        label="Log out"
         color="primary"
         onClick={() => handleDeconnection()}
       />
