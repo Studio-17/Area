@@ -129,7 +129,7 @@ export class ActionSeederService {
       {
         uuid: '93cc220c-dae7-4b05-9b8b-31daabb45ca6',
         service: ServiceList.GITHUB,
-        type: ActionType.ACTION,
+        type: ActionType.REACTION,
         name: 'Star Github repository',
         params: [
           { name: 'owner', type: 'string', description: 'Name of the owner.' },
@@ -141,7 +141,7 @@ export class ActionSeederService {
       {
         uuid: '04ec2e87-6cf5-4891-b5f4-d9d57c68b7bd',
         service: ServiceList.GITHUB,
-        type: ActionType.ACTION,
+        type: ActionType.REACTION,
         name: 'Unstar Github repository',
         params: [
           { name: 'owner', type: 'string', description: 'Name of the owner.' },
@@ -266,6 +266,14 @@ export class ActionSeederService {
         ],
         description: 'This action allow you to catch events when you receive a new mail.',
         link: 'google/check-mail/',
+      },
+      {
+        uuid: 'ad38db1e-7c31-4cd0-a8ef-1f6d61029f11',
+        service: ServiceList.GOOGLE_MAIL,
+        type: ActionType.REACTION,
+        name: 'Send Google Mail',
+        description: 'This action allow you to email using Gmail service.',
+        link: 'google/send-mail/',
       },
       {
         uuid: 'df56e414-32b5-40fa-852c-60eaacfb7ebc',
