@@ -75,14 +75,66 @@ export class AppController {
             name: 'github',
             actions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'Check user repository',
+                description: 'This action checks if the connected user has a new repository.',
+              },
+              {
+                name: 'Check pull request',
+                description: 'This action checks if a new pull request is created on a repository.',
+              },
+              {
+                name: 'Check issue',
+                description: 'This action checks if a new issue is created on a repository.',
+              },
+              {
+                name: 'Check user issue',
+                description: 'This action checks if a new issue is assigned to the connected user.',
+              },
+              {
+                name: 'Check team',
+                description: 'This action checks if a new team is created on a repository.',
+              },
+              {
+                name: 'Check contributor',
+                description: 'This action checks if a new contributor is detected on a repository.',
+              },
+              {
+                name: 'Check fork',
+                description: 'This action checks if a repository has a new fork.',
+              },
+              {
+                name: 'Check star',
+                description: 'This action checks if a repository has a new star.',
+              },
+              {
+                name: 'Check user star',
+                description: 'This action checks if the connected user has starred a new repository.',
+              },
+              {
+                name: 'Check invitation',
+                description: 'This action checks if a new invitation is created on a repository.',
+              },
+              {
+                name: 'Check milestone',
+                description: 'This action checks if a new milestone is created on a repository.',
+              },
+              {
+                name: 'Check review comment',
+                description: 'This action checks if a new comment is posted on a review.',
               },
             ],
             reactions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'Fork repository',
+                description: 'This reaction fork a repository.',
+              },
+              {
+                name: 'Star repository',
+                description: 'This reaction star a repository.',
+              },
+              {
+                name: 'Unstar repository',
+                description: 'This reaction unstar a repository.',
               },
             ],
           },
@@ -96,8 +148,8 @@ export class AppController {
             ],
             reactions: [
               {
-                name: undefined,
-                description: undefined,
+                name: 'Send mail',
+                description: 'This reaction send a mail with Gmail.',
               },
             ],
           },
