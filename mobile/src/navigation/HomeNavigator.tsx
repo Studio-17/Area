@@ -1,3 +1,5 @@
+import React from "react";
+
 // Navigation
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -7,7 +9,7 @@ import AppletDetailsScreen from "../screens/AppletDetailsScreen";
 import EditAreaScreen from "../screens/EditAreaScreen";
 import ServicesScreen from "../screens/ServicesScreen";
 import ActionsListScreen from "../screens/ActionsListScreen";
-import FinishEditAreaScreen from "../screens/FinishEditAreaScreen";
+import CreateAreaScreen from "../screens/CreateAreaScreen";
 
 const Stack = createStackNavigator();
 
@@ -48,8 +50,8 @@ export default function HomeStack() {
         }}
       />
       <Stack.Screen
-        name="FinishEditArea"
-        component={FinishEditAreaScreen}
+        name="FinishArea"
+        component={CreateAreaScreen}
         options={{
           headerShown: false,
         }}

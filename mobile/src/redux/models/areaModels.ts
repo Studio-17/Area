@@ -13,8 +13,13 @@ export type Area = {
 
 export type createAreaDto = {
   // action: { id: string };
-  reactions: [{ id: string }];
   action: { id: string, params: { name: string, content: string }[] };
+  reactions: [{ id: string }];
+  name?: string;
+  hour?: string;
+  minute?: string;
+  second?: string;
+  color?: string;
   // reactions: [{ id: string, params: { name: string, content: string }[] }];
 };
 
