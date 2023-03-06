@@ -1,9 +1,10 @@
 <p align="center">
-  <img src=".github/assets/area-logo.png" height=200 alt="Reaccoon Logo" />
-  <img src="preview.gif" height="200"/>
+  <img src=".github/assets/area-logo.png" height=100 alt="Reaccoon Logo" />
 </p>
 
 # :raccoon: Reaccoon :raccoon:
+
+<img align="right" width="100" src="preview.gif">
 
 Reaccoon is an [IFTTT](https://ifttt.com/)-like Epitech project.
 The goal of this project is to allow you to automatically execute some reactions according to defined actions.
@@ -11,8 +12,8 @@ The goal of this project is to allow you to automatically execute some reactions
 You'll create an account and start connect you account to several services.
 
 For example :
-- IF I receive an email on my GMail address
-- THEN, I launch the ZeratoR stream on TwitchTV.
+- **IF** I receive an email on my `GMail` address
+- **THEN**, I launch the *ZeratoR* stream on `TwitchTV`
 
 ## :gear: Environment Variables :gear:
 
@@ -94,25 +95,21 @@ Once this is done, execute the script with the following command.
 
 As the Reaccoon is using Docker, you can manage and run the containers easily.
 
-The application is composed of three [services](https://docs.docker.com/compose/profiles/) that you can run separately or together:
-- The `server` profile, which contains the API and the database.
-- The `client_mobile` profile, which contains the mobile version of the frontend application.
-- The `client_web` profile, which contains the mobile version of the frontend application.
+The application is composed of three [services](https://docs.docker.com/compose/profiles/) that you can run together:
+- The `server`, which contains the API and the database.
+- The `client_mobile`, which contains the mobile version of the frontend application.
+- The `client_web`, which contains the mobile version of the frontend application.
 
 To excute it you can run:
 ```bash
 docker compose up --build
 ```
 
-If you want to run **Mobile** application, go [here](/mobile/README.md).
+- The **Mobile** documentation is [here](/mobile/README.md)
 
-If you want to run **Web** application, go [here](/web/README.md).
+- The **Web** documentation is [here](/web/README.md)
 
-And Voilà ! **Your app is running !** :tada:
-
-## :globe_with_meridians: Services :globe_with_meridians:
-
-See list of all services with actions and reactions [here](/backend/README.md) .
+- The **Backend** documentation and the list of all the action and reactions are listed [here](/backend/README.md)
 
 ## :brain: Tech Stack :brain:
 
@@ -127,6 +124,8 @@ See list of all services with actions and reactions [here](/backend/README.md) .
 ## :book: Documentation :book:
 
 Click on the following link to API endpoints documentation (the API must running) : [SwaggerUI documentation](http://localhost:8000/api/docs)
+
+You can access to the global documentation of the project [here](https://miro.com/app/board/uXjVP0EAWi0=/?share_link_id=7334968386)
 
 ## :busts_in_silhouette: Authors :busts_in_silhouette:
 
