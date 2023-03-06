@@ -4,7 +4,9 @@
   <a target="blank"><img src="../.github/assets/area-logo.png" width=300 alt="Reaccoon Logo" /></a>
 </p>
 
-# How to run the app ?
+# How to run and use the app ?
+
+## Run the app
 
 First, create a .env.local file in the root of the project with the following content :
 
@@ -14,7 +16,7 @@ PORT=8081
 REACT_APP_GOOGLE_CLIENT_ID="your google client id"
 ```
 
-**To launch the app in dev mode do the following commands:**
+To launch the app in dev mode do the following commands:
 
 ```
 npm install
@@ -33,6 +35,12 @@ sudo docker-compose -f docker-compose.dev.yml up
 
 
 ```
+
+## Use the app
+
+You have a full documentation on how to use the app on the ```docs``` file.
+
+
 
 # Technical documenations :gear:
 
