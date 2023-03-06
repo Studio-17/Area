@@ -53,7 +53,7 @@ export default function LoginScreen({ navigation }: any) {
     selectAccount: true,
     shouldAutoExchangeCode: false,
     expoClientId:
-      "760928825534-9f7c3d69o48jl3nrj4mnlnar1qbe91d3.apps.googleusercontent.com",
+      "",
   });
 
   React.useEffect(() => {
