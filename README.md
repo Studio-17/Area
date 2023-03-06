@@ -1,5 +1,6 @@
 <p align="center">
-  <a target="blank"><img src=".github/assets/area-logo.png" width=300 alt="Reaccoon Logo" /></a>
+  <img src=".github/assets/area-logo.png" height=200 alt="Reaccoon Logo" />
+  <img src="preview.gif" height="200"/>
 </p>
 
 # :raccoon: Reaccoon :raccoon:
