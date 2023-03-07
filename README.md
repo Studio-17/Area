@@ -60,17 +60,14 @@ You just have to duplicate it as a `.env` file and to fill the empty values. **A
 
 ## :hammer: Installation :hammer:
 
-To use Reaccoon, clone the repository.
+To use Reaccoon, clone the repository:
 
 ```bash
-# Via SSH
-git clone git@github.com:EpitechPromo2025/B-DEV-500-PAR-5-2-area-martin.vanaud.git reaccoon
-
 # Via HTTPs
-https://github.com/EpitechPromo2025/B-DEV-500-PAR-5-2-area-martin.vanaud.git reaccoon
+git clone https://github.com/Studio-17/Area.git reaccoon
 ```
 
-Go to the project directory.
+Go to the project directory:
 
 ```bash
 cd reaccoon/
@@ -78,15 +75,15 @@ cd reaccoon/
 
 Then, just before running the Reaccoon application, install all the necessary dependencies.
 
-For that, we created a simple script to make this step easier. :smile:
+**For that, we created a simple script to make this step easier.** :smile:
 
-Executing the following command gives you the right to execute the installation Shell script.
+Executing the following command gives you the right to execute the installation Shell script:
 
 ```bash
 chmod +x install.sh
 ```
 
-Once this is done, execute the script with the following command.
+Once this is done, execute the script with the following command:
 
 ```bash
 ./install.sh
@@ -94,9 +91,9 @@ Once this is done, execute the script with the following command.
 
 ## :whale: Run Locally :whale:
 
-As the Reaccoon is using Docker, you can manage and run the containers easily.
+**As the Reaccoon is using Docker, you can manage and run the containers easily.**
 
-The application is composed of three [services](https://docs.docker.com/compose/profiles/) that you can run together:
+The application is composed of three [services](https://docs.docker.com/compose/profiles/) :
 
 - The `server`, which contains the API and the database.
 - The `client_mobile`, which contains the mobile version of the frontend application.
@@ -120,9 +117,9 @@ docker compose up --build
 
 **Database:** PostgreSQL
 
-**Web Client:** ReactTS
+**Web Client:** ReactJS, TypeScript
 
-**Mobile Client:** ReactNative, TypeScript
+**Mobile Client:** React-Native, TypeScript
 
 ## :book: Documentation :book:
 
@@ -143,3 +140,5 @@ You can access to the global documentation of the project [here](https://miro.co
 - [Clement Fernandes](https://www.github.com/Clement-Fernandes)
 - [Victor Palle](https://www.github.com/victorpalle)
 - [Maxime Carabina](https://www.github.com/maxime-carabina)
+
+Thank you for reading this documentation. :heart:
