@@ -1,4 +1,4 @@
-# Reaccoon (Area) <img align="center" src=".github/assets/area-logo.png" height=30 alt="Reaccoon Logo" />
+# Reaccoon (Area) <img align="center" src=".github/assets/area-logo.png" height=35 alt="Reaccoon Logo" />
 
 <img align="right" width="110" src="preview.gif">
 
@@ -7,10 +7,9 @@ The goal of this project is to allow you to automatically execute some reactions
 
 You'll create an account and start connect you account to several services.
 
-For example :
-
-- **IF** I receive an email on my `GMail` address
-- **THEN**, I launch the _ZeratoR_ stream on `TwitchTV`
+> For example :
+> - **IF** I receive an email on my `GMail` address
+> - **THEN**, I launch the _ZeratoR_ stream on `TwitchTV`
 
 ## :gear: Environment Variables :gear:
 
@@ -127,20 +126,20 @@ docker compose up --build
 
 ## :book: Documentation :book:
 
-Click on the following link to API endpoints documentation (the API must running) : [SwaggerUI documentation](http://localhost:8000/api/docs)
+Click on the following link to API endpoints documentation **(the API must be running)** : [SwaggerUI documentation](http://localhost:8000/api/docs)
 
 You can access to the global documentation of the project [here](https://miro.com/app/board/uXjVP0EAWi0=/?share_link_id=7334968386)
 
 ## :busts_in_silhouette: Authors :busts_in_silhouette:
 
-DevOps & Backend Team :
+#### DevOps & Backend Team :
 
-- [@martinvanaud](https://www.github.com/martinvanaud)
-- [@tibo-pdn](https://www.github.com/tibo-pdn)
-- [@Gurvan-Le-Letty](https://www.github.com/Gurvan-Le-Letty)
+- [Martin Vanaud](https://www.github.com/martinvanaud)
+- [Gurvan Le Letty](https://www.github.com/Gurvan-Le-Letty)
+- [Tibo Pendino](https://www.github.com/tibo-pdn)
 
-Mobile & Frontend Team :
+#### Mobile & Frontend Team :
 
-- [@maxime-carabina](https://www.github.com/maxime-carabina)
-- [@victorpalle](https://www.github.com/victorpalle)
-- [@Clement-Fernandes](https://www.github.com/Clement-Fernandes)
+- [Clement Fernandes](https://www.github.com/Clement-Fernandes)
+- [Victor Palle](https://www.github.com/victorpalle)
+- [Maxime Carabina](https://www.github.com/maxime-carabina)
