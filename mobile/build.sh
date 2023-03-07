@@ -2,8 +2,8 @@
 
 # login to eas
 echo "Logging in to EAS..."
-mail="manulop"
-password="Reaccoon"
+mail=""
+password=""
 
 code=$(npx expo login -u $mail -p $password --non-interactive)
 if [ $? -ne 0 ]; then
