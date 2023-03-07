@@ -1,10 +1,6 @@
-<p align="center">
-  <img src=".github/assets/area-logo.png" height=100 alt="Reaccoon Logo" />
-</p>
+# Reaccoon (Area) <img align="center" src=".github/assets/area-logo.png" height=30 alt="Reaccoon Logo" />
 
-# :raccoon: Reaccoon :raccoon:
-
-<img align="right" width="100" src="preview.gif">
+<img align="right" width="110" src="preview.gif">
 
 Reaccoon is an [IFTTT](https://ifttt.com/)-like Epitech project.
 The goal of this project is to allow you to automatically execute some reactions according to defined actions.
@@ -12,14 +8,16 @@ The goal of this project is to allow you to automatically execute some reactions
 You'll create an account and start connect you account to several services.
 
 For example :
+
 - **IF** I receive an email on my `GMail` address
-- **THEN**, I launch the *ZeratoR* stream on `TwitchTV`
+- **THEN**, I launch the _ZeratoR_ stream on `TwitchTV`
 
 ## :gear: Environment Variables :gear:
 
 To run this project, you firstly need to edit your configuration environment file.
 
 At the root of the repository, you can find a `.env.example` file containing those values :
+
 ```bash
 # Available values : development, production
 NODE_ENV=development
@@ -64,6 +62,7 @@ You just have to duplicate it as a `.env` file and to fill the empty values. **A
 ## :hammer: Installation :hammer:
 
 To use Reaccoon, clone the repository.
+
 ```bash
 # Via SSH
 git clone git@github.com:EpitechPromo2025/B-DEV-500-PAR-5-2-area-martin.vanaud.git reaccoon
@@ -73,6 +72,7 @@ https://github.com/EpitechPromo2025/B-DEV-500-PAR-5-2-area-martin.vanaud.git rea
 ```
 
 Go to the project directory.
+
 ```bash
 cd reaccoon/
 ```
@@ -82,11 +82,13 @@ Then, just before running the Reaccoon application, install all the necessary de
 For that, we created a simple script to make this step easier. :smile:
 
 Executing the following command gives you the right to execute the installation Shell script.
+
 ```bash
 chmod +x install.sh
 ```
 
 Once this is done, execute the script with the following command.
+
 ```bash
 ./install.sh
 ```
@@ -96,11 +98,13 @@ Once this is done, execute the script with the following command.
 As the Reaccoon is using Docker, you can manage and run the containers easily.
 
 The application is composed of three [services](https://docs.docker.com/compose/profiles/) that you can run together:
+
 - The `server`, which contains the API and the database.
 - The `client_mobile`, which contains the mobile version of the frontend application.
 - The `client_web`, which contains the mobile version of the frontend application.
 
 To excute it you can run:
+
 ```bash
 docker compose up --build
 ```
@@ -130,12 +134,13 @@ You can access to the global documentation of the project [here](https://miro.co
 ## :busts_in_silhouette: Authors :busts_in_silhouette:
 
 DevOps & Backend Team :
+
 - [@martinvanaud](https://www.github.com/martinvanaud)
 - [@tibo-pdn](https://www.github.com/tibo-pdn)
 - [@Gurvan-Le-Letty](https://www.github.com/Gurvan-Le-Letty)
 
 Mobile & Frontend Team :
+
 - [@maxime-carabina](https://www.github.com/maxime-carabina)
 - [@victorpalle](https://www.github.com/victorpalle)
 - [@Clement-Fernandes](https://www.github.com/Clement-Fernandes)
-
