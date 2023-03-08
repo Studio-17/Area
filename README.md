@@ -1,5 +1,7 @@
 # Reaccoon (Area) <img align="center" src=".github/assets/area-logo.png" height=35 alt="Reaccoon Logo" />
 
+## $\color{green}{Grade: B}$
+
 <img align="right" width="110" src="preview.gif">
 
 Reaccoon is an [IFTTT](https://ifttt.com/)-like Epitech project.
