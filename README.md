@@ -1,6 +1,6 @@
 # Reaccoon (Area) <img align="center" src=".github/assets/area-logo.png" height=35 alt="Reaccoon Logo" />
 
-## ${Top 3 Promo Paris}$
+## Top 3 Promo Paris :tada:
 
 <img align="right" width="110" src="preview.gif">
 
