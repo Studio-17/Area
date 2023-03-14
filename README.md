@@ -1,6 +1,6 @@
 # Reaccoon (Area) <img align="center" src=".github/assets/area-logo.png" height=35 alt="Reaccoon Logo" />
 
-## Grade: A :tada:
+## $\color{green}{Grade: A}$
 
 <img align="right" width="110" src="preview.gif">
 
